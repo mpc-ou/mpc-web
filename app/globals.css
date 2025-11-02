@@ -1,8 +1,220 @@
 @import "tailwindcss";
+@import "./colors.css";
 
+/* Map light colors to main variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--l-background);
+  --foreground: var(--l-foreground);
+
+  --primary: var(--l-primary);
+  --primary-foreground: var(--l-primary-foreground);
+  --primary-hover: var(--l-primary-hover);
+  --primary-light: var(--l-primary-light);
+
+  --secondary: var(--l-secondary);
+  --secondary-foreground: var(--l-secondary-foreground);
+  --secondary-hover: var(--l-secondary-hover);
+  --secondary-light: var(--l-secondary-light);
+
+  --accent: var(--l-accent);
+  --accent-foreground: var(--l-accent-foreground);
+  --accent-hover: var(--l-accent-hover);
+  --accent-light: var(--l-accent-light);
+
+  --success: var(--l-success);
+  --success-foreground: var(--l-success-foreground);
+  --success-light: var(--l-success-light);
+
+  --warning: var(--l-warning);
+  --warning-foreground: var(--l-warning-foreground);
+  --warning-light: var(--l-warning-light);
+
+  --error: var(--l-error);
+  --error-foreground: var(--l-error-foreground);
+  --error-light: var(--l-error-light);
+
+  --info: var(--l-info);
+  --info-foreground: var(--l-info-foreground);
+  --info-light: var(--l-info-light);
+
+  --card: var(--l-card);
+  --card-foreground: var(--l-card-foreground);
+  --card-hover: var(--l-card-hover);
+
+  --muted: var(--l-muted);
+  --muted-foreground: var(--l-muted-foreground);
+
+  --border: var(--l-border);
+  --input: var(--l-input);
+  --ring: var(--l-ring);
+
+  --text-primary: var(--l-text-primary);
+  --text-secondary: var(--l-text-secondary);
+  --text-tertiary: var(--l-text-tertiary);
+  --text-inverse: var(--l-text-inverse);
+
+  --bg-primary: var(--l-bg-primary);
+  --bg-secondary: var(--l-bg-secondary);
+  --bg-tertiary: var(--l-bg-tertiary);
+
+  --hero-bg: var(--l-hero-bg);
+  --hero-text: var(--l-hero-text);
+
+  --nav-bg: var(--l-nav-bg);
+  --nav-bg-blur: var(--l-nav-bg-blur);
+  --nav-border: var(--l-nav-border);
+  --nav-item-hover: var(--l-nav-item-hover);
+  --nav-link: var(--l-nav-link);
+  --nav-link-hover: var(--l-nav-link-hover);
+
+  --footer-bg: var(--l-footer-bg);
+  --footer-text: var(--l-footer-text);
+  --footer-text-hover: var(--l-footer-text-hover);
+}
+
+/* Map dark colors to main variables */
+[data-theme="dark"] {
+  :root:not([data-theme="light"]) {
+    --background: var(--d-background);
+    --foreground: var(--d-foreground);
+
+    --primary: var(--d-primary);
+    --primary-foreground: var(--d-primary-foreground);
+    --primary-hover: var(--d-primary-hover);
+    --primary-light: var(--d-primary-light);
+
+    --secondary: var(--d-secondary);
+    --secondary-foreground: var(--d-secondary-foreground);
+    --secondary-hover: var(--d-secondary-hover);
+    --secondary-light: var(--d-secondary-light);
+
+    --accent: var(--d-accent);
+    --accent-foreground: var(--d-accent-foreground);
+    --accent-hover: var(--d-accent-hover);
+    --accent-light: var(--d-accent-light);
+
+    --success: var(--d-success);
+    --success-foreground: var(--d-success-foreground);
+    --success-light: var(--d-success-light);
+
+    --warning: var(--d-warning);
+    --warning-foreground: var(--d-warning-foreground);
+    --warning-light: var(--d-warning-light);
+
+    --error: var(--d-error);
+    --error-foreground: var(--d-error-foreground);
+    --error-light: var(--d-error-light);
+
+    --info: var(--d-info);
+    --info-foreground: var(--d-info-foreground);
+    --info-light: var(--d-info-light);
+
+    --card: var(--d-card);
+    --card-foreground: var(--d-card-foreground);
+    --card-hover: var(--d-card-hover);
+
+    --muted: var(--d-muted);
+    --muted-foreground: var(--d-muted-foreground);
+
+    --border: var(--d-border);
+    --input: var(--d-input);
+    --ring: var(--d-ring);
+
+    --text-primary: var(--d-text-primary);
+    --text-secondary: var(--d-text-secondary);
+    --text-tertiary: var(--d-text-tertiary);
+    --text-inverse: var(--d-text-inverse);
+
+    --bg-primary: var(--d-bg-primary);
+    --bg-secondary: var(--d-bg-secondary);
+    --bg-tertiary: var(--d-bg-tertiary);
+
+    --hero-bg: var(--d-hero-bg);
+    --hero-text: var(--d-hero-text);
+
+    --nav-bg: var(--d-nav-bg);
+    --nav-bg-blur: var(--d-nav-bg-blur);
+    --nav-border: var(--d-nav-border);
+    --nav-item-hover: var(--d-nav-item-hover);
+    --nav-link: var(--d-nav-link);
+    --nav-link-hover: var(--d-nav-link-hover);
+
+    --footer-bg: var(--d-footer-bg);
+    --footer-text: var(--d-footer-text);
+    --footer-text-hover: var(--d-footer-text-hover);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: var(--d-background);
+    --foreground: var(--d-foreground);
+
+    --primary: var(--d-primary);
+    --primary-foreground: var(--d-primary-foreground);
+    --primary-hover: var(--d-primary-hover);
+    --primary-light: var(--d-primary-light);
+
+    --secondary: var(--d-secondary);
+    --secondary-foreground: var(--d-secondary-foreground);
+    --secondary-hover: var(--d-secondary-hover);
+    --secondary-light: var(--d-secondary-light);
+
+    --accent: var(--d-accent);
+    --accent-foreground: var(--d-accent-foreground);
+    --accent-hover: var(--d-accent-hover);
+    --accent-light: var(--d-accent-light);
+
+    --success: var(--d-success);
+    --success-foreground: var(--d-success-foreground);
+    --success-light: var(--d-success-light);
+
+    --warning: var(--d-warning);
+    --warning-foreground: var(--d-warning-foreground);
+    --warning-light: var(--d-warning-light);
+
+    --error: var(--d-error);
+    --error-foreground: var(--d-error-foreground);
+    --error-light: var(--d-error-light);
+
+    --info: var(--d-info);
+    --info-foreground: var(--d-info-foreground);
+    --info-light: var(--d-info-light);
+
+    --card: var(--d-card);
+    --card-foreground: var(--d-card-foreground);
+    --card-hover: var(--d-card-hover);
+
+    --muted: var(--d-muted);
+    --muted-foreground: var(--d-muted-foreground);
+
+    --border: var(--d-border);
+    --input: var(--d-input);
+    --ring: var(--d-ring);
+
+    --text-primary: var(--d-text-primary);
+    --text-secondary: var(--d-text-secondary);
+    --text-tertiary: var(--d-text-tertiary);
+    --text-inverse: var(--d-text-inverse);
+
+    --bg-primary: var(--d-bg-primary);
+    --bg-secondary: var(--d-bg-secondary);
+    --bg-tertiary: var(--d-bg-tertiary);
+
+    --hero-bg: var(--d-hero-bg);
+    --hero-text: var(--d-hero-text);
+
+    --nav-bg: var(--d-nav-bg);
+    --nav-bg-blur: var(--d-nav-bg-blur);
+    --nav-border: var(--d-nav-border);
+    --nav-item-hover: var(--d-nav-item-hover);
+    --nav-link: var(--d-nav-link);
+    --nav-link-hover: var(--d-nav-link-hover);
+
+    --footer-bg: var(--d-footer-bg);
+    --footer-text: var(--d-footer-text);
+    --footer-text-hover: var(--d-footer-text-hover);
+  }
 }
 
 @theme inline {
@@ -10,17 +222,99 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Primary */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Secondary */
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Accent */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Card */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  /* Muted */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Border */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   }
+
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Utility classes */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+.border-custom {
+  border-color: var(--border);
+}
+
+/* Accordion animations */
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

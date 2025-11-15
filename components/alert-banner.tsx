@@ -21,16 +21,6 @@ export function AlertBanner({ className }: AlertBannerProps) {
       return;
     }
 
-    // Kiểm tra xem đã bị đóng vĩnh viễn chưa (localStorage)
-    const dismissedPermanently = localStorage.getItem(
-      `alert-dismissed-${ALERT_CONFIG.id}`
-    );
-    if (dismissedPermanently === "true") {
-      setIsVisible(false);
-      document.documentElement.style.setProperty("--alert-banner-height", "0px");
-      return;
-    }
-
     // Kiểm tra xem đã bị đóng tạm thời chưa (sessionStorage)
     const dismissedTemporarily = sessionStorage.getItem(
       `alert-closed-${ALERT_CONFIG.id}`
@@ -67,13 +57,6 @@ export function AlertBanner({ className }: AlertBannerProps) {
     // Đóng tạm thời - chỉ trong session này
     sessionStorage.setItem(`alert-closed-${ALERT_CONFIG.id}`, "true");
     setIsClosed(true);
-    setIsVisible(false);
-    document.documentElement.style.setProperty("--alert-banner-height", "0px");
-  };
-
-  const handleDontShowAgain = () => {
-    // Đóng vĩnh viễn - lưu vào localStorage
-    localStorage.setItem(`alert-dismissed-${ALERT_CONFIG.id}`, "true");
     setIsVisible(false);
     document.documentElement.style.setProperty("--alert-banner-height", "0px");
   };
@@ -152,14 +135,6 @@ export function AlertBanner({ className }: AlertBannerProps) {
                     </a>
                   </Button>
                 )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 px-2 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                  onClick={handleDontShowAgain}
-                >
-                  Không hiển thị lại
-                </Button>
                 <Button
                   size="sm"
                   variant="ghost"

@@ -80,9 +80,9 @@ export default function HomePageClient() {
         color="light"
       />
       {/* <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)] to-transparent opacity-50 " /> */}
-      <div className="container mx-auto px-4 py-8 relative z-10 min-h-[500px] flex items-center justify-center space-y-8">
+      <div className="container mx-auto px-4 py-16 relative z-10 min-h-[500px] flex items-center justify-center space-y-8">
         <div className="w-full max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-[var(--text-primary)] border-b-2 border-[var(--primary)] pb-2 inline-block">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-[var(--text-primary)]  pb-2 inline-block">
             {PAGES.home.title}
           </h2>
           <p className="text-xl md:text-2xl text-[var(--text-secondary)] mb-8">

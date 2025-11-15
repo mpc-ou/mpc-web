@@ -49,7 +49,7 @@
 
   --l-border: #e9ecef;
   --l-input: #e9ecef;
-  --l-ring: #0066cc;
+  --l-ring: #cc6300;
 
   /* Text colors */
   --l-text-primary: #0a0a0a;
@@ -72,7 +72,7 @@
   --l-nav-border: #e9ecef;
   --l-nav-item-hover: #f8f9fa;
   --l-nav-link: #0a0a0a;
-  --l-nav-link-hover: #0066cc;
+  --l-nav-link-hover: #cc4e00;
 
   /* Footer */
   --l-footer-bg: #212529;
@@ -128,7 +128,7 @@
 
   --d-border: #343a40;
   --d-input: #343a40;
-  --d-ring: #4dabf7;
+  --d-ring: #f7914d;
 
   /* Text colors */
   --d-text-primary: #ededed;
@@ -151,7 +151,7 @@
   --d-nav-border: #343a40;
   --d-nav-item-hover: #252525;
   --d-nav-link: #ededed;
-  --d-nav-link-hover: #4dabf7;
+  --d-nav-link-hover: #f7b04d;
 
   /* Footer */
   --d-footer-bg: #0a0a0a;

@@ -310,7 +310,7 @@ export const ACHIEVEMENTS = {
 export const ABOUT = {
   intro: {
     description:
-      "CLB Máy tính và Lập trình được thành lập với mục tiêu tạo ra một môi trường học tập và phát triển cho các bạn sinh viên đam mê công nghệ. Chúng tôi cung cấp các khóa đào tạo từ cơ bản đến nâng cao, kèm theo các dự án thực tế để thành viên có thể áp dụng kiến thức đã học.",
+      "Câu lạc bộ Lập trình trên thiết bị di động (Mobile Programming Club - MPC) là một trong những câu lạc bộ hoạt động năng động, sôi nổi và đầy sáng tạo của Khoa Công nghệ thông tin - Trường Đại học Mở Tp.HCM. MPC được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app,... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình.",
   },
   training: {
     title: "Lộ trình đào tạo",

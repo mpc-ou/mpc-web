@@ -182,3 +182,18 @@ export const ALERT_CONFIG = {
   },
 } as const;
 
+// ==================== PRESIDENTS SLIDER ====================
+export const PRESIDENTS_SLIDER_CONFIG = {
+  autoPlay: true, // Bật/tắt auto-play
+  autoPlayInterval: 3000, // ms - thời gian auto-play (3 giây)
+  itemsPerView: {
+    mobile: 1, // Số items hiển thị trên mobile
+    tablet: 2, // Số items hiển thị trên tablet
+    desktop: 3, // Số items hiển thị trên desktop
+  },
+  gap: 6, // Khoảng cách giữa các items (Tailwind units)
+  loop: true, // Bật/tắt loop vô tận
+  dragEnabled: true, // Bật/tắt kéo bằng chuột (desktop)
+  swipeEnabled: true, // Bật/tắt swipe (mobile)
+} as const;
+

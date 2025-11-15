@@ -2,7 +2,8 @@
 @import "./colors.css";
 
 /* Map light colors to main variables */
-:root {
+:root,
+:root[data-theme="light"] {
   --background: var(--l-background);
   --foreground: var(--l-foreground);
 
@@ -73,76 +74,74 @@
 }
 
 /* Map dark colors to main variables */
-[data-theme="dark"] {
-  :root:not([data-theme="light"]) {
-    --background: var(--d-background);
-    --foreground: var(--d-foreground);
+:root[data-theme="dark"] {
+  --background: var(--d-background);
+  --foreground: var(--d-foreground);
 
-    --primary: var(--d-primary);
-    --primary-foreground: var(--d-primary-foreground);
-    --primary-hover: var(--d-primary-hover);
-    --primary-light: var(--d-primary-light);
+  --primary: var(--d-primary);
+  --primary-foreground: var(--d-primary-foreground);
+  --primary-hover: var(--d-primary-hover);
+  --primary-light: var(--d-primary-light);
 
-    --secondary: var(--d-secondary);
-    --secondary-foreground: var(--d-secondary-foreground);
-    --secondary-hover: var(--d-secondary-hover);
-    --secondary-light: var(--d-secondary-light);
+  --secondary: var(--d-secondary);
+  --secondary-foreground: var(--d-secondary-foreground);
+  --secondary-hover: var(--d-secondary-hover);
+  --secondary-light: var(--d-secondary-light);
 
-    --accent: var(--d-accent);
-    --accent-foreground: var(--d-accent-foreground);
-    --accent-hover: var(--d-accent-hover);
-    --accent-light: var(--d-accent-light);
+  --accent: var(--d-accent);
+  --accent-foreground: var(--d-accent-foreground);
+  --accent-hover: var(--d-accent-hover);
+  --accent-light: var(--d-accent-light);
 
-    --success: var(--d-success);
-    --success-foreground: var(--d-success-foreground);
-    --success-light: var(--d-success-light);
+  --success: var(--d-success);
+  --success-foreground: var(--d-success-foreground);
+  --success-light: var(--d-success-light);
 
-    --warning: var(--d-warning);
-    --warning-foreground: var(--d-warning-foreground);
-    --warning-light: var(--d-warning-light);
+  --warning: var(--d-warning);
+  --warning-foreground: var(--d-warning-foreground);
+  --warning-light: var(--d-warning-light);
 
-    --error: var(--d-error);
-    --error-foreground: var(--d-error-foreground);
-    --error-light: var(--d-error-light);
+  --error: var(--d-error);
+  --error-foreground: var(--d-error-foreground);
+  --error-light: var(--d-error-light);
 
-    --info: var(--d-info);
-    --info-foreground: var(--d-info-foreground);
-    --info-light: var(--d-info-light);
+  --info: var(--d-info);
+  --info-foreground: var(--d-info-foreground);
+  --info-light: var(--d-info-light);
 
-    --card: var(--d-card);
-    --card-foreground: var(--d-card-foreground);
-    --card-hover: var(--d-card-hover);
+  --card: var(--d-card);
+  --card-foreground: var(--d-card-foreground);
+  --card-hover: var(--d-card-hover);
 
-    --muted: var(--d-muted);
-    --muted-foreground: var(--d-muted-foreground);
+  --muted: var(--d-muted);
+  --muted-foreground: var(--d-muted-foreground);
 
-    --border: var(--d-border);
-    --input: var(--d-input);
-    --ring: var(--d-ring);
+  --border: var(--d-border);
+  --input: var(--d-input);
+  --ring: var(--d-ring);
 
-    --text-primary: var(--d-text-primary);
-    --text-secondary: var(--d-text-secondary);
-    --text-tertiary: var(--d-text-tertiary);
-    --text-inverse: var(--d-text-inverse);
+  --text-primary: var(--d-text-primary);
+  --text-secondary: var(--d-text-secondary);
+  --text-tertiary: var(--d-text-tertiary);
+  --text-inverse: var(--d-text-inverse);
 
-    --bg-primary: var(--d-bg-primary);
-    --bg-secondary: var(--d-bg-secondary);
-    --bg-tertiary: var(--d-bg-tertiary);
+  --bg-primary: var(--d-bg-primary);
+  --bg-secondary: var(--d-bg-secondary);
+  --bg-tertiary: var(--d-bg-tertiary);
 
-    --hero-bg: var(--d-hero-bg);
-    --hero-text: var(--d-hero-text);
+  --hero-bg: var(--d-hero-bg);
+  --hero-text: var(--d-hero-text);
 
-    --nav-bg: var(--d-nav-bg);
-    --nav-bg-blur: var(--d-nav-bg-blur);
-    --nav-border: var(--d-nav-border);
-    --nav-item-hover: var(--d-nav-item-hover);
-    --nav-link: var(--d-nav-link);
-    --nav-link-hover: var(--d-nav-link-hover);
+  --nav-bg: var(--d-nav-bg);
+  --nav-bg-blur: var(--d-nav-bg-blur);
+  --nav-border: var(--d-nav-border);
+  --nav-item-hover: var(--d-nav-item-hover);
+  --nav-link: var(--d-nav-link);
+  --nav-link-hover: var(--d-nav-link-hover);
 
-    --footer-bg: var(--d-footer-bg);
-    --footer-text: var(--d-footer-text);
-    --footer-text-hover: var(--d-footer-text-hover);
-  }
+  --footer-bg: var(--d-footer-bg);
+  --footer-text: var(--d-footer-text);
+  --footer-text-hover: var(--d-footer-text-hover);
 }
 
 @media (prefers-color-scheme: dark) {

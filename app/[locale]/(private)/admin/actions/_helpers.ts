@@ -21,19 +21,24 @@ export function generateSlug(text: string) {
 }
 
 export async function generateUniqueSlug(email: string): Promise<string> {
-  const base = email
-    .split("@")[0]
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "") || "member";
+  const base =
+    email
+      .split("@")[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "") || "member";
 
   const taken = await prisma.member.findUnique({ where: { slug: base } });
-  if (!taken) return base;
+  if (!taken) {
+    return base;
+  }
 
   for (let i = 0; i < 20; i++) {
     const suffix = Math.floor(Math.random() * 900 + 100).toString();
     const candidate = `${base}${suffix}`;
     const exists = await prisma.member.findUnique({ where: { slug: candidate } });
-    if (!exists) return candidate;
+    if (!exists) {
+      return candidate;
+    }
   }
   return `${base}${Date.now().toString().slice(-6)}`;
 }

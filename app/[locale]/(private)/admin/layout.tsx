@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { prisma } from "@/configs/prisma/db";
 import { createClientSsr } from "@/configs/supabase/server";
 import { isRootAdmin } from "@/utils/admin";
@@ -10,7 +10,7 @@ import { AdminSidebar } from "./sidebar";
 async function AdminLayoutInner({ children }: { children: ReactNode }) {
   const supabase = await createClientSsr();
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
 
   if (!user) {
@@ -24,8 +24,8 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
       firstName: true,
       lastName: true,
       avatar: true,
-      email: true,
-    },
+      email: true
+    }
   });
 
   if (!member) {
@@ -35,7 +35,7 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
   if (isRootAdmin(member.email) && member.webRole !== "ADMIN") {
     await prisma.member.update({
       where: { authId: user.id },
-      data: { webRole: "ADMIN" },
+      data: { webRole: "ADMIN" }
     });
     member = { ...member, webRole: "ADMIN" };
   }
@@ -47,17 +47,11 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
   const memberName = `${member.firstName} ${member.lastName}`;
 
   return (
-    <div className="flex h-screen flex-col">
-      <AdminHeader
-        memberAvatar={member.avatar}
-        memberName={memberName}
-        memberRole={member.webRole}
-      />
-      <div className="flex flex-1 overflow-hidden">
+    <div className='flex h-screen flex-col'>
+      <AdminHeader memberAvatar={member.avatar} memberName={memberName} memberRole={member.webRole} />
+      <div className='flex flex-1 overflow-hidden'>
         <AdminSidebar memberAvatar={member.avatar} memberName={memberName} />
-        <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
-          {children}
-        </main>
+        <main className='flex-1 overflow-y-auto bg-muted/30 p-6'>{children}</main>
       </div>
     </div>
   );

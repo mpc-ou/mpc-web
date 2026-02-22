@@ -20,13 +20,17 @@ async function generateUniqueSlug(email: string): Promise<string> {
       .replace(/[^a-z0-9]/g, "") || "member";
 
   const taken = await prisma.member.findUnique({ where: { slug: base } });
-  if (!taken) return base;
+  if (!taken) {
+    return base;
+  }
 
   for (let i = 0; i < 20; i++) {
     const suffix = Math.floor(Math.random() * 900 + 100).toString();
     const candidate = `${base}${suffix}`;
     const exists = await prisma.member.findUnique({ where: { slug: candidate } });
-    if (!exists) return candidate;
+    if (!exists) {
+      return candidate;
+    }
   }
   return `${base}${Date.now().toString().slice(-6)}`;
 }
@@ -41,16 +45,20 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
   if (meta.given_name ?? meta.family_name) {
     return {
       firstName: (meta.family_name ?? "").trim(),
-      lastName: (meta.given_name ?? "").trim(),
+      lastName: (meta.given_name ?? "").trim()
     };
   }
   const full = (meta.full_name ?? meta.name ?? "").trim();
-  if (!full) return { firstName: "", lastName: "" };
+  if (!full) {
+    return { firstName: "", lastName: "" };
+  }
   const parts = full.split(/\s+/);
-  if (parts.length === 1) return { firstName: "", lastName: parts[0] };
+  if (parts.length === 1) {
+    return { firstName: "", lastName: parts[0] };
+  }
   return {
     firstName: parts.slice(0, -1).join(" "),
-    lastName: parts.at(-1) ?? "",
+    lastName: parts.at(-1) ?? ""
   };
 }
 
@@ -68,7 +76,9 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
  *     - Create member record with GUEST role, data from Google
  */
 async function syncMemberFromGoogle(user: User): Promise<void> {
-  if (!user.email) return;
+  if (!user.email) {
+    return;
+  }
 
   const meta = (user.user_metadata ?? {}) as Record<string, string>;
   const googleAvatar = meta.avatar_url ?? meta.picture ?? null;
@@ -113,8 +123,8 @@ async function syncMemberFromGoogle(user: User): Promise<void> {
       avatar: googleAvatar ?? undefined,
       slug,
       webRole: "GUEST",
-      createdBy: null, // self-registered via Google
-    },
+      createdBy: null // self-registered via Google
+    }
   });
 }
 
@@ -134,7 +144,7 @@ export async function GET(request: Request) {
     if (!error) {
       // Sync member profile from Google metadata
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
 
       if (user) {
@@ -149,8 +159,12 @@ export async function GET(request: Request) {
       const forwardedHost = request.headers.get("x-forwarded-host");
       const isLocalEnv = process.env.NODE_ENV === "development";
 
-      if (isLocalEnv) return NextResponse.redirect(`${origin}${next}`);
-      if (forwardedHost) return NextResponse.redirect(`http://${forwardedHost}${next}`);
+      if (isLocalEnv) {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+      if (forwardedHost) {
+        return NextResponse.redirect(`http://${forwardedHost}${next}`);
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

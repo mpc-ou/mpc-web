@@ -11,21 +11,21 @@ interface DataTablePaginationProps<TData> {
 
 export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-muted-foreground text-sm">
+    <div className='flex items-center justify-between px-2'>
+      <div className='flex-1 text-muted-foreground text-sm'>
         {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length} hàng được chọn
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <p className="font-medium text-sm">Hiển thị</p>
+      <div className='flex items-center space-x-6 lg:space-x-8'>
+        <div className='flex items-center space-x-2'>
+          <p className='font-medium text-sm'>Hiển thị</p>
           <Select
             onValueChange={(value) => table.setPageSize(Number(value))}
             value={`${table.getState().pagination.pageSize}`}
           >
-            <SelectTrigger className="h-8 w-[70px]">
+            <SelectTrigger className='h-8 w-[70px]'>
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
-            <SelectContent side="top">
+            <SelectContent side='top'>
               {[10, 20, 30, 50].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
@@ -34,43 +34,43 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center font-medium text-sm">
+        <div className='flex w-[100px] items-center justify-center font-medium text-sm'>
           Trang {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
         </div>
-        <div className="flex items-center space-x-2">
+        <div className='flex items-center space-x-2'>
           <Button
-            className="hidden size-8 lg:flex"
+            className='hidden size-8 lg:flex'
             disabled={!table.getCanPreviousPage()}
             onClick={() => table.setPageIndex(0)}
-            size="icon"
-            variant="outline"
+            size='icon'
+            variant='outline'
           >
             <ChevronsLeft />
           </Button>
           <Button
-            className="size-8"
+            className='size-8'
             disabled={!table.getCanPreviousPage()}
             onClick={() => table.previousPage()}
-            size="icon"
-            variant="outline"
+            size='icon'
+            variant='outline'
           >
             <ChevronLeft />
           </Button>
           <Button
-            className="size-8"
+            className='size-8'
             disabled={!table.getCanNextPage()}
             onClick={() => table.nextPage()}
-            size="icon"
-            variant="outline"
+            size='icon'
+            variant='outline'
           >
             <ChevronRight />
           </Button>
           <Button
-            className="hidden size-8 lg:flex"
+            className='hidden size-8 lg:flex'
             disabled={!table.getCanNextPage()}
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            size="icon"
-            variant="outline"
+            size='icon'
+            variant='outline'
           >
             <ChevronsRight />
           </Button>

@@ -1,5 +1,5 @@
-import { Suspense } from "react";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { PageLayout } from "@/components/custom/PageLayout";
 
 export default function MainLayout({ children }: { children: ReactNode }) {

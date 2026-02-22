@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,7 +35,7 @@ export function DeptFormDialog({ open, onOpenChange, dept }: Props) {
       name: fd.get("name") as string,
       slug: fd.get("slug") as string,
       description: (fd.get("description") as string) || undefined,
-      order: Number(fd.get("order")) || 0,
+      order: Number(fd.get("order")) || 0
     };
     const res = await adminCreateDepartment(payload);
     if (res.error) {
@@ -49,64 +49,40 @@ export function DeptFormDialog({ open, onOpenChange, dept }: Props) {
 
   return (
     <Dialog key={dept?.id ?? "new"} onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className='sm:max-w-[480px]'>
         <DialogHeader>
           <DialogTitle>{isEdit ? "Chỉnh sửa ban" : "Thêm ban mới"}</DialogTitle>
           <DialogDescription>
-            {isEdit
-              ? "Cập nhật thông tin ban."
-              : "Tạo một ban mới trong câu lạc bộ."}
+            {isEdit ? "Cập nhật thông tin ban." : "Tạo một ban mới trong câu lạc bộ."}
           </DialogDescription>
         </DialogHeader>
-        <form
-          className="grid gap-4 py-4"
-          id="dept-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Tên ban *</Label>
-              <Input
-                defaultValue={dept?.name}
-                id="name"
-                name="name"
-                placeholder="Ban Lập trình"
-                required
-              />
+        <form className='grid gap-4 py-4' id='dept-form' onSubmit={handleSubmit}>
+          <div className='grid grid-cols-2 gap-4'>
+            <div className='grid gap-2'>
+              <Label htmlFor='name'>Tên ban *</Label>
+              <Input defaultValue={dept?.name} id='name' name='name' placeholder='Ban Lập trình' required />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="slug">Slug *</Label>
-              <Input
-                defaultValue={dept?.slug}
-                id="slug"
-                name="slug"
-                placeholder="programming"
-                required
-              />
+            <div className='grid gap-2'>
+              <Label htmlFor='slug'>Slug *</Label>
+              <Input defaultValue={dept?.slug} id='slug' name='slug' placeholder='programming' required />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description">Mô tả</Label>
+          <div className='grid gap-2'>
+            <Label htmlFor='description'>Mô tả</Label>
             <Input
               defaultValue={dept?.description ?? ""}
-              id="description"
-              name="description"
-              placeholder="Mô tả về ban (tùy chọn)"
+              id='description'
+              name='description'
+              placeholder='Mô tả về ban (tùy chọn)'
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="order">Thứ tự</Label>
-            <Input
-              defaultValue={dept?.order ?? 0}
-              id="order"
-              name="order"
-              placeholder="0"
-              type="number"
-            />
+          <div className='grid gap-2'>
+            <Label htmlFor='order'>Thứ tự</Label>
+            <Input defaultValue={dept?.order ?? 0} id='order' name='order' placeholder='0' type='number' />
           </div>
         </form>
         <DialogFooter>
-          <Button disabled={loading} form="dept-form" type="submit">
+          <Button disabled={loading} form='dept-form' type='submit'>
             {loading ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Thêm"}
           </Button>
         </DialogFooter>

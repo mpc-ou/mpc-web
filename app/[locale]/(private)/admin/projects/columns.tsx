@@ -5,7 +5,12 @@ import { ArrowUpDown, ExternalLink, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 export type ProjectRow = {
@@ -32,14 +37,16 @@ export const createColumns = (
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant="ghost">
-        Dự án <ArrowUpDown className="ml-2 h-4 w-4" />
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+        Dự án <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => (
       <div>
-        <div className="max-w-[200px] truncate font-medium">{row.original.title}</div>
-        {row.original.description && <div className="max-w-[200px] truncate text-muted-foreground text-xs">{row.original.description}</div>}
+        <div className='max-w-[200px] truncate font-medium'>{row.original.title}</div>
+        {row.original.description && (
+          <div className='max-w-[200px] truncate text-muted-foreground text-xs'>{row.original.description}</div>
+        )}
       </div>
     )
   },
@@ -48,11 +55,21 @@ export const createColumns = (
     header: "Công nghệ",
     cell: ({ row }) => {
       const techs = row.original.technologies ?? [];
-      if (!techs.length) return <span className="text-muted-foreground">—</span>;
+      if (!techs.length) {
+        return <span className='text-muted-foreground'>—</span>;
+      }
       return (
-        <div className="flex flex-wrap gap-1">
-          {techs.slice(0, 3).map((t) => <Badge className="text-[10px]" key={t} variant="outline">{t}</Badge>)}
-          {techs.length > 3 && <Badge className="text-[10px]" variant="outline">+{techs.length - 3}</Badge>}
+        <div className='flex flex-wrap gap-1'>
+          {techs.slice(0, 3).map((t) => (
+            <Badge className='text-[10px]' key={t} variant='outline'>
+              {t}
+            </Badge>
+          ))}
+          {techs.length > 3 && (
+            <Badge className='text-[10px]' variant='outline'>
+              +{techs.length - 3}
+            </Badge>
+          )}
         </div>
       );
     }
@@ -66,12 +83,21 @@ export const createColumns = (
         p.githubUrl && { label: "GitHub", url: p.githubUrl },
         p.websiteUrl && { label: "Web", url: p.websiteUrl }
       ].filter(Boolean) as { label: string; url: string }[];
-      if (!links.length) return <span className="text-muted-foreground">—</span>;
+      if (!links.length) {
+        return <span className='text-muted-foreground'>—</span>;
+      }
       return (
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           {links.map((l) => (
-            <a className="inline-flex items-center gap-1 text-primary text-xs hover:underline" href={l.url} key={l.label} rel="noopener" target="_blank">
-              <ExternalLink className="h-3 w-3" />{l.label}
+            <a
+              className='inline-flex items-center gap-1 text-primary text-xs hover:underline'
+              href={l.url}
+              key={l.label}
+              rel='noopener'
+              target='_blank'
+            >
+              <ExternalLink className='h-3 w-3' />
+              {l.label}
             </a>
           ))}
         </div>
@@ -81,7 +107,7 @@ export const createColumns = (
   {
     id: "memberCount",
     header: "Thành viên",
-    cell: ({ row }) => <span className="text-sm">{row.original.members.length || "—"}</span>
+    cell: ({ row }) => <span className='text-sm'>{row.original.members.length || "—"}</span>
   },
   {
     accessorKey: "isActive",
@@ -99,13 +125,17 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button>
+            <Button className='h-8 w-8 p-0' variant='ghost'>
+              <MoreHorizontal className='h-4 w-4' />
+            </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => onEdit(p)}>Chỉnh sửa</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive" onClick={() => onDelete(p.id)}>Xóa</DropdownMenuItem>
+            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(p.id)}>
+              Xóa
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -19,7 +19,7 @@ export const POSITION_LABELS: Record<string, string> = {
   DEPARTMENT_VICE_LEADER: "Phó ban",
   DEPARTMENT_MEMBER: "Thành viên ban",
   COLLABORATOR: "Cộng tác viên",
-  ADVISOR: "Cố vấn",
+  ADVISOR: "Cố vấn"
 };
 
 export const PLATFORMS = [
@@ -34,5 +34,5 @@ export const PLATFORMS = [
   { value: "Pixiv", label: "Pixiv", icon: "🎨" },
   { value: "Zalo", label: "Zalo", icon: "💬" },
   { value: "Email", label: "Email", icon: "✉️" },
-  { value: "Website", label: "Website / Khác", icon: "🌐" },
+  { value: "Website", label: "Website / Khác", icon: "🌐" }
 ];

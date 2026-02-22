@@ -1,14 +1,14 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { adminDeleteDepartment } from "../actions";
-import { type DeptRow, createColumns } from "./columns";
+import { createColumns, type DeptRow } from "./columns";
 import { DeptFormDialog } from "./form-dialog";
 
 export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
@@ -26,13 +26,14 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa ban?",
-      description:
-        "Hành động này không thể hoàn tác. Các vai trò thuộc ban này cũng sẽ bị ảnh hưởng.",
+      description: "Hành động này không thể hoàn tác. Các vai trò thuộc ban này cũng sẽ bị ảnh hưởng."
     });
-    if (!ok) return;
+    if (!ok) {
+      return;
+    }
     await handleErrorClient({
       cb: () => adminDeleteDepartment(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
 
@@ -50,13 +51,13 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
         columns={columns}
         data={data}
         filterComponent={
-          <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
-            <Plus className="mr-2 h-4 w-4" />
+          <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
+            <Plus className='mr-2 h-4 w-4' />
             Thêm ban
           </Button>
         }
-        searchKey="name"
-        searchPlaceholder="Tìm theo tên..."
+        searchKey='name'
+        searchPlaceholder='Tìm theo tên...'
       />
       <DeptFormDialog
         dept={editDept}

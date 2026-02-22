@@ -9,15 +9,19 @@ type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  if (slug === "me") return { title: "Trang cá nhân" };
+  if (slug === "me") {
+    return { title: "Trang cá nhân" };
+  }
   const { member } = await getMemberBySlug(slug);
-  if (!member) return { title: "Không tìm thấy" };
+  if (!member) {
+    return { title: "Không tìm thấy" };
+  }
   return {
     title: `${member.firstName} ${member.lastName} — MPC`,
-    description: member.bio ?? `Hồ sơ thành viên MPC`,
+    description: member.bio ?? "Hồ sơ thành viên MPC",
     openGraph: {
-      images: member.avatar ? [member.avatar] : [],
-    },
+      images: member.avatar ? [member.avatar] : []
+    }
   };
 }
 
@@ -28,7 +32,7 @@ export default async function MemberProfilePage({ params }: Props) {
   if (slug === "me") {
     const supabase = await createClientSsr();
     const {
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -37,7 +41,7 @@ export default async function MemberProfilePage({ params }: Props) {
 
     const member = await prisma.member.findUnique({
       where: { authId: user.id },
-      select: { slug: true },
+      select: { slug: true }
     });
 
     if (!member?.slug) {
@@ -48,13 +52,9 @@ export default async function MemberProfilePage({ params }: Props) {
   }
 
   const { member } = await getMemberBySlug(slug);
-  if (!member) notFound();
+  if (!member) {
+    notFound();
+  }
 
-  return (
-    <ProfilePageClient
-      member={
-        member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]
-      }
-    />
-  );
+  return <ProfilePageClient member={member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]} />;
 }

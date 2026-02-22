@@ -2,23 +2,19 @@
 // Import from "../actions" still works (resolves to actions/index.ts)
 
 export {
-  adminAddClubRole,
-  adminAddMember,
-  adminDeleteMember,
-  adminGetMemberClubRoles,
-  adminGetMembers,
-  adminRemoveClubRole,
-  adminUpdateMember,
-  adminUpdateMemberRole
-} from "./members";
+  adminCreateAchievement,
+  adminDeleteAchievement,
+  adminGetAchievements,
+  adminLinkAchievementMember,
+  adminUnlinkAchievementMember,
+  adminUpdateAchievement
+} from "./achievements";
 export {
   adminCreateAnnouncement,
   adminDeleteAnnouncement,
   adminGetAnnouncements,
   adminUpdateAnnouncement
 } from "./announcements";
-export { adminCreateEvent, adminDeleteEvent, adminGetEvents, adminUpdateEvent } from "./events";
-export { adminCreatePost, adminDeletePost, adminGetPosts, adminUpdatePost, adminUpdatePostStatus } from "./posts";
 export {
   adminCreateFaqItem,
   adminCreateGalleryImage,
@@ -32,17 +28,20 @@ export {
   adminUpsertHomepageSection,
   adminUpsertSetting
 } from "./content";
-export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";
-export { adminCreateDepartment, adminDeleteDepartment, adminGetDepartments } from "./departments";
 export { adminGetDashboardStats } from "./dashboard";
+export { adminCreateDepartment, adminDeleteDepartment, adminGetDepartments } from "./departments";
+export { adminCreateEvent, adminDeleteEvent, adminGetEvents, adminUpdateEvent } from "./events";
 export {
-  adminCreateAchievement,
-  adminDeleteAchievement,
-  adminGetAchievements,
-  adminLinkAchievementMember,
-  adminUnlinkAchievementMember,
-  adminUpdateAchievement
-} from "./achievements";
+  adminAddClubRole,
+  adminAddMember,
+  adminDeleteMember,
+  adminGetMemberClubRoles,
+  adminGetMembers,
+  adminRemoveClubRole,
+  adminUpdateMember,
+  adminUpdateMemberRole
+} from "./members";
+export { adminCreatePost, adminDeletePost, adminGetPosts, adminUpdatePost, adminUpdatePostStatus } from "./posts";
 export {
   adminCreateProject,
   adminDeleteProject,
@@ -51,3 +50,4 @@ export {
   adminUnlinkProjectMember,
   adminUpdateProject
 } from "./projects";
+export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";

@@ -19,7 +19,9 @@ const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<R
     const res = await cb({});
     return SuccessResponse({ payload: res });
   } catch (error) {
-    if (isInternalCancelError(error)) throw error;
+    if (isInternalCancelError(error)) {
+      throw error;
+    }
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }
@@ -43,7 +45,9 @@ const handleErrorServerWithAuth = async ({ cb }: HandleErrorServerType): Promise
     const res = await cb({ user: data.user });
     return SuccessResponse({ payload: res });
   } catch (error) {
-    if (isInternalCancelError(error)) throw error;
+    if (isInternalCancelError(error)) {
+      throw error;
+    }
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }

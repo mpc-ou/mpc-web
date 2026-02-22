@@ -27,15 +27,15 @@ export async function uploadToStorage(file: File, bucket: string, folder?: strin
     if (error.message.includes("Bucket not found")) {
       throw new Error(
         `Bucket "${bucket}" is not found.\n` +
-        `Please create bucket "${bucket}" in Supabase Dashboard → Storage → New bucket (Public).`
+          `Please create bucket "${bucket}" in Supabase Dashboard → Storage → New bucket (Public).`
       );
     }
     if (error.message.includes("row-level security") || error.message.includes("Unauthorized")) {
       throw new Error(
         `No permission to upload to bucket "${bucket}".\n` +
-        `Please configure policies in Supabase Dashboard → Storage → Policies → bucket "${bucket}" → add:\n` +
-        `  INSERT: auth.role() = 'authenticated'\n` +
-        `  SELECT: true`
+          `Please configure policies in Supabase Dashboard → Storage → Policies → bucket "${bucket}" → add:\n` +
+          `  INSERT: auth.role() = 'authenticated'\n` +
+          "  SELECT: true"
       );
     }
     throw new Error(`Upload failed: ${error.message}`);

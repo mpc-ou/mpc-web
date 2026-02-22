@@ -7,8 +7,8 @@ export default async function AdminSponsorsPage() {
   const sponsors = (data?.payload ?? []) as SponsorRow[];
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="font-bold text-2xl text-foreground">💝 Quản lý Nhà tài trợ</h1>
+    <div className='flex flex-col gap-6'>
+      <h1 className='font-bold text-2xl text-foreground'>💝 Quản lý Nhà tài trợ</h1>
       <SponsorsDataTable data={sponsors} />
     </div>
   );

@@ -76,7 +76,7 @@ export const adminAddMember = async (data: {
           lastName: data.lastName,
           webRole: data.webRole ?? "MEMBER",
           createdBy: admin.id,
-          slug,
+          slug
         }
       });
       revalidateTag(_CACHE_MEMBERS, "default");
@@ -104,7 +104,9 @@ export const adminUpdateMember = async (
     cb: async ({ user }) => {
       const admin = await requireAdmin(user);
       const target = await prisma.member.findUnique({ where: { id: memberId } });
-      if (!target) throw new Error("Member not found");
+      if (!target) {
+        throw new Error("Member not found");
+      }
       if (isRootAdmin(target.email) && !isRootAdmin(admin.email)) {
         throw new Error("Cannot modify root admin");
       }
@@ -122,7 +124,7 @@ export const adminUpdateMember = async (
           throw new Error("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới");
         }
         const slugTaken = await prisma.member.findFirst({
-          where: { slug, id: { not: memberId } },
+          where: { slug, id: { not: memberId } }
         });
         if (slugTaken) {
           throw new Error("Slug đã được sử dụng bởi thành viên khác");
@@ -172,7 +174,14 @@ export const adminAddClubRole = async (
       const role = await prisma.clubRole.create({
         data: {
           memberId,
-          position: data.position as "PRESIDENT" | "VICE_PRESIDENT" | "DEPARTMENT_LEADER" | "DEPARTMENT_VICE_LEADER" | "DEPARTMENT_MEMBER" | "COLLABORATOR" | "ADVISOR",
+          position: data.position as
+            | "PRESIDENT"
+            | "VICE_PRESIDENT"
+            | "DEPARTMENT_LEADER"
+            | "DEPARTMENT_VICE_LEADER"
+            | "DEPARTMENT_MEMBER"
+            | "COLLABORATOR"
+            | "ADVISOR",
           departmentId: data.departmentId || null,
           term: data.term || null,
           startAt: new Date(data.startAt),
@@ -194,4 +203,3 @@ export const adminRemoveClubRole = async (roleId: string) =>
       return { success: true };
     }
   });
-

@@ -7,14 +7,10 @@ export default async function AdminDepartmentsPage() {
   const departments = (data?.payload ?? []) as DeptRow[];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className='flex flex-col gap-6'>
       <div>
-        <h1 className="font-bold text-2xl text-foreground">
-          🏢 Quản lý Các ban
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          {departments.length} ban
-        </p>
+        <h1 className='font-bold text-2xl text-foreground'>🏢 Quản lý Các ban</h1>
+        <p className='text-muted-foreground text-sm'>{departments.length} ban</p>
       </div>
       <DepartmentsDataTable data={departments} />
     </div>

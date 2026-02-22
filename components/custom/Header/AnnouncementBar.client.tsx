@@ -49,18 +49,16 @@ const AnnouncementBar = ({ announcement }: Props) => {
 
   return (
     <div
-      className="relative flex items-center justify-between gap-3 px-4 py-2 text-sm text-white"
+      className='relative flex items-center justify-between gap-3 px-4 py-2 text-sm text-white'
       style={{
-        background:
-          announcement.bgColor ??
-          "linear-gradient(90deg, #1d4ed8 0%, #f97316 100%)",
+        background: announcement.bgColor ?? "linear-gradient(90deg, #1d4ed8 0%, #f97316 100%)"
       }}
     >
-      <div className="flex flex-1 items-center justify-center gap-3 text-center">
-        <span className="font-medium leading-snug">{announcement.content}</span>
+      <div className='flex flex-1 items-center justify-center gap-3 text-center'>
+        <span className='font-medium leading-snug'>{announcement.content}</span>
         {announcement.linkUrl && (
           <Link
-            className="shrink-0 rounded-full bg-white px-3 py-0.5 font-semibold text-orange-600 text-xs transition-opacity hover:opacity-90"
+            className='shrink-0 rounded-full bg-white px-3 py-0.5 font-semibold text-orange-600 text-xs transition-opacity hover:opacity-90'
             href={announcement.linkUrl as "/"}
           >
             {announcement.linkLabel ?? t("registerNow")}
@@ -69,11 +67,11 @@ const AnnouncementBar = ({ announcement }: Props) => {
       </div>
       <button
         aria-label={t("dismiss")}
-        className="shrink-0 rounded-full p-1 transition-colors hover:bg-white/20"
+        className='shrink-0 rounded-full p-1 transition-colors hover:bg-white/20'
         onClick={handleDismiss}
-        type="button"
+        type='button'
       >
-        <X className="h-4 w-4" />
+        <X className='h-4 w-4' />
       </button>
     </div>
   );

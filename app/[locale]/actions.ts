@@ -133,20 +133,18 @@ const getHeaderProfile = async () =>
           lastName: true,
           avatar: true,
           webRole: true,
-          slug: true,
-        },
+          slug: true
+        }
       });
 
       return {
-        fullName: member
-          ? `${member.firstName} ${member.lastName}`
-          : user?.user_metadata.full_name ?? null,
+        fullName: member ? `${member.firstName} ${member.lastName}` : (user?.user_metadata.full_name ?? null),
         avatarUrl: member?.avatar ?? user?.user_metadata.avatar_url ?? null,
         isAdmin: member?.webRole === "ADMIN",
         webRole: member?.webRole ?? "GUEST",
-        slug: member?.slug ?? null,
+        slug: member?.slug ?? null
       };
-    },
+    }
   });
 
 export {

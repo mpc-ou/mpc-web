@@ -41,33 +41,33 @@ export const createColumns = (
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant="ghost">
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
         Sự kiện
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => (
       <div>
-        <div className="font-medium">{row.original.title}</div>
-        {row.original.location && <div className="text-muted-foreground text-xs">📍 {row.original.location}</div>}
+        <div className='font-medium'>{row.original.title}</div>
+        {row.original.location && <div className='text-muted-foreground text-xs'>📍 {row.original.location}</div>}
       </div>
     )
   },
   {
     accessorKey: "startAt",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant="ghost">
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
         Thời gian
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => {
       const start = new Date(row.original.startAt);
       const end = row.original.endAt ? new Date(row.original.endAt) : null;
       return (
-        <div className="text-xs">
+        <div className='text-xs'>
           <div>{start.toLocaleDateString("vi-VN")}</div>
-          {end && <div className="text-muted-foreground">→ {end.toLocaleDateString("vi-VN")}</div>}
+          {end && <div className='text-muted-foreground'>→ {end.toLocaleDateString("vi-VN")}</div>}
         </div>
       );
     }
@@ -87,7 +87,13 @@ export const createColumns = (
     header: "Người tạo",
     cell: ({ row }) => {
       const c = row.original.creator;
-      return c ? <span className="text-sm">{c.firstName} {c.lastName}</span> : <span className="text-muted-foreground">—</span>;
+      return c ? (
+        <span className='text-sm'>
+          {c.firstName} {c.lastName}
+        </span>
+      ) : (
+        <span className='text-muted-foreground'>—</span>
+      );
     }
   },
   {
@@ -97,15 +103,15 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button className='h-8 w-8 p-0' variant='ghost'>
+              <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => onEdit(event)}>Chỉnh sửa</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive" onClick={() => onDelete(event.id)}>
+            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(event.id)}>
               Xóa sự kiện
             </DropdownMenuItem>
           </DropdownMenuContent>

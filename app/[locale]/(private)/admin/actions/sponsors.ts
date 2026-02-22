@@ -53,7 +53,15 @@ export const adminCreateSponsor = async (data: {
 
 export const adminUpdateSponsor = async (
   id: string,
-  data: { name?: string; website?: string; email?: string; phone?: string; description?: string; logo?: string; isActive?: boolean }
+  data: {
+    name?: string;
+    website?: string;
+    email?: string;
+    phone?: string;
+    description?: string;
+    logo?: string;
+    isActive?: boolean;
+  }
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {

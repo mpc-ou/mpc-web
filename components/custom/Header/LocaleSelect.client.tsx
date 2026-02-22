@@ -9,7 +9,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname, useRouter } from "@/configs/i18n/routing";
@@ -17,7 +17,7 @@ import type { locale } from "@/types/global";
 
 const LOCALES = [
   { value: "en", flag: "/images/flags/en.svg" },
-  { value: "vi", flag: "/images/flags/vi.svg" },
+  { value: "vi", flag: "/images/flags/vi.svg" }
 ] as const;
 
 const LocaleSelect = () => {
@@ -36,41 +36,35 @@ const LocaleSelect = () => {
   };
 
   if (isPending) {
-    return <Skeleton className="h-10 w-10 rounded-md border-2" />;
+    return <Skeleton className='h-10 w-10 rounded-md border-2' />;
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline" type="button">
+        <Button size='icon' type='button' variant='outline'>
           {currentLocale ? (
             <Image
-              src={currentLocale.flag}
               alt={t(currentLocale.value)}
-              width={20}
+              className='rounded-sm'
               height={20}
-              className="rounded-sm"
+              src={currentLocale.flag}
+              width={20}
             />
           ) : (
-            <Globe className="h-[1.2rem] w-[1.2rem]" />
+            <Globe className='h-[1.2rem] w-[1.2rem]' />
           )}
-          <span className="sr-only">{t("select")}</span>
+          <span className='sr-only'>{t("select")}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align='end'>
         {LOCALES.map((l) => (
           <DropdownMenuItem
+            className={locale === l.value ? "bg-accent" : ""}
             key={l.value}
             onClick={() => handleChangeLocale(l.value)}
-            className={locale === l.value ? "bg-accent" : ""}
           >
-            <Image
-              src={l.flag}
-              alt={t(l.value)}
-              width={20}
-              height={20}
-              className="mr-2 rounded-sm"
-            />
+            <Image alt={t(l.value)} className='mr-2 rounded-sm' height={20} src={l.flag} width={20} />
             {t(l.value)}
           </DropdownMenuItem>
         ))}

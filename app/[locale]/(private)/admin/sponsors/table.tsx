@@ -1,14 +1,14 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { adminDeleteSponsor } from "../actions";
-import { type SponsorRow, createColumns } from "./columns";
+import { createColumns, type SponsorRow } from "./columns";
 import { SponsorFormDialog } from "./form-dialog";
 
 export function SponsorsDataTable({ data }: { data: SponsorRow[] }) {
@@ -25,12 +25,14 @@ export function SponsorsDataTable({ data }: { data: SponsorRow[] }) {
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa nhà tài trợ?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
-    if (!ok) return;
+    if (!ok) {
+      return;
+    }
     await handleErrorClient({
       cb: () => adminDeleteSponsor(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
   const handleCreate = () => {
@@ -46,13 +48,13 @@ export function SponsorsDataTable({ data }: { data: SponsorRow[] }) {
         columns={columns}
         data={data}
         filterComponent={
-          <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
-            <Plus className="mr-2 h-4 w-4" />
+          <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
+            <Plus className='mr-2 h-4 w-4' />
             Thêm nhà tài trợ
           </Button>
         }
-        searchKey="name"
-        searchPlaceholder="Tìm theo tên..."
+        searchKey='name'
+        searchPlaceholder='Tìm theo tên...'
       />
       <SponsorFormDialog
         onOpenChange={(open) => {

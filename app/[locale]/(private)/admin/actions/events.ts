@@ -58,7 +58,16 @@ export const adminCreateEvent = async (data: {
 
 export const adminUpdateEvent = async (
   id: string,
-  data: { title?: string; description?: string; content?: string; thumbnail?: string | null; location?: string; status?: string; startAt?: string; endAt?: string | null }
+  data: {
+    title?: string;
+    description?: string;
+    content?: string;
+    thumbnail?: string | null;
+    location?: string;
+    status?: string;
+    startAt?: string;
+    endAt?: string | null;
+  }
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {

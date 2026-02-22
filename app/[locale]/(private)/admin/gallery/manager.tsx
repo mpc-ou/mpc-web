@@ -1,8 +1,8 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,12 +62,10 @@ export function GalleryManager({ images }: { images: GalleryImage[] }) {
       const res = await adminCreateGalleryImage({
         url,
         caption: (fd.get("caption") as string) || undefined,
-        order: Number(fd.get("order")) || 0,
+        order: Number(fd.get("order")) || 0
       });
       if (res.error) {
-        setUploadError(
-          typeof res.error === "string" ? res.error : "Upload thất bại",
-        );
+        setUploadError(typeof res.error === "string" ? res.error : "Upload thất bại");
         return;
       }
       setDialogOpen(false);
@@ -83,12 +81,14 @@ export function GalleryManager({ images }: { images: GalleryImage[] }) {
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa ảnh?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
-    if (!ok) return;
+    if (!ok) {
+      return;
+    }
     await handleErrorClient({
       cb: () => adminDeleteGalleryImage(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
 
@@ -101,92 +101,70 @@ export function GalleryManager({ images }: { images: GalleryImage[] }) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       <ConfirmDialog />
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">{images.length} ảnh</p>
-        <Button onClick={() => setDialogOpen(true)} size="sm">
-          <Plus className="mr-2 h-4 w-4" />
+      <div className='flex items-center justify-between'>
+        <p className='text-muted-foreground text-sm'>{images.length} ảnh</p>
+        <Button onClick={() => setDialogOpen(true)} size='sm'>
+          <Plus className='mr-2 h-4 w-4' />
           Thêm ảnh
         </Button>
       </div>
 
       {/* Upload dialog */}
       <Dialog onOpenChange={handleOpenChange} open={dialogOpen}>
-        <DialogContent className="sm:max-w-[480px]">
+        <DialogContent className='sm:max-w-[480px]'>
           <DialogHeader>
             <DialogTitle>Upload ảnh mới</DialogTitle>
-            <DialogDescription>
-              Chọn ảnh từ máy tính để thêm vào gallery.
-            </DialogDescription>
+            <DialogDescription>Chọn ảnh từ máy tính để thêm vào gallery.</DialogDescription>
           </DialogHeader>
-          <form
-            className="grid gap-4 py-4"
-            id="gallery-form"
-            onSubmit={handleUpload}
-          >
+          <form className='grid gap-4 py-4' id='gallery-form' onSubmit={handleUpload}>
             {/* Drop zone */}
             <div
-              className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-6 transition-colors hover:border-primary/50 hover:bg-muted/30"
+              className='flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-border border-dashed p-6 transition-colors hover:border-primary/50 hover:bg-muted/30'
               onClick={() => fileRef.current?.click()}
               onKeyDown={(e) => {
-                if (e.key === "Enter") fileRef.current?.click();
+                if (e.key === "Enter") {
+                  fileRef.current?.click();
+                }
               }}
-              role="button"
+              role='button'
               tabIndex={0}
             >
               {preview ? (
-                <img
-                  alt="Preview"
-                  className="max-h-48 rounded-lg object-contain"
-                  src={preview}
-                />
+                <img alt='Preview' className='max-h-48 rounded-lg object-contain' src={preview} />
               ) : (
                 <>
-                  <span className="text-4xl">📷</span>
-                  <p className="text-muted-foreground text-sm">
-                    Click để chọn ảnh
-                  </p>
-                  <p className="text-muted-foreground/60 text-xs">
-                    PNG, JPG, WEBP — tối đa 5MB
-                  </p>
+                  <span className='text-4xl'>📷</span>
+                  <p className='text-muted-foreground text-sm'>Click để chọn ảnh</p>
+                  <p className='text-muted-foreground/60 text-xs'>PNG, JPG, WEBP — tối đa 5MB</p>
                 </>
               )}
             </div>
             <input
-              title="Chọn ảnh để upload"
-              accept="image/*"
-              className="hidden"
+              accept='image/*'
+              className='hidden'
               onChange={handleFileChange}
               ref={fileRef}
-              type="file"
+              title='Chọn ảnh để upload'
+              type='file'
             />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="caption">Caption</Label>
-                <Input
-                  id="caption"
-                  name="caption"
-                  placeholder="Mô tả ảnh (tùy chọn)"
-                />
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='grid gap-2'>
+                <Label htmlFor='caption'>Caption</Label>
+                <Input id='caption' name='caption' placeholder='Mô tả ảnh (tùy chọn)' />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="order">Thứ tự</Label>
-                <Input defaultValue="0" id="order" name="order" type="number" />
+              <div className='grid gap-2'>
+                <Label htmlFor='order'>Thứ tự</Label>
+                <Input defaultValue='0' id='order' name='order' type='number' />
               </div>
             </div>
-            {uploadError && (
-              <p className="text-destructive text-sm">{uploadError}</p>
-            )}
+            {uploadError && <p className='text-destructive text-sm'>{uploadError}</p>}
           </form>
           <DialogFooter>
-            <Button
-              disabled={uploading || !preview}
-              form="gallery-form"
-              type="submit"
-            >
+            <Button disabled={uploading || !preview} form='gallery-form' type='submit'>
               {uploading ? "Đang upload..." : "Upload ảnh"}
             </Button>
           </DialogFooter>
@@ -194,39 +172,21 @@ export function GalleryManager({ images }: { images: GalleryImage[] }) {
       </Dialog>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4'>
         {images.map((img) => (
-          <div
-            className="group overflow-hidden rounded-xl border border-border bg-background"
-            key={img.id}
-          >
-            <div className="aspect-video bg-muted">
-              <img
-                alt={img.caption ?? "Gallery"}
-                className="h-full w-full object-cover"
-                src={img.url}
-              />
+          <div className='group overflow-hidden rounded-xl border border-border bg-background' key={img.id}>
+            <div className='aspect-video bg-muted'>
+              <img alt={img.caption ?? "Gallery"} className='h-full w-full object-cover' src={img.url} />
             </div>
-            <div className="flex items-center justify-between p-3">
-              <span className="truncate text-muted-foreground text-xs">
-                {img.caption ?? `#${img.order}`}
-              </span>
-              <Button
-                className="h-7 text-xs"
-                onClick={() => handleDelete(img.id)}
-                size="sm"
-                variant="destructive"
-              >
+            <div className='flex items-center justify-between p-3'>
+              <span className='truncate text-muted-foreground text-xs'>{img.caption ?? `#${img.order}`}</span>
+              <Button className='h-7 text-xs' onClick={() => handleDelete(img.id)} size='sm' variant='destructive'>
                 Xóa
               </Button>
             </div>
           </div>
         ))}
-        {images.length === 0 && (
-          <p className="col-span-full py-8 text-center text-muted-foreground">
-            Chưa có ảnh nào
-          </p>
-        )}
+        {images.length === 0 && <p className='col-span-full py-8 text-center text-muted-foreground'>Chưa có ảnh nào</p>}
       </div>
     </div>
   );

@@ -52,11 +52,8 @@ const updateProfile = async (data: {
       // whose authId is still "pending-*" and hasn't been synced yet via auth callback)
       const existing = await prisma.member.findFirst({
         where: {
-          OR: [
-            { authId: user.id },
-            { email: user.email ?? "" },
-          ],
-        },
+          OR: [{ authId: user.id }, { email: user.email ?? "" }]
+        }
       });
 
       let updatedMember;
@@ -65,7 +62,7 @@ const updateProfile = async (data: {
         // Validate slug uniqueness (exclude current member)
         if (data.slug) {
           const slugTaken = await prisma.member.findFirst({
-            where: { slug: data.slug, id: { not: existing.id } },
+            where: { slug: data.slug, id: { not: existing.id } }
           });
           if (slugTaken) {
             throw new Error("Slug đã được sử dụng bởi thành viên khác");
@@ -80,8 +77,8 @@ const updateProfile = async (data: {
           data: {
             ...data,
             // Always bind the real authId if it was still a placeholder
-            ...(existing.authId.startsWith("pending-") ? { authId: user.id } : {}),
-          },
+            ...(existing.authId.startsWith("pending-") ? { authId: user.id } : {})
+          }
         });
       } else {
         // Completely new self-registered user — create member
@@ -98,8 +95,8 @@ const updateProfile = async (data: {
             dob: data.dob,
             avatar: data.avatar,
             coverImage: data.coverImage,
-            slug: data.slug,
-          },
+            slug: data.slug
+          }
         });
       }
 

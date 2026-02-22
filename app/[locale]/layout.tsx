@@ -18,10 +18,7 @@ export function generateStaticParams() {
   return _LOCALES.map((locale) => ({ locale }));
 }
 
-export default async function LocaleLayout({
-  children,
-  params,
-}: LocaleLayoutType) {
+export default async function LocaleLayout({ children, params }: LocaleLayoutType) {
   "use cache";
   cacheLife("max");
 

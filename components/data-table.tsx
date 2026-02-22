@@ -3,14 +3,14 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
+  type SortingState,
+  useReactTable,
+  type VisibilityState
 } from "@tanstack/react-table";
 import { Settings2 } from "lucide-react";
 import * as React from "react";
@@ -62,12 +62,12 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {/* Toolbar */}
-      <div className="flex items-center gap-2">
+      <div className='flex items-center gap-2'>
         {searchKey && (
           <Input
-            className="max-w-sm"
+            className='max-w-sm'
             onChange={(e) => table.getColumn(searchKey)?.setFilterValue(e.target.value)}
             placeholder={searchPlaceholder}
             value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
@@ -76,12 +76,12 @@ export function DataTable<TData, TValue>({
         {filterComponent}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="ml-auto hidden h-8 lg:flex" size="sm" variant="outline">
-              <Settings2 className="mr-2 h-4 w-4" />
+            <Button className='ml-auto hidden h-8 lg:flex' size='sm' variant='outline'>
+              <Settings2 className='mr-2 h-4 w-4' />
               Cột
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[150px]">
+          <DropdownMenuContent align='end' className='w-[150px]'>
             <DropdownMenuLabel>Ẩn/hiện cột</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {table
@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
               .map((col) => (
                 <DropdownMenuCheckboxItem
                   checked={col.getIsVisible()}
-                  className="capitalize"
+                  className='capitalize'
                   key={col.id}
                   onCheckedChange={(val) => col.toggleVisibility(!!val)}
                 >
@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell className="h-24 text-center" colSpan={columns.length}>
+                <TableCell className='h-24 text-center' colSpan={columns.length}>
                   Không có dữ liệu.
                 </TableCell>
               </TableRow>

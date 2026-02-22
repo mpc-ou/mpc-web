@@ -79,7 +79,9 @@ export const adminUpdatePost = async (
         ...(data.summary !== undefined && { summary: data.summary || null }),
         ...(data.content !== undefined && { content: data.content }),
         ...(data.categoryId !== undefined && { categoryId: data.categoryId }),
-        ...(data.status && { status: data.status as "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED" | "REJECTED" })
+        ...(data.status && {
+          status: data.status as "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED" | "REJECTED"
+        })
       };
       if (data.status === "PUBLISHED") {
         updateData.publishedAt = new Date();

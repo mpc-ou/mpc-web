@@ -1,319 +1,275 @@
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: <tailwind css> */
 @import "tailwindcss";
-@import "./colors.css";
 
-/* Map light colors to main variables */
-:root,
-:root[data-theme="light"] {
-  --background: var(--l-background);
-  --foreground: var(--l-foreground);
+@custom-variant dark (&:is(.dark *));
 
-  --primary: var(--l-primary);
-  --primary-foreground: var(--l-primary-foreground);
-  --primary-hover: var(--l-primary-hover);
-  --primary-light: var(--l-primary-light);
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
 
-  --secondary: var(--l-secondary);
-  --secondary-foreground: var(--l-secondary-foreground);
-  --secondary-hover: var(--l-secondary-hover);
-  --secondary-light: var(--l-secondary-light);
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
 
-  --accent: var(--l-accent);
-  --accent-foreground: var(--l-accent-foreground);
-  --accent-hover: var(--l-accent-hover);
-  --accent-light: var(--l-accent-light);
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
 
-  --success: var(--l-success);
-  --success-foreground: var(--l-success-foreground);
-  --success-light: var(--l-success-light);
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
 
-  --warning: var(--l-warning);
-  --warning-foreground: var(--l-warning-foreground);
-  --warning-light: var(--l-warning-light);
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
 
-  --error: var(--l-error);
-  --error-foreground: var(--l-error-foreground);
-  --error-light: var(--l-error-light);
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
 
-  --info: var(--l-info);
-  --info-foreground: var(--l-info-foreground);
-  --info-light: var(--l-info-light);
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
 
-  --card: var(--l-card);
-  --card-foreground: var(--l-card-foreground);
-  --card-hover: var(--l-card-hover);
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
 
-  --muted: var(--l-muted);
-  --muted-foreground: var(--l-muted-foreground);
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
 
-  --border: var(--l-border);
-  --input: var(--l-input);
-  --ring: var(--l-ring);
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --text-primary: var(--l-text-primary);
-  --text-secondary: var(--l-text-secondary);
-  --text-tertiary: var(--l-text-tertiary);
-  --text-inverse: var(--l-text-inverse);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 
-  --bg-primary: var(--l-bg-primary);
-  --bg-secondary: var(--l-bg-secondary);
-  --bg-tertiary: var(--l-bg-tertiary);
+  --font-sans:
+    var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-  --hero-bg: var(--l-hero-bg);
-  --hero-text: var(--l-hero-text);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-slide-down: slide-down 0.3s ease-out forwards;
+  --animate-slide-up: slide-up 0.3s ease-out forwards;
 
-  --nav-bg: var(--l-nav-bg);
-  --nav-bg-blur: var(--l-nav-bg-blur);
-  --nav-border: var(--l-nav-border);
-  --nav-item-hover: var(--l-nav-item-hover);
-  --nav-link: var(--l-nav-link);
-  --nav-link-hover: var(--l-nav-link-hover);
-
-  --footer-bg: var(--l-footer-bg);
-  --footer-text: var(--l-footer-text);
-  --footer-text-hover: var(--l-footer-text-hover);
-}
-
-/* Map dark colors to main variables */
-:root[data-theme="dark"] {
-  --background: var(--d-background);
-  --foreground: var(--d-foreground);
-
-  --primary: var(--d-primary);
-  --primary-foreground: var(--d-primary-foreground);
-  --primary-hover: var(--d-primary-hover);
-  --primary-light: var(--d-primary-light);
-
-  --secondary: var(--d-secondary);
-  --secondary-foreground: var(--d-secondary-foreground);
-  --secondary-hover: var(--d-secondary-hover);
-  --secondary-light: var(--d-secondary-light);
-
-  --accent: var(--d-accent);
-  --accent-foreground: var(--d-accent-foreground);
-  --accent-hover: var(--d-accent-hover);
-  --accent-light: var(--d-accent-light);
-
-  --success: var(--d-success);
-  --success-foreground: var(--d-success-foreground);
-  --success-light: var(--d-success-light);
-
-  --warning: var(--d-warning);
-  --warning-foreground: var(--d-warning-foreground);
-  --warning-light: var(--d-warning-light);
-
-  --error: var(--d-error);
-  --error-foreground: var(--d-error-foreground);
-  --error-light: var(--d-error-light);
-
-  --info: var(--d-info);
-  --info-foreground: var(--d-info-foreground);
-  --info-light: var(--d-info-light);
-
-  --card: var(--d-card);
-  --card-foreground: var(--d-card-foreground);
-  --card-hover: var(--d-card-hover);
-
-  --muted: var(--d-muted);
-  --muted-foreground: var(--d-muted-foreground);
-
-  --border: var(--d-border);
-  --input: var(--d-input);
-  --ring: var(--d-ring);
-
-  --text-primary: var(--d-text-primary);
-  --text-secondary: var(--d-text-secondary);
-  --text-tertiary: var(--d-text-tertiary);
-  --text-inverse: var(--d-text-inverse);
-
-  --bg-primary: var(--d-bg-primary);
-  --bg-secondary: var(--d-bg-secondary);
-  --bg-tertiary: var(--d-bg-tertiary);
-
-  --hero-bg: var(--d-hero-bg);
-  --hero-text: var(--d-hero-text);
-
-  --nav-bg: var(--d-nav-bg);
-  --nav-bg-blur: var(--d-nav-bg-blur);
-  --nav-border: var(--d-nav-border);
-  --nav-item-hover: var(--d-nav-item-hover);
-  --nav-link: var(--d-nav-link);
-  --nav-link-hover: var(--d-nav-link-hover);
-
-  --footer-bg: var(--d-footer-bg);
-  --footer-text: var(--d-footer-text);
-  --footer-text-hover: var(--d-footer-text-hover);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --background: var(--d-background);
-    --foreground: var(--d-foreground);
-
-    --primary: var(--d-primary);
-    --primary-foreground: var(--d-primary-foreground);
-    --primary-hover: var(--d-primary-hover);
-    --primary-light: var(--d-primary-light);
-
-    --secondary: var(--d-secondary);
-    --secondary-foreground: var(--d-secondary-foreground);
-    --secondary-hover: var(--d-secondary-hover);
-    --secondary-light: var(--d-secondary-light);
-
-    --accent: var(--d-accent);
-    --accent-foreground: var(--d-accent-foreground);
-    --accent-hover: var(--d-accent-hover);
-    --accent-light: var(--d-accent-light);
-
-    --success: var(--d-success);
-    --success-foreground: var(--d-success-foreground);
-    --success-light: var(--d-success-light);
-
-    --warning: var(--d-warning);
-    --warning-foreground: var(--d-warning-foreground);
-    --warning-light: var(--d-warning-light);
-
-    --error: var(--d-error);
-    --error-foreground: var(--d-error-foreground);
-    --error-light: var(--d-error-light);
-
-    --info: var(--d-info);
-    --info-foreground: var(--d-info-foreground);
-    --info-light: var(--d-info-light);
-
-    --card: var(--d-card);
-    --card-foreground: var(--d-card-foreground);
-    --card-hover: var(--d-card-hover);
-
-    --muted: var(--d-muted);
-    --muted-foreground: var(--d-muted-foreground);
-
-    --border: var(--d-border);
-    --input: var(--d-input);
-    --ring: var(--d-ring);
-
-    --text-primary: var(--d-text-primary);
-    --text-secondary: var(--d-text-secondary);
-    --text-tertiary: var(--d-text-tertiary);
-    --text-inverse: var(--d-text-inverse);
-
-    --bg-primary: var(--d-bg-primary);
-    --bg-secondary: var(--d-bg-secondary);
-    --bg-tertiary: var(--d-bg-tertiary);
-
-    --hero-bg: var(--d-hero-bg);
-    --hero-text: var(--d-hero-text);
-
-    --nav-bg: var(--d-nav-bg);
-    --nav-bg-blur: var(--d-nav-bg-blur);
-    --nav-border: var(--d-nav-border);
-    --nav-item-hover: var(--d-nav-item-hover);
-    --nav-link: var(--d-nav-link);
-    --nav-link-hover: var(--d-nav-link-hover);
-
-    --footer-bg: var(--d-footer-bg);
-    --footer-text: var(--d-footer-text);
-    --footer-text-hover: var(--d-footer-text-hover);
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slide-up {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
   }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  /* Primary */
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-
-  /* Secondary */
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-
-  /* Accent */
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-
-  /* Card */
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-
-  /* Muted */
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-
-  /* Border */
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
   }
-
-* {
-  border-color: var(--border);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-}
-
-/* Utility classes */
-.bg-primary {
-  background-color: var(--bg-primary);
-}
-
-.bg-secondary {
-  background-color: var(--bg-secondary);
-}
-
-.bg-tertiary {
-  background-color: var(--bg-tertiary);
-}
-
-.text-primary {
-  color: var(--text-primary);
-}
-
-.text-secondary {
-  color: var(--text-secondary);
-}
-
-.text-tertiary {
-  color: var(--text-tertiary);
-}
-
-.border-custom {
-  border-color: var(--border);
-}
-
-/* Accordion animations */
-@keyframes accordion-down {
-  from {
-    height: 0;
-    opacity: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
+  @media (width >= 1400px) {
+    max-width: 1400px;
   }
 }
 
-@keyframes accordion-up {
-  from {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
-  }
-  to {
-    height: 0;
-    opacity: 0;
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
 }
 
-.animate-accordion-down {
-  animation: accordion-down 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 240 10% 3.9%;
+
+    --radius: 0.5rem;
+
+    --chart-1: 12 76% 61%;
+
+    --chart-2: 173 58% 39%;
+
+    --chart-3: 197 37% 24%;
+
+    --chart-4: 43 74% 66%;
+
+    --chart-5: 27 87% 67%;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 240 4.9% 83.9%;
+
+    --radius: 0.5rem;
+
+    --chart-1: 220 70% 50%;
+
+    --chart-2: 160 60% 45%;
+
+    --chart-3: 30 80% 55%;
+
+    --chart-4: 280 65% 60%;
+
+    --chart-5: 340 75% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+
+    --sidebar-foreground: 240 4.8% 95.9%;
+
+    --sidebar-primary: 224.3 76.3% 48%;
+
+    --sidebar-primary-foreground: 0 0% 100%;
+
+    --sidebar-accent: 240 3.7% 15.9%;
+
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+
+    --sidebar-border: 240 3.7% 15.9%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
-.animate-accordion-up {
-  animation: accordion-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
 }

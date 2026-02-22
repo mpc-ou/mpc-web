@@ -1,34 +1,31 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { BaseLayout } from "@/components/custom/BaseLayout";
+import { ErrorContent } from "@/components/custom/ErrorContent";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+type ErrorType = { error: Error & { digest?: string }; reset: () => void };
+
+export default function ErrorGlobal({ error, reset }: ErrorType) {
   useEffect(() => {
-    console.error(error);
-  }, [error]);
+    if (
+      error.name === "AbortError" ||
+      ("code" in error && (error as unknown as { code: number }).code === 20)
+    ) {
+      reset();
+    }
+  }, [error, reset]);
+
+  if (
+    error.name === "AbortError" ||
+    ("code" in error && (error as unknown as { code: number }).code === 20)
+  ) {
+    return null;
+  }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center">
-      <div className="text-center">
-        <AlertCircle className="h-16 w-16 mx-auto mb-4 text-[var(--error)]" />
-        <h2 className="text-2xl font-semibold mb-4 text-[var(--text-primary)]">
-          Đã xảy ra lỗi!
-        </h2>
-        <p className="text-[var(--text-secondary)] mb-8">
-          {error.message || "Có lỗi xảy ra khi tải trang. Vui lòng thử lại."}
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button onClick={reset}>Thử lại</Button>
-        </div>
-      </div>
-    </div>
+    <BaseLayout locale="en">
+      <ErrorContent reset={reset} />
+    </BaseLayout>
   );
 }

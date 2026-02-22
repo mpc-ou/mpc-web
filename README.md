@@ -1,211 +1,169 @@
-# CLB MPC Website
+# MPC Web — Mobile Programming Club
 
-Website giới thiệu cho Câu lạc bộ Máy tính và Lập trình (MPC) được xây dựng với Next.js 16, Tailwind CSS 4, và Supabase.
+Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động (MPC)** — Khoa Công nghệ Thông tin, Trường Đại học Mở TP.HCM.
 
-## Tính năng
+> **Stack:** Next.js 16 · React 19 · TypeScript 5 · Tailwind CSS 4 · Prisma 7 · Supabase · pnpm
 
-- ✅ Responsive design, thân thiện với mobile
-- ✅ Light/Dark mode với hệ thống màu tùy chỉnh (white-label ready)
-- ✅ Tích hợp Supabase cho authentication và data storage
-- ✅ Hệ thống Custom Profile - Thành viên tự thiết kế trang profile
-- ✅ SEO-friendly với metadata riêng cho từng trang
-- ✅ Alert Banner cho thông báo quan trọng
-- ✅ Hero Section với parallax effect (scroll + mouse + gyroscope)
-- ✅ Image Gallery & Carousel với modal viewer
-- ✅ FAQ Section với accordion
-- ✅ Organization Section hiển thị Ban Chủ nhiệm và Cán sự
-- ✅ Các trang: Trang chủ, Dự án, Sự kiện, Thành tựu, Về CLB
-- ✅ Sẵn sàng cho i18n (đã setup cấu trúc)
+---
 
-## Yêu cầu hệ thống
+## ✨ Tính năng
 
-- Node.js 18+ 
-- npm hoặc yarn
-- Tài khoản Supabase
+### 🌐 Trang công khai
 
-## Cài đặt
+- **Trang chủ** — Hero banner, thống kê CLB, giới thiệu, quyền lợi thành viên, ban chủ nhiệm, gallery ảnh, FAQ
+- **Hồ sơ thành viên** — Trang cá nhân với slug tùy chỉnh (`/members/:slug`)
+- **Đa ngôn ngữ** — Tiếng Việt (mặc định) & English qua `next-intl`
+- **Light / Dark mode** — Chuyển đổi giao diện với `next-themes`
+- **API Docs** — Swagger UI tự động tại `/api-docs`
 
-1. Clone repository và cài đặt dependencies:
+### 🔐 Khu vực thành viên
 
-```bash
-npm install
-```
+- **Đăng nhập Google OAuth** qua Supabase Auth
+- **Chỉnh sửa hồ sơ** — Thông tin cá nhân, avatar, ảnh bìa, liên kết mạng xã hội, slug
 
-2. Tạo file `.env.local` và thêm các biến môi trường:
+### ⚙️ Quản trị (Admin Panel)
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+| Module | Mô tả |
+|---|---|
+| **Thành viên** | CRUD, quản lý vai trò CLB, chức vụ theo kỳ, mạng xã hội, slug |
+| **Ban / Phòng** | Quản lý cơ cấu tổ chức CLB |
+| **Bài viết** | Quy trình duyệt bài (Draft → Review → Published), lịch sử chỉnh sửa |
+| **Sự kiện** | Quản lý workshop, seminar, cuộc thi với đăng ký, gallery |
+| **Thành tựu** | Giải thưởng cá nhân, đội, CLB |
+| **Dự án** | Showcase dự án với GitHub, tech stack, thành viên |
+| **Nhà tài trợ** | Quản lý đối tác, phân hạng tài trợ |
+| **Thông báo** | Thanh announcement bar với lịch trình, CTA, tuỳ chỉnh màu |
+| **FAQ** | Câu hỏi thường gặp, hỗ trợ đa ngôn ngữ |
+| **Gallery** | Quản lý ảnh trang chủ |
+| **Homepage** | Tùy chỉnh nội dung hero, intro, stats |
+| **Cài đặt** | Cấu hình site (tên, mô tả, logo, …) |
 
-3. Chạy development server:
+---
 
-```bash
-npm run dev
-```
+## 🛠 Công nghệ
 
-4. Mở [http://localhost:3000](http://localhost:3000) trong browser.
+| Lớp | Công nghệ |
+|---|---|
+| **Framework** | Next.js 16 (App Router, React Compiler, Turbopack) |
+| **UI** | Tailwind CSS 4, Shadcn UI, Radix Primitives, Lucide Icons |
+| **Database** | PostgreSQL (Supabase) + Prisma ORM 7 (pg adapter) |
+| **Auth** | Supabase Auth (Google OAuth) |
+| **Storage** | Supabase Storage (avatar, cover, gallery) |
+| **i18n** | next-intl (vi, en) |
+| **Data Table** | TanStack Table v8 |
+| **API Docs** | next-swagger-doc + swagger-ui-react |
+| **Lint & Format** | Biome 2 + Ultracite, Husky, lint-staged, commitlint |
+| **Deploy** | Docker / Standalone build |
 
-## Cấu trúc dự án
+---
 
-```
-mpc-web/
-├── app/                    # Next.js App Router
-│   ├── (home)/            # Route groups
-│   ├── projects/          # Trang các dự án
-│   │   ├── page.tsx      # Server component (metadata)
-│   │   └── page-client.tsx # Client component
-│   ├── events/            # Trang sự kiện
-│   │   ├── [slug]/       # Chi tiết sự kiện
-│   │   ├── page.tsx
-│   │   └── page-client.tsx
-│   ├── achievements/      # Trang thành tựu
-│   ├── about/             # Trang về CLB
-│   ├── members/           # Danh sách thành viên
-│   ├── profile/           # Profile thành viên
-│   │   ├── [studentId]/  # Profile động
-│   │   │   └── page.tsx  # Auto-load custom profile
-│   │   └── custom/       # Custom profiles
-│   │       ├── example-profile.tsx # Template mẫu
-│   │       └── {studentId}.tsx    # Custom profiles
-│   └── login/             # Trang đăng nhập
-├── components/            # React components
-│   ├── ui/               # shadcn/ui components
-│   ├── header.tsx        # Header component
-│   ├── footer.tsx        # Footer component
-│   ├── hero-section.tsx  # Hero section với parallax
-│   ├── alert-banner.tsx  # Alert banner
-│   └── theme-provider.tsx # Theme provider
-├── docs/                  # Documentation
-│   └── CUSTOM_PROFILE.md # Hướng dẫn custom profile
-├── lib/                   # Utilities
-│   ├── supabase/         # Supabase clients
-│   ├── i18n/             # i18n config (sẵn sàng)
-│   ├── config.ts         # Configuration
-│   ├── constants.ts      # Constants & content
-│   └── utils.ts          # Utility functions
-└── public/                # Static files
-```
+## 🚀 Bắt đầu
 
-## Supabase Setup
+### Yêu cầu
 
-### Database Schema
+- Node.js ≥ 24
+- pnpm ≥ 10
+- PostgreSQL (hoặc Supabase project)
 
-Cần tạo các bảng sau trong Supabase:
-
-#### Members Table
-
-```sql
-CREATE TABLE members (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  student_id TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  email TEXT,
-  role TEXT DEFAULT 'Thành viên',
-  avatar_url TEXT,
-  bio TEXT,
-  has_custom_profile BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-```
-
-#### Events Table
-
-```sql
-CREATE TABLE events (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  slug TEXT UNIQUE NOT NULL,
-  title TEXT NOT NULL,
-  description TEXT,
-  content TEXT,
-  date DATE,
-  location TEXT,
-  participants_count INTEGER DEFAULT 0,
-  featured BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-```
-
-#### Articles Table
-
-```sql
-CREATE TABLE articles (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  slug TEXT UNIQUE NOT NULL,
-  title TEXT NOT NULL,
-  description TEXT,
-  content TEXT,
-  featured_image TEXT,
-  author_id UUID REFERENCES auth.users(id),
-  published BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-```
-
-## Custom Profile System
-
-Thành viên có thể tự thiết kế trang profile của mình một cách linh hoạt và sáng tạo.
-
-### Cách sử dụng:
-
-1. Copy file mẫu từ `app/profile/custom/example-profile.tsx`
-2. Đổi tên thành `{studentId}.tsx` và đặt vào `app/profile/custom/`
-3. Tùy chỉnh component theo ý muốn
-4. Component sẽ tự động được load khi truy cập `/profile/{student_id}`
-
-### Tài liệu chi tiết:
-
-Xem file `docs/CUSTOM_PROFILE.md` để biết:
-- Hướng dẫn chi tiết cách tạo custom profile
-- Danh sách đầy đủ các tham số có sẵn
-- Ví dụ mẫu và best practices
-- Troubleshooting các vấn đề thường gặp
-
-## Hệ thống màu
-
-Website sử dụng hệ thống CSS variables cho white-label support. Tất cả màu được định nghĩa trong `app/globals.css` và có thể dễ dàng tùy chỉnh.
-
-### Các biến màu chính:
-
-- `--primary`: Màu chủ đạo
-- `--secondary`: Màu phụ
-- `--accent`: Màu nhấn
-- `--background`: Màu nền
-- `--foreground`: Màu chữ
-- Và nhiều biến khác...
-
-## Development
+### Cài đặt
 
 ```bash
-# Development
-npm run dev
+git clone https://github.com/konnn04/mpc-web.git
+cd mpc-web
 
-# Build
-npm run build
+# Kích hoạt đúng phiên bản pnpm
+corepack enable pnpm
 
-# Start production
-npm start
+# Cấu hình biến môi trường
+cp .env.example .env
+# → Điền SUPABASE_URL, SUPABASE_ANON_KEY, DATABASE_URL, DIRECT_URL
 
-# Lint
-npm run lint
+# Cài dependencies
+pnpm i
+
+# Chạy migration & seed database
+pnpm dlx prisma migrate dev
+
+# Khởi động dev server (Turbopack)
+pnpm dev
 ```
 
-## Công nghệ sử dụng
+### Biến môi trường
 
-- **Next.js 16**: React framework với App Router
-- **Tailwind CSS 4**: Utility-first CSS framework
-- **shadcn/ui**: Component library
-- **Supabase**: Backend as a Service (Auth + Database)
-- **TypeScript**: Type safety
-- **Lucide React**: Icons
+| Biến | Mô tả |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | URL API (mặc định: `http://localhost:3000`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
+| `DATABASE_URL` | Connection pooler (port 6543) |
+| `DIRECT_URL` | Direct connection (port 5432) |
+| `ADMIN_ACCOUNT` | Email(s) root admin, JSON array |
 
-## License
+---
 
-MIT
+## 🐳 Deploy với Docker
 
-## Contributing
+```bash
+docker compose up -d
+```
 
-Mọi đóng góp đều được chào đón!
+Container chạy trên port `3000`, standalone build, non-root user.
+
+---
+
+## 📁 Cấu trúc dự án
+
+```
+app/
+├── [locale]/                  # Routes đa ngôn ngữ (vi, en)
+│   ├── (main)/                # Trang chủ & các section
+│   │   └── members/[slug]/    # Hồ sơ thành viên
+│   ├── (private)/             # Yêu cầu đăng nhập
+│   │   ├── (main)/profile/    # Chỉnh sửa hồ sơ cá nhân
+│   │   └── admin/             # Admin panel (12 modules)
+│   └── (public)/auth/         # Trang đăng nhập
+├── api/                       # API routes
+│   ├── auth/callback/         # OAuth callback
+│   └── docs/                  # Swagger JSON spec
+└── api-docs/                  # Swagger UI
+components/
+├── custom/                    # Components dự án (Header, Footer, Layout, …)
+└── ui/                        # Shadcn UI components
+configs/
+├── prisma/                    # Schema & migrations (20 models)
+├── i18n/                      # Cấu hình next-intl
+├── messages/                  # File dịch (en.json, vi.json)
+├── supabase/                  # Client, server, middleware helpers
+└── swagger/                   # Swagger config
+```
+
+---
+
+## 📋 Scripts
+
+| Lệnh | Mô tả |
+|---|---|
+| `pnpm dev` | Dev server với Turbopack |
+| `pnpm build` | Build production |
+| `pnpm start` | Chạy production server |
+| `pnpm lint:check` | Kiểm tra linting (Biome) |
+| `pnpm lint:fix` | Tự động sửa lint |
+
+---
+
+## 🤝 Đóng góp
+
+1. Fork repo
+2. Tạo branch: `git checkout -b feat/ten-tinh-nang`
+3. Commit theo [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, …
+4. Push & tạo Pull Request
+
+---
+
+## 📝 License
+
+MIT License
+
+## 👥 Team
+
+Phát triển bởi **MPC — Mobile Programming Club**, ĐH Mở TP.HCM.

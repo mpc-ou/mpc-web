@@ -1,0 +1,212 @@
+{
+  "common": {
+    "locale": {
+      "en": "Tiếng Anh",
+      "vi": "Tiếng Việt",
+      "select": "Chọn ngôn ngữ"
+    },
+    "theme": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống",
+      "toggle": "Đổi chủ đề"
+    },
+    "nav": {
+      "login": "Đăng nhập",
+      "logout": "Đăng xuất",
+      "home": "Trang chủ",
+      "profile": "Trang cá nhân",
+      "settings": "Cài đặt cá nhân",
+      "admin": "Quản trị"
+    },
+    "text": {
+      "loading": "Đang tải...",
+      "loginWith": "Đăng nhập với",
+      "here": "ở đây"
+    },
+    "notify": {
+      "success": {
+        "title": "Thành công",
+        "message": "Thao tác thành công."
+      },
+      "error": {
+        "title": "Lỗi",
+        "message": "Thao tác thất bại.",
+        "unknownError": "Lỗi không xác định. Vui lòng liên hệ quản trị viên."
+      }
+    }
+  },
+  "header": {
+    "logoName": "MPC",
+    "clubFullName": "CLB Lập trình trên thiết bị di động",
+    "apiDocs": "API Docs",
+    "nav": {
+      "home": "Trang chủ",
+      "training": "Đào tạo",
+      "activities": "Hoạt động",
+      "webDesign": "Web Design",
+      "recruitment": "Tuyển thành viên",
+      "events": "Sự kiện",
+      "achievements": "Thành tựu",
+      "about": "Về chúng mình"
+    },
+    "announcement": "🎉 CLB MPC đang tuyển thành viên mới! Đừng bỏ lỡ cơ hội phát triển kỹ năng lập trình.",
+    "registerNow": "Đăng ký ngay",
+    "dismiss": "Đóng",
+    "feedback": "Hòm thư góp ý",
+    "searchPlaceholder": "Tìm kiếm...",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu"
+  },
+  "footer": {
+    "description": "Câu lạc bộ Lập trình trên thiết bị di động (MPC) – nơi học hỏi, phát triển và chia sẻ kiến thức về công nghệ.",
+    "quickLinks": "Liên kết nhanh",
+    "home": "Trang chủ",
+    "activities": "Hoạt động",
+    "achievements": "Thành tựu",
+    "aboutUs": "Về chúng tôi",
+    "resources": "Tài nguyên",
+    "sponsors": "Nhà tài trợ",
+    "qa": "Q&A",
+    "externalLinks": "Liên kết ngoài",
+    "facultyLink": "Khoa CNTT – ĐH Mở TP.HCM",
+    "universityLink": "Trường ĐH Mở TP.HCM",
+    "contact": "Liên hệ",
+    "copyright": "© 2025 CLB MPC – Câu lạc bộ Lập trình trên thiết bị di động. Bảo lưu mọi quyền."
+  },
+  "home": {
+    "title": "Trang chủ – CLB MPC",
+    "hero": {
+      "title": "CLB Lập trình trên thiết bị di động",
+      "subtitle": "Ở đâu có bug, ở đó có MPC!",
+      "cta": "Tìm hiểu thêm",
+      "ctaJoin": "Tham gia ngay"
+    },
+    "intro": {
+      "title": "Giới thiệu",
+      "description": "Câu lạc bộ Lập trình trên thiết bị di động (Mobile Programming Club – MPC) là một trong những câu lạc bộ hoạt động năng động, sôi nổi và đầy sáng tạo của Khoa Công nghệ thông tin – Trường Đại học Mở Tp.HCM. MPC được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình.",
+      "learnMore": "Tìm hiểu thêm",
+      "viewMembers": "Xem thành viên"
+    },
+    "stats": {
+      "title": "MPC trong con số",
+      "members": "Thành viên",
+      "events": "Sự kiện tổ chức",
+      "years": "Năm hoạt động",
+      "projects": "Dự án hoàn thành"
+    },
+    "benefits": {
+      "title": "Lợi ích khi tham gia CLB",
+      "subtitle": "Tham gia MPC để cùng nhau phát triển, học hỏi và tạo ra những điều khác biệt",
+      "skills": {
+        "title": "Phát triển kỹ năng",
+        "desc": "Học và thực hành các công nghệ mới nhất trong lĩnh vực Web, App và AI thông qua các workshop, dự án thực tế."
+      },
+      "network": {
+        "title": "Mạng lưới kết nối",
+        "desc": "Gặp gỡ và làm việc với những người có cùng đam mê và định hướng. Xây dựng mối quan hệ lâu dài trong cộng đồng tech."
+      },
+      "opportunity": {
+        "title": "Cơ hội tham gia",
+        "desc": "Tham gia các dự án thực tế, cuộc thi lập trình và sự kiện công nghệ. Tích lũy kinh nghiệm cho hành trình sự nghiệp."
+      },
+      "community": {
+        "title": "Cộng đồng thân thiện",
+        "desc": "Môi trường học tập tích cực, hỗ trợ lẫn nhau và luôn sẵn sàng giúp đỡ các thành viên mới."
+      }
+    },
+    "team": {
+      "title": "Tổ chức CLB",
+      "subtitle": "Đội ngũ điều hành nhiệt huyết và tận tâm",
+      "president": "Ban Chủ nhiệm",
+      "staff": "Ban Cán sự",
+      "viewAll": "Xem tất cả thành viên",
+      "noLeadership": "Chưa có thông tin điều hành."
+    },
+    "activities": {
+      "title": "Hoạt động nổi bật",
+      "subtitle": "Những sự kiện và dự án tiêu biểu của CLB MPC"
+    },
+    "gallery": {
+      "title": "Khoảnh khắc MPC",
+      "subtitle": "Những kỷ niệm đáng nhớ cùng MPC"
+    },
+    "faq": {
+      "title": "Giải đáp thắc mắc",
+      "subtitle": "Những câu hỏi thường gặp về CLB MPC",
+      "items": [
+        {
+          "q": "MPC là gì?",
+          "a": "MPC (Mobile Programming Club) là CLB Lập trình trên thiết bị di động thuộc Khoa Công nghệ thông tin – Trường Đại học Mở TP.HCM. CLB được thành lập nhằm tạo ra môi trường học tập và phát triển công nghệ cho sinh viên."
+        },
+        {
+          "q": "Tôi có cần kỹ năng lập trình để tham gia không?",
+          "a": "Không bắt buộc! CLB chào đón tất cả sinh viên có đam mê với công nghệ, từ người mới bắt đầu đến đã có kinh nghiệm. Quan trọng nhất là tinh thần học hỏi và sự nhiệt huyết."
+        },
+        {
+          "q": "CLB hoạt động như thế nào?",
+          "a": "CLB tổ chức các workshop kỹ năng lập trình, seminar công nghệ, cuộc thi như Web Design, Robocode và nhiều hoạt động teambuilding hàng tháng. Ngoài ra còn có các dự án thực tế để thành viên thực hành."
+        },
+        {
+          "q": "Làm sao để tham gia MPC?",
+          "a": "Theo dõi fanpage Facebook của MPC để cập nhật thông tin tuyển thành viên theo từng học kỳ. Khi có đợt tuyển, bạn có thể đăng ký qua form online và tham gia vòng phỏng vấn."
+        },
+        {
+          "q": "CLB có những ban nào?",
+          "a": "CLB MPC gồm nhiều ban chức năng: Ban Lập trình, Ban Sự kiện & Hậu cần, Ban Truyền thông, Ban Học thuật... Mỗi ban phụ trách các hoạt động khác nhau và bạn có thể chọn ban phù hợp với sở thích."
+        },
+        {
+          "q": "Sinh viên ngoài Khoa CNTT có tham gia được không?",
+          "a": "CLB ưu tiên sinh viên Khoa CNTT nhưng cũng rất hoan nghênh các bạn sinh viên đến từ các khoa khác có đam mê với lập trình và công nghệ."
+        }
+      ]
+    },
+    "members": {
+      "title": "Thành viên CLB",
+      "description": "Danh sách tất cả thành viên đang hoạt động của CLB. Để cập nhật hồ sơ của bạn, vui lòng truy cập"
+    }
+  },
+  "profile": {
+    "title": "Trang cá nhân",
+    "description": "Thông tin hiện tại của bạn.",
+    "loginWith": "Đăng nhập bằng",
+    "form": {
+      "submit": "Lưu",
+      "firstName": "Họ",
+      "lastName": "Tên",
+      "bio": "Giới thiệu"
+    }
+  },
+  "auth": {
+    "title": "Đăng nhập",
+    "title2": "Bạn là ai đó?",
+    "description": "Đăng nhập vào tài khoản của bạn để tụi mình biết bạn là ai nè! ^^"
+  },
+  "defaultPage": {
+    "error": {
+      "title": "Đã có lỗi xảy ra!",
+      "description": "Một lỗi nho nhỏ do Server!",
+      "reminder": "Vui lòng thông báo đến quản trị viên!",
+      "tryAgain": "Thử lại",
+      "redirect": "Quay về trang chủ"
+    },
+    "notFound": {
+      "title": "Trang không tồn tại!",
+      "description": "Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm. Nó có thể đã bị di chuyển hoặc không tồn tại.",
+      "redirect": "Quay về trang chủ"
+    }
+  },
+  "admin": {
+    "title": "Trang quản trị",
+    "description": "Quản lý nội dung và thành viên của CLB MPC.",
+    "form": {
+      "selector": {
+        "linkedMembers": "Thành viên đã liên kết",
+        "removeLinkedMember": "Bỏ liên kết thành viên",
+        "searchMembersPlaceholder": "Tìm kiếm thành viên...",
+        "rolePlaceholder": "Chọn vai trò",
+        "clearSelectedMember": "Xóa thành viên đã chọn"
+      }
+    }
+  }
+}

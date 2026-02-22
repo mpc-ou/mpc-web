@@ -1,0 +1,14 @@
+export const _CACHE_MEMBERS = "members" as const;
+export const _CACHE_PROFILE = "profile" as const;
+export const _CACHE_POSTS = "posts" as const;
+export const _CACHE_EVENTS = "events" as const;
+export const _CACHE_SPONSORS = "sponsors" as const;
+export const _CACHE_SETTINGS = "site-settings" as const;
+export const _CACHE_DEPARTMENTS = "departments" as const;
+export const _CACHE_CATEGORIES = "categories" as const;
+export const _CACHE_ANNOUNCEMENTS = "announcements" as const;
+export const _CACHE_FAQ = "faq" as const;
+export const _CACHE_GALLERY = "gallery" as const;
+export const _CACHE_HOMEPAGE = "homepage" as const;
+export const _CACHE_ACHIEVEMENTS = "achievements" as const;
+export const _CACHE_PROJECTS = "projects" as const;

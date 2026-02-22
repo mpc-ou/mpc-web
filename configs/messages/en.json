@@ -1,0 +1,212 @@
+{
+  "common": {
+    "locale": {
+      "en": "English",
+      "vi": "Vietnamese",
+      "select": "Select Language"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "toggle": "Toggle Theme"
+    },
+    "nav": {
+      "login": "Login",
+      "logout": "Logout",
+      "home": "Home",
+      "profile": "Profile",
+      "settings": "Account Settings",
+      "admin": "Admin Panel"
+    },
+    "text": {
+      "loading": "Loading...",
+      "loginWith": "Login with",
+      "here": "here"
+    },
+    "notify": {
+      "success": {
+        "title": "Success",
+        "message": "Operation completed successfully."
+      },
+      "error": {
+        "title": "Error",
+        "message": "Operation failed.",
+        "unknownError": "Unknown error. Please contact the administrator."
+      }
+    }
+  },
+  "header": {
+    "logoName": "MPC",
+    "clubFullName": "Mobile Programming Club",
+    "apiDocs": "API Docs",
+    "nav": {
+      "home": "Home",
+      "training": "Training",
+      "activities": "Activities",
+      "webDesign": "Web Design",
+      "recruitment": "Join Us",
+      "events": "Events",
+      "achievements": "Achievements",
+      "about": "About Us"
+    },
+    "announcement": "🎉 MPC Club is recruiting new members! Don't miss the opportunity to grow your programming skills.",
+    "registerNow": "Register Now",
+    "dismiss": "Dismiss",
+    "feedback": "Feedback Box",
+    "searchPlaceholder": "Search...",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "description": "Mobile Programming Club (MPC) – a place to learn, grow, and share knowledge about technology.",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "activities": "Activities",
+    "achievements": "Achievements",
+    "aboutUs": "About Us",
+    "resources": "Resources",
+    "sponsors": "Sponsors",
+    "qa": "Q&A",
+    "externalLinks": "External Links",
+    "facultyLink": "Faculty of IT – OU",
+    "universityLink": "Ho Chi Minh City Open University",
+    "contact": "Contact",
+    "copyright": "© 2025 MPC Club – Mobile Programming Club. All rights reserved."
+  },
+  "home": {
+    "title": "Home – MPC Club",
+    "hero": {
+      "title": "Mobile Programming Club",
+      "subtitle": "Where there's a bug, there's MPC!",
+      "cta": "Learn More",
+      "ctaJoin": "Join Now"
+    },
+    "intro": {
+      "title": "About Us",
+      "description": "Mobile Programming Club (MPC) is one of the most dynamic and creative clubs at the Faculty of Information Technology – Ho Chi Minh City Open University. MPC was established to create an environment for learning, researching and developing IT skills across web, mobile, and more.",
+      "learnMore": "Learn More",
+      "viewMembers": "View Members"
+    },
+    "stats": {
+      "title": "MPC in Numbers",
+      "members": "Members",
+      "events": "Events Organized",
+      "years": "Years Active",
+      "projects": "Projects Completed"
+    },
+    "benefits": {
+      "title": "Benefits of Joining",
+      "subtitle": "Join MPC to grow together, learn from each other, and make a difference",
+      "skills": {
+        "title": "Skill Development",
+        "desc": "Learn and practice the latest technologies in Web, App, and AI through workshops and real projects."
+      },
+      "network": {
+        "title": "Network Building",
+        "desc": "Meet and work with like-minded people. Build lasting relationships in the tech community."
+      },
+      "opportunity": {
+        "title": "Opportunities",
+        "desc": "Participate in real projects, programming contests, and tech events. Gain experience for your career."
+      },
+      "community": {
+        "title": "Friendly Community",
+        "desc": "A positive learning environment that supports and is always ready to help new members."
+      }
+    },
+    "team": {
+      "title": "Club Organization",
+      "subtitle": "Our passionate and dedicated leadership team",
+      "president": "Executive Board",
+      "staff": "Department Leaders",
+      "viewAll": "View All Members",
+      "noLeadership": "No leadership information available."
+    },
+    "activities": {
+      "title": "Featured Activities",
+      "subtitle": "Signature events and projects from MPC Club"
+    },
+    "gallery": {
+      "title": "MPC Moments",
+      "subtitle": "Memorable moments with MPC"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Common questions about MPC Club",
+      "items": [
+        {
+          "q": "What is MPC?",
+          "a": "MPC (Mobile Programming Club) is the Mobile Programming Club at the Faculty of Information Technology – Ho Chi Minh City Open University, established to create a tech learning environment for students."
+        },
+        {
+          "q": "Do I need programming skills to join?",
+          "a": "Not required! The club welcomes all students passionate about technology, from beginners to experienced. The most important thing is a willingness to learn and enthusiasm."
+        },
+        {
+          "q": "How does the club operate?",
+          "a": "The club organizes programming skill workshops, tech seminars, competitions like Web Design and Robocode, and monthly teambuilding activities, plus real projects for members to practice."
+        },
+        {
+          "q": "How can I join MPC?",
+          "a": "Follow MPC's Facebook fanpage for updates on membership recruitment each semester. When recruitment opens, you can register via online form and participate in an interview."
+        },
+        {
+          "q": "What departments does the club have?",
+          "a": "MPC Club has several functional departments: Programming, Events & Logistics, Communications, Academic... Each handles different activities and you can choose the one that fits your interests."
+        },
+        {
+          "q": "Can students from other faculties join?",
+          "a": "The club prioritizes IT Faculty students but warmly welcomes students from other faculties who are passionate about programming and technology."
+        }
+      ]
+    },
+    "members": {
+      "title": "Club Members",
+      "description": "List of all active club members. To update your profile, please visit"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Your current information.",
+    "loginWith": "Login with",
+    "form": {
+      "submit": "Save",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "bio": "Bio"
+    }
+  },
+  "auth": {
+    "title": "Login",
+    "title2": "Who are you?",
+    "description": "Login to your account so we know who you are! ^^"
+  },
+  "defaultPage": {
+    "error": {
+      "title": "An Error Occurred!",
+      "description": "A small server error!",
+      "reminder": "Please notify the administrator!",
+      "tryAgain": "Try Again",
+      "redirect": "Back to Home"
+    },
+    "notFound": {
+      "title": "Page Not Found!",
+      "description": "Sorry, we couldn't find the page you're looking for. It may have been moved or no longer exists.",
+      "redirect": "Back to Home"
+    }
+  },
+  "admin": {
+    "title": "Admin Page",
+    "description": "Manage club content and members.",
+    "form": {
+      "selector": {
+        "linkedMembers": "Linked Members",
+        "removeLinkedMember": "Remove Linked Member",
+        "searchMembersPlaceholder": "Search members...",
+        "rolePlaceholder": "Select Role",
+        "clearSelectedMember": "Clear Selected Member"
+      }
+    }
+  }
+}

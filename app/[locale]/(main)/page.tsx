@@ -31,7 +31,7 @@ export default async function Page({ params }: PageType) {
 
   return (
     <div className="flex flex-col">
-      <HeroSection locale={locale} />
+      <HeroSection />
 
       <IntroSection locale={locale} />
 

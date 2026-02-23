@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 /**
  * Options that each page can customise when requesting a transparent header.
@@ -33,7 +26,7 @@ const DEFAULT_OPTIONS: Required<TransparentHeaderOptions> = {
   logoColor: "rgba(255,255,255,0.9)",
   bgColor: "transparent",
   scrollThreshold: 300,
-  hideAnnouncement: false,
+  hideAnnouncement: false
 };
 
 type TransparentHeaderState = {
@@ -50,7 +43,7 @@ const TransparentHeaderContext = createContext<TransparentHeaderCtx>({
   enabled: false,
   options: DEFAULT_OPTIONS,
   enable: () => {},
-  disable: () => {},
+  disable: () => {}
 });
 
 /**
@@ -59,7 +52,7 @@ const TransparentHeaderContext = createContext<TransparentHeaderCtx>({
 function TransparentHeaderProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<TransparentHeaderState>({
     enabled: false,
-    options: DEFAULT_OPTIONS,
+    options: DEFAULT_OPTIONS
   });
 
   const value = useMemo<TransparentHeaderCtx>(
@@ -68,18 +61,14 @@ function TransparentHeaderProvider({ children }: { children: ReactNode }) {
       enable: (opts?: TransparentHeaderOptions) =>
         setState({
           enabled: true,
-          options: { ...DEFAULT_OPTIONS, ...opts },
+          options: { ...DEFAULT_OPTIONS, ...opts }
         }),
-      disable: () => setState({ enabled: false, options: DEFAULT_OPTIONS }),
+      disable: () => setState({ enabled: false, options: DEFAULT_OPTIONS })
     }),
-    [state],
+    [state]
   );
 
-  return (
-    <TransparentHeaderContext.Provider value={value}>
-      {children}
-    </TransparentHeaderContext.Provider>
-  );
+  return <TransparentHeaderContext.Provider value={value}>{children}</TransparentHeaderContext.Provider>;
 }
 
 /**
@@ -123,8 +112,4 @@ function useTransparentHeaderState() {
 }
 
 export type { TransparentHeaderOptions };
-export {
-  TransparentHeaderProvider,
-  useTransparentHeader,
-  useTransparentHeaderState,
-};
+export { TransparentHeaderProvider, useTransparentHeader, useTransparentHeaderState };

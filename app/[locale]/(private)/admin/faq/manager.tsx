@@ -37,14 +37,14 @@ export function FaqDataTable({ data, useTemplate: initialUseTemplate }: Props) {
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa FAQ?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
     if (!ok) {
       return;
     }
     await handleErrorClient({
       cb: () => adminDeleteFaqItem(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
 
@@ -58,16 +58,14 @@ export function FaqDataTable({ data, useTemplate: initialUseTemplate }: Props) {
     const res = await adminUpsertSetting({
       key: "faq_use_template",
       value: checked ? "true" : "false",
-      description: "Dùng mẫu FAQ từ file fqa.json thay vì từ DB",
+      description: "Dùng mẫu FAQ từ file fqa.json thay vì từ DB"
     });
     if (res.error) {
       toast({ variant: "destructive", description: "Lưu thất bại" });
     } else {
       setUseTemplate(checked);
       toast({
-        description: checked
-          ? "Đã bật: dùng mẫu FAQ từ file"
-          : "Đã tắt: dùng FAQ từ cơ sở dữ liệu",
+        description: checked ? "Đã bật: dùng mẫu FAQ từ file" : "Đã tắt: dùng FAQ từ cơ sở dữ liệu"
       });
     }
     setSavingTemplate(false);
@@ -80,33 +78,27 @@ export function FaqDataTable({ data, useTemplate: initialUseTemplate }: Props) {
       <ConfirmDialog />
 
       {/* Template toggle */}
-      <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4">
+      <div className='flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4'>
         <Checkbox
           checked={useTemplate}
           disabled={savingTemplate}
-          id="use-template"
+          id='use-template'
           onCheckedChange={(checked) => handleToggleTemplate(checked === true)}
         />
-        <Label className="cursor-pointer text-sm" htmlFor="use-template">
+        <Label className='cursor-pointer text-sm' htmlFor='use-template'>
           Dùng mẫu FAQ từ file cấu hình (
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-            configs/data/fqa.json
-          </code>
-          ) thay vì từ cơ sở dữ liệu
+          <code className='rounded bg-muted px-1 py-0.5 font-mono text-xs'>configs/data/fqa.json</code>) thay vì từ cơ
+          sở dữ liệu
         </Label>
-        {savingTemplate && (
-          <span className="text-muted-foreground text-xs">Đang lưu...</span>
-        )}
+        {savingTemplate && <span className='text-muted-foreground text-xs'>Đang lưu...</span>}
       </div>
 
       {useTemplate ? (
-        <div className="rounded-xl border border-border bg-background p-6 text-center">
-          <p className="text-muted-foreground text-sm">
+        <div className='rounded-xl border border-border bg-background p-6 text-center'>
+          <p className='text-muted-foreground text-sm'>
             Đang dùng mẫu FAQ từ file{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-              configs/data/fqa.json
-            </code>
-            . Bỏ tick checkbox ở trên để quản lý FAQ từ cơ sở dữ liệu.
+            <code className='rounded bg-muted px-1 py-0.5 font-mono text-xs'>configs/data/fqa.json</code>. Bỏ tick
+            checkbox ở trên để quản lý FAQ từ cơ sở dữ liệu.
           </p>
         </div>
       ) : (
@@ -115,13 +107,13 @@ export function FaqDataTable({ data, useTemplate: initialUseTemplate }: Props) {
             columns={columns}
             data={data}
             filterComponent={
-              <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
-                <Plus className="mr-2 h-4 w-4" />
+              <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
+                <Plus className='mr-2 h-4 w-4' />
                 Thêm FAQ
               </Button>
             }
-            searchKey="questionVi"
-            searchPlaceholder="Tìm theo câu hỏi..."
+            searchKey='questionVi'
+            searchPlaceholder='Tìm theo câu hỏi...'
           />
           <FaqFormDialog
             faq={editFaq}

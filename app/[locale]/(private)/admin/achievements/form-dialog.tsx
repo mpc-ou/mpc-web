@@ -1,7 +1,7 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ImagePlus, Loader2, Upload, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { MarkdownEditor } from "@/components/markdown-editor";
 import {
   type LinkedMember,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { uploadToStorage } from "@/utils/supabase-upload";
 import {
   adminCreateAchievement,
   adminLinkAchievementMember,
@@ -52,7 +53,44 @@ export function AchievementFormDialog({
   const isEdit = !!achievement;
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
+    achievement?.thumbnail ?? null,
+  );
+  const [thumbnailUploading, setThumbnailUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const [linked, setLinked] = useState<LinkedMember[]>([]);
+
+  const processThumbnailFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 5MB" });
+      return;
+    }
+
+    setThumbnailUploading(true);
+    try {
+      const url = await uploadToStorage(file, "media", "achievements");
+      setThumbnailUrl(url);
+    } catch {
+      toast({ variant: "destructive", description: "Upload ảnh thất bại" });
+    } finally {
+      setThumbnailUploading(false);
+      if (thumbnailInputRef.current) {
+        thumbnailInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) processThumbnailFile(file);
+  };
 
   // Sync linked members when achievement changes
   useEffect(() => {
@@ -73,6 +111,7 @@ export function AchievementFormDialog({
     } else {
       setLinked([]);
     }
+    setThumbnailUrl(achievement?.thumbnail ?? null);
   }, [achievement?.id, open]);
 
   const handleLink = async (member: MemberOption, role: string) => {
@@ -111,6 +150,7 @@ export function AchievementFormDialog({
       title: fd.get("title") as string,
       summary: (fd.get("summary") as string) || undefined,
       content: (fd.get("content") as string) || undefined,
+      thumbnail: thumbnailUrl || undefined,
       date: fd.get("date") as string,
       type: fd.get("type") as string,
       isHighlight: fd.get("isHighlight") === "on",
@@ -170,6 +210,69 @@ export function AchievementFormDialog({
           id="achievement-form"
           onSubmit={handleSubmit}
         >
+          {/* Thumbnail Upload */}
+          <div className="space-y-2">
+            <Label>Ảnh đại diện (Thumbnail)</Label>
+            {thumbnailUrl ? (
+              <div className="relative w-full overflow-hidden rounded-lg border aspect-video bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt="Thumbnail"
+                  className="object-cover w-full h-full"
+                  src={thumbnailUrl}
+                />
+                <button
+                  className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+                  onClick={() => setThumbnailUrl(null)}
+                  type="button"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                className={`flex h-[120px] w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${isDragOver ? "border-primary bg-primary/10" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}
+                disabled={thumbnailUploading}
+                onClick={() => thumbnailInputRef.current?.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                  if (e.dataTransfer.files?.[0]) {
+                    processThumbnailFile(e.dataTransfer.files[0]);
+                  }
+                }}
+                type="button"
+              >
+                {thumbnailUploading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span className="text-xs">Đang upload...</span>
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus className="h-6 w-6" />
+                    <span className="text-xs">Upload ảnh (max 5MB)</span>
+                  </>
+                )}
+              </button>
+            )}
+            <input
+              accept="image/*"
+              className="hidden"
+              onChange={handleThumbnailUpload}
+              ref={thumbnailInputRef}
+              type="file"
+            />
+          </div>
+
           <div className="grid gap-1.5">
             <Label>Tên thành tựu *</Label>
             <Input defaultValue={achievement?.title} name="title" required />

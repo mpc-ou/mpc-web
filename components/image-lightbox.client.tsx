@@ -62,57 +62,53 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
     };
   }, [open, goNext, goPrev, onClose]);
 
-  if (!mounted || !open || images.length === 0) {
+  if (!(mounted && open) || images.length === 0) {
     return null;
   }
 
   const current = images.at(currentIndex);
 
   const content = (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center">
+    <div className='fixed inset-0 z-9999 flex items-center justify-center'>
       {/* Backdrop */}
       <button
-        aria-label="Close lightbox"
-        className="absolute inset-0 cursor-default bg-black/90"
+        aria-label='Close lightbox'
+        className='absolute inset-0 cursor-default bg-black/90'
         onClick={onClose}
-        type="button"
+        type='button'
       />
 
       {/* Close button */}
       <button
-        aria-label="Close"
-        className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20"
+        aria-label='Close'
+        className='absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20'
         onClick={onClose}
-        type="button"
+        type='button'
       >
-        <X className="h-6 w-6" />
+        <X className='h-6 w-6' />
       </button>
 
       {/* Prev button */}
       {images.length > 1 && (
         <button
-          aria-label="Previous image"
-          className="absolute left-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20"
+          aria-label='Previous image'
+          className='absolute left-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20'
           onClick={goPrev}
-          type="button"
+          type='button'
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className='h-6 w-6' />
         </button>
       )}
 
       {/* Image */}
-      <div className="relative z-10 flex max-h-[90vh] max-w-[90vw] flex-col items-center">
+      <div className='relative z-10 flex max-h-[90vh] max-w-[90vw] flex-col items-center'>
         <img
           alt={current?.caption ?? "Gallery image"}
-          className="max-h-[80vh] max-w-[90vw] rounded-lg object-contain"
+          className='max-h-[80vh] max-w-[90vw] rounded-lg object-contain'
           src={current?.url}
         />
-        {current?.caption && (
-          <p className="mt-3 text-center text-sm text-white/80">
-            {current.caption}
-          </p>
-        )}
-        <p className="mt-1 text-xs text-white/50">
+        {current?.caption && <p className='mt-3 text-center text-sm text-white/80'>{current.caption}</p>}
+        <p className='mt-1 text-white/50 text-xs'>
           {currentIndex + 1} / {images.length}
         </p>
       </div>
@@ -120,12 +116,12 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
       {/* Next button */}
       {images.length > 1 && (
         <button
-          aria-label="Next image"
-          className="absolute right-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20"
+          aria-label='Next image'
+          className='absolute right-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/20'
           onClick={goNext}
-          type="button"
+          type='button'
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className='h-6 w-6' />
         </button>
       )}
     </div>

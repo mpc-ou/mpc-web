@@ -53,6 +53,7 @@ export function ProjectFormDialog({
     project?.thumbnail ?? null,
   );
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -76,6 +77,35 @@ export function ProjectFormDialog({
       setLinked([]);
     }
   }, [project?.id, open]);
+
+  const processThumbnailFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 3MB" });
+      return;
+    }
+    setThumbnailUploading(true);
+    try {
+      const url = await uploadToStorage(file, "media", "projects");
+      setThumbnailUrl(url);
+    } catch {
+      toast({
+        variant: "destructive",
+        description: "Upload thumbnail thất bại",
+      });
+    } finally {
+      setThumbnailUploading(false);
+      if (thumbnailInputRef.current) thumbnailInputRef.current.value = "";
+    }
+  };
+
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processThumbnailFile(file);
+  };
 
   const addTech = () => {
     const t = techInput.trim();
@@ -198,11 +228,11 @@ export function ProjectFormDialog({
           <div className="grid gap-1.5">
             <Label>Ảnh thumbnail</Label>
             {thumbnailUrl ? (
-              <div className="relative w-full overflow-hidden rounded-lg border">
-                {/* biome-ignore lint/nursery/noImgElement: admin only */}
+              <div className="relative w-full overflow-hidden rounded-lg border aspect-video bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   alt="Thumbnail"
-                  className="h-36 w-full object-cover"
+                  className="object-cover w-full h-full"
                   src={thumbnailUrl}
                 />
                 <button
@@ -216,9 +246,23 @@ export function ProjectFormDialog({
               </div>
             ) : (
               <button
-                className="flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground disabled:opacity-50"
+                className={`flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${isDragOver ? "border-primary bg-primary/10" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}
                 disabled={thumbnailUploading}
                 onClick={() => thumbnailInputRef.current?.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                  if (e.dataTransfer.files?.[0])
+                    processThumbnailFile(e.dataTransfer.files[0]);
+                }}
                 type="button"
               >
                 {thumbnailUploading ? (
@@ -237,38 +281,7 @@ export function ProjectFormDialog({
             <input
               accept="image/*"
               className="hidden"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                if (!file.type.startsWith("image/")) {
-                  toast({
-                    variant: "destructive",
-                    description: "Chỉ chấp nhận file ảnh",
-                  });
-                  return;
-                }
-                if (file.size > 3 * 1024 * 1024) {
-                  toast({
-                    variant: "destructive",
-                    description: "Ảnh tối đa 3MB",
-                  });
-                  return;
-                }
-                setThumbnailUploading(true);
-                try {
-                  const url = await uploadToStorage(file, "media", "projects");
-                  setThumbnailUrl(url);
-                } catch {
-                  toast({
-                    variant: "destructive",
-                    description: "Upload thumbnail thất bại",
-                  });
-                } finally {
-                  setThumbnailUploading(false);
-                  if (thumbnailInputRef.current)
-                    thumbnailInputRef.current.value = "";
-                }
-              }}
+              onChange={handleThumbnailUpload}
               ref={thumbnailInputRef}
               title="Upload thumbnail"
               type="file"

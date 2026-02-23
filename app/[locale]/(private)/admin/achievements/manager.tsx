@@ -6,13 +6,7 @@ import { useMemo, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import type { MemberOption } from "@/components/member-selector";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { adminDeleteAchievement } from "../actions";
@@ -21,7 +15,7 @@ import { AchievementFormDialog } from "./form-dialog";
 
 export function AchievementsDataTable({
   data,
-  allMembers = [],
+  allMembers = []
 }: {
   data: AchievementRow[];
   allMembers?: MemberOption[];
@@ -47,14 +41,14 @@ export function AchievementsDataTable({
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa thành tựu?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
     if (!ok) {
       return;
     }
     await handleErrorClient({
       cb: () => adminDeleteAchievement(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
   const handleCreate = () => {
@@ -70,26 +64,26 @@ export function AchievementsDataTable({
         columns={columns}
         data={filteredData}
         filterComponent={
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Select onValueChange={setTypeFilter} value={typeFilter}>
-              <SelectTrigger className="h-8 w-35">
-                <SelectValue placeholder="Lọc loại" />
+              <SelectTrigger className='h-8 w-35'>
+                <SelectValue placeholder='Lọc loại' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">Tất cả</SelectItem>
-                <SelectItem value="INDIVIDUAL">Cá nhân</SelectItem>
-                <SelectItem value="TEAM">Nhóm</SelectItem>
-                <SelectItem value="CLUB">Toàn CLB</SelectItem>
+                <SelectItem value='ALL'>Tất cả</SelectItem>
+                <SelectItem value='INDIVIDUAL'>Cá nhân</SelectItem>
+                <SelectItem value='TEAM'>Nhóm</SelectItem>
+                <SelectItem value='CLUB'>Toàn CLB</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
+              <Plus className='mr-2 h-4 w-4' />
               Thêm thành tựu
             </Button>
           </div>
         }
-        searchKey="title"
-        searchPlaceholder="Tìm theo tên..."
+        searchKey='title'
+        searchPlaceholder='Tìm theo tên...'
       />
       <AchievementFormDialog
         achievement={editItem}

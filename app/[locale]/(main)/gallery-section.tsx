@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getGalleryImages } from "./actions";
+import { getGalleryImages } from "@/app/[locale]/actions";
 import { GalleryCarousel } from "./gallery-carousel.client";
 
 const GallerySection = async ({ locale }: { locale: string }) => {

@@ -14,10 +14,12 @@ const IntroSection = async ({ locale }: { locale: string }) => {
           <div className="w-full lg:w-1/2">
             <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-muted shadow-xl">
               <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                <img
+                <Image
                   alt="CLB hoạt động"
-                  className="h-full w-full object-cover"
+                  className="object-cover"
                   src="/images/bg/about.jpg"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>

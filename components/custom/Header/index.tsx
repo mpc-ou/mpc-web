@@ -13,6 +13,7 @@ import { LocaleSelect } from "./LocaleSelect.client";
 import { MobileMenu } from "./MobileMenu.client";
 import { ModeToggle } from "./ModeToggle.client";
 import { UserProfile } from "./UserProfile.client";
+import Image from "next/image";
 
 type HeaderProps = {
   announcement?: AnnouncementData | null;
@@ -89,10 +90,12 @@ const Header = ({ announcement, profile = null }: HeaderProps) => {
             prefetch={true}
             style={isTransparent ? { color: options.logoColor } : undefined}
           >
-            <img
+            <Image
               alt="MPC Logo"
               className="h-8 w-8 rounded-lg"
+              height={32}
               src="/images/logo.png"
+              width={32}
             />
             <span>MPClub</span>
           </Link>

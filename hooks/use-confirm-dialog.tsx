@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 
 type ConfirmOptions = {
@@ -63,22 +63,16 @@ const useConfirmDialog = () => {
       }}
       open={open}
     >
-      <DialogContent className="sm:max-w-100">
+      <DialogContent className='sm:max-w-100'>
         <DialogHeader>
           <DialogTitle>{options.title ?? "Xác nhận"}</DialogTitle>
-          {options.description && (
-            <DialogDescription>{options.description}</DialogDescription>
-          )}
+          {options.description && <DialogDescription>{options.description}</DialogDescription>}
         </DialogHeader>
-        <DialogFooter className="gap-2">
-          <Button onClick={handleCancel} type="button" variant="outline">
+        <DialogFooter className='gap-2'>
+          <Button onClick={handleCancel} type='button' variant='outline'>
             {options.cancelText ?? "Hủy"}
           </Button>
-          <Button
-            onClick={handleConfirm}
-            type="button"
-            variant={options.variant ?? "destructive"}
-          >
+          <Button onClick={handleConfirm} type='button' variant={options.variant ?? "destructive"}>
             {options.confirmText ?? "Xác nhận"}
           </Button>
         </DialogFooter>

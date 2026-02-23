@@ -5,20 +5,15 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = {
   title: {
     template: "%s | MPClub",
-    default: "MPClub - Where there's a bug, there's MPC!",
+    default: "MPClub - Where there's a bug, there's MPC!"
   },
   description:
     "MPClub - Where there's a bug, there's MPC! The official club of the Faculty of Information Technology, HCMOU.",
   authors: [{ name: "MPClub Team" }],
   category: "Technology",
   creator: "MPClub Team",
-  keywords: [
-    "MPClub",
-    "HCMOU",
-    "Faculty of Information Technology",
-    "Student Club",
-  ],
-  robots: "index, follow",
+  keywords: ["MPClub", "HCMOU", "Faculty of Information Technology", "Student Club"],
+  robots: "index, follow"
 };
 
 type Props = {

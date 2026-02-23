@@ -4,7 +4,7 @@ import { SettingsManager } from "./manager";
 export default async function AdminSettingsPage() {
   const [{ data: settingsData }, { data: linksData }] = await Promise.all([
     adminGetSettings(),
-    adminGetExternalLinks(),
+    adminGetExternalLinks()
   ]);
 
   const settings = (settingsData?.payload ?? []) as Array<{
@@ -23,14 +23,10 @@ export default async function AdminSettingsPage() {
   }>;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className='flex flex-col gap-6'>
       <div>
-        <h1 className="font-bold text-2xl text-foreground">
-          ⚙️ Cài đặt Website
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Cấu hình footer, liên kết mạng xã hội và liên kết ngoài
-        </p>
+        <h1 className='font-bold text-2xl text-foreground'>⚙️ Cài đặt Website</h1>
+        <p className='text-muted-foreground text-sm'>Cấu hình footer, liên kết mạng xã hội và liên kết ngoài</p>
       </div>
       <SettingsManager externalLinks={externalLinks} settings={settings} />
     </div>

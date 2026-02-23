@@ -13,13 +13,7 @@ import { adminDeleteProject } from "../actions";
 import { createColumns, type ProjectRow } from "./columns";
 import { ProjectFormDialog } from "./form-dialog";
 
-export function ProjectsDataTable({
-  data,
-  allMembers = [],
-}: {
-  data: ProjectRow[];
-  allMembers?: MemberOption[];
-}) {
+export function ProjectsDataTable({ data, allMembers = [] }: { data: ProjectRow[]; allMembers?: MemberOption[] }) {
   const router = useRouter();
   const { handleErrorClient } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
@@ -34,14 +28,14 @@ export function ProjectsDataTable({
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa dự án?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
     if (!ok) {
       return;
     }
     await handleErrorClient({
       cb: () => adminDeleteProject(id),
-      onSuccess: () => router.refresh(),
+      onSuccess: () => router.refresh()
     });
   };
   const handleCreate = () => {
@@ -49,10 +43,7 @@ export function ProjectsDataTable({
     setDialogOpen(true);
   };
   const handleView = (p: ProjectRow) => setViewItem(p);
-  const columns = useMemo(
-    () => createColumns(handleEdit, handleDelete, handleView),
-    [],
-  );
+  const columns = useMemo(() => createColumns(handleEdit, handleDelete, handleView), []);
 
   return (
     <>
@@ -61,13 +52,13 @@ export function ProjectsDataTable({
         columns={columns}
         data={data}
         filterComponent={
-          <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
-            <Plus className="mr-2 h-4 w-4" />
+          <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
+            <Plus className='mr-2 h-4 w-4' />
             Thêm dự án
           </Button>
         }
-        searchKey="title"
-        searchPlaceholder="Tìm theo tên dự án..."
+        searchKey='title'
+        searchPlaceholder='Tìm theo tên dự án...'
       />
       <ProjectDetailDialog
         onOpenChange={(open) => {

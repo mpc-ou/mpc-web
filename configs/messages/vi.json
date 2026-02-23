@@ -1,4 +1,7 @@
 {
+  "metadata": {
+    "siteName": "MPC"
+  },
   "common": {
     "locale": {
       "en": "Tiếng Anh",
@@ -45,9 +48,12 @@
       "training": "Đào tạo",
       "activities": "Hoạt động",
       "webDesign": "Web Design",
-      "recruitment": "Tuyển thành viên",
+      "introduction": "Giới thiệu",
       "events": "Sự kiện",
       "achievements": "Thành tựu",
+      "sponsors": "Nhà tài trợ",
+      "members": "Thành viên",
+      "projects": "Các dự án",
       "about": "Về chúng mình"
     },
     "announcement": "🎉 CLB MPC đang tuyển thành viên mới! Đừng bỏ lỡ cơ hội phát triển kỹ năng lập trình.",
@@ -208,5 +214,111 @@
         "clearSelectedMember": "Xóa thành viên đã chọn"
       }
     }
+  },
+  "events": {
+    "title": "Sự Kiện",
+    "subtitle": "CLB thường sẽ có các sự kiện lớn nhỏ, được tổ chức giúp gắn kết các thành viên trong CLB cũng như mở rộng các mối quan hệ bên ngoài CLB. Các sự kiện tổ chức ra cũng là để mọi người giải trí sau những giờ học trên trường cũng như ở CLB.",
+    "internalMenu": "Nội bộ",
+    "externalMenu": "Đối ngoại",
+    "internal": {
+      "title": "Các hoạt động nội bộ của CLB",
+      "desc": "CLB thường tổ chức một số hoạt động, sự kiện nội bộ như: offline, sinh nhật, học nhóm,... với mục đích gắn kết các thành viên, tạo môi trường học tập và làm việc thoải mái."
+    },
+    "external": {
+      "title": "Các hoạt động sự kiện đối ngoại của CLB",
+      "desc": "Tổ chức một số sự kiện của đoàn trường, các cuộc thi học thuật như WebDesign, RoboCode,... mở rộng mối quan hệ với các CLB khác, mang lại cơ hội thể hiện bản thân."
+    },
+    "internalEvents": [
+      {
+        "title": "Offline",
+        "desc": "Offline là một hoạt động mà các thành viên trong CLB sẽ tụ tập ở một địa điểm nào đó để gặp mặt, trò chuyện, giao lưu, chia sẻ kiến thức, kinh nghiệm, cũng như tạo mối quan hệ với nhau."
+      },
+      {
+        "title": "Sinh nhật",
+        "desc": "CLB hằng năm sẽ tổ chức sinh nhật cho CLB, đây là dịp để mọi người gặp mặt, chúc mừng, chia sẻ niềm vui cùng nhau."
+      },
+      {
+        "title": "Tổ chức sự kiện",
+        "desc": "Các thành viên trong CLB thường hỗ trợ nhau trong việc tổ chức các sự kiện, giúp mọi người hiểu rõ hơn về công việc tổ chức sự kiện, cũng như tạo dịp các thành viên gặp mặt, gần gũi với nhau hơn."
+      },
+      {
+        "title": "Học nhóm",
+        "desc": "CLB thường tổ chức học nhóm để các thành viên cùng nhau học tập, trao đổi kiến thức, kinh nghiệm, giúp mọi người hiểu rõ hơn về môn học, cũng như tạo môi trường học tập thoải mái và hiệu quả."
+      }
+    ],
+    "externalEvents": [
+      {
+        "title": "WebDesign",
+        "desc": "Web Design là cuộc thi lập trình giao diện Website được tổ chức thường niên, mang đến cho người tham gia một sân chơi học thuật đầy ý nghĩa."
+      },
+      {
+        "title": "Robocode",
+        "desc": "Nhằm bồi dưỡng kiến thức chuyên ngành, kỹ năng mềm, phát huy khả năng sáng tạo của sinh viên."
+      },
+      {
+        "title": "Hoạt động chào đón Tân sinh viên",
+        "desc": "Hoạt động này góp phần định hướng, giúp Tân sinh viên nhanh chóng hoà nhập, hiểu rõ môi trường đại học cũng như vai trò của Đoàn - Hội - CLB Đội Nhóm."
+      },
+      {
+        "title": "Các buổi chia sẻ kiến thức",
+        "desc": "Tổ chức các buổi chia sẻ kiến thức, kinh nghiệm từ các thành viên trong CLB, cũng như các chuyên gia trong ngành."
+      },
+      {
+        "title": "The Open Clubs",
+        "desc": "Sự kiện giao lưu, trình diễn, giới thiệu về CLB cho sinh viên toàn trường do Đoàn trường tổ chức."
+      }
+    ],
+    "learnMore": "Tìm hiểu thêm"
+  },
+  "webdesign": {
+    "title": "Cuộc thi học thuật \nWeb Design",
+    "subtitle": "Web Design là một cuộc thi lập trình giao diện Website được tổ chức thường niên bởi Câu lạc bộ Lập Trình Trên Thiết Bị Di Động với mong muốn mang đến một sân chơi đầy ý nghĩa và sáng tạo.",
+    "tag": "Sự kiện",
+    "heading": "Cuộc thi Web Design",
+    "purpose": "Mục đích tổ chức",
+    "purposeDesc": "Web Design ra đời với mục đích tạo ra một sân chơi học thuật lành mạnh, giúp sinh viên có cơ hội áp dụng trực tiếp các kiến thức đã học vào thực tế. Qua đó giúp các đội thi phát triển kỹ năng làm việc nhóm, kỹ năng quản lý thời gian, thiết kế UI/UX và lập trình Frontend. Cuộc thi không chỉ nhấn mạnh vào kỹ năng lập trình mà còn đề cao tính tiện dụng, thẩm mỹ của sản phẩm.",
+    "rulesTitle": "Thể thức",
+    "rules1": "Thi theo đội",
+    "rules1Desc": "Các thi sinh đăng ký tạo thành đội gồm tối đa 3 thành viên",
+    "rules2": "Đăng ký",
+    "rules2Desc": "Thí sinh đại diện điền vào form đăng ký của BTC",
+    "rules3": "Khán giả",
+    "rules3Desc": "Khán giả theo dõi và tham gia mini game tại chung kết",
+    "timelineTitle": "Giai đoạn diễn ra",
+    "phase1Title": "Giai đoạn 1",
+    "phase1": "Mở đơn",
+    "phase1Desc": "Mở form đăng ký, công bố chủ đề cuộc thi",
+    "phase2Title": "Giai đoạn 2",
+    "phase2": "Hoạt động truyền thông",
+    "phase2Desc": "Chuỗi các bài đăng truyền thông về thể lệ, cơ cấu giải thưởng",
+    "phase3Title": "Giai đoạn 3",
+    "phase3": "Vòng loại",
+    "phase3Desc": "Quá trình hoàn thiện và nộp bài dự thi của các đội nhóm",
+    "phase4Title": "Giai đoạn 4",
+    "phase4": "Chung kết",
+    "phase4Desc": "TOP đội thi có điểm số cao nhất sẽ trình bày sản phẩm trực tiếp trước BGK",
+    "criteriaTitle": "Các tiêu chí",
+    "criteria1": "Giao diện",
+    "criteria1Desc": "Bố cục minh bạch, màu sắc hài hòa, đáp ứng responsive",
+    "criteria2": "Trải nghiệm",
+    "criteria2Desc": "Dễ sử dụng, thao tác thuận lợi, loading nhanh chóng",
+    "criteria3": "Sáng tạo",
+    "criteria3Desc": "Tính độc đáo về mặt ý tưởng, UX đột phá",
+    "criteria4": "Phù hợp",
+    "criteria4Desc": "Đúng chủ đề cuộc thi, thực tiễn và có khả năng sử dụng",
+    "galleryTitle": "Một số hình ảnh",
+    "prizesTitle": "Giải thưởng",
+    "prize1": "Giải nhất",
+    "prize1Desc": "Trị giá hơn <b>1.000.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "prize2": "Giải nhì",
+    "prize2Desc": "Trị giá hơn <b>700.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "prize3": "Giải ba",
+    "prize3Desc": "Trị giá hơn <b>500.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "joinTitle": "Tham gia",
+    "joinHeading": "Cách thức đăng ký",
+    "joinDesc": "Xem thêm chi tiết tại fanpage của chúng mình để biết thêm thông tin về thể lệ, cơ cấu giải thưởng và cách thức đăng ký tham gia.",
+    "learnMoreBtn": "Tìm hiểu thêm",
+    "followUpBtn": "Theo dõi ngay!",
+    "exhibitionTitle": "Các dự án tiêu biểu"
   }
 }

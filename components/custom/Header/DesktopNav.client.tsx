@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@/configs/i18n/routing";
 
@@ -17,38 +17,62 @@ const DesktopNav = () => {
     "rounded-md px-3 py-2 font-semibold text-md text-foreground/80 transition-colors hover:text-primary";
 
   return (
-    <nav className='hidden items-center gap-1 md:flex'>
-      <Link className={linkClass} href='/training'>
+    <nav className="hidden items-center gap-1 md:flex">
+      <Link className={linkClass} href="/training">
         {tNav("training")}
       </Link>
 
       {/* Activities Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className={`flex items-center gap-1 ${linkClass}`} type='button'>
+          <button
+            className={`flex items-center gap-1 ${linkClass}`}
+            type="button"
+          >
             {tNav("activities")}
-            <ChevronDown className='h-4 w-4 transition-transform duration-200' />
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='start'>
+        <DropdownMenuContent align="start">
           <DropdownMenuItem asChild>
-            <Link href='/activities/web-design'>{tNav("webDesign")}</Link>
+            <Link href="/events">{tNav("introduction")}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href='/activities/recruitment'>{tNav("recruitment")}</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href='/activities/events'>{tNav("events")}</Link>
+            <Link href="/event/webdesign">{tNav("webDesign")}</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Link className={linkClass} href='/achievements'>
+      <Link className={linkClass} href="/achievements">
         {tNav("achievements")}
       </Link>
-      <Link className={linkClass} href='/about'>
-        {tNav("about")}
-      </Link>
+      {/* <Link className={linkClass} href="/sponsors">
+        {tNav("sponsors")}
+      </Link> */}
+
+      {/* About Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className={`flex items-center gap-1 ${linkClass}`}
+            type="button"
+          >
+            {tNav("about")}
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem asChild>
+            <Link href="/about">{tNav("about")}</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/members">{tNav("members")}</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/projects">{tNav("projects")}</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </nav>
   );
 };

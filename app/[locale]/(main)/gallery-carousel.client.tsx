@@ -2,6 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import { useState } from "react";
+import Image from "next/image";
 import { ImageLightbox } from "@/components/image-lightbox.client";
 import {
   Carousel,
@@ -44,7 +45,7 @@ const GalleryCarousel = ({ images }: Props) => {
         <CarouselContent className="-ml-4">
           {images.map((img, index) => (
             <CarouselItem
-              className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
+              className="basis-full pl-4 sm:basis-1/2 lg:basis-1/3"
               key={img.id}
             >
               <button
@@ -52,11 +53,12 @@ const GalleryCarousel = ({ images }: Props) => {
                 onClick={() => handleImageClick(index)}
                 type="button"
               >
-                <div className="aspect-video">
-                  <img
+                <div className="relative aspect-video">
+                  <Image
                     alt={img.caption ?? "Gallery"}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     src={img.url}
                   />
                 </div>
@@ -71,8 +73,8 @@ const GalleryCarousel = ({ images }: Props) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden sm:flex -left-4" />
-        <CarouselNext className="hidden sm:flex -right-4" />
+        <CarouselPrevious className="-left-4 hidden sm:flex" />
+        <CarouselNext className="-right-4 hidden sm:flex" />
       </Carousel>
 
       <ImageLightbox

@@ -4,6 +4,14 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./configs/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "tsqyqazktzyicxccdpfy.supabase.co",
+      },
+    ],
+  },
   cacheComponents: true,
   reactCompiler: true,
   output: "standalone",

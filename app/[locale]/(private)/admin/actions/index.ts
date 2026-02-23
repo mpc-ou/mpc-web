@@ -16,8 +16,8 @@ export {
   adminUpdateAnnouncement
 } from "./announcements";
 export {
-  adminCreateFaqItem,
   adminCreateExternalLink,
+  adminCreateFaqItem,
   adminCreateGalleryImage,
   adminDeleteExternalLink,
   adminDeleteFaqItem,
@@ -29,6 +29,7 @@ export {
   adminGetSettings,
   adminUpdateExternalLink,
   adminUpdateFaqItem,
+  adminUpdateGalleryOrders,
   adminUpsertHomepageSection,
   adminUpsertSetting
 } from "./content";

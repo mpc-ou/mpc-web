@@ -17,6 +17,8 @@ import { useHandleError } from "@/hooks/use-handle-error";
 import { adminDeleteMember } from "../actions";
 import { createColumns, type MemberRow } from "./columns";
 import { MemberFormDialog } from "./form-dialog";
+import * as XLSX from "xlsx";
+import { Download } from "lucide-react";
 
 type Department = { id: string; name: string };
 
@@ -63,6 +65,22 @@ export function MembersDataTable({
   const handleCreate = () => {
     setEditMember(null);
     setDialogOpen(true);
+  };
+
+  const handleExportExcel = () => {
+    const exportData = filteredData.map((m) => ({
+      "Họ tên": `${m.firstName || ""} ${m.lastName || ""}`.trim(),
+      Email: m.email,
+      SĐT: m.phone || "",
+      MSSV: m.studentId || "",
+      "Vai trò Web": m.webRole,
+      "Trạng thái": m.isActive ? "Hoạt động" : "Khóa",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "ThanhVien");
+    XLSX.writeFile(wb, "Danh_sach_thanh_vien.xlsx");
   };
 
   const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
@@ -115,7 +133,16 @@ export function MembersDataTable({
                 <SelectItem value="GUEST">Khách</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
+            <Button
+              className="ml-auto h-8"
+              onClick={handleExportExcel}
+              size="sm"
+              variant="outline"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Xuất Excel
+            </Button>
+            <Button className="h-8" onClick={handleCreate} size="sm">
               <Plus className="mr-2 h-4 w-4" />
               Thêm thành viên
             </Button>

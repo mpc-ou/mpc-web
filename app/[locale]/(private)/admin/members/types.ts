@@ -23,16 +23,14 @@ export const POSITION_LABELS: Record<string, string> = {
 };
 
 export const PLATFORMS = [
-  { value: "Facebook", label: "Facebook", icon: "📘" },
-  { value: "GitHub", label: "GitHub", icon: "🐙" },
-  { value: "LinkedIn", label: "LinkedIn", icon: "💼" },
-  { value: "X (Twitter)", label: "X (Twitter)", icon: "𝕏" },
-  { value: "Instagram", label: "Instagram", icon: "📸" },
-  { value: "TikTok", label: "TikTok", icon: "🎵" },
-  { value: "YouTube", label: "YouTube", icon: "▶️" },
-  { value: "Discord", label: "Discord", icon: "👾" },
-  { value: "Pixiv", label: "Pixiv", icon: "🎨" },
-  { value: "Zalo", label: "Zalo", icon: "💬" },
-  { value: "Email", label: "Email", icon: "✉️" },
-  { value: "Website", label: "Website / Khác", icon: "🌐" }
+  { value: "Facebook", label: "Facebook", icon: "/images/icons/facebook-icon.svg" },
+  { value: "GitHub", label: "GitHub", icon: "/images/icons/github-icon.svg" },
+  { value: "LinkedIn", label: "LinkedIn", icon: "/images/icons/linkedin-icon.svg" },
+  { value: "X (Twitter)", label: "X (Twitter)", icon: "/images/icons/x-icon.svg" },
+  { value: "Instagram", label: "Instagram", icon: "/images/icons/instagram-icon.svg" },
+  { value: "TikTok", label: "TikTok", icon: "/images/icons/tiktok-icon.svg" },
+  { value: "YouTube", label: "YouTube", icon: "/images/icons/youtube-icon.svg" },
+  { value: "Discord", label: "Discord", icon: "/images/icons/discord-icon.svg" },
+  { value: "Email", label: "Email", icon: "/images/icons/email-icon.svg" },
+  { value: "Website", label: "Website / Khác", icon: "/images/icons/website-icon.svg" }
 ];

@@ -30,7 +30,7 @@ export const adminCreateFaqItem = async (data: {
           answerVi: data.answerVi,
           questionEn: data.questionEn ?? "",
           answerEn: data.answerEn ?? "",
-          order: data.order ?? 0,
+          order: data.order ?? 0
         }
       });
       revalidateTag(_CACHE_FAQ, "default");
@@ -93,6 +93,22 @@ export const adminDeleteGalleryImage = async (id: string) =>
     cb: async ({ user }) => {
       await requireAdmin(user);
       await prisma.galleryImage.delete({ where: { id } });
+      revalidateTag(_CACHE_GALLERY, "default");
+      return { success: true };
+    }
+  });
+
+export const adminUpdateGalleryOrders = async (items: { id: string; order: number }[]) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const updates = items.map((item) =>
+        prisma.galleryImage.update({
+          where: { id: item.id },
+          data: { order: item.order }
+        })
+      );
+      await prisma.$transaction(updates);
       revalidateTag(_CACHE_GALLERY, "default");
       return { success: true };
     }

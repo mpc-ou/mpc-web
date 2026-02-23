@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getMemberCount, getUpcomingEventsCount } from "./actions";
+import { getMemberCount, getUpcomingEventsCount } from "@/app/[locale]/actions";
 import { StatsCounter } from "./stats-counter.client";
 
 const StatsSection = async ({ locale }: { locale: string }) => {

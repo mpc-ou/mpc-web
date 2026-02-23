@@ -1,0 +1,131 @@
+{
+  "internalEvents": [
+    {
+      "id": "offline",
+      "vi": {
+        "title": "Offline",
+        "description": "Offline là một hoạt động mà các thành viên trong CLB sẽ tụ tập ở một địa điểm nào đó để gặp mặt, trò chuyện, giao lưu, chia sẻ kiến thức, kinh nghiệm, cũng như tạo mối quan hệ với nhau."
+      },
+      "en": {
+        "title": "Offline Meetings",
+        "description": "A gathering for club members at a specific location to meet, talk, socialize, share knowledge and experiences, and build relationships with each other."
+      },
+      "imageFolder": "/images/offline"
+    },
+    {
+      "id": "birthday",
+      "vi": {
+        "title": "Sinh nhật",
+        "description": "CLB hằng năm sẽ tổ chức sinh nhật cho CLB, đây là dịp để mọi người gặp mặt, chúc mừng, chia sẻ niềm vui cùng nhau."
+      },
+      "en": {
+        "title": "Birthdays",
+        "description": "The club annually celebrates its birthday, an occasion for everyone to meet, congratulate, and share joy together."
+      },
+      "imageFolder": "/images/birthday"
+    },
+    {
+      "id": "volunteering",
+      "vi": {
+        "title": "Hoạt động tình nguyện",
+        "description": "CLB thường tổ chức các hoạt động tình nguyện để giúp đỡ cộng đồng, cũng như tạo dịp các thành viên gặp mặt, gần gũi với nhau hơn."
+      },
+      "en": {
+        "title": "Volunteering",
+        "description": "The club frequently organizes volunteering activities to help the community, as well as create opportunities for members to get closer."
+      },
+      "imageFolder": "/images/volunteering"
+    },
+    {
+      "id": "training",
+      "vi": {
+        "title": "Đào tạo",
+        "description": "CLB thường tổ chức các buổi đào tạo, dạy kĩ năng mềm cho các thành viên."
+      },
+      "en": {
+        "title": "Training",
+        "description": "The club frequently organizes training sessions to teach soft skills to members."
+      },
+      "imageFolder": "/images/training"
+    }
+  ],
+  "externalEvents": [
+    {
+      "id": "webdesign",
+      "vi": {
+        "title": "WebDesign",
+        "description": "Web Design là cuộc thi lập trình giao diện Website được tổ chức thường niên, mang đến cho người tham gia một sân chơi học thuật đầy ý nghĩa."
+      },
+      "en": {
+        "title": "WebDesign",
+        "description": "Web Design is an annual website interface programming competition, providing participants with a meaningful academic playground."
+      },
+      "href": "/event/webdesign",
+      "imageFolder": "/images/web-design"
+    },
+    {
+      "id": "robocode",
+      "vi": {
+        "title": "Robocode",
+        "description": "Nhằm bồi dưỡng kiến thức chuyên ngành, kỹ năng mềm, phát huy khả năng sáng tạo của sinh viên."
+      },
+      "en": {
+        "title": "Robocode",
+        "description": "Aims to foster specialized knowledge, soft skills, and promote students creativity."
+      },
+      "href": "#",
+      "imageFolder": "/images/robocode"
+    },
+    {
+      "id": "freshman",
+      "vi": {
+        "title": "Hoạt động chào đón Tân sinh viên",
+        "description": "Hoạt động này góp phần định hướng, giúp Tân sinh viên nhanh chóng hoà nhập, hiểu rõ môi trường đại học cũng như vai trò của Đoàn - Hội - CLB Đội Nhóm."
+      },
+      "en": {
+        "title": "Freshman Welcome Activities",
+        "description": "This activity helps orient Freshmen, helping them quickly integrate, understand the university environment, and the roles of the Youth Union - Student Association - Clubs."
+      },
+      "href": "#",
+      "imageFolder": "/images/freshman"
+    },
+    {
+      "id": "recruitment",
+      "vi": {
+        "title": "Tuyển thành viên",
+        "description": "Tổ chức các buổi tuyển thành viên để chào đón các bạn sinh viên mới đến với CLB. Thường sẽ tổ chức vào đầu mỗi năm học."
+      },
+      "en": {
+        "title": "Recruitment",
+        "description": "Organizing recruitment sessions to welcome new students to the club. Usually organized at the beginning of each school year."
+      },
+      "href": "#",
+      "imageFolder": "/images/recruitment"
+    },
+    {
+      "id": "sharing",
+      "vi": {
+        "title": "Các buổi chia sẻ kiến thức",
+        "description": "Tổ chức các buổi chia sẻ kiến thức, kinh nghiệm từ các thành viên trong CLB, cũng như các chuyên gia trong ngành."
+      },
+      "en": {
+        "title": "Knowledge Sharing",
+        "description": "Organizing sessions to share knowledge and experiences from club members, as well as industry experts."
+      },
+      "imageFolder": "/images/sharing"
+    },
+    {
+      "id": "open-clubs",
+      "vi": {
+        "title": "The Open Clubs",
+        "description": "Sự kiện giao lưu, trình diễn, giới thiệu về CLB cho sinh viên toàn trường do Đoàn trường tổ chức. Thường diễn ra vào đầu năm học."
+      },
+      "en": {
+        "title": "The Open Clubs",
+        "description": "An exchange, performance, and club introduction event for all university students organized by the University Youth Union. Usually organized at the beginning of the school year."
+      },
+      "href": "#",
+      "imageFolder": "/images/toc"
+    }
+  ]
+}

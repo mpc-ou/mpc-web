@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export type ProjectDetail = {
   id: string;
@@ -86,14 +87,14 @@ export function ProjectDetailDialog({ open, onOpenChange, project }: Props) {
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        {/* Thumbnail */}
         {project.thumbnail && (
           <div className="-mx-6 -mt-6 mb-2 overflow-hidden rounded-t-lg">
-            {/* biome-ignore lint/nursery/noImgElement: dialog thumbnail */}
-            <img
+            <Image
               alt={project.title}
-              className="h-52 w-full object-cover sm:h-64"
+              className="object-cover"
+              fill
               src={project.thumbnail}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}

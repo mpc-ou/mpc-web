@@ -8,8 +8,9 @@ const PARALLAX_FACTOR_BG = 20;
 const PARALLAX_FACTOR_CONTENT = 10;
 const PARALLAX_FACTOR_LOGO = 15;
 const PARALLAX_FACTOR_SCROLL_INDICATOR = 8;
+import Image from "next/image";
 
-const HeroSection = ({ locale }: { locale: string }) => {
+const HeroSection = () => {
   useTransparentHeader({
     hideActions: false,
     textColor: "rgba(255,255,255,0.7)",
@@ -23,7 +24,7 @@ const HeroSection = ({ locale }: { locale: string }) => {
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!sectionRef.current || !isHovering) {
+      if (!(sectionRef.current && isHovering)) {
         return;
       }
 
@@ -112,7 +113,9 @@ const HeroSection = ({ locale }: { locale: string }) => {
               passive: true,
             });
           }
-        } catch {}
+        } catch {
+          // ignore error if device doesn't support requestPermission
+        }
       } else {
         window.addEventListener("deviceorientation", handleOrientation, {
           passive: true,
@@ -139,7 +142,7 @@ const HeroSection = ({ locale }: { locale: string }) => {
     >
       {}
       <div
-        className="absolute -inset-10 bg-cover bg-center bg-no-repeat transition-transform duration-300 ease-out will-change-transform"
+        className="absolute -inset-10 bg-center bg-cover bg-no-repeat transition-transform duration-300 ease-out will-change-transform"
         style={{
           backgroundImage: "url('/images/bg/hero-bg.jpg')",
           transform: bgTransform,
@@ -180,10 +183,12 @@ const HeroSection = ({ locale }: { locale: string }) => {
           className="transition-transform duration-300 ease-out will-change-transform"
           style={{ transform: logoTransform }}
         >
-          <img
+          <Image
             alt="MPC Logo"
             className="h-20 w-20 rounded-lg"
             src="/images/logo.png"
+            width={80}
+            height={80}
           />
         </div>
 
@@ -194,7 +199,7 @@ const HeroSection = ({ locale }: { locale: string }) => {
           <p className="text-lg text-white/70 sm:text-xl">{t("subtitle")}</p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2"></div>
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-2" />
       </div>
 
       {}

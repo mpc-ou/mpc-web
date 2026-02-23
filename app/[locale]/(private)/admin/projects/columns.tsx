@@ -51,10 +51,10 @@ export const createColumns = (
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
         {row.original.thumbnail && (
-          // biome-ignore lint/nursery/noImgElement: admin table
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             alt=""
-            className="h-10 w-16 shrink-0 rounded border object-cover"
+            className="rounded border object-cover h-12 w-12"
             src={row.original.thumbnail}
           />
         )}

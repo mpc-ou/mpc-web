@@ -14,10 +14,13 @@ type Props = {
 const Footer = ({ footerData }: Props) => {
   const t = useTranslations("footer");
 
-  const fanpage = footerData?.settings.footer_fanpage || "https://facebook.com";
+  const fanpage =
+    footerData?.settings.footer_fanpage ||
+    "https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong";
   const youtube = footerData?.settings.footer_youtube || "https://youtube.com";
-  const github = footerData?.settings.footer_github || "https://github.com";
-  const mail = footerData?.settings.footer_mail || "mpc@ou.edu.vn";
+  const github =
+    footerData?.settings.footer_github || "https://github.com/mpc-ou";
+  const mail = footerData?.settings.footer_mail || "it.mpclub@ou.edu.vn";
   const externalLinks = footerData?.externalLinks ?? [];
 
   return (
@@ -154,7 +157,7 @@ const Footer = ({ footerData }: Props) => {
                   <li>
                     <a
                       className="text-muted-foreground text-sm transition-colors hover:text-primary"
-                      href="https://fit.ou.edu.vn"
+                      href="https://it.ou.edu.vn"
                       rel="noopener noreferrer"
                       target="_blank"
                     >

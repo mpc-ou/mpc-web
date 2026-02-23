@@ -1,0 +1,256 @@
+"use client";
+
+import {
+  Calendar,
+  ExternalLink,
+  Github,
+  Globe,
+  Play,
+  Users,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+
+export type ProjectDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  content: string | null;
+  thumbnail: string | null;
+  githubUrl: string | null;
+  websiteUrl: string | null;
+  videoUrl: string | null;
+  technologies: string[];
+  isActive: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  members?: Array<{
+    member: { id: string; firstName: string; lastName: string };
+    role: string | null;
+  }>;
+  /** Role of the viewer in this project (from ProjectMember join) */
+  viewerRole?: string | null;
+};
+
+type Props = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  project: ProjectDetail | null;
+};
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) {
+    return null;
+  }
+  return new Date(dateStr).toLocaleDateString("vi-VN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+/** Convert a YouTube URL to an embeddable URL */
+function toEmbedUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtu.be")) {
+      return `https://www.youtube.com/embed${u.pathname}`;
+    }
+    const videoId = u.searchParams.get("v");
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+  } catch {
+    /* not a valid URL */
+  }
+  return url;
+}
+
+export function ProjectDetailDialog({ open, onOpenChange, project }: Props) {
+  if (!project) {
+    return null;
+  }
+
+  const startFormatted = formatDate(project.startDate);
+  const endFormatted = formatDate(project.endDate);
+  const hasLinks = project.githubUrl || project.websiteUrl || project.videoUrl;
+  const hasMembers = project.members && project.members.length > 0;
+
+  return (
+    <Dialog onOpenChange={onOpenChange} open={open}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        {/* Thumbnail */}
+        {project.thumbnail && (
+          <div className="-mx-6 -mt-6 mb-2 overflow-hidden rounded-t-lg">
+            {/* biome-ignore lint/nursery/noImgElement: dialog thumbnail */}
+            <img
+              alt={project.title}
+              className="h-52 w-full object-cover sm:h-64"
+              src={project.thumbnail}
+            />
+          </div>
+        )}
+
+        <DialogHeader>
+          <div className="flex items-center gap-2">
+            <DialogTitle className="text-xl">{project.title}</DialogTitle>
+            <Badge variant={project.isActive ? "default" : "outline"}>
+              {project.isActive ? "Hoạt động" : "Kết thúc"}
+            </Badge>
+          </div>
+          {project.description && (
+            <p className="mt-1 text-muted-foreground text-sm">
+              {project.description}
+            </p>
+          )}
+        </DialogHeader>
+
+        {/* Date & role info */}
+        {(startFormatted || project.viewerRole) && (
+          <div className="flex flex-wrap gap-4 text-muted-foreground text-sm">
+            {startFormatted && (
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="h-4 w-4" />
+                {startFormatted}
+                {endFormatted ? ` → ${endFormatted}` : " → Hiện tại"}
+              </span>
+            )}
+            {project.viewerRole && (
+              <span className="inline-flex items-center gap-1.5">
+                <Users className="h-4 w-4" />
+                Vai trò: {project.viewerRole}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Technologies */}
+        {project.technologies.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {project.technologies.map((tech) => (
+              <Badge className="text-xs" key={tech} variant="secondary">
+                {tech}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* Links */}
+        {hasLinks && (
+          <>
+            <Separator />
+            <div className="flex flex-wrap gap-3">
+              {project.githubUrl && (
+                <a
+                  className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+                  href={project.githubUrl}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  <Github className="h-4 w-4" />
+                  GitHub
+                  <ExternalLink className="h-3 w-3 opacity-50" />
+                </a>
+              )}
+              {project.websiteUrl && (
+                <a
+                  className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+                  href={project.websiteUrl}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  <Globe className="h-4 w-4" />
+                  Website
+                  <ExternalLink className="h-3 w-3 opacity-50" />
+                </a>
+              )}
+              {project.videoUrl && (
+                <a
+                  className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+                  href={project.videoUrl}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  <Play className="h-4 w-4" />
+                  Video
+                  <ExternalLink className="h-3 w-3 opacity-50" />
+                </a>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Video embed */}
+        {project.videoUrl && (
+          <div className="aspect-video overflow-hidden rounded-lg border">
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+              src={toEmbedUrl(project.videoUrl)}
+              title={`${project.title} video`}
+            />
+          </div>
+        )}
+
+        {/* Markdown content */}
+        {project.content && (
+          <>
+            <Separator />
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              {/* Render as plain text with line breaks — upgrade to remark if needed */}
+              {project.content.split("\n").map((line, i) => {
+                const key = `line-${i}`;
+                if (!line.trim()) {
+                  return <br key={key} />;
+                }
+                return (
+                  <p className="my-1" key={key}>
+                    {line}
+                  </p>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* Members */}
+        {hasMembers && (
+          <>
+            <Separator />
+            <div>
+              <h4 className="mb-3 flex items-center gap-1.5 font-semibold text-sm">
+                <Users className="h-4 w-4" />
+                Thành viên dự án ({project.members?.length})
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.members?.map(({ member, role }) => (
+                  <div
+                    className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1 text-sm"
+                    key={member.id}
+                  >
+                    <span className="font-medium">
+                      {member.firstName} {member.lastName}
+                    </span>
+                    {role && (
+                      <Badge className="text-[10px]" variant="outline">
+                        {role}
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}

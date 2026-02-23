@@ -128,14 +128,15 @@ model HomepageSection {
   @@schema("public")
 }
 
-/// Câu hỏi thường gặp - quản lý FAQ từ admin
+/// Câu hỏi thường gặp - quản lý FAQ từ admin (song ngữ)
 model FaqItem {
-  id       String  @id @default(cuid())
-  question String
-  answer   String
-  order    Int     @default(0)
-  isActive Boolean @default(true)
-  locale   String  @default("vi") // "vi" | "en"
+  id         String  @id @default(cuid())
+  questionVi String // Câu hỏi tiếng Việt
+  answerVi   String // Câu trả lời tiếng Việt
+  questionEn String  @default("") // Câu hỏi tiếng Anh
+  answerEn   String  @default("") // Câu trả lời tiếng Anh
+  order      Int     @default(0)
+  isActive   Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -156,6 +157,20 @@ model GalleryImage {
   @@schema("public")
 }
 
+/// Liên kết ngoài - hiển thị ở footer, quản lý từ admin
+model ExternalLink {
+  id       String  @id @default(cuid())
+  label    String // Tên hiển thị (VD: "Khoa CNTT – ĐH Mở TP.HCM")
+  url      String // URL liên kết
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("public")
+}
+
 // ╔══════════════════════════════════════════════════════════════╗
 // ║                    MEMBERS & AUTH                            ║
 // ╚══════════════════════════════════════════════════════════════╝
@@ -172,6 +187,7 @@ model Member {
   coverImage   String?   // URL ảnh bìa/cover profile
   slug         String?   @unique // Custom profile slug (auto-gen từ email prefix, cho phép tùy chỉnh)
   dob          DateTime? // Ngày sinh
+  showDob      Boolean   @default(true) // Hiện/ẩn ngày sinh trên trang thành viên
   bio          String? // Giới thiệu bản thân
   phone        String? // Số điện thoại
   studentId    String? // Mã sinh viên (nếu có)

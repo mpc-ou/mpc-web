@@ -389,6 +389,7 @@ export const ModelName = {
   HomepageSection: 'HomepageSection',
   FaqItem: 'FaqItem',
   GalleryImage: 'GalleryImage',
+  ExternalLink: 'ExternalLink',
   Member: 'Member',
   Department: 'Department',
   ClubRole: 'ClubRole',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember"
+    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -793,6 +794,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GalleryImageCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GalleryImageCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExternalLink: {
+      payload: Prisma.$ExternalLinkPayload<ExtArgs>
+      fields: Prisma.ExternalLinkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExternalLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExternalLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        findFirst: {
+          args: Prisma.ExternalLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExternalLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        findMany: {
+          args: Prisma.ExternalLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>[]
+        }
+        create: {
+          args: Prisma.ExternalLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        createMany: {
+          args: Prisma.ExternalLinkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExternalLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>[]
+        }
+        delete: {
+          args: Prisma.ExternalLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        update: {
+          args: Prisma.ExternalLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExternalLinkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExternalLinkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExternalLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExternalLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalLinkPayload>
+        }
+        aggregate: {
+          args: Prisma.ExternalLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExternalLink>
+        }
+        groupBy: {
+          args: Prisma.ExternalLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalLinkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExternalLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalLinkCountAggregateOutputType> | number
         }
       }
     }
@@ -2211,11 +2286,12 @@ export type HomepageSectionScalarFieldEnum = (typeof HomepageSectionScalarFieldE
 
 export const FaqItemScalarFieldEnum = {
   id: 'id',
-  question: 'question',
-  answer: 'answer',
+  questionVi: 'questionVi',
+  answerVi: 'answerVi',
+  questionEn: 'questionEn',
+  answerEn: 'answerEn',
   order: 'order',
   isActive: 'isActive',
-  locale: 'locale',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2235,6 +2311,19 @@ export const GalleryImageScalarFieldEnum = {
 export type GalleryImageScalarFieldEnum = (typeof GalleryImageScalarFieldEnum)[keyof typeof GalleryImageScalarFieldEnum]
 
 
+export const ExternalLinkScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  url: 'url',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalLinkScalarFieldEnum = (typeof ExternalLinkScalarFieldEnum)[keyof typeof ExternalLinkScalarFieldEnum]
+
+
 export const MemberScalarFieldEnum = {
   id: 'id',
   authId: 'authId',
@@ -2245,6 +2334,7 @@ export const MemberScalarFieldEnum = {
   coverImage: 'coverImage',
   slug: 'slug',
   dob: 'dob',
+  showDob: 'showDob',
   bio: 'bio',
   phone: 'phone',
   studentId: 'studentId',
@@ -2815,6 +2905,7 @@ export type GlobalOmitConfig = {
   homepageSection?: Prisma.HomepageSectionOmit
   faqItem?: Prisma.FaqItemOmit
   galleryImage?: Prisma.GalleryImageOmit
+  externalLink?: Prisma.ExternalLinkOmit
   member?: Prisma.MemberOmit
   department?: Prisma.DepartmentOmit
   clubRole?: Prisma.ClubRoleOmit

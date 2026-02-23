@@ -15,11 +15,13 @@ type PageType = {
   params: Promise<{ locale: locale }>;
 };
 
-export async function generateMetadata({ params }: PageType): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageType): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
   return {
-    title: t("title")
+    title: t("title"),
   };
 }
 
@@ -28,30 +30,23 @@ export default async function Page({ params }: PageType) {
   setRequestLocale(locale as locale);
 
   return (
-    <div className='flex flex-col'>
-      {/* Hero Section */}
+    <div className="flex flex-col">
       <HeroSection locale={locale} />
 
-      {/* Stats Banner */}
+      <IntroSection locale={locale} />
+
       <Suspense fallback={<LoadingComponent />}>
         <StatsSection locale={locale} />
       </Suspense>
 
-      {/* Introduction */}
-      <IntroSection locale={locale} />
-
-      {/* Benefits */}
       <BenefitsSection locale={locale} />
 
-      {/* Management / Leadership */}
       <Suspense fallback={<LoadingComponent />}>
         <ManagementSection locale={locale} />
       </Suspense>
 
-      {/* Gallery */}
       <GallerySection locale={locale} />
 
-      {/* FAQ */}
       <FaqSection locale={locale} />
     </div>
   );

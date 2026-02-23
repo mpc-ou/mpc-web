@@ -1,78 +1,173 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@/configs/i18n/routing";
+
+type NavLink = {
+  href: string;
+  label: string;
+};
+
+type NavGroup = {
+  children: NavLink[];
+  label: string;
+};
+
+type NavItem = NavLink | NavGroup;
+
+const isGroup = (item: NavItem): item is NavGroup => "children" in item;
 
 const MobileMenu = () => {
   const t = useTranslations("header");
   const tNav = useTranslations("header.nav");
   const [open, setOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [mounted, setMounted] = useState(false);
 
-  const navItems = [
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const toggleGroup = (label: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) {
+        next.delete(label);
+      } else {
+        next.add(label);
+      }
+      return next;
+    });
+  };
+
+  const navItems: NavItem[] = [
     { label: tNav("home"), href: "/" },
     { label: tNav("training"), href: "/training" },
-    { label: tNav("activities"), href: "/activities" },
-    { label: tNav("webDesign"), href: "/activities/web-design", indent: true },
-    { label: tNav("recruitment"), href: "/activities/recruitment", indent: true },
-    { label: tNav("events"), href: "/activities/events", indent: true },
+    {
+      label: tNav("activities"),
+      children: [
+        { label: tNav("webDesign"), href: "/activities/web-design" },
+        { label: tNav("recruitment"), href: "/activities/recruitment" },
+        { label: tNav("events"), href: "/activities/events" },
+      ],
+    },
     { label: tNav("achievements"), href: "/achievements" },
-    { label: tNav("about"), href: "/about" }
+    { label: tNav("about"), href: "/about" },
   ];
+
+  const closeMenu = () => {
+    setOpen(false);
+    setExpandedGroups(new Set());
+  };
+
+  const portalContent = (
+    <>
+      {}
+      {open && (
+        <button
+          aria-label={t("closeMenu")}
+          className="fixed inset-0 z-9998 cursor-default bg-black/40 md:hidden"
+          onClick={closeMenu}
+          type="button"
+        />
+      )}
+
+      {}
+      <div
+        className={`fixed top-0 right-0 z-9999 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 md:hidden ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between border-border border-b px-4 py-4">
+          <span className="font-bold text-lg text-primary">MPC</span>
+          <button
+            aria-label={t("closeMenu")}
+            className="rounded-md p-1 hover:bg-muted"
+            onClick={closeMenu}
+            type="button"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <nav className="flex flex-col overflow-y-auto py-4">
+          {navItems.map((item) =>
+            isGroup(item) ? (
+              <div key={item.label}>
+                <button
+                  className="flex w-full items-center justify-between px-4 py-3 font-medium text-foreground/80 text-sm transition-colors hover:bg-muted hover:text-primary"
+                  onClick={() => toggleGroup(item.label)}
+                  type="button"
+                >
+                  <span>{item.label}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${
+                      expandedGroups.has(item.label) ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {}
+                <div
+                  className={`overflow-hidden transition-all duration-200 ${
+                    expandedGroups.has(item.label)
+                      ? "max-h-96 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  {item.children.map((child) => (
+                    <Link
+                      className="block px-8 py-2.5 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-primary"
+                      href={child.href as "/"}
+                      key={child.href}
+                      onClick={closeMenu}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Link
+                className="px-4 py-3 font-medium text-foreground/80 text-sm transition-colors hover:bg-muted hover:text-primary"
+                href={item.href as "/"}
+                key={item.href}
+                onClick={closeMenu}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
+        </nav>
+      </div>
+    </>
+  );
 
   return (
     <>
       <button
         aria-label={open ? t("closeMenu") : t("openMenu")}
-        className='flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground/80 transition-colors hover:bg-muted md:hidden'
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground/80 transition-colors hover:bg-muted md:hidden"
         onClick={() => setOpen((o) => !o)}
-        type='button'
+        type="button"
       >
-        {open ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
-      {/* Overlay */}
-      {open && (
-        <button
-          aria-label={t("closeMenu")}
-          className='fixed inset-0 z-40 cursor-default bg-black/40 md:hidden'
-          onClick={() => setOpen(false)}
-          type='button'
-        />
-      )}
-
-      {/* Sliding Panel */}
-      <div
-        className={`fixed top-0 right-0 z-50 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 md:hidden ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className='flex items-center justify-between border-border border-b px-4 py-4'>
-          <span className='font-bold text-lg text-primary'>MPC</span>
-          <button
-            aria-label={t("closeMenu")}
-            className='rounded-md p-1 hover:bg-muted'
-            onClick={() => setOpen(false)}
-            type='button'
-          >
-            <X className='h-5 w-5' />
-          </button>
-        </div>
-        <nav className='flex flex-col overflow-y-auto py-4'>
-          {navItems.map((item) => (
-            <Link
-              className={`px-${item.indent ? "8" : "4"} py-3 text-sm font-${item.indent ? "normal" : "medium"} text-foreground/80 transition-colors hover:bg-muted hover:text-primary ${item.indent ? "text-muted-foreground" : ""}`}
-              href={item.href as "/"}
-              key={item.href}
-              onClick={() => setOpen(false)}
-            >
-              {item.indent && <span className='mr-1 text-muted-foreground'>└</span>}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
+      {mounted && createPortal(portalContent, document.body)}
     </>
   );
 };

@@ -17,13 +17,17 @@ export {
 } from "./announcements";
 export {
   adminCreateFaqItem,
+  adminCreateExternalLink,
   adminCreateGalleryImage,
+  adminDeleteExternalLink,
   adminDeleteFaqItem,
   adminDeleteGalleryImage,
+  adminGetExternalLinks,
   adminGetFaqItems,
   adminGetGalleryImages,
   adminGetHomepageSections,
   adminGetSettings,
+  adminUpdateExternalLink,
   adminUpdateFaqItem,
   adminUpsertHomepageSection,
   adminUpsertSetting

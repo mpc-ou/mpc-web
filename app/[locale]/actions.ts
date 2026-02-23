@@ -97,14 +97,42 @@ const getFaqItems = async (locale: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache";
-      cacheTag(_CACHE_FAQ);
+      cacheTag(_CACHE_FAQ, _CACHE_SETTINGS);
 
+      // Check if template mode is enabled
+      const templateSetting = await prisma.siteSetting.findUnique({
+        where: { key: "faq_use_template" }
+      });
+
+      if (templateSetting?.value === "true") {
+        // Read from static JSON file
+        const faqJson = (await import("@/configs/data/fqa.json")).default as Array<{
+          vi: { q: string; a: string };
+          en: { q: string; a: string };
+        }>;
+        return faqJson.map((item, index) => {
+          const localeData = locale === "en" ? item.en : item.vi;
+          return {
+            id: `template-${String(index)}`,
+            question: localeData.q,
+            answer: localeData.a,
+            order: index,
+          };
+        });
+      }
+
+      // Read from DB (bilingual model)
       const items = await prisma.faqItem.findMany({
-        where: { isActive: true, locale },
+        where: { isActive: true },
         orderBy: { order: "asc" }
       });
 
-      return items;
+      return items.map((item) => ({
+        id: item.id,
+        question: locale === "en" ? (item.questionEn || item.questionVi) : item.questionVi,
+        answer: locale === "en" ? (item.answerEn || item.answerVi) : item.answerVi,
+        order: item.order,
+      }));
     }
   });
 
@@ -120,6 +148,40 @@ const getGalleryImages = async () =>
       });
 
       return images;
+    }
+  });
+
+const getFooterData = async () =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_SETTINGS);
+
+      const [settings, externalLinks] = await Promise.all([
+        prisma.siteSetting.findMany({
+          where: {
+            key: {
+              in: [
+                "footer_fanpage",
+                "footer_youtube",
+                "footer_github",
+                "footer_mail",
+              ]
+            }
+          }
+        }),
+        prisma.externalLink.findMany({
+          where: { isActive: true },
+          orderBy: { order: "asc" }
+        })
+      ]);
+
+      const settingsMap: Record<string, string> = {};
+      for (const s of settings) {
+        settingsMap[s.key] = s.value;
+      }
+
+      return { settings: settingsMap, externalLinks };
     }
   });
 
@@ -150,6 +212,7 @@ const getHeaderProfile = async () =>
 export {
   getActiveAnnouncement,
   getFaqItems,
+  getFooterData,
   getGalleryImages,
   getLeadership,
   getMemberCount,

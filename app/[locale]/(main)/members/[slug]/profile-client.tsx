@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import {
+  type ProjectDetail,
+  ProjectDetailDialog,
+} from "@/components/project-detail-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +16,7 @@ const POSITION_LABELS: Record<string, string> = {
   DEPARTMENT_VICE_LEADER: "Phó ban",
   DEPARTMENT_MEMBER: "Thành viên ban",
   COLLABORATOR: "Cộng tác viên",
-  ADVISOR: "Cố vấn"
+  ADVISOR: "Cố vấn",
 };
 
 const getSocialMeta = (platform: string) => {
@@ -91,8 +95,17 @@ type Member = {
     project: {
       id: string;
       title: string;
+      slug: string;
       description: string | null;
+      content: string | null;
+      thumbnail: string | null;
+      githubUrl: string | null;
+      websiteUrl: string | null;
+      videoUrl: string | null;
       technologies: string[];
+      isActive: boolean;
+      startDate: string | null;
+      endDate: string | null;
     };
   }[];
   authoredPosts: {
@@ -105,6 +118,9 @@ type Member = {
 
 export function ProfilePageClient({ member }: { member: Member }) {
   const [activeTab, setActiveTab] = useState("about");
+  const [selectedProject, setSelectedProject] = useState<ProjectDetail | null>(
+    null,
+  );
   const fullName = `${member.firstName} ${member.lastName}`;
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
@@ -113,48 +129,62 @@ export function ProfilePageClient({ member }: { member: Member }) {
   const activeRole = member.clubRoles.find((r) => !r.endAt);
 
   return (
-    <div className='min-h-screen bg-muted/30'>
+    <div className="min-h-screen bg-muted/30">
       {/* === COVER PHOTO === */}
-      <div className='relative h-[280px] w-full overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-muted md:h-[360px]'>
+      <div className="relative h-70 w-full overflow-hidden bg-linear-to-br from-primary/20 via-primary/10 to-muted md:h-90">
         {member.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt='Cover' className='h-full w-full object-cover' src={member.coverImage} />
+          <img
+            alt="Cover"
+            className="h-full w-full object-cover"
+            src={member.coverImage}
+          />
         ) : (
-          <div className='flex h-full w-full items-center justify-center'>
-            <div className='select-none text-[120px] opacity-10'>{initials}</div>
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="select-none text-[120px] opacity-10">
+              {initials}
+            </div>
           </div>
         )}
         {/* Gradient overlay at bottom */}
-        <div className='absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background/80 to-transparent' />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-background/80 to-transparent" />
       </div>
 
       {/* === PROFILE HEADER === */}
-      <div className='mx-auto max-w-5xl px-4'>
-        <div className='relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end'>
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end">
           {/* Avatar — overlaps cover */}
-          <div className='shrink-0'>
-            <Avatar className='h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40'>
+          <div className="shrink-0">
+            <Avatar className="h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40">
               <AvatarImage src={member.avatar ?? undefined} />
-              <AvatarFallback className='bg-primary/10 font-bold text-4xl text-primary'>{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 font-bold text-4xl text-primary">
+                {initials}
+              </AvatarFallback>
             </Avatar>
           </div>
 
           {/* Name + role + socials */}
-          <div className='flex flex-1 flex-col gap-2 pb-4'>
-            <div className='flex flex-wrap items-center gap-2'>
-              <h1 className='font-bold text-3xl text-foreground'>{fullName}</h1>
+          <div className="flex flex-1 flex-col gap-2 pb-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="font-bold text-3xl text-foreground">{fullName}</h1>
               {activeRole && (
-                <Badge className='text-sm' variant='default'>
+                <Badge className="text-sm" variant="default">
                   {POSITION_LABELS[activeRole.position] ?? activeRole.position}
-                  {activeRole.department ? ` · ${activeRole.department.name}` : ""}
+                  {activeRole.department
+                    ? ` · ${activeRole.department.name}`
+                    : ""}
                 </Badge>
               )}
             </div>
-            {member.bio && <p className='max-w-2xl text-muted-foreground text-sm'>{member.bio}</p>}
+            {member.bio && (
+              <p className="max-w-2xl text-muted-foreground text-sm">
+                {member.bio}
+              </p>
+            )}
 
             {/* Social links row */}
             {socials.length > 0 && (
-              <div className='flex flex-wrap gap-3'>
+              <div className="flex flex-wrap gap-3">
                 {socials.map((social) => {
                   if (!social.url) {
                     return null;
@@ -167,14 +197,16 @@ export function ProfilePageClient({ member }: { member: Member }) {
                       : `https://${social.url}`;
                   return (
                     <a
-                      className='flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-sm transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-primary'
+                      className="flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-sm transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
                       href={href}
                       key={social.id || social.url}
-                      rel='noopener noreferrer'
-                      target='_blank'
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <span>{meta.icon}</span>
-                      <span className='hidden sm:inline'>{social.platform || "Link"}</span>
+                      <span className="hidden sm:inline">
+                        {social.platform || "Link"}
+                      </span>
                     </a>
                   );
                 })}
@@ -184,26 +216,26 @@ export function ProfilePageClient({ member }: { member: Member }) {
         </div>
 
         {/* Divider */}
-        <div className='mt-2 border-border border-t' />
+        <div className="mt-2 border-border border-t" />
 
         {/* === TABS === */}
-        <Tabs className='mt-4' onValueChange={setActiveTab} value={activeTab}>
-          <TabsList className='h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0'>
+        <Tabs className="mt-4" onValueChange={setActiveTab} value={activeTab}>
+          <TabsList className="h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0">
             {[
               { value: "about", label: "Giới thiệu" },
               { value: "roles", label: `Chức vụ (${member.clubRoles.length})` },
               {
                 value: "achievements",
-                label: `Thành tựu (${member.achievements.length})`
+                label: `Thành tựu (${member.achievements.length})`,
               },
               { value: "projects", label: `Dự án (${member.projects.length})` },
               {
                 value: "posts",
-                label: `Bài viết (${member.authoredPosts.length})`
-              }
+                label: `Bài viết (${member.authoredPosts.length})`,
+              },
             ].map((tab) => (
               <TabsTrigger
-                className='rounded-none border-transparent border-b-2 px-4 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary'
+                className="rounded-none border-transparent border-b-2 px-4 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary"
                 key={tab.value}
                 value={tab.value}
               >
@@ -213,59 +245,87 @@ export function ProfilePageClient({ member }: { member: Member }) {
           </TabsList>
 
           {/* ABOUT */}
-          <TabsContent className='py-6' value='about'>
-            <div className='grid gap-4 sm:grid-cols-2'>
+          <TabsContent className="py-6" value="about">
+            <div className="grid gap-4 sm:grid-cols-2">
               {member.studentId && (
-                <div className='rounded-lg border bg-card p-4'>
-                  <p className='mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide'>Mã sinh viên</p>
-                  <p className='font-mono text-sm'>{member.studentId}</p>
+                <div className="rounded-lg border bg-card p-4">
+                  <p className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                    Mã sinh viên
+                  </p>
+                  <p className="font-mono text-sm">{member.studentId}</p>
                 </div>
               )}
               {member.joinedClubAt && (
-                <div className='rounded-lg border bg-card p-4'>
-                  <p className='mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide'>Tham gia CLB</p>
-                  <p className='text-sm'>{new Date(member.joinedClubAt).toLocaleDateString("vi-VN")}</p>
+                <div className="rounded-lg border bg-card p-4">
+                  <p className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                    Tham gia CLB
+                  </p>
+                  <p className="text-sm">
+                    {new Date(member.joinedClubAt).toLocaleDateString("vi-VN")}
+                  </p>
                 </div>
               )}
-              <div className='rounded-lg border bg-card p-4'>
-                <p className='mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide'>
+              <div className="rounded-lg border bg-card p-4">
+                <p className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
                   Vai trò hệ thống
                 </p>
-                <Badge variant='outline'>{member.webRole}</Badge>
+                <Badge variant="outline">{member.webRole}</Badge>
               </div>
             </div>
           </TabsContent>
 
           {/* CLUB ROLES */}
-          <TabsContent className='py-6' value='roles'>
+          <TabsContent className="py-6" value="roles">
             {member.clubRoles.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>Chưa có lịch sử chức vụ</p>
+              <p className="py-8 text-center text-muted-foreground">
+                Chưa có lịch sử chức vụ
+              </p>
             ) : (
-              <div className='relative space-y-0 pl-5'>
-                <div className='absolute top-2 bottom-2 left-[9px] w-px bg-border' />
+              <div className="relative space-y-0 pl-5">
+                <div className="absolute top-2 bottom-2 left-2.25 w-px bg-border" />
                 {member.clubRoles.map((role) => {
                   const isActive = !role.endAt;
                   return (
-                    <div className='relative flex items-start gap-4 pb-6' key={role.id}>
+                    <div
+                      className="relative flex items-start gap-4 pb-6"
+                      key={role.id}
+                    >
                       <div
                         className={`5 relative z-10 mt-1. h-3.5 w-3.5 shrink-0 rounded-full border-2 ${isActive ? "border-primary bg-primary" : "border-muted-foreground/50 bg-background"}`}
                       />
-                      <div className='flex-1 rounded-lg border bg-card p-4'>
-                        <div className='flex items-start justify-between gap-2'>
+                      <div className="flex-1 rounded-lg border bg-card p-4">
+                        <div className="flex items-start justify-between gap-2">
                           <div>
-                            <p className='font-semibold'>{POSITION_LABELS[role.position] ?? role.position}</p>
-                            {role.department && (
-                              <p className='text-muted-foreground text-sm'>📌 {role.department.name}</p>
-                            )}
-                            <p className='mt-1 text-muted-foreground text-xs'>
-                              {new Date(role.startAt).toLocaleDateString("vi-VN")} →{" "}
-                              {role.endAt ? new Date(role.endAt).toLocaleDateString("vi-VN") : "Hiện tại"}
+                            <p className="font-semibold">
+                              {POSITION_LABELS[role.position] ?? role.position}
                             </p>
-                            {role.note && <p className='mt-1 text-muted-foreground text-xs italic'>{role.note}</p>}
+                            {role.department && (
+                              <p className="text-muted-foreground text-sm">
+                                📌 {role.department.name}
+                              </p>
+                            )}
+                            <p className="mt-1 text-muted-foreground text-xs">
+                              {new Date(role.startAt).toLocaleDateString(
+                                "vi-VN",
+                              )}{" "}
+                              →{" "}
+                              {role.endAt
+                                ? new Date(role.endAt).toLocaleDateString(
+                                    "vi-VN",
+                                  )
+                                : "Hiện tại"}
+                            </p>
+                            {role.note && (
+                              <p className="mt-1 text-muted-foreground text-xs italic">
+                                {role.note}
+                              </p>
+                            )}
                           </div>
-                          <div className='flex flex-wrap justify-end gap-1'>
+                          <div className="flex flex-wrap justify-end gap-1">
                             {isActive && <Badge>Hiện tại</Badge>}
-                            {role.term && <Badge variant='outline'>NK {role.term}</Badge>}
+                            {role.term && (
+                              <Badge variant="outline">NK {role.term}</Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -277,20 +337,31 @@ export function ProfilePageClient({ member }: { member: Member }) {
           </TabsContent>
 
           {/* ACHIEVEMENTS */}
-          <TabsContent className='py-6' value='achievements'>
+          <TabsContent className="py-6" value="achievements">
             {member.achievements.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>Chưa có thành tựu nào</p>
+              <p className="py-8 text-center text-muted-foreground">
+                Chưa có thành tựu nào
+              </p>
             ) : (
-              <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {member.achievements.map(({ achievement, role }) => (
-                  <div className='space-y-1 rounded-lg border bg-card p-4' key={achievement.id}>
-                    {achievement.isHighlight && <span className='text-lg'>⭐</span>}
-                    <p className='font-semibold text-sm'>{achievement.title}</p>
-                    {role && <p className='text-muted-foreground text-xs'>Vai trò: {role}</p>}
-                    <p className='text-muted-foreground text-xs'>
+                  <div
+                    className="space-y-1 rounded-lg border bg-card p-4"
+                    key={achievement.id}
+                  >
+                    {achievement.isHighlight && (
+                      <span className="text-lg">⭐</span>
+                    )}
+                    <p className="font-semibold text-sm">{achievement.title}</p>
+                    {role && (
+                      <p className="text-muted-foreground text-xs">
+                        Vai trò: {role}
+                      </p>
+                    )}
+                    <p className="text-muted-foreground text-xs">
                       {new Date(achievement.date).toLocaleDateString("vi-VN")}
                     </p>
-                    <Badge className='text-[10px]' variant='outline'>
+                    <Badge className="text-[10px]" variant="outline">
                       {achievement.type}
                     </Badge>
                   </div>
@@ -300,48 +371,81 @@ export function ProfilePageClient({ member }: { member: Member }) {
           </TabsContent>
 
           {/* PROJECTS */}
-          <TabsContent className='py-6' value='projects'>
+          <TabsContent className="py-6" value="projects">
             {member.projects.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>Chưa có dự án nào</p>
+              <p className="py-8 text-center text-muted-foreground">
+                Chưa có dự án nào
+              </p>
             ) : (
-              <div className='grid gap-3 sm:grid-cols-2'>
+              <div className="grid gap-3 sm:grid-cols-2">
                 {member.projects.map(({ project, role }) => (
-                  <div className='space-y-2 rounded-lg border bg-card p-4' key={project.id}>
-                    <p className='font-semibold'>{project.title}</p>
-                    {project.description && (
-                      <p className='line-clamp-2 text-muted-foreground text-sm'>{project.description}</p>
+                  <button
+                    className="cursor-pointer overflow-hidden rounded-lg border bg-card text-left transition-colors hover:border-primary/50 hover:bg-primary/5"
+                    key={project.id}
+                    onClick={() =>
+                      setSelectedProject({
+                        ...project,
+                        viewerRole: role,
+                      })
+                    }
+                    type="button"
+                  >
+                    {project.thumbnail && (
+                      // biome-ignore lint/nursery/noImgElement: public card
+                      <img
+                        alt={project.title}
+                        className="h-36 w-full object-cover"
+                        src={project.thumbnail}
+                      />
                     )}
-                    {role && <p className='text-muted-foreground text-xs'>Vai trò: {role}</p>}
-                    {project.technologies.length > 0 && (
-                      <div className='flex flex-wrap gap-1'>
-                        {project.technologies.map((t) => (
-                          <span className='rounded-full bg-muted px-2 py-0.5 text-[10px]' key={t}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    <div className="space-y-2 p-4">
+                      <p className="font-semibold">{project.title}</p>
+                      {project.description && (
+                        <p className="line-clamp-2 text-muted-foreground text-sm">
+                          {project.description}
+                        </p>
+                      )}
+                      {role && (
+                        <p className="text-muted-foreground text-xs">
+                          Vai trò: {role}
+                        </p>
+                      )}
+                      {project.technologies.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {project.technologies.map((t) => (
+                            <span
+                              className="rounded-full bg-muted px-2 py-0.5 text-[10px]"
+                              key={t}
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </button>
                 ))}
               </div>
             )}
           </TabsContent>
 
           {/* POSTS */}
-          <TabsContent className='py-6' value='posts'>
+          <TabsContent className="py-6" value="posts">
             {member.authoredPosts.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>Chưa có bài viết nào</p>
+              <p className="py-8 text-center text-muted-foreground">
+                Chưa có bài viết nào
+              </p>
             ) : (
-              <div className='grid gap-3 sm:grid-cols-2'>
+              <div className="grid gap-3 sm:grid-cols-2">
                 {member.authoredPosts.map((post) => (
                   <a
-                    className='block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50 hover:bg-primary/5'
+                    className="block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50 hover:bg-primary/5"
                     href={`/posts/${post.slug}`}
                     key={post.id}
                   >
-                    <p className='line-clamp-2 font-semibold'>{post.title}</p>
+                    <p className="line-clamp-2 font-semibold">{post.title}</p>
                     {post.publishedAt && (
-                      <p className='mt-1 text-muted-foreground text-xs'>
+                      <p className="mt-1 text-muted-foreground text-xs">
                         {new Date(post.publishedAt).toLocaleDateString("vi-VN")}
                       </p>
                     )}
@@ -353,8 +457,19 @@ export function ProfilePageClient({ member }: { member: Member }) {
         </Tabs>
       </div>
 
+      {/* Project detail modal */}
+      <ProjectDetailDialog
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedProject(null);
+          }
+        }}
+        open={!!selectedProject}
+        project={selectedProject}
+      />
+
       {/* Bottom padding */}
-      <div className='h-16' />
+      <div className="h-16" />
     </div>
   );
 }

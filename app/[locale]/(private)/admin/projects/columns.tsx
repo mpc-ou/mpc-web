@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export type ProjectRow = {
@@ -27,28 +27,49 @@ export type ProjectRow = {
   isActive: boolean;
   startDate: string | null;
   endDate: string | null;
-  members: Array<{ member: { id: string; firstName: string; lastName: string }; role: string | null }>;
+  members: Array<{
+    member: { id: string; firstName: string; lastName: string };
+    role: string | null;
+  }>;
 };
 
 export const createColumns = (
   onEdit: (p: ProjectRow) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  onView?: (p: ProjectRow) => void,
 ): ColumnDef<ProjectRow>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Dự án <ArrowUpDown className='ml-2 h-4 w-4' />
+      <Button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        variant="ghost"
+      >
+        Dự án <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div>
-        <div className='max-w-[200px] truncate font-medium'>{row.original.title}</div>
-        {row.original.description && (
-          <div className='max-w-[200px] truncate text-muted-foreground text-xs'>{row.original.description}</div>
+      <div className="flex items-center gap-3">
+        {row.original.thumbnail && (
+          // biome-ignore lint/nursery/noImgElement: admin table
+          <img
+            alt=""
+            className="h-10 w-16 shrink-0 rounded border object-cover"
+            src={row.original.thumbnail}
+          />
         )}
+        <div>
+          <div className="max-w-50 truncate font-medium">
+            {row.original.title}
+          </div>
+          {row.original.description && (
+            <div className="max-w-50 truncate text-muted-foreground text-xs">
+              {row.original.description}
+            </div>
+          )}
+        </div>
       </div>
-    )
+    ),
   },
   {
     id: "technologies",
@@ -56,23 +77,23 @@ export const createColumns = (
     cell: ({ row }) => {
       const techs = row.original.technologies ?? [];
       if (!techs.length) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className="text-muted-foreground">—</span>;
       }
       return (
-        <div className='flex flex-wrap gap-1'>
+        <div className="flex flex-wrap gap-1">
           {techs.slice(0, 3).map((t) => (
-            <Badge className='text-[10px]' key={t} variant='outline'>
+            <Badge className="text-[10px]" key={t} variant="outline">
               {t}
             </Badge>
           ))}
           {techs.length > 3 && (
-            <Badge className='text-[10px]' variant='outline'>
+            <Badge className="text-[10px]" variant="outline">
               +{techs.length - 3}
             </Badge>
           )}
         </div>
       );
-    }
+    },
   },
   {
     id: "links",
@@ -81,33 +102,35 @@ export const createColumns = (
       const p = row.original;
       const links = [
         p.githubUrl && { label: "GitHub", url: p.githubUrl },
-        p.websiteUrl && { label: "Web", url: p.websiteUrl }
+        p.websiteUrl && { label: "Web", url: p.websiteUrl },
       ].filter(Boolean) as { label: string; url: string }[];
       if (!links.length) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className="text-muted-foreground">—</span>;
       }
       return (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           {links.map((l) => (
             <a
-              className='inline-flex items-center gap-1 text-primary text-xs hover:underline'
+              className="inline-flex items-center gap-1 text-primary text-xs hover:underline"
               href={l.url}
               key={l.label}
-              rel='noopener'
-              target='_blank'
+              rel="noopener"
+              target="_blank"
             >
-              <ExternalLink className='h-3 w-3' />
+              <ExternalLink className="h-3 w-3" />
               {l.label}
             </a>
           ))}
         </div>
       );
-    }
+    },
   },
   {
     id: "memberCount",
     header: "Thành viên",
-    cell: ({ row }) => <span className='text-sm'>{row.original.members.length || "—"}</span>
+    cell: ({ row }) => (
+      <span className="text-sm">{row.original.members.length || "—"}</span>
+    ),
   },
   {
     accessorKey: "isActive",
@@ -116,7 +139,7 @@ export const createColumns = (
       <Badge variant={row.original.isActive ? "default" : "outline"}>
         {row.original.isActive ? "Hoạt động" : "Kết thúc"}
       </Badge>
-    )
+    ),
   },
   {
     id: "actions",
@@ -125,20 +148,30 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
+            <Button className="h-8 w-8 p-0" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(p)}>Chỉnh sửa</DropdownMenuItem>
+            {onView && (
+              <DropdownMenuItem onClick={() => onView(p)}>
+                Xem chi tiết
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={() => onEdit(p)}>
+              Chỉnh sửa
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(p.id)}>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => onDelete(p.id)}
+            >
               Xóa
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    }
-  }
+    },
+  },
 ];

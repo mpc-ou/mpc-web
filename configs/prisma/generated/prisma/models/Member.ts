@@ -35,6 +35,7 @@ export type MemberMinAggregateOutputType = {
   coverImage: string | null
   slug: string | null
   dob: Date | null
+  showDob: boolean | null
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -57,6 +58,7 @@ export type MemberMaxAggregateOutputType = {
   coverImage: string | null
   slug: string | null
   dob: Date | null
+  showDob: boolean | null
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -79,6 +81,7 @@ export type MemberCountAggregateOutputType = {
   coverImage: number
   slug: number
   dob: number
+  showDob: number
   bio: number
   phone: number
   studentId: number
@@ -104,6 +107,7 @@ export type MemberMinAggregateInputType = {
   coverImage?: true
   slug?: true
   dob?: true
+  showDob?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -126,6 +130,7 @@ export type MemberMaxAggregateInputType = {
   coverImage?: true
   slug?: true
   dob?: true
+  showDob?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -148,6 +153,7 @@ export type MemberCountAggregateInputType = {
   coverImage?: true
   slug?: true
   dob?: true
+  showDob?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -244,6 +250,7 @@ export type MemberGroupByOutputType = {
   coverImage: string | null
   slug: string | null
   dob: Date | null
+  showDob: boolean
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -288,6 +295,7 @@ export type MemberWhereInput = {
   coverImage?: Prisma.StringNullableFilter<"Member"> | string | null
   slug?: Prisma.StringNullableFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
+  showDob?: Prisma.BoolFilter<"Member"> | boolean
   bio?: Prisma.StringNullableFilter<"Member"> | string | null
   phone?: Prisma.StringNullableFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableFilter<"Member"> | string | null
@@ -319,6 +327,7 @@ export type MemberOrderByWithRelationInput = {
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   dob?: Prisma.SortOrderInput | Prisma.SortOrder
+  showDob?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -353,6 +362,7 @@ export type MemberWhereUniqueInput = Prisma.AtLeast<{
   avatar?: Prisma.StringNullableFilter<"Member"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
+  showDob?: Prisma.BoolFilter<"Member"> | boolean
   bio?: Prisma.StringNullableFilter<"Member"> | string | null
   phone?: Prisma.StringNullableFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableFilter<"Member"> | string | null
@@ -384,6 +394,7 @@ export type MemberOrderByWithAggregationInput = {
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   dob?: Prisma.SortOrderInput | Prisma.SortOrder
+  showDob?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -413,6 +424,7 @@ export type MemberScalarWhereWithAggregatesInput = {
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   slug?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableWithAggregatesFilter<"Member"> | Date | string | null
+  showDob?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
   bio?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
@@ -436,6 +448,7 @@ export type MemberCreateInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -467,6 +480,7 @@ export type MemberUncheckedCreateInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -498,6 +512,7 @@ export type MemberUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -529,6 +544,7 @@ export type MemberUncheckedUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -560,6 +576,7 @@ export type MemberCreateManyInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -583,6 +600,7 @@ export type MemberUpdateManyMutationInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -606,6 +624,7 @@ export type MemberUncheckedUpdateManyInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -629,6 +648,7 @@ export type MemberCountOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
+  showDob?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -652,6 +672,7 @@ export type MemberMaxOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
+  showDob?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -674,6 +695,7 @@ export type MemberMinOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
+  showDob?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -824,6 +846,7 @@ export type MemberCreateWithoutClubRolesInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -854,6 +877,7 @@ export type MemberUncheckedCreateWithoutClubRolesInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -900,6 +924,7 @@ export type MemberUpdateWithoutClubRolesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -930,6 +955,7 @@ export type MemberUncheckedUpdateWithoutClubRolesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -960,6 +986,7 @@ export type MemberCreateWithoutAuthoredPostsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -990,6 +1017,7 @@ export type MemberUncheckedCreateWithoutAuthoredPostsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1025,6 +1053,7 @@ export type MemberCreateWithoutReviewedPostsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1055,6 +1084,7 @@ export type MemberUncheckedCreateWithoutReviewedPostsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1101,6 +1131,7 @@ export type MemberUpdateWithoutAuthoredPostsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1131,6 +1162,7 @@ export type MemberUncheckedUpdateWithoutAuthoredPostsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1172,6 +1204,7 @@ export type MemberUpdateWithoutReviewedPostsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1202,6 +1235,7 @@ export type MemberUncheckedUpdateWithoutReviewedPostsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1232,6 +1266,7 @@ export type MemberCreateWithoutPostRevisionsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1262,6 +1297,7 @@ export type MemberUncheckedCreateWithoutPostRevisionsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1308,6 +1344,7 @@ export type MemberUpdateWithoutPostRevisionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1338,6 +1375,7 @@ export type MemberUncheckedUpdateWithoutPostRevisionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1368,6 +1406,7 @@ export type MemberCreateWithoutCreatedEventsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1398,6 +1437,7 @@ export type MemberUncheckedCreateWithoutCreatedEventsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1444,6 +1484,7 @@ export type MemberUpdateWithoutCreatedEventsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1474,6 +1515,7 @@ export type MemberUncheckedUpdateWithoutCreatedEventsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1504,6 +1546,7 @@ export type MemberCreateWithoutOrganizedEventsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1534,6 +1577,7 @@ export type MemberUncheckedCreateWithoutOrganizedEventsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1580,6 +1624,7 @@ export type MemberUpdateWithoutOrganizedEventsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1610,6 +1655,7 @@ export type MemberUncheckedUpdateWithoutOrganizedEventsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1640,6 +1686,7 @@ export type MemberCreateWithoutAchievementsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1670,6 +1717,7 @@ export type MemberUncheckedCreateWithoutAchievementsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1716,6 +1764,7 @@ export type MemberUpdateWithoutAchievementsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1746,6 +1795,7 @@ export type MemberUncheckedUpdateWithoutAchievementsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1776,6 +1826,7 @@ export type MemberCreateWithoutProjectsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1806,6 +1857,7 @@ export type MemberUncheckedCreateWithoutProjectsInput = {
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
+  showDob?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1852,6 +1904,7 @@ export type MemberUpdateWithoutProjectsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1882,6 +1935,7 @@ export type MemberUncheckedUpdateWithoutProjectsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2006,6 +2060,7 @@ export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
+  showDob?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2038,6 +2093,7 @@ export type MemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
+  showDob?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2061,6 +2117,7 @@ export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
+  showDob?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2084,6 +2141,7 @@ export type MemberSelectScalar = {
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
+  showDob?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2097,7 +2155,7 @@ export type MemberSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authId" | "email" | "firstName" | "lastName" | "avatar" | "coverImage" | "slug" | "dob" | "bio" | "phone" | "studentId" | "socials" | "joinedClubAt" | "leftClubAt" | "webRole" | "isActive" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["member"]>
+export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authId" | "email" | "firstName" | "lastName" | "avatar" | "coverImage" | "slug" | "dob" | "showDob" | "bio" | "phone" | "studentId" | "socials" | "joinedClubAt" | "leftClubAt" | "webRole" | "isActive" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["member"]>
 export type MemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clubRoles?: boolean | Prisma.Member$clubRolesArgs<ExtArgs>
   authoredPosts?: boolean | Prisma.Member$authoredPostsArgs<ExtArgs>
@@ -2134,6 +2192,7 @@ export type $MemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     coverImage: string | null
     slug: string | null
     dob: Date | null
+    showDob: boolean
     bio: string | null
     phone: string | null
     studentId: string | null
@@ -2585,6 +2644,7 @@ export interface MemberFieldRefs {
   readonly coverImage: Prisma.FieldRef<"Member", 'String'>
   readonly slug: Prisma.FieldRef<"Member", 'String'>
   readonly dob: Prisma.FieldRef<"Member", 'DateTime'>
+  readonly showDob: Prisma.FieldRef<"Member", 'Boolean'>
   readonly bio: Prisma.FieldRef<"Member", 'String'>
   readonly phone: Prisma.FieldRef<"Member", 'String'>
   readonly studentId: Prisma.FieldRef<"Member", 'String'>

@@ -14,11 +14,25 @@ export const adminGetFaqItems = async () =>
     }
   });
 
-export const adminCreateFaqItem = async (data: { question: string; answer: string; locale?: string; order?: number }) =>
+export const adminCreateFaqItem = async (data: {
+  questionVi: string;
+  answerVi: string;
+  questionEn?: string;
+  answerEn?: string;
+  order?: number;
+}) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      const created = await prisma.faqItem.create({ data: { ...data, locale: data.locale ?? "vi" } });
+      const created = await prisma.faqItem.create({
+        data: {
+          questionVi: data.questionVi,
+          answerVi: data.answerVi,
+          questionEn: data.questionEn ?? "",
+          answerEn: data.answerEn ?? "",
+          order: data.order ?? 0,
+        }
+      });
       revalidateTag(_CACHE_FAQ, "default");
       return created;
     }
@@ -26,7 +40,14 @@ export const adminCreateFaqItem = async (data: { question: string; answer: strin
 
 export const adminUpdateFaqItem = async (
   id: string,
-  data: { question?: string; answer?: string; locale?: string; order?: number; isActive?: boolean }
+  data: {
+    questionVi?: string;
+    answerVi?: string;
+    questionEn?: string;
+    answerEn?: string;
+    order?: number;
+    isActive?: boolean;
+  }
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -128,5 +149,48 @@ export const adminUpsertSetting = async (data: { key: string; value: string; des
       });
       revalidateTag(_CACHE_SETTINGS, "default");
       return result;
+    }
+  });
+
+// ─── EXTERNAL LINKS ─────────────────────
+
+export const adminGetExternalLinks = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      return prisma.externalLink.findMany({ orderBy: { order: "asc" } });
+    }
+  });
+
+export const adminCreateExternalLink = async (data: { label: string; url: string; order?: number }) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const created = await prisma.externalLink.create({ data });
+      revalidateTag(_CACHE_SETTINGS, "default");
+      return created;
+    }
+  });
+
+export const adminUpdateExternalLink = async (
+  id: string,
+  data: { label?: string; url?: string; order?: number; isActive?: boolean }
+) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const updated = await prisma.externalLink.update({ where: { id }, data });
+      revalidateTag(_CACHE_SETTINGS, "default");
+      return updated;
+    }
+  });
+
+export const adminDeleteExternalLink = async (id: string) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      await prisma.externalLink.delete({ where: { id } });
+      revalidateTag(_CACHE_SETTINGS, "default");
+      return { success: true };
     }
   });

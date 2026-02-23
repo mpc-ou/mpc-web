@@ -56,6 +56,7 @@ export const ModelName = {
   HomepageSection: 'HomepageSection',
   FaqItem: 'FaqItem',
   GalleryImage: 'GalleryImage',
+  ExternalLink: 'ExternalLink',
   Member: 'Member',
   Department: 'Department',
   ClubRole: 'ClubRole',
@@ -136,11 +137,12 @@ export type HomepageSectionScalarFieldEnum = (typeof HomepageSectionScalarFieldE
 
 export const FaqItemScalarFieldEnum = {
   id: 'id',
-  question: 'question',
-  answer: 'answer',
+  questionVi: 'questionVi',
+  answerVi: 'answerVi',
+  questionEn: 'questionEn',
+  answerEn: 'answerEn',
   order: 'order',
   isActive: 'isActive',
-  locale: 'locale',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -160,6 +162,19 @@ export const GalleryImageScalarFieldEnum = {
 export type GalleryImageScalarFieldEnum = (typeof GalleryImageScalarFieldEnum)[keyof typeof GalleryImageScalarFieldEnum]
 
 
+export const ExternalLinkScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  url: 'url',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalLinkScalarFieldEnum = (typeof ExternalLinkScalarFieldEnum)[keyof typeof ExternalLinkScalarFieldEnum]
+
+
 export const MemberScalarFieldEnum = {
   id: 'id',
   authId: 'authId',
@@ -170,6 +185,7 @@ export const MemberScalarFieldEnum = {
   coverImage: 'coverImage',
   slug: 'slug',
   dob: 'dob',
+  showDob: 'showDob',
   bio: 'bio',
   phone: 'phone',
   studentId: 'studentId',

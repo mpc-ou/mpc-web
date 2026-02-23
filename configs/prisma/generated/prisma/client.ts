@@ -58,7 +58,7 @@ export type Announcement = Prisma.AnnouncementModel
 export type HomepageSection = Prisma.HomepageSectionModel
 /**
  * Model FaqItem
- * Câu hỏi thường gặp - quản lý FAQ từ admin
+ * Câu hỏi thường gặp - quản lý FAQ từ admin (song ngữ)
  */
 export type FaqItem = Prisma.FaqItemModel
 /**
@@ -66,6 +66,11 @@ export type FaqItem = Prisma.FaqItemModel
  * Ảnh gallery trang chủ - quản lý từ admin
  */
 export type GalleryImage = Prisma.GalleryImageModel
+/**
+ * Model ExternalLink
+ * Liên kết ngoài - hiển thị ở footer, quản lý từ admin
+ */
+export type ExternalLink = Prisma.ExternalLinkModel
 /**
  * Model Member
  * Thành viên CLB - liên kết với Supabase Auth qua authId

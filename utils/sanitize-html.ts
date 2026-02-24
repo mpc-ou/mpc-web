@@ -17,7 +17,7 @@ export function sanitizeHtml(dirty: string): string {
       "height",
       "style",
       "target",
-      "rel",
-    ],
+      "rel"
+    ]
   });
 }

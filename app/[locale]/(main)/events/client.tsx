@@ -1,22 +1,16 @@
 "use client";
 
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { Link } from "@/configs/i18n/routing";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowRight,
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Image as ImageIcon,
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/configs/i18n/routing";
 
 export function DynamicEventsClient({
   events,
   currentPage,
-  totalPages,
+  totalPages
 }: {
   events: any[];
   currentPage: number;
@@ -35,79 +29,67 @@ export function DynamicEventsClient({
     });
   };
 
-  const statusMap: Record<
-    string,
-    { label: string; variant: "default" | "secondary" | "outline" }
-  > = {
+  const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
     UPCOMING: { label: "Sắp diễn ra", variant: "default" },
     ONGOING: { label: "Đang diễn ra", variant: "secondary" },
-    COMPLETED: { label: "Đã diễn ra", variant: "outline" },
+    COMPLETED: { label: "Đã diễn ra", variant: "outline" }
   };
 
   return (
-    <div
-      className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}
-    >
+    <div className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}>
       {events.length === 0 ? (
-        <div className="py-20 text-center text-muted-foreground">
-          Chưa có sự kiện nào được đăng tải.
-        </div>
+        <div className='py-20 text-center text-muted-foreground'>Chưa có sự kiện nào được đăng tải.</div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
           {events.map((event) => {
             const statusInfo = statusMap[event.status] || {
               label: event.status,
-              variant: "outline",
+              variant: "outline"
             };
-            const dateStr = event.startAt
-              ? new Date(event.startAt).toLocaleDateString("vi-VN")
-              : "";
+            const dateStr = event.startAt ? new Date(event.startAt).toLocaleDateString("vi-VN") : "";
 
             return (
               <Link
-                key={event.id}
+                className='group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md'
                 href={`/events/${event.slug}`}
-                className="group flex flex-col h-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
+                key={event.id}
               >
-                <div className="relative aspect-video w-full overflow-hidden bg-muted/30">
+                <div className='relative aspect-video w-full overflow-hidden bg-muted/30'>
                   {event.thumbnail ? (
                     <img
-                      src={event.thumbnail}
                       alt={event.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                      src={event.thumbnail}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/30">
-                      <ImageIcon className="h-12 w-12 opacity-50" />
+                    <div className='flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/30'>
+                      <ImageIcon className='h-12 w-12 opacity-50' />
                     </div>
                   )}
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <Badge
-                      variant={statusInfo.variant}
-                      className="shadow-xs backdrop-blur-md bg-background/80"
-                    >
+                  <div className='absolute top-3 left-3 flex gap-2'>
+                    <Badge className='bg-background/80 shadow-xs backdrop-blur-md' variant={statusInfo.variant}>
                       {statusInfo.label}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex flex-col grow p-5">
-                  <h3 className="mb-2 text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
+                <div className='flex grow flex-col p-5'>
+                  <h3 className='mb-2 font-bold text-foreground text-xl leading-tight transition-colors group-hover:text-primary'>
                     {event.title}
                   </h3>
 
-                  <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-3">
-                    <CalendarDays className="h-3.5 w-3.5" />
+                  <div className='mb-3 flex items-center gap-2 font-medium text-muted-foreground text-xs'>
+                    <CalendarDays className='h-3.5 w-3.5' />
                     <span>{dateStr}</span>
                   </div>
 
-                  <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 flex-1">
+                  <p className='mb-4 line-clamp-2 flex-1 text-muted-foreground text-sm leading-relaxed'>
                     {event.description || "Chưa có mô tả ngắn về sự kiện này."}
                   </p>
 
-                  <div className="mt-auto flex items-center text-sm font-semibold text-primary pt-4 border-t border-border/10">
+                  <div className='mt-auto flex items-center border-border/10 border-t pt-4 font-semibold text-primary text-sm'>
                     Xem chi tiết
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
                   </div>
                 </div>
               </Link>
@@ -118,32 +100,28 @@ export function DynamicEventsClient({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-12 flex items-center justify-center gap-2">
+        <div className='mt-12 flex items-center justify-center gap-2'>
           <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0"
+            className='h-8 w-8 p-0'
             disabled={currentPage <= 1 || isPending}
             onClick={() => handlePageChange(currentPage - 1)}
+            size='sm'
+            variant='outline'
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className='h-4 w-4' />
           </Button>
 
-          <div className="flex items-center gap-1">
+          <div className='flex items-center gap-1'>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-              if (
-                p === 1 ||
-                p === totalPages ||
-                (p >= currentPage - 1 && p <= currentPage + 1)
-              ) {
+              if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
                 return (
                   <Button
-                    key={p}
-                    variant={currentPage === p ? "default" : "outline"}
-                    size="sm"
-                    className="h-8 w-8 p-0"
+                    className='h-8 w-8 p-0'
                     disabled={isPending || currentPage === p}
+                    key={p}
                     onClick={() => handlePageChange(p)}
+                    size='sm'
+                    variant={currentPage === p ? "default" : "outline"}
                   >
                     {p}
                   </Button>
@@ -151,10 +129,7 @@ export function DynamicEventsClient({
               }
               if (p === currentPage - 2 || p === currentPage + 2) {
                 return (
-                  <span
-                    key={p}
-                    className="flex h-8 w-8 items-center justify-center text-sm text-muted-foreground"
-                  >
+                  <span className='flex h-8 w-8 items-center justify-center text-muted-foreground text-sm' key={p}>
                     ...
                   </span>
                 );
@@ -164,13 +139,13 @@ export function DynamicEventsClient({
           </div>
 
           <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0"
+            className='h-8 w-8 p-0'
             disabled={currentPage >= totalPages || isPending}
             onClick={() => handlePageChange(currentPage + 1)}
+            size='sm'
+            variant='outline'
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className='h-4 w-4' />
           </Button>
         </div>
       )}

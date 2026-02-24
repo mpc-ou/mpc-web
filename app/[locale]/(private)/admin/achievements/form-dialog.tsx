@@ -95,7 +95,7 @@ export function AchievementFormDialog({ open, onOpenChange, achievement, allMemb
       setLinked([]);
     }
     setThumbnailUrl(achievement?.thumbnail ?? null);
-  }, [achievement.members.map, achievement?.thumbnail, achievement?.members]);
+  }, [achievement?.members, achievement?.thumbnail]);
 
   const handleLink = async (member: MemberOption, role: string) => {
     if (!achievement) {

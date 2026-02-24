@@ -43,7 +43,7 @@ export const getEventsPageData = async (validPage: number, take: number) =>
       const serializedEvents = events.map((e) => ({
         ...e,
         startAt: e.startAt.toISOString(),
-        endAt: e.endAt ? e.endAt.toISOString() : null,
+        endAt: e.endAt ? e.endAt.toISOString() : null
       }));
 
       return { events: serializedEvents, totalPages };
@@ -91,12 +91,14 @@ export const getEventBySlug = async (slug: string) =>
           }
         }
       });
-      if (!event) return { event: null };
+      if (!event) {
+        return { event: null };
+      }
 
       const serializedEvent = {
         ...event,
         startAt: event.startAt.toISOString(),
-        endAt: event.endAt ? event.endAt.toISOString() : null,
+        endAt: event.endAt ? event.endAt.toISOString() : null
       };
 
       return { event: serializedEvent };
@@ -124,7 +126,7 @@ export const getRecentEvents = async (take = 3) =>
       });
       const serializedEvents = events.map((e) => ({
         ...e,
-        startAt: e.startAt.toISOString(),
+        startAt: e.startAt.toISOString()
       }));
       return { events: serializedEvents };
     }

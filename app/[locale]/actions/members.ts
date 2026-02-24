@@ -82,6 +82,9 @@ export const getMembersGroupedByYear = async () =>
             return acc;
           }
           const entryRole = member.clubRoles.at(-1);
+          if (!entryRole) {
+            return acc;
+          }
           const year =
             entryRole.startAt instanceof Date
               ? entryRole.startAt.getFullYear()

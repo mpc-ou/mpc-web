@@ -6,7 +6,6 @@ import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 export const getEventsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
       const skip = (validPage - 1) * take;
 
       const [total, events] = await Promise.all([
@@ -41,14 +40,19 @@ export const getEventsPageData = async (validPage: number, take: number) =>
 
       const totalPages = Math.ceil(total / take);
 
-      return { events, totalPages };
+      const serializedEvents = events.map((e) => ({
+        ...e,
+        startAt: e.startAt.toISOString(),
+        endAt: e.endAt ? e.endAt.toISOString() : null,
+      }));
+
+      return { events: serializedEvents, totalPages };
     }
   });
 
 export const getEventBySlug = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
       const event = await prisma.event.findUnique({
         where: { slug },
         include: {
@@ -87,14 +91,21 @@ export const getEventBySlug = async (slug: string) =>
           }
         }
       });
-      return { event };
+      if (!event) return { event: null };
+
+      const serializedEvent = {
+        ...event,
+        startAt: event.startAt.toISOString(),
+        endAt: event.endAt ? event.endAt.toISOString() : null,
+      };
+
+      return { event: serializedEvent };
     }
   });
 
 export const getRecentEvents = async (take = 3) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
       const events = await prisma.event.findMany({
         where: {
           status: { in: ["UPCOMING", "ONGOING", "COMPLETED"] }
@@ -111,6 +122,10 @@ export const getRecentEvents = async (take = 3) =>
           status: true
         }
       });
-      return { events };
+      const serializedEvents = events.map((e) => ({
+        ...e,
+        startAt: e.startAt.toISOString(),
+      }));
+      return { events: serializedEvents };
     }
   });

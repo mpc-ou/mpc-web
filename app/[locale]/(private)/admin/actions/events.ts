@@ -8,7 +8,26 @@ export const adminGetEvents = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      return prisma.event.findMany({ orderBy: { startAt: "desc" }, include: { creator: true } });
+      const events = await prisma.event.findMany({ 
+        orderBy: { startAt: "desc" }, 
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          thumbnail: true,
+          location: true,
+          startAt: true,
+          endAt: true,
+          status: true,
+          creator: { select: { firstName: true, lastName: true } }
+        }
+      });
+      return events.map(e => ({
+        ...e,
+        startAt: e.startAt.toISOString(),
+        endAt: e.endAt ? e.endAt.toISOString() : null
+      }));
     }
   });
 

@@ -5,14 +5,29 @@ import { _CACHE_MEMBERS } from "@/constants/cache";
 import { isRootAdmin } from "@/utils/admin";
 import { generateUniqueSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./_helpers";
 
+const SLUG_REGEX = /^[a-z0-9_-]+$/;
+
 export const adminGetMembers = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      return prisma.member.findMany({
+      const members = await prisma.member.findMany({
         orderBy: { createdAt: "desc" },
         include: { clubRoles: { include: { department: true }, where: { endAt: null } } }
       });
+      return members.map((m) => ({
+        ...m,
+        createdAt: m.createdAt.toISOString(),
+        updatedAt: m.updatedAt.toISOString(),
+        dob: m.dob ? m.dob.toISOString() : null,
+        clubRoles: m.clubRoles.map((cr) => ({
+          ...cr,
+          createdAt: cr.createdAt.toISOString(),
+          updatedAt: cr.updatedAt.toISOString(),
+          startAt: cr.startAt.toISOString(),
+          endAt: cr.endAt ? cr.endAt.toISOString() : null
+        }))
+      }));
     }
   });
 
@@ -94,6 +109,26 @@ export const adminAddMember = async (data: {
     }
   });
 
+async function validateAndCheckSlug(rawSlug: string, memberId: string) {
+  const slug = rawSlug.trim();
+  if (!slug) {
+    throw new Error("Slug không được để trống");
+  }
+  if (slug === "me") {
+    throw new Error('Slug không được là "me"');
+  }
+  if (!SLUG_REGEX.test(slug)) {
+    throw new Error("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới");
+  }
+  const slugTaken = await prisma.member.findFirst({
+    where: { slug, id: { not: memberId } }
+  });
+  if (slugTaken) {
+    throw new Error("Slug đã được sử dụng bởi thành viên khác");
+  }
+  return slug;
+}
+
 export const adminUpdateMember = async (
   memberId: string,
   data: {
@@ -123,22 +158,7 @@ export const adminUpdateMember = async (
 
       // Validate slug if provided
       if (data.slug !== undefined) {
-        const slug = data.slug.trim();
-        if (!slug) {
-          throw new Error("Slug không được để trống");
-        }
-        if (slug === "me") {
-          throw new Error('Slug không được là "me"');
-        }
-        if (!/^[a-z0-9_-]+$/.test(slug)) {
-          throw new Error("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới");
-        }
-        const slugTaken = await prisma.member.findFirst({
-          where: { slug, id: { not: memberId } }
-        });
-        if (slugTaken) {
-          throw new Error("Slug đã được sử dụng bởi thành viên khác");
-        }
+        await validateAndCheckSlug(data.slug, memberId);
       }
 
       const updated = await prisma.member.update({

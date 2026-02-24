@@ -8,10 +8,26 @@ export const adminGetProjects = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      return prisma.project.findMany({
+      const projects = await prisma.project.findMany({
         orderBy: { createdAt: "desc" },
         include: { members: { include: { member: true } } }
       });
+      return projects.map((p) => ({
+        ...p,
+        createdAt: p.createdAt.toISOString(),
+        updatedAt: p.updatedAt.toISOString(),
+        startDate: p.startDate ? p.startDate.toISOString() : null,
+        endDate: p.endDate ? p.endDate.toISOString() : null,
+        members: p.members.map((pm) => ({
+          ...pm,
+          member: {
+            ...pm.member,
+            createdAt: pm.member.createdAt.toISOString(),
+            updatedAt: pm.member.updatedAt.toISOString(),
+            dob: pm.member.dob ? pm.member.dob.toISOString() : null
+          }
+        }))
+      }));
     }
   });
 

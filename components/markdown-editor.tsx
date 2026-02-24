@@ -4,6 +4,7 @@ import { ImagePlus, Loader2 } from "lucide-react";
 import { marked } from "marked";
 import { useCallback, useRef, useState } from "react";
 import { uploadToStorage } from "@/utils/supabase-upload";
+import { sanitizeHtml } from "@/utils/sanitize-html";
 
 // Configure marked once for GFM
 marked.setOptions({ gfm: true, breaks: true });
@@ -26,7 +27,7 @@ const toolbar = [
   { label: "```", prefix: "```\n", suffix: "\n```", title: "Code block" },
   { label: "•", prefix: "- ", suffix: "", title: "List" },
   { label: "1.", prefix: "1. ", suffix: "", title: "Numbered list" },
-  { label: "—", prefix: "\n---\n", suffix: "", title: "Divider" }
+  { label: "—", prefix: "\n---\n", suffix: "", title: "Divider" },
 ];
 
 export const MarkdownEditor = ({
@@ -34,7 +35,7 @@ export const MarkdownEditor = ({
   defaultValue = "",
   placeholder = "Viết nội dung Markdown...",
   minHeight = "200px",
-  onChange
+  onChange,
 }: MarkdownEditorProps) => {
   const [value, setValue] = useState(defaultValue);
   const [tab, setTab] = useState<"write" | "preview">("write");
@@ -46,11 +47,13 @@ export const MarkdownEditor = ({
       setValue(v);
       onChange?.(v);
     },
-    [onChange]
+    [onChange],
   );
 
   const insertAtCursor = (text: string) => {
-    const textarea = document.querySelector(`textarea[name="${name}"]`) as HTMLTextAreaElement;
+    const textarea = document.querySelector(
+      `textarea[name="${name}"]`,
+    ) as HTMLTextAreaElement;
     if (!textarea) {
       handleChange(value + text);
       return;
@@ -68,7 +71,9 @@ export const MarkdownEditor = ({
   };
 
   const insertMarkdown = (prefix: string, suffix: string) => {
-    const textarea = document.querySelector(`textarea[name="${name}"]`) as HTMLTextAreaElement;
+    const textarea = document.querySelector(
+      `textarea[name="${name}"]`,
+    ) as HTMLTextAreaElement;
     if (!textarea) {
       return;
     }
@@ -108,7 +113,9 @@ export const MarkdownEditor = ({
       const altText = file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
       insertAtCursor(`\n![${altText}](${url})\n`);
     } catch (err) {
-      window.alert(`Upload thất bại: ${err instanceof Error ? err.message : "Unknown error"}`);
+      window.alert(
+        `Upload thất bại: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
     } finally {
       setUploading(false);
       // Reset input so same file can be uploaded again
@@ -119,15 +126,17 @@ export const MarkdownEditor = ({
   };
 
   return (
-    <div className='flex flex-col overflow-hidden rounded-lg border border-border'>
+    <div className="flex flex-col overflow-hidden rounded-lg border border-border">
       {/* Tab bar + Toolbar */}
-      <div className='flex flex-wrap items-center gap-1 border-border border-b bg-muted/30 px-2 py-1.5'>
+      <div className="flex flex-wrap items-center gap-1 border-border border-b bg-muted/30 px-2 py-1.5">
         <button
           className={`rounded px-2.5 py-1 font-medium text-xs transition-colors ${
-            tab === "write" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            tab === "write"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setTab("write")}
-          type='button'
+          type="button"
         >
           ✏️ Viết
         </button>
@@ -138,38 +147,48 @@ export const MarkdownEditor = ({
               : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setTab("preview")}
-          type='button'
+          type="button"
         >
           👁 Xem trước
         </button>
 
         {tab === "write" && (
           <>
-            <span className='mx-1 h-4 w-px bg-border' />
+            <span className="mx-1 h-4 w-px bg-border" />
             {toolbar.map((btn) => (
               <button
-                className='rounded px-1.5 py-0.5 text-muted-foreground text-xs hover:bg-muted hover:text-foreground'
+                className="rounded px-1.5 py-0.5 text-muted-foreground text-xs hover:bg-muted hover:text-foreground"
                 key={btn.label}
                 onClick={() => insertMarkdown(btn.prefix, btn.suffix)}
                 title={btn.title}
-                type='button'
+                type="button"
               >
                 {btn.label}
               </button>
             ))}
-            <span className='mx-1 h-4 w-px bg-border' />
+            <span className="mx-1 h-4 w-px bg-border" />
             {/* Image upload button */}
             <button
-              className='inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-muted-foreground text-xs hover:bg-muted hover:text-foreground disabled:opacity-50'
+              className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-muted-foreground text-xs hover:bg-muted hover:text-foreground disabled:opacity-50"
               disabled={uploading}
               onClick={() => fileInputRef.current?.click()}
-              title='Upload ảnh'
-              type='button'
+              title="Upload ảnh"
+              type="button"
             >
-              {uploading ? <Loader2 className='h-3 w-3 animate-spin' /> : <ImagePlus className='h-3 w-3' />}
+              {uploading ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <ImagePlus className="h-3 w-3" />
+              )}
               {uploading ? "Đang upload..." : "Ảnh"}
             </button>
-            <input accept='image/*' className='hidden' onChange={handleImageUpload} ref={fileInputRef} type='file' />
+            <input
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageUpload}
+              ref={fileInputRef}
+              type="file"
+            />
           </>
         )}
       </div>
@@ -177,7 +196,7 @@ export const MarkdownEditor = ({
       {/* Content area */}
       {tab === "write" ? (
         <textarea
-          className='w-full resize-y bg-background px-3 py-2 font-mono text-foreground text-sm focus:outline-none'
+          className="w-full resize-y bg-background px-3 py-2 font-mono text-foreground text-sm focus:outline-none"
           name={name}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={placeholder}
@@ -186,16 +205,19 @@ export const MarkdownEditor = ({
         />
       ) : (
         <div
-          className='prose prose-sm dark:prose-invert max-w-none px-3 py-2'
+          className="prose prose-sm dark:prose-invert max-w-none px-3 py-2"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
           dangerouslySetInnerHTML={{
-            __html: simpleMarkdownToHtml(value) || `<p class="text-muted-foreground">Chưa có nội dung</p>`
+            __html:
+              sanitizeHtml(simpleMarkdownToHtml(value)) ||
+              `<p class="text-muted-foreground">Chưa có nội dung</p>`,
           }}
           style={{ minHeight }}
         />
       )}
 
       {/* Hidden input for form submission */}
-      <input name={`${name}_hidden`} type='hidden' value={value} />
+      <input name={`${name}_hidden`} type="hidden" value={value} />
     </div>
   );
 };

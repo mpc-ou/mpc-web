@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@/configs/i18n/routing";
@@ -40,6 +41,7 @@ const DesktopNav = () => {
           <DropdownMenuItem asChild>
             <Link href="/events">{tNav("events")}</Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/activities/webdesign">{tNav("webDesign")}</Link>
           </DropdownMenuItem>

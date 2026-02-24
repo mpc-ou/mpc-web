@@ -112,11 +112,11 @@ const Header = ({ announcement, profile = null }: HeaderProps) => {
                 "pointer-events-none opacity-0",
             )}
           >
-            <LocaleSelect />
-            <ModeToggle />
-            <div className="hidden md:block">
-              <UserProfile profile={profile} />
+            <div className="hidden items-center gap-2 md:flex">
+              <LocaleSelect />
+              <ModeToggle />
             </div>
+            <UserProfile profile={profile} />
             <MobileMenu />
           </div>
         </div>

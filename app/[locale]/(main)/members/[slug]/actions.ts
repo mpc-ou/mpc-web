@@ -12,8 +12,10 @@ export const getMemberBySlug = async (slug: string) =>
       "use cache";
       cacheTag(_CACHE_MEMBERS);
 
-      const member = await prisma.member.findUnique({
-        where: { slug },
+      const member = await prisma.member.findFirst({
+        where: {
+          OR: [{ slug }, { studentId: slug }, { authId: slug }]
+        },
         include: {
           clubRoles: {
             include: { department: true },

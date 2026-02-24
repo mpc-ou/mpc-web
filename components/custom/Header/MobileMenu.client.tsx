@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "@/configs/i18n/routing";
+import { LocaleSelect } from "./LocaleSelect.client";
+import { ModeToggle } from "./ModeToggle.client";
 
 type NavLink = {
   href: string;
@@ -66,8 +68,14 @@ const MobileMenu = () => {
     },
     { label: tNav("achievements"), href: "/achievements" },
     { label: tNav("sponsors"), href: "/sponsors" },
-    { label: tNav("members"), href: "/members" },
-    { label: tNav("about"), href: "/about" },
+    {
+      label: tNav("about"),
+      children: [
+        { label: tNav("about"), href: "/about" },
+        { label: tNav("members"), href: "/members" },
+        { label: tNav("projects"), href: "/projects" },
+      ],
+    },
   ];
 
   const closeMenu = () => {
@@ -81,7 +89,7 @@ const MobileMenu = () => {
       {open && (
         <button
           aria-label={t("closeMenu")}
-          className="fixed inset-0 z-9998 cursor-default bg-black/40 md:hidden"
+          className="fixed inset-0 z-[48] cursor-default bg-black/40 md:hidden"
           onClick={closeMenu}
           type="button"
         />
@@ -89,7 +97,7 @@ const MobileMenu = () => {
 
       {}
       <div
-        className={`fixed top-0 right-0 z-9999 flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 md:hidden ${
+        className={`fixed top-0 right-0 z-[49] flex h-full w-72 flex-col bg-background shadow-xl transition-transform duration-300 md:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -153,6 +161,12 @@ const MobileMenu = () => {
             ),
           )}
         </nav>
+
+        {/* Footer Actions */}
+        <div className="mt-auto flex items-center justify-between border-border border-t p-4">
+          <LocaleSelect />
+          <ModeToggle />
+        </div>
       </div>
     </>
   );

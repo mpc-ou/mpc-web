@@ -1,7 +1,7 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { ImageLightbox } from "@/components/image-lightbox.client";
 import {
@@ -24,6 +24,7 @@ type Props = {
 };
 
 const GalleryCarousel = ({ images }: Props) => {
+  const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -40,7 +41,7 @@ const GalleryCarousel = ({ images }: Props) => {
           align: "start",
           loop: true,
         }}
-        plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
+        plugins={[plugin.current]}
       >
         <CarouselContent className="-ml-4">
           {images.map((img, index) => (

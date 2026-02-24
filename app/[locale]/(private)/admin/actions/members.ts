@@ -58,6 +58,11 @@ export const adminAddMember = async (data: {
   firstName: string;
   lastName: string;
   webRole?: "MEMBER" | "COLLABORATOR";
+  phone?: string;
+  dob?: string | null;
+  studentId?: string;
+  bio?: string;
+  socials?: string;
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -76,7 +81,12 @@ export const adminAddMember = async (data: {
           lastName: data.lastName,
           webRole: data.webRole ?? "MEMBER",
           createdBy: admin.id,
-          slug
+          slug,
+          phone: data.phone || null,
+          dob: data.dob ? new Date(data.dob) : null,
+          studentId: data.studentId || null,
+          bio: data.bio || null,
+          socials: data.socials ? JSON.parse(data.socials) : []
         }
       });
       revalidateTag(_CACHE_MEMBERS, "default");

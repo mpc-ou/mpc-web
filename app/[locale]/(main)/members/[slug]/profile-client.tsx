@@ -257,7 +257,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                   )}
 
                   {/* Extracting Email and Phone from socials if present */}
-                  {member.socials?.find((s) =>
+                  {socials.find((s) =>
                     s.platform.toLowerCase().includes("mail"),
                   ) && (
                     <div className="rounded-xl border bg-card p-5 shadow-sm">
@@ -265,7 +265,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                         Email
                       </p>
                       <p className="text-sm font-semibold truncate">
-                        {member.socials
+                        {socials
                           .find((s) =>
                             s.platform.toLowerCase().includes("mail"),
                           )

@@ -21,21 +21,21 @@ import type { MemberRow } from "./columns";
 import Image from "next/image";
 
 type Props = {
-  member: MemberRow;
+  member?: MemberRow;
   onClose: () => void;
 };
 
 export function MemberProfileTab({ member, onClose }: Props) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [slugValue, setSlugValue] = useState(member.slug ?? "");
+  const [slugValue, setSlugValue] = useState(member?.slug ?? "");
   const [slugError, setSlugError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
-    member.avatar ?? null,
+    member?.avatar ?? null,
   );
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [coverUrl, setCoverUrl] = useState<string | null>(
-    (member as { coverImage?: string | null }).coverImage ?? null,
+    (member as { coverImage?: string | null })?.coverImage ?? null,
   );
   const [coverUploading, setCoverUploading] = useState(false);
   const [isAvatarDragOver, setIsAvatarDragOver] = useState(false);
@@ -118,22 +118,62 @@ export function MemberProfileTab({ member, onClose }: Props) {
 
     setSaving(true);
     const fd = new FormData(e.currentTarget);
-    const res = await adminUpdateMember(member.id, {
-      firstName: fd.get("firstName") as string,
-      lastName: fd.get("lastName") as string,
-      phone: (fd.get("phone") as string) || undefined,
-      dob: (fd.get("dob") as string) || null,
-      studentId: (fd.get("studentId") as string) || undefined,
-      bio: (fd.get("bio") as string) || undefined,
-      webRole: fd.get("webRole") as
-        | "ADMIN"
-        | "COLLABORATOR"
-        | "MEMBER"
-        | "GUEST",
-      avatar: avatarUrl ?? undefined,
-      coverImage: coverUrl ?? undefined,
-      slug,
-    });
+
+    // Check if creating or editing
+    const isCreate = !member;
+
+    let res;
+    if (isCreate) {
+      const email = fd.get("email") as string;
+      if (!email) {
+        toast({ variant: "destructive", description: "Vui lòng nhập email" });
+        setSaving(false);
+        return;
+      }
+
+      const { adminAddMember } = await import("../actions");
+      res = await adminAddMember({
+        email,
+        firstName: fd.get("firstName") as string,
+        lastName: fd.get("lastName") as string,
+        phone: (fd.get("phone") as string) || undefined,
+        dob: (fd.get("dob") as string) || null,
+        studentId: (fd.get("studentId") as string) || undefined,
+        bio: (fd.get("bio") as string) || undefined,
+        webRole: fd.get("webRole") as "MEMBER" | "COLLABORATOR",
+        // Notice: `adminAddMember` currently doesn't accept avatar, coverImage, slug directly in creation
+        // We will need to update it again or run a subsequent update.
+        // Actually, let's update adminAddMember to take avatar and coverImage in a moment!
+      });
+
+      // If creation succeeds, we can immediately update the slug, avatar, cover if they exist using a secondary call
+      if (!res.error && res.data?.payload && (slug || avatarUrl || coverUrl)) {
+        const payloadId = (res.data.payload as any).id;
+        await adminUpdateMember(payloadId, {
+          slug,
+          avatar: avatarUrl ?? undefined,
+          coverImage: coverUrl ?? undefined,
+        });
+      }
+    } else {
+      res = await adminUpdateMember(member.id, {
+        firstName: fd.get("firstName") as string,
+        lastName: fd.get("lastName") as string,
+        phone: (fd.get("phone") as string) || undefined,
+        dob: (fd.get("dob") as string) || null,
+        studentId: (fd.get("studentId") as string) || undefined,
+        bio: (fd.get("bio") as string) || undefined,
+        webRole: fd.get("webRole") as
+          | "ADMIN"
+          | "COLLABORATOR"
+          | "MEMBER"
+          | "GUEST",
+        avatar: avatarUrl ?? undefined,
+        coverImage: coverUrl ?? undefined,
+        slug,
+      });
+    }
+
     if (res.error) {
       toast({ variant: "destructive", description: res.error?.message });
       setSaving(false);
@@ -213,11 +253,23 @@ export function MemberProfileTab({ member, onClose }: Props) {
       <Separator />
 
       <form className="grid gap-4" id="profile-form" onSubmit={handleSubmit}>
+        {!member && (
+          <div className="grid gap-1.5">
+            <Label htmlFor="email">Email Google *</Label>
+            <Input
+              id="email"
+              name="email"
+              placeholder="email@gmail.com"
+              required
+              type="email"
+            />
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <div className="grid gap-1.5">
             <Label htmlFor="firstName">Họ *</Label>
             <Input
-              defaultValue={member.firstName}
+              defaultValue={member?.firstName ?? ""}
               id="firstName"
               name="firstName"
               required
@@ -226,7 +278,7 @@ export function MemberProfileTab({ member, onClose }: Props) {
           <div className="grid gap-1.5">
             <Label htmlFor="lastName">Tên *</Label>
             <Input
-              defaultValue={member.lastName}
+              defaultValue={member?.lastName ?? ""}
               id="lastName"
               name="lastName"
               required
@@ -236,12 +288,12 @@ export function MemberProfileTab({ member, onClose }: Props) {
         <div className="grid grid-cols-2 gap-3">
           <div className="grid gap-1.5">
             <Label htmlFor="phone">Điện thoại</Label>
-            <Input defaultValue={member.phone ?? ""} id="phone" name="phone" />
+            <Input defaultValue={member?.phone ?? ""} id="phone" name="phone" />
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor="studentId">Mã sinh viên</Label>
             <Input
-              defaultValue={member.studentId ?? ""}
+              defaultValue={member?.studentId ?? ""}
               id="studentId"
               name="studentId"
             />
@@ -265,7 +317,9 @@ export function MemberProfileTab({ member, onClose }: Props) {
           <Label htmlFor="dob">Ngày sinh</Label>
           <Input
             defaultValue={
-              member.dob ? new Date(member.dob).toISOString().split("T")[0] : ""
+              member?.dob
+                ? new Date(member.dob).toISOString().split("T")[0]
+                : ""
             }
             id="dob"
             name="dob"
@@ -276,7 +330,7 @@ export function MemberProfileTab({ member, onClose }: Props) {
           <Label htmlFor="bio">Giới thiệu bản thân</Label>
           <textarea
             className="min-h-18 rounded-md border border-input bg-background px-3 py-2 text-sm"
-            defaultValue={member.bio ?? ""}
+            defaultValue={member?.bio ?? ""}
             id="bio"
             name="bio"
             placeholder="Viết vài dòng về bản thân..."
@@ -284,15 +338,15 @@ export function MemberProfileTab({ member, onClose }: Props) {
         </div>
         <div className="grid gap-1.5">
           <Label htmlFor="webRole">Vai trò hệ thống</Label>
-          <Select defaultValue={member.webRole ?? "MEMBER"} name="webRole">
+          <Select defaultValue={member?.webRole ?? "MEMBER"} name="webRole">
             <SelectTrigger id="webRole">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ADMIN">Admin</SelectItem>
+              {member && <SelectItem value="ADMIN">Admin</SelectItem>}
               <SelectItem value="COLLABORATOR">Cộng tác viên</SelectItem>
               <SelectItem value="MEMBER">Thành viên</SelectItem>
-              <SelectItem value="GUEST">Khách</SelectItem>
+              {member && <SelectItem value="GUEST">Khách</SelectItem>}
             </SelectContent>
           </Select>
         </div>

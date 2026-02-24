@@ -49,7 +49,10 @@ export const createColumns = (
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-1 -m-1 rounded-md transition-colors"
+        onClick={() => onView?.(row.original)}
+      >
         {row.original.thumbnail && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -59,7 +62,7 @@ export const createColumns = (
           />
         )}
         <div>
-          <div className="max-w-50 truncate font-medium">
+          <div className="max-w-50 truncate font-medium text-primary hover:underline">
             {row.original.title}
           </div>
           {row.original.description && (

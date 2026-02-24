@@ -17,6 +17,7 @@ import { useHandleError } from "@/hooks/use-handle-error";
 import { adminDeleteMember } from "../actions";
 import { createColumns, type MemberRow } from "./columns";
 import { MemberFormDialog } from "./form-dialog";
+import { MemberViewDialog } from "./view-dialog";
 import * as XLSX from "xlsx";
 import { Download } from "lucide-react";
 
@@ -34,18 +35,38 @@ export function MembersDataTable({
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editMember, setEditMember] = useState<MemberRow | null>(null);
+  const [viewMember, setViewMember] = useState<MemberRow | null>(null);
   const [roleFilter, setRoleFilter] = useState("ALL");
+  const [yearFilter, setYearFilter] = useState("ALL");
+
+  const availableYears = useMemo(() => {
+    const years = new Set<string>();
+    for (const m of data) {
+      if (m.createdAt) {
+        years.add(new Date(m.createdAt).getFullYear().toString());
+      }
+    }
+    return Array.from(years).sort((a, b) => Number(b) - Number(a));
+  }, [data]);
 
   const filteredData = useMemo(() => {
-    if (roleFilter === "ALL") {
-      return data;
-    }
-    return data.filter((m) => m.webRole === roleFilter);
-  }, [data, roleFilter]);
+    return data.filter((m) => {
+      const matchRole = roleFilter === "ALL" || m.webRole === roleFilter;
+      const matchYear =
+        yearFilter === "ALL" ||
+        (m.createdAt &&
+          new Date(m.createdAt).getFullYear().toString() === yearFilter);
+      return matchRole && matchYear;
+    });
+  }, [data, roleFilter, yearFilter]);
 
   const handleEdit = (member: MemberRow) => {
     setEditMember(member);
     setDialogOpen(true);
+  };
+
+  const handleView = (member: MemberRow) => {
+    setViewMember(member);
   };
 
   const handleDelete = async (id: string) => {
@@ -83,7 +104,10 @@ export function MembersDataTable({
     XLSX.writeFile(wb, "Danh_sach_thanh_vien.xlsx");
   };
 
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
+  const columns = useMemo(
+    () => createColumns(handleEdit, handleDelete, handleView),
+    [],
+  );
 
   const stats = useMemo(() => {
     const total = data.length;
@@ -133,6 +157,19 @@ export function MembersDataTable({
                 <SelectItem value="GUEST">Khách</SelectItem>
               </SelectContent>
             </Select>
+            <Select onValueChange={setYearFilter} value={yearFilter}>
+              <SelectTrigger className="h-8 w-32">
+                <SelectValue placeholder="Năm tham gia" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Tất cả các năm</SelectItem>
+                {availableYears.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button
               className="ml-auto h-8"
               onClick={handleExportExcel}
@@ -150,6 +187,22 @@ export function MembersDataTable({
         }
         searchKey="email"
         searchPlaceholder="Tìm theo email..."
+      />
+
+      <MemberViewDialog
+        member={viewMember}
+        open={!!viewMember}
+        onOpenChange={(open) => {
+          if (!open) setViewMember(null);
+        }}
+        onEdit={(m) => {
+          setViewMember(null);
+          handleEdit(m);
+        }}
+        onDelete={(id) => {
+          setViewMember(null);
+          handleDelete(id);
+        }}
       />
 
       <MemberFormDialog

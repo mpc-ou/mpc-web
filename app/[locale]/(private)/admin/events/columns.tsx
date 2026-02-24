@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export type EventRow = {
@@ -27,50 +27,77 @@ export type EventRow = {
   creator: { firstName: string; lastName: string } | null;
 };
 
-const statusBadge: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const statusBadge: Record<
+  string,
+  {
+    label: string;
+    variant: "default" | "secondary" | "destructive" | "outline";
+  }
+> = {
   UPCOMING: { label: "Sắp diễn ra", variant: "default" },
   ONGOING: { label: "Đang diễn ra", variant: "secondary" },
   COMPLETED: { label: "Hoàn thành", variant: "outline" },
-  CANCELLED: { label: "Đã hủy", variant: "destructive" }
+  CANCELLED: { label: "Đã hủy", variant: "destructive" },
 };
 
 export const createColumns = (
   onEdit: (event: EventRow) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  onView: (event: EventRow) => void,
 ): ColumnDef<EventRow>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+      <Button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        variant="ghost"
+      >
         Sự kiện
-        <ArrowUpDown className='ml-2 h-4 w-4' />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div>
-        <div className='font-medium'>{row.original.title}</div>
-        {row.original.location && <div className='text-muted-foreground text-xs'>📍 {row.original.location}</div>}
-      </div>
-    )
+    cell: ({ row }) => {
+      const e = row.original;
+      return (
+        <div
+          className="cursor-pointer hover:bg-muted/50 p-1 -m-1 rounded-md transition-colors"
+          onClick={() => onView(e)}
+        >
+          <div className="font-medium text-primary hover:underline">
+            {e.title}
+          </div>
+          {e.location && (
+            <div className="text-muted-foreground text-xs">📍 {e.location}</div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "startAt",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+      <Button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        variant="ghost"
+      >
         Thời gian
-        <ArrowUpDown className='ml-2 h-4 w-4' />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
       const start = new Date(row.original.startAt);
       const end = row.original.endAt ? new Date(row.original.endAt) : null;
       return (
-        <div className='text-xs'>
+        <div className="text-xs">
           <div>{start.toLocaleDateString("vi-VN")}</div>
-          {end && <div className='text-muted-foreground'>→ {end.toLocaleDateString("vi-VN")}</div>}
+          {end && (
+            <div className="text-muted-foreground">
+              → {end.toLocaleDateString("vi-VN")}
+            </div>
+          )}
         </div>
       );
-    }
+    },
   },
   {
     accessorKey: "status",
@@ -80,7 +107,7 @@ export const createColumns = (
       const info = statusBadge[s] ?? { label: s, variant: "outline" as const };
       return <Badge variant={info.variant}>{info.label}</Badge>;
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id))
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
   },
   {
     id: "creator",
@@ -88,13 +115,13 @@ export const createColumns = (
     cell: ({ row }) => {
       const c = row.original.creator;
       return c ? (
-        <span className='text-sm'>
+        <span className="text-sm">
           {c.firstName} {c.lastName}
         </span>
       ) : (
-        <span className='text-muted-foreground'>—</span>
+        <span className="text-muted-foreground">—</span>
       );
-    }
+    },
   },
   {
     id: "actions",
@@ -103,20 +130,25 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
+            <Button className="h-8 w-8 p-0" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(event)}>Chỉnh sửa</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(event)}>
+              Chỉnh sửa
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(event.id)}>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => onDelete(event.id)}
+            >
               Xóa sự kiện
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    }
-  }
+    },
+  },
 ];

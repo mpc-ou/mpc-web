@@ -4,12 +4,7 @@ import { LinkIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Sponsor = {
   id: string;
@@ -30,35 +25,35 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
         {sponsors.map((item) => (
           <div
-            className="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
+            className='group flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md'
             key={item.id}
             onClick={() => setSelected(item)}
           >
-            <div className="relative mb-4 flex aspect-square w-full max-w-32 items-center justify-center overflow-hidden rounded-xl bg-muted/30">
+            <div className='relative mb-4 flex aspect-square w-full max-w-32 items-center justify-center overflow-hidden rounded-xl bg-muted/30'>
               {item.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   alt={item.name}
-                  className="h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+                  className='h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105'
                   src={item.logo}
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center font-bold text-3xl text-muted-foreground/30 opacity-50">
+                <div className='flex h-full w-full items-center justify-center font-bold text-3xl text-muted-foreground/30 opacity-50'>
                   {item.name.substring(0, 2).toUpperCase()}
                 </div>
               )}
             </div>
 
-            <h3 className="line-clamp-2 text-center font-semibold text-foreground text-sm leading-tight transition-colors group-hover:text-primary">
+            <h3 className='line-clamp-2 text-center font-semibold text-foreground text-sm leading-tight transition-colors group-hover:text-primary'>
               {item.name}
             </h3>
 
             {/* Show Tier Badges if available */}
             {item.sponsorships && item.sponsorships.length > 0 && (
-              <div className="mt-2 flex flex-wrap justify-center gap-1">
+              <div className='mt-2 flex flex-wrap justify-center gap-1'>
                 {item.sponsorships.map((sponsor) => {
                   if (!sponsor.tier) {
                     return null;
@@ -83,11 +78,7 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
                   }
 
                   return (
-                    <Badge
-                      className={`px-1.5 py-0 text-[10px] ${colorClass}`}
-                      key={sponsor.id}
-                      variant="outline"
-                    >
+                    <Badge className={`px-1.5 py-0 text-[10px] ${colorClass}`} key={sponsor.id} variant='outline'>
                       {sponsor.tier}
                     </Badge>
                   );
@@ -99,51 +90,34 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
       </div>
 
       {/* Detail Dialog */}
-      <Dialog
-        onOpenChange={(open) => !open && setSelected(null)}
-        open={!!selected}
-      >
-        <DialogContent className="sm:max-w-md">
+      <Dialog onOpenChange={(open) => !open && setSelected(null)} open={!!selected}>
+        <DialogContent className='sm:max-w-md'>
           <DialogHeader>
-            <DialogTitle className="text-center text-xl">
-              {selected?.name}
-            </DialogTitle>
+            <DialogTitle className='text-center text-xl'>{selected?.name}</DialogTitle>
           </DialogHeader>
 
-          <div className="flex flex-col items-center gap-6 pt-4">
-            <div className="flex aspect-video w-full max-w-[240px] items-center justify-center rounded-xl bg-muted/30 p-2">
+          <div className='flex flex-col items-center gap-6 pt-4'>
+            <div className='flex aspect-video w-full max-w-[240px] items-center justify-center rounded-xl bg-muted/30 p-2'>
               {selected?.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  alt={selected.name}
-                  className="max-h-full max-w-full object-contain"
-                  src={selected.logo}
-                />
+                <img alt={selected.name} className='max-h-full max-w-full object-contain' src={selected.logo} />
               ) : (
-                <span className="font-bold text-4xl text-muted-foreground/30 opacity-50">
+                <span className='font-bold text-4xl text-muted-foreground/30 opacity-50'>
                   {selected?.name.substring(0, 2).toUpperCase()}
                 </span>
               )}
             </div>
 
             {selected?.description ? (
-              <p className="whitespace-pre-line text-muted-foreground text-sm">
-                {selected.description}
-              </p>
+              <p className='whitespace-pre-line text-muted-foreground text-sm'>{selected.description}</p>
             ) : (
-              <p className="text-muted-foreground text-sm italic">
-                Chưa có mô tả chi tiết.
-              </p>
+              <p className='text-muted-foreground text-sm italic'>Chưa có mô tả chi tiết.</p>
             )}
 
             {selected?.website && (
-              <Button asChild className="w-full">
-                <a
-                  href={selected.website}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <LinkIcon className="mr-2 h-4 w-4" /> Truy cập website
+              <Button asChild className='w-full'>
+                <a href={selected.website} rel='noopener noreferrer' target='_blank'>
+                  <LinkIcon className='mr-2 h-4 w-4' /> Truy cập website
                 </a>
               </Button>
             )}

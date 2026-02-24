@@ -8,9 +8,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "tsqyqazktzyicxccdpfy.supabase.co",
-      },
-    ],
+        hostname: "tsqyqazktzyicxccdpfy.supabase.co"
+      }
+    ]
   },
   cacheComponents: true,
   reactCompiler: true,

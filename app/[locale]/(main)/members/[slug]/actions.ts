@@ -1,8 +1,7 @@
 "use server";
 
-import { prisma } from "@/configs/prisma/db";
-
 import { cacheTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
@@ -45,7 +44,7 @@ export const getMemberSlugByAuthId = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user!.id },
+        where: { authId: user?.id },
         select: { slug: true }
       });
       return { slug: member?.slug ?? null };

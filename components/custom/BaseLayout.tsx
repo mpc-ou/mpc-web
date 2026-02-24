@@ -1,8 +1,8 @@
 import { Roboto } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import type { ReactNode } from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type { ReactNode } from "react";
 import { _LOCALES } from "@/constants/lang";
 import { TransparentHeaderProvider } from "@/hooks/use-transparent-header";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
   display: "swap",
   variable: "--font-roboto",
-  style: ["italic", "normal"],
+  style: ["italic", "normal"]
 });
 
 type BaseLayoutType = { children: ReactNode; locale: locale };
@@ -28,17 +28,10 @@ export async function BaseLayout({ children, locale }: BaseLayoutType) {
     <html lang={locale} suppressHydrationWarning>
       <body className={cn(roboto.className, "flex h-screen w-screen flex-col")}>
         <NuqsAdapter>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            enableSystem
-          >
+          <ThemeProvider attribute='class' defaultTheme='system' disableTransitionOnChange enableSystem>
             <TooltipProvider>
               <NextIntlClientProvider messages={messages}>
-                <TransparentHeaderProvider>
-                  {children}
-                </TransparentHeaderProvider>
+                <TransparentHeaderProvider>{children}</TransparentHeaderProvider>
               </NextIntlClientProvider>
             </TooltipProvider>
             <Toaster />

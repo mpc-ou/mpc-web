@@ -71,7 +71,7 @@ export function FaqDataTable({ data, useTemplate: initialUseTemplate }: Props) {
     setSavingTemplate(false);
   };
 
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
+  const columns = useMemo(() => createColumns(handleEdit, handleDelete), [handleDelete, handleEdit]);
 
   return (
     <>

@@ -9,19 +9,18 @@ import { GallerySection } from "./gallery-section";
 import { HeroSection } from "./hero-section";
 import { IntroSection } from "./intro-section";
 import { ManagementSection } from "./management-section";
+import { RecentEventsSection } from "./recent-events";
 import { StatsSection } from "./stats-section";
 
 type PageType = {
   params: Promise<{ locale: locale }>;
 };
 
-export async function generateMetadata({
-  params,
-}: PageType): Promise<Metadata> {
+export async function generateMetadata({ params }: PageType): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
   return {
-    title: t("title"),
+    title: t("title")
   };
 }
 
@@ -30,7 +29,7 @@ export default async function Page({ params }: PageType) {
   setRequestLocale(locale as locale);
 
   return (
-    <div className="flex flex-col">
+    <div className='flex flex-col'>
       <HeroSection />
 
       <IntroSection locale={locale} />
@@ -46,6 +45,10 @@ export default async function Page({ params }: PageType) {
       </Suspense>
 
       <GallerySection locale={locale} />
+
+      <Suspense fallback={<LoadingComponent />}>
+        <RecentEventsSection />
+      </Suspense>
 
       <FaqSection locale={locale} />
     </div>

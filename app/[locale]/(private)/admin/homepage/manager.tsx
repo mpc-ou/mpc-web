@@ -23,7 +23,7 @@ export function HomepageDataTable({ data }: { data: SectionRow[] }) {
     setDialogOpen(true);
   };
 
-  const columns = useMemo(() => createColumns(handleEdit), []);
+  const columns = useMemo(() => createColumns(handleEdit), [handleEdit]);
 
   return (
     <>

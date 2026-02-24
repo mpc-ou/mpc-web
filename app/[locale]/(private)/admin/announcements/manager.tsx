@@ -49,7 +49,10 @@ export function AnnouncementsDataTable({ data }: { data: AnnouncementRow[] }) {
     setDialogOpen(true);
   };
 
-  const columns = useMemo(() => createColumns(handleEdit, handleToggle, handleDelete), []);
+  const columns = useMemo(
+    () => createColumns(handleEdit, handleToggle, handleDelete),
+    [handleDelete, handleEdit, handleToggle]
+  );
 
   return (
     <>

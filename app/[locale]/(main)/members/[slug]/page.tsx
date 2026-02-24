@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${member.firstName} ${member.lastName} — MPC`,
     description: member.bio ?? "Hồ sơ thành viên MPC",
     openGraph: {
-      images: member.avatar ? [member.avatar] : [],
-    },
+      images: member.avatar ? [member.avatar] : []
+    }
   };
 }
 
@@ -33,7 +33,7 @@ export default async function MemberProfilePage({ params }: Props) {
   if (slug === "me") {
     const supabase = await createClientSsr();
     const {
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -57,11 +57,5 @@ export default async function MemberProfilePage({ params }: Props) {
     notFound();
   }
 
-  return (
-    <ProfilePageClient
-      member={
-        member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]
-      }
-    />
-  );
+  return <ProfilePageClient member={member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]} />;
 }

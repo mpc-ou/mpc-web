@@ -35,10 +35,13 @@ const DesktopNav = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem asChild>
-            <Link href="/events">{tNav("introduction")}</Link>
+            <Link href="/activities">{tNav("introduction")}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/event/webdesign">{tNav("webDesign")}</Link>
+            <Link href="/events">{tNav("events")}</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/activities/webdesign">{tNav("webDesign")}</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

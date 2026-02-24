@@ -62,8 +62,9 @@ const MobileMenu = () => {
     {
       label: tNav("activities"),
       children: [
-        { label: tNav("introduction"), href: "/events" },
-        { label: tNav("webDesign"), href: "/event/webdesign" },
+        { label: tNav("introduction"), href: "/activities" },
+        { label: tNav("events"), href: "/events" },
+        { label: tNav("webDesign"), href: "/activities/webdesign" },
       ],
     },
     { label: tNav("achievements"), href: "/achievements" },

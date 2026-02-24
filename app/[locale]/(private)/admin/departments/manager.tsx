@@ -42,7 +42,7 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
     setDialogOpen(true);
   };
 
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
+  const columns = useMemo(() => createColumns(handleEdit, handleDelete), [handleDelete, handleEdit]);
 
   return (
     <>

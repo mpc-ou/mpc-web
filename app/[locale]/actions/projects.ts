@@ -1,7 +1,7 @@
 "use server";
 
-import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 import { prisma } from "@/configs/prisma/db";
+import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 
 export const getProjectsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({

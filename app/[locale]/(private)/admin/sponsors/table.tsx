@@ -39,7 +39,7 @@ export function SponsorsDataTable({ data }: { data: SponsorRow[] }) {
     setEditSponsor(null);
     setDialogOpen(true);
   };
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
+  const columns = useMemo(() => createColumns(handleEdit, handleDelete), [handleDelete, handleEdit]);
 
   return (
     <>

@@ -1,78 +1,55 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { EventsClient } from "./client";
-import { EventsHeroClient } from "./hero.client";
-import eventsData from "@/configs/data/events.json";
-import fs from "fs";
-import path from "path";
+import { DynamicEventsClient } from "./client";
+import { getEventsPageData } from "@/app/[locale]/actions/events";
+import { CalendarDays } from "lucide-react";
 
 type Props = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function EventsPage({ params }: Props) {
+export default async function EventsPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("events");
 
-  // Format data from eventsData using locale
-  const getLocalizedData = (events: any[]) => {
-    return events.map((e) => {
-      let images: string[] = [];
-      let thumbnail =
-        "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image";
+  const sp = await searchParams;
+  const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
+  const validPage = isNaN(page) || page < 1 ? 1 : page;
 
-      if (e.imageFolder) {
-        try {
-          const dirPath = path.join(process.cwd(), "public", e.imageFolder);
-          if (fs.existsSync(dirPath)) {
-            const files = fs.readdirSync(dirPath);
-            const imageFiles = files.filter((file) =>
-              /\.(jpg|jpeg|png|webp|gif)$/i.test(file),
-            );
+  const take = 9;
 
-            // Sort Z-A
-            imageFiles.sort((a, b) => b.localeCompare(a));
+  const { data } = await getEventsPageData(validPage, take);
+  const payload = data?.payload as
+    | { events: any[]; totalPages: number }
+    | undefined;
 
-            images = imageFiles.map((file) => `${e.imageFolder}/${file}`);
-            if (images.length > 0) {
-              thumbnail = images[0];
-            }
-          }
-        } catch (error) {
-          console.error(`Error reading image folder ${e.imageFolder}:`, error);
-        }
-      }
-
-      return {
-        id: e.id,
-        title: e[locale]?.title || e.vi?.title,
-        description: e[locale]?.description || e.vi?.description,
-        thumbnail,
-        images,
-        href: e.href,
-      };
-    });
-  };
-
-  const internalEvents = getLocalizedData(eventsData.internalEvents);
-  const externalEvents = getLocalizedData(eventsData.externalEvents);
-
-  const clientTranslations = {
-    internalTitle: t("internal.title"),
-    internalDesc: t("internal.desc"),
-    externalTitle: t("external.title"),
-    externalDesc: t("external.desc"),
-    learnMore: t("learnMore"),
-  };
+  const dbEvents = payload?.events ?? [];
+  const totalPages = payload?.totalPages ?? 0;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <EventsHeroClient title={t("title")} subtitle={t("subtitle")} />
-      <EventsClient
-        internalEvents={internalEvents}
-        externalEvents={externalEvents}
-        t={clientTranslations}
-      />
+    <div className="min-h-screen bg-background pt-10 pb-20 sm:pt-20">
+      <div className="container mx-auto max-w-6xl px-4">
+        {/* Header */}
+        <div className="mb-16 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <CalendarDays className="h-8 w-8" />
+          </div>
+          <h1 className="mb-4 font-black text-4xl tracking-tight sm:text-5xl">
+            Sự kiện của MPC
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            Tham gia các hoạt động, giao lưu học hỏi và phát triển kỹ năng cùng
+            câu lạc bộ.
+          </p>
+        </div>
+
+        {/* Content */}
+        <DynamicEventsClient
+          currentPage={validPage}
+          events={dbEvents}
+          totalPages={totalPages}
+        />
+      </div>
     </div>
   );
 }

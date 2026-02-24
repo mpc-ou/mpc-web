@@ -2,13 +2,7 @@
 
 import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
-import {
-  _CACHE_ANNOUNCEMENTS,
-  _CACHE_EVENTS,
-  _CACHE_FAQ,
-  _CACHE_GALLERY,
-  _CACHE_SETTINGS
-} from "@/constants/cache";
+import { _CACHE_ANNOUNCEMENTS, _CACHE_EVENTS, _CACHE_FAQ, _CACHE_GALLERY, _CACHE_SETTINGS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 
 export const getUpcomingEventsCount = async () =>

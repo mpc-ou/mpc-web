@@ -53,7 +53,7 @@ export const getMemberCount = async () =>
     cb: async () => {
       "use cache";
       cacheTag(_CACHE_MEMBERS);
-      return { count: await prisma.member.count({ where: { isActive: true } }) };
+      return { count: await prisma.member.count({ where: { isActive: true, webRole: { not: "GUEST" } } }) };
     }
   });
 
@@ -78,13 +78,18 @@ export const getMembersGroupedByYear = async () =>
 
       const groupedByYear = members.reduce(
         (acc, member) => {
-          if (member.clubRoles.length === 0) return acc;
-          const entryRole = member.clubRoles[member.clubRoles.length - 1];
-          const year = entryRole.startAt instanceof Date 
-            ? entryRole.startAt.getFullYear() 
-            : new Date(entryRole.startAt).getFullYear();
+          if (member.clubRoles.length === 0) {
+            return acc;
+          }
+          const entryRole = member.clubRoles.at(-1);
+          const year =
+            entryRole.startAt instanceof Date
+              ? entryRole.startAt.getFullYear()
+              : new Date(entryRole.startAt).getFullYear();
 
-          if (!acc[year]) acc[year] = [];
+          if (!acc[year]) {
+            acc[year] = [];
+          }
 
           acc[year].push({
             id: member.id,

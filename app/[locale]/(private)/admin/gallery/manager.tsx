@@ -1,6 +1,24 @@
 "use client";
 
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Plus } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,35 +28,12 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { uploadToStorage } from "@/utils/supabase-upload";
-import {
-  adminCreateGalleryImage,
-  adminDeleteGalleryImage,
-  adminUpdateGalleryOrders,
-} from "../actions";
-import Image from "next/image";
-
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  rectSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { adminCreateGalleryImage, adminDeleteGalleryImage, adminUpdateGalleryOrders } from "../actions";
 
 type GalleryImage = {
   id: string;
@@ -48,44 +43,26 @@ type GalleryImage = {
   isActive: boolean;
 };
 
-function SortableImage({
-  img,
-  onDelete,
-}: {
-  img: GalleryImage;
-  onDelete: (id: string) => void;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: img.id });
+function SortableImage({ img, onDelete }: { img: GalleryImage; onDelete: (id: string) => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: img.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition
   };
 
   return (
     <div
+      className='group relative cursor-grab overflow-hidden rounded-xl border border-border bg-background active:cursor-grabbing'
       ref={setNodeRef}
       style={style}
-      className="group relative overflow-hidden rounded-xl border border-border bg-background cursor-grab active:cursor-grabbing"
     >
-      <div className="aspect-video bg-muted" {...attributes} {...listeners}>
-        <img
-          alt={img.caption ?? "Gallery"}
-          className="h-full w-full object-cover pointer-events-none"
-          src={img.url}
-        />
+      <div className='aspect-video bg-muted' {...attributes} {...listeners}>
+        <img alt={img.caption ?? "Gallery"} className='pointer-events-none h-full w-full object-cover' src={img.url} />
       </div>
-      <div className="flex items-center justify-between p-3">
-        <span className="truncate text-muted-foreground text-xs">
-          {img.caption ?? `#${img.order}`}
-        </span>
-        <Button
-          className="h-7 text-xs"
-          onClick={() => onDelete(img.id)}
-          size="sm"
-          variant="destructive"
-        >
+      <div className='flex items-center justify-between p-3'>
+        <span className='truncate text-muted-foreground text-xs'>{img.caption ?? `#${img.order}`}</span>
+        <Button className='h-7 text-xs' onClick={() => onDelete(img.id)} size='sm' variant='destructive'>
           Xóa
         </Button>
       </div>
@@ -93,11 +70,7 @@ function SortableImage({
   );
 }
 
-export function GalleryManager({
-  images: initialImages,
-}: {
-  images: GalleryImage[];
-}) {
+export function GalleryManager({ images: initialImages }: { images: GalleryImage[] }) {
   const router = useRouter();
   const { handleErrorClient } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
@@ -115,8 +88,8 @@ export function GalleryManager({
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+      coordinateGetter: sortableKeyboardCoordinates
+    })
   );
 
   useEffect(() => {
@@ -125,7 +98,9 @@ export function GalleryManager({
 
   const processFiles = (filesList: FileList | File[]) => {
     const files = Array.from(filesList);
-    if (!files.length) return;
+    if (!files.length) {
+      return;
+    }
 
     if (files.length > 20) {
       setUploadError("Tối đa 20 ảnh một lần");
@@ -148,7 +123,7 @@ export function GalleryManager({
 
     const newPreviews = files.map((f) => ({
       url: URL.createObjectURL(f),
-      file: f,
+      file: f
     }));
     setPreviews(newPreviews);
     setUploadError(null);
@@ -174,7 +149,7 @@ export function GalleryManager({
         await adminCreateGalleryImage({
           url,
           caption: previews[i].file.name,
-          order: images.length + i,
+          order: images.length + i
         });
       }
       setDialogOpen(false);
@@ -192,9 +167,11 @@ export function GalleryManager({
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa ảnh?",
-      description: "Hành động này không thể hoàn tác.",
+      description: "Hành động này không thể hoàn tác."
     });
-    if (!ok) return;
+    if (!ok) {
+      return;
+    }
 
     await handleErrorClient({
       cb: () => adminDeleteGalleryImage(id),
@@ -203,7 +180,7 @@ export function GalleryManager({
         startTransition(() => {
           router.refresh();
         });
-      },
+      }
     });
   };
 
@@ -213,32 +190,27 @@ export function GalleryManager({
       const oldIndex = images.findIndex((i) => i.id === active.id);
       const newIndex = images.findIndex((i) => i.id === over?.id);
 
-      const newImages = arrayMove(images, oldIndex, newIndex).map(
-        (img, idx) => ({
-          ...img,
-          order: idx,
-        }),
-      );
+      const newImages = arrayMove(images, oldIndex, newIndex).map((img, idx) => ({
+        ...img,
+        order: idx
+      }));
 
       setImages(newImages);
 
       await handleErrorClient({
-        cb: () =>
-          adminUpdateGalleryOrders(
-            newImages.map((img) => ({ id: img.id, order: img.order })),
-          ),
+        cb: () => adminUpdateGalleryOrders(newImages.map((img) => ({ id: img.id, order: img.order })))
       });
     }
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       <ConfirmDialog />
 
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">{images.length} ảnh</p>
-        <Button onClick={() => setDialogOpen(true)} size="sm">
-          <Plus className="mr-2 h-4 w-4" />
+      <div className='flex items-center justify-between'>
+        <p className='text-muted-foreground text-sm'>{images.length} ảnh</p>
+        <Button onClick={() => setDialogOpen(true)} size='sm'>
+          <Plus className='mr-2 h-4 w-4' />
           Thêm ảnh
         </Button>
       </div>
@@ -253,29 +225,26 @@ export function GalleryManager({
         }}
         open={dialogOpen}
       >
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className='sm:max-w-2xl'>
           <DialogHeader>
             <DialogTitle>Upload ảnh mới</DialogTitle>
             <DialogDescription>
-              Kéo thả hoặc nhấn vào để chọn ảnh tải lên. (Tối đa 20 ảnh/lần,
-              5MB/ảnh, 100MB tổng)
+              Kéo thả hoặc nhấn vào để chọn ảnh tải lên. (Tối đa 20 ảnh/lần, 5MB/ảnh, 100MB tổng)
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className='grid gap-4 py-4'>
             <div
               className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors ${
-                isDragOver
-                  ? "border-primary bg-primary/10"
-                  : "border-border hover:border-primary/50 hover:bg-muted/30"
+                isDragOver ? "border-primary bg-primary/10" : "border-border hover:border-primary/50 hover:bg-muted/30"
               }`}
               onClick={() => fileRef.current?.click()}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragOver(true);
-              }}
               onDragLeave={(e) => {
                 e.preventDefault();
                 setIsDragOver(false);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragOver(true);
               }}
               onDrop={(e) => {
                 e.preventDefault();
@@ -284,72 +253,53 @@ export function GalleryManager({
                   processFiles(e.dataTransfer.files);
                 }
               }}
-              role="button"
+              role='button'
               tabIndex={0}
             >
               {previews.length > 0 ? (
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 w-full">
+                <div className='grid w-full grid-cols-4 gap-2 sm:grid-cols-5'>
                   {previews.map((p, idx) => (
-                    <div key={idx} className="relative aspect-square">
-                      <Image
-                        alt="Preview"
-                        className="rounded-lg object-cover"
-                        fill
-                        sizes="100px"
-                        src={p.url}
-                      />
+                    <div className='relative aspect-square' key={idx}>
+                      <Image alt='Preview' className='rounded-lg object-cover' fill sizes='100px' src={p.url} />
                     </div>
                   ))}
                 </div>
               ) : (
                 <>
-                  <span className="text-4xl text-muted-foreground/50">📸</span>
-                  <p className="text-muted-foreground text-sm">
-                    Kéo thả ảnh vào đây hoặc Click để chọn ảnh
-                  </p>
-                  <p className="text-muted-foreground/60 text-xs">
-                    Hỗ trợ chọn nhiều ảnh
-                  </p>
+                  <span className='text-4xl text-muted-foreground/50'>📸</span>
+                  <p className='text-muted-foreground text-sm'>Kéo thả ảnh vào đây hoặc Click để chọn ảnh</p>
+                  <p className='text-muted-foreground/60 text-xs'>Hỗ trợ chọn nhiều ảnh</p>
                 </>
               )}
             </div>
             <input
+              accept='image/*'
+              className='hidden'
               multiple
-              accept="image/*"
-              className="hidden"
               onChange={handleFileChange}
               ref={fileRef}
-              title="Chọn ảnh để upload"
-              type="file"
+              title='Chọn ảnh để upload'
+              type='file'
             />
-            {uploadError && (
-              <p className="text-destructive text-sm">{uploadError}</p>
-            )}
+            {uploadError && <p className='text-destructive text-sm'>{uploadError}</p>}
           </div>
           <DialogFooter>
-            <Button
-              disabled={uploading || !previews.length}
-              onClick={handleUpload}
-            >
+            <Button disabled={uploading || !previews.length} onClick={handleUpload}>
               {uploading ? "Đang upload..." : "Bắt đầu upload"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <div className="min-h-[200px]">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+      <div className='min-h-[200px]'>
+        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
           <SortableContext items={images} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4'>
               {images.map((img) => (
-                <SortableImage key={img.id} img={img} onDelete={handleDelete} />
+                <SortableImage img={img} key={img.id} onDelete={handleDelete} />
               ))}
               {images.length === 0 && (
-                <p className="col-span-full py-8 text-center text-muted-foreground">
+                <p className='col-span-full py-8 text-center text-muted-foreground'>
                   Chưa có ảnh nào, hãy thêm ảnh mới
                 </p>
               )}

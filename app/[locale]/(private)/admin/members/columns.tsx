@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 export type MemberRow = {
@@ -28,7 +28,11 @@ export type MemberRow = {
   webRole: string;
   isActive: boolean;
   createdAt: string;
-  clubRoles: Array<{ position: string; department: { name: string } | null }>;
+  clubRoles: Array<{
+    position: string;
+    department: { name: string } | null;
+    startAt: string;
+  }>;
 };
 
 const roleBadge: Record<
@@ -41,62 +45,54 @@ const roleBadge: Record<
   ADMIN: { label: "Admin", variant: "destructive" },
   COLLABORATOR: { label: "CTV", variant: "default" },
   MEMBER: { label: "Thành viên", variant: "secondary" },
-  GUEST: { label: "Khách", variant: "outline" },
+  GUEST: { label: "Khách", variant: "outline" }
 };
 
 export const createColumns = (
   onEdit: (member: MemberRow) => void,
   onDelete: (id: string) => void,
-  onView: (member: MemberRow) => void,
+  onView: (member: MemberRow) => void
 ): ColumnDef<MemberRow>[] => [
   {
     accessorKey: "firstName",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
         Thành viên
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => {
       const m = row.original;
       return (
         <div
-          className="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-1 -m-1 rounded-md transition-colors"
+          className='-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50'
           onClick={() => onView(m)}
         >
-          <Avatar className="h-8 w-8">
+          <Avatar className='h-8 w-8'>
             <AvatarImage src={m.avatar ?? undefined} />
-            <AvatarFallback className="bg-primary/10 font-bold text-primary text-xs">
+            <AvatarFallback className='bg-primary/10 font-bold text-primary text-xs'>
               {m.firstName?.[0]}
               {m.lastName?.[0]}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">
+            <div className='font-medium'>
               {m.firstName} {m.lastName}
             </div>
-            {m.studentId && (
-              <div className="text-muted-foreground text-xs">{m.studentId}</div>
-            )}
+            {m.studentId && <div className='text-muted-foreground text-xs'>{m.studentId}</div>}
           </div>
         </div>
       );
-    },
+    }
   },
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
         Email
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
-    ),
+    )
   },
   {
     accessorKey: "webRole",
@@ -105,11 +101,11 @@ export const createColumns = (
       const role = row.getValue("webRole") as string;
       const info = roleBadge[role] ?? {
         label: role,
-        variant: "outline" as const,
+        variant: "outline" as const
       };
       return <Badge variant={info.variant}>{info.label}</Badge>;
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    filterFn: (row, id, value) => value.includes(row.getValue(id))
   },
   {
     id: "clubRoles",
@@ -117,19 +113,14 @@ export const createColumns = (
     cell: ({ row }) => {
       const roles = row.original.clubRoles;
       if (!roles.length) {
-        return <span className="text-muted-foreground">—</span>;
+        return <span className='text-muted-foreground'>—</span>;
       }
       return (
-        <div className="text-xs">
-          {roles
-            .map(
-              (r) =>
-                `${r.position}${r.department ? ` - ${r.department.name}` : ""}`,
-            )
-            .join(", ")}
+        <div className='text-xs'>
+          {roles.map((r) => `${r.position}${r.department ? ` - ${r.department.name}` : ""}`).join(", ")}
         </div>
       );
-    },
+    }
   },
   {
     id: "actions",
@@ -138,30 +129,21 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button className='h-8 w-8 p-0' variant='ghost'>
+              <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(member.email)}
-            >
-              Copy email
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(member.email)}>Copy email</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(member)}>
-              Chỉnh sửa
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={() => onDelete(member.id)}
-            >
+            <DropdownMenuItem onClick={() => onEdit(member)}>Chỉnh sửa</DropdownMenuItem>
+            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(member.id)}>
               Xóa thành viên
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    },
-  },
+    }
+  }
 ];

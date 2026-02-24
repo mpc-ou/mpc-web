@@ -100,7 +100,7 @@ function useTransparentHeader(opts?: TransparentHeaderOptions) {
     ctx.enable(opts);
     return () => ctx.disable();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
-  }, []);
+  }, [ctx.disable, ctx.enable, opts]);
 }
 
 /**

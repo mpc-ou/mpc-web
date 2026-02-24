@@ -55,7 +55,7 @@ export function AchievementsDataTable({
     setEditItem(null);
     setDialogOpen(true);
   };
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), []);
+  const columns = useMemo(() => createColumns(handleEdit, handleDelete), [handleDelete, handleEdit]);
 
   return (
     <>

@@ -1,257 +1,179 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { Link } from "@/configs/i18n/routing";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+} from "lucide-react";
 
-type EventItem = {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  images: string[];
-  href?: string;
-  icon?: React.ReactNode;
-};
-
-export function EventsClient({
-  internalEvents,
-  externalEvents,
-  t,
+export function DynamicEventsClient({
+  events,
+  currentPage,
+  totalPages,
 }: {
-  internalEvents: EventItem[];
-  externalEvents: EventItem[];
-  t: any;
+  events: any[];
+  currentPage: number;
+  totalPages: number;
 }) {
-  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
-  const [currentImageIdx, setCurrentImageIdx] = useState(0);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  const nextImage = () => {
-    if (!selectedEvent) return;
-    setCurrentImageIdx((prev) => (prev + 1) % selectedEvent.images.length);
+  const handlePageChange = (newPage: number) => {
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", newPage.toString());
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
-  const prevImage = () => {
-    if (!selectedEvent) return;
-    setCurrentImageIdx((prev) =>
-      prev === 0 ? selectedEvent.images.length - 1 : prev - 1,
-    );
+  const statusMap: Record<
+    string,
+    { label: string; variant: "default" | "secondary" | "outline" }
+  > = {
+    UPCOMING: { label: "Sắp diễn ra", variant: "default" },
+    ONGOING: { label: "Đang diễn ra", variant: "secondary" },
+    COMPLETED: { label: "Đã diễn ra", variant: "outline" },
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl mt-20">
-      {/* Hoạt động nội bộ */}
-      <section className="mb-24">
-        <div className="mb-10 text-center md:text-left">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">
-            {t.internalTitle}
-          </h2>
-          <div className="mt-2 h-1 w-20 bg-primary/80 mx-auto md:mx-0 rounded-full" />
-          <p className="mt-4 text-muted-foreground text-lg max-w-2xl">
-            {t.internalDesc}
-          </p>
+    <div
+      className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}
+    >
+      {events.length === 0 ? (
+        <div className="py-20 text-center text-muted-foreground">
+          Chưa có sự kiện nào được đăng tải.
         </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((event) => {
+            const statusInfo = statusMap[event.status] || {
+              label: event.status,
+              variant: "outline",
+            };
+            const dateStr = event.startAt
+              ? new Date(event.startAt).toLocaleDateString("vi-VN")
+              : "";
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {internalEvents.map((event) => (
-            <Card
-              key={event.id}
-              className="group cursor-pointer overflow-hidden border-border/50 bg-card hover:border-primary/50 hover:shadow-lg transition-all duration-300 flex flex-col"
-              onClick={() => {
-                setSelectedEvent(event);
-                setCurrentImageIdx(0);
-              }}
-            >
-              <div className="relative aspect-video w-full overflow-hidden bg-muted">
-                <img
-                  src={event.thumbnail}
-                  alt={event.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                  +{event.images.length} Ảnh
-                </div>
-              </div>
-              <CardHeader className="pb-3 border-b border-border/10">
-                <CardTitle className="text-xl">{event.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4 flex-grow">
-                <CardDescription className="text-base leading-relaxed line-clamp-3">
-                  {event.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Hoạt động đối ngoại */}
-      <section className="mb-24">
-        <div className="mb-10 text-center md:text-left">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">
-            {t.externalTitle}
-          </h2>
-          <div className="mt-2 h-1 w-20 bg-blue-500/80 mx-auto md:mx-0 rounded-full" />
-          <p className="mt-4 text-muted-foreground text-lg max-w-2xl">
-            {t.externalDesc}
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {externalEvents.map((event) => {
-            const content = (
-              <div className="group flex flex-col h-full overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
-                  <img
-                    src={event.thumbnail}
-                    alt={event.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  {event.images && event.images.length > 0 && (
-                    <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                      +{event.images.length} Ảnh
+            return (
+              <Link
+                key={event.id}
+                href={`/events/${event.slug}`}
+                className="group flex flex-col h-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
+              >
+                <div className="relative aspect-video w-full overflow-hidden bg-muted/30">
+                  {event.thumbnail ? (
+                    <img
+                      src={event.thumbnail}
+                      alt={event.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/30">
+                      <ImageIcon className="h-12 w-12 opacity-50" />
                     </div>
                   )}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <Badge
+                      variant={statusInfo.variant}
+                      className="shadow-xs backdrop-blur-md bg-background/80"
+                    >
+                      {statusInfo.label}
+                    </Badge>
+                  </div>
                 </div>
 
-                <div className="p-6 flex flex-col grow">
-                  <h3 className="mb-3 text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                <div className="flex flex-col grow p-5">
+                  <h3 className="mb-2 text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
                     {event.title}
                   </h3>
-                  <p className="text-muted-foreground line-clamp-3 leading-relaxed mb-6">
-                    {event.description}
+
+                  <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-3">
+                    <CalendarDays className="h-3.5 w-3.5" />
+                    <span>{dateStr}</span>
+                  </div>
+
+                  <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 flex-1">
+                    {event.description || "Chưa có mô tả ngắn về sự kiện này."}
                   </p>
 
                   <div className="mt-auto flex items-center text-sm font-semibold text-primary pt-4 border-t border-border/10">
-                    {event.href ? t.learnMore : "Xem bộ ảnh"}
+                    Xem chi tiết
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
-              </div>
-            );
-
-            if (event.href && event.href !== "#") {
-              return (
-                <Link
-                  key={event.id}
-                  href={event.href as any}
-                  className="block h-full"
-                >
-                  {content}
-                </Link>
-              );
-            }
-
-            return (
-              <button
-                key={event.id}
-                type="button"
-                className="text-left w-full h-full"
-                onClick={() => {
-                  setSelectedEvent(event);
-                  setCurrentImageIdx(0);
-                }}
-              >
-                {content}
-              </button>
+              </Link>
             );
           })}
         </div>
-      </section>
+      )}
 
-      {/* Event Details Dialog (Image Gallery) */}
-      <Dialog
-        open={!!selectedEvent}
-        onOpenChange={(open) => !open && setSelectedEvent(null)}
-      >
-        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black/95 border-none">
-          <DialogTitle className="sr-only">{selectedEvent?.title}</DialogTitle>
-          {selectedEvent && (
-            <div className="flex flex-col h-[80vh]">
-              {/* Header */}
-              <div className="flex items-start justify-between p-4 bg-black/50 absolute top-0 inset-x-0 z-10 backdrop-blur-sm">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1">
-                    {selectedEvent.title}
-                  </h3>
-                  <p className="text-white/70 text-sm line-clamp-2 max-w-2xl">
-                    {selectedEvent.description}
-                  </p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full text-white hover:bg-white/20"
-                  onClick={() => setSelectedEvent(null)}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-12 flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0"
+            disabled={currentPage <= 1 || isPending}
+            onClick={() => handlePageChange(currentPage - 1)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
 
-              {/* Gallery Image */}
-              <div className="flex-1 relative flex items-center justify-center">
-                {selectedEvent.images && selectedEvent.images.length > 0 ? (
-                  <>
-                    <img
-                      src={selectedEvent.images[currentImageIdx]}
-                      alt={`${selectedEvent.title} - ảnh ${currentImageIdx + 1}`}
-                      className="max-w-full max-h-full object-contain"
-                    />
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+              if (
+                p === 1 ||
+                p === totalPages ||
+                (p >= currentPage - 1 && p <= currentPage + 1)
+              ) {
+                return (
+                  <Button
+                    key={p}
+                    variant={currentPage === p ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    disabled={isPending || currentPage === p}
+                    onClick={() => handlePageChange(p)}
+                  >
+                    {p}
+                  </Button>
+                );
+              }
+              if (p === currentPage - 2 || p === currentPage + 2) {
+                return (
+                  <span
+                    key={p}
+                    className="flex h-8 w-8 items-center justify-center text-sm text-muted-foreground"
+                  >
+                    ...
+                  </span>
+                );
+              }
+              return null;
+            })}
+          </div>
 
-                    {selectedEvent.images.length > 1 && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white hover:bg-black/80 hover:text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            prevImage();
-                          }}
-                        >
-                          <ChevronLeft className="w-8 h-8" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white hover:bg-black/80 hover:text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            nextImage();
-                          }}
-                        >
-                          <ChevronRight className="w-8 h-8" />
-                        </Button>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
-                          {currentImageIdx + 1} / {selectedEvent.images.length}
-                        </div>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <div className="text-white/50 text-center">
-                    <img
-                      src={selectedEvent.thumbnail}
-                      alt={selectedEvent.title}
-                      className="max-w-full max-h-full object-contain opacity-50 mb-4"
-                    />
-                    <p>Chưa có hình ảnh nào được tải lên cho sự kiện này.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0"
+            disabled={currentPage >= totalPages || isPending}
+            onClick={() => handlePageChange(currentPage + 1)}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

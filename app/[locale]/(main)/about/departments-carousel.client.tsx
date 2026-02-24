@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { ArrowRight, Camera, Code, Settings, Users } from "lucide-react";
 import Image from "next/image";
-import { Link } from "@/configs/i18n/routing";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, Camera, Users, Settings } from "lucide-react";
+import { Link } from "@/configs/i18n/routing";
 
 const TIME_INTERVAL = 8000;
 
@@ -22,23 +22,19 @@ type Department = {
 const getIcon = (iconName: string) => {
   switch (iconName) {
     case "Code":
-      return <Code className="w-6 h-6" />;
+      return <Code className='h-6 w-6' />;
     case "Camera":
-      return <Camera className="w-6 h-6" />;
+      return <Camera className='h-6 w-6' />;
     case "Settings":
-      return <Settings className="w-6 h-6" />;
+      return <Settings className='h-6 w-6' />;
     case "Users":
-      return <Users className="w-6 h-6" />;
+      return <Users className='h-6 w-6' />;
     default:
-      return <Code className="w-6 h-6" />;
+      return <Code className='h-6 w-6' />;
   }
 };
 
-export function DepartmentsCarouselClient({
-  departments,
-}: {
-  departments: Department[];
-}) {
+export function DepartmentsCarouselClient({ departments }: { departments: Department[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -48,47 +44,43 @@ export function DepartmentsCarouselClient({
     return () => clearInterval(interval);
   }, [departments.length]);
 
-  if (!departments || departments.length === 0) return null;
+  if (!departments || departments.length === 0) {
+    return null;
+  }
 
   const currentDept = departments[activeIndex];
 
   return (
-    <section className="relative w-full overflow-hidden min-h-[90vh] bg-black border-y border-border flex items-center">
+    <section className='relative flex min-h-[90vh] w-full items-center overflow-hidden border-border border-y bg-black'>
       {/* Background Images */}
       {departments.map((dept, index) => (
         <div
-          key={dept.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === activeIndex ? "opacity-100 z-0" : "opacity-0 z-0"
+            index === activeIndex ? "z-0 opacity-100" : "z-0 opacity-0"
           }`}
+          key={dept.id}
         >
-          <Image
-            src={dept.bgImage}
-            alt={dept.name}
-            fill
-            className="object-cover"
-            priority={index === 0}
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-black/60 to-transparent" />
+          <Image alt={dept.name} className='object-cover' fill priority={index === 0} src={dept.bgImage} />
+          <div className='absolute inset-0 bg-black/40' />
+          <div className='absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent' />
+          <div className='absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-black/60 to-transparent' />
         </div>
       ))}
 
-      <div className="container relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-16 items-center lg:items-center py-12 lg:py-24">
-        <div className="flex flex-row md:flex-col gap-4 items-center shrink-0 order-2 md:order-1 mt-8 md:mt-0 z-20">
+      <div className='container relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center gap-8 py-12 md:flex-row lg:items-center lg:gap-16 lg:py-24'>
+        <div className='z-20 order-2 mt-8 flex shrink-0 flex-row items-center gap-4 md:order-1 md:mt-0 md:flex-col'>
           {departments.map((dept, idx) => {
             const isActive = activeIndex === idx;
             return (
               <button
+                aria-label={`Select ${dept.name}`}
+                className={`relative flex h-12 w-12 items-center justify-center rounded-full border-2 transition-colors duration-300 sm:h-14 sm:w-14 ${
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-white/20 bg-black/50 text-white/70 hover:bg-white/20 hover:text-white"
+                }`}
                 key={dept.id}
                 onClick={() => setActiveIndex(idx)}
-                className={`relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full transition-colors duration-300 border-2 ${
-                  isActive
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-black/50 text-white/70 border-white/20 hover:bg-white/20 hover:text-white"
-                }`}
-                aria-label={`Select ${dept.name}`}
               >
                 <div>{getIcon(dept.icon)}</div>
               </button>
@@ -96,14 +88,14 @@ export function DepartmentsCarouselClient({
           })}
         </div>
 
-        <div className="flex-1 w-full flex flex-col gap-6 order-1 md:order-2">
+        <div className='order-1 flex w-full flex-1 flex-col gap-6 md:order-2'>
           <div
+            className='fade-in slide-in-from-bottom-8 w-full max-w-3xl animate-in duration-700'
             key={`content-${currentDept.id}`}
-            className="animate-in fade-in slide-in-from-bottom-8 duration-700 w-full max-w-3xl"
           >
-            <div className="mb-4">
+            <div className='mb-4'>
               <h2
-                className="font-bold text-3xl sm:text-4xl lg:text-5xl text-white uppercase tracking-tight text-balance"
+                className='text-balance font-bold text-3xl text-white uppercase tracking-tight sm:text-4xl lg:text-5xl'
                 style={{ textShadow: "0px 2px 6px rgba(0,0,0,0.8)" }}
               >
                 {currentDept.name}
@@ -111,30 +103,24 @@ export function DepartmentsCarouselClient({
             </div>
 
             <p
-              className="text-base sm:text-lg text-zinc-100 leading-relaxed font-medium mb-6 border-l-4 border-primary pl-4"
+              className='mb-6 border-primary border-l-4 pl-4 font-medium text-base text-zinc-100 leading-relaxed sm:text-lg'
               style={{ textShadow: "0px 1px 3px rgba(0,0,0,0.8)" }}
             >
               {currentDept.description}
             </p>
 
-            <div className="mb-6">
+            <div className='mb-6'>
               <h4
-                className="text-primary font-bold text-base sm:text-lg mb-3 uppercase tracking-wider"
+                className='mb-3 font-bold text-base text-primary uppercase tracking-wider sm:text-lg'
                 style={{ textShadow: "0px 1px 3px rgba(0,0,0,0.8)" }}
               >
                 Nhiệm vụ chính
               </h4>
-              <ul className="space-y-3">
+              <ul className='space-y-3'>
                 {currentDept.missions.map((mission, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start text-zinc-100 text-sm sm:text-base"
-                  >
-                    <span className="mr-3 mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-sm" />
-                    <span
-                      className="leading-relaxed"
-                      style={{ textShadow: "0px 1px 3px rgba(0,0,0,0.8)" }}
-                    >
+                  <li className='flex items-start text-sm text-zinc-100 sm:text-base' key={idx}>
+                    <span className='mt-1.5 mr-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary shadow-sm' />
+                    <span className='leading-relaxed' style={{ textShadow: "0px 1px 3px rgba(0,0,0,0.8)" }}>
                       {mission}
                     </span>
                   </li>
@@ -146,13 +132,13 @@ export function DepartmentsCarouselClient({
               <div>
                 <Button
                   asChild
-                  variant="default"
-                  size="lg"
-                  className="rounded-full shadow-xl group h-12 px-8 text-base font-bold transition-transform hover:scale-105"
+                  className='group h-12 rounded-full px-8 font-bold text-base shadow-xl transition-transform hover:scale-105'
+                  size='lg'
+                  variant='default'
                 >
                   <Link href={currentDept.link as any}>
                     {currentDept.linkLabel}
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowRight className='ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1' />
                   </Link>
                 </Button>
               </div>
@@ -161,11 +147,8 @@ export function DepartmentsCarouselClient({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-20">
-        <div
-          key={`progress-${activeIndex}`}
-          className="h-full bg-primary origin-left animate-[progress_8s_linear]"
-        />
+      <div className='absolute bottom-0 left-0 z-20 h-1 w-full bg-white/20'>
+        <div className='h-full origin-left animate-[progress_8s_linear] bg-primary' key={`progress-${activeIndex}`} />
       </div>
 
       <style
@@ -175,7 +158,7 @@ export function DepartmentsCarouselClient({
           0% { transform: scaleX(0); }
           100% { transform: scaleX(1); }
         }
-      `,
+      `
         }}
       />
     </section>

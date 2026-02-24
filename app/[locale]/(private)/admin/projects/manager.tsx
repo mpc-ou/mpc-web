@@ -43,7 +43,10 @@ export function ProjectsDataTable({ data, allMembers = [] }: { data: ProjectRow[
     setDialogOpen(true);
   };
   const handleView = (p: ProjectRow) => setViewItem(p);
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete, handleView), []);
+  const columns = useMemo(
+    () => createColumns(handleEdit, handleDelete, handleView),
+    [handleDelete, handleEdit, handleView]
+  );
 
   return (
     <>

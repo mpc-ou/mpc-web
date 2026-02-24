@@ -17,13 +17,14 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import { sanitizeHtml } from "@/utils/sanitize-html";
+import { generatePageSeo } from "@/utils/seo";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const { data } = await getProjectDetail(slug);
   const project = (data?.payload as any)?.project;
 
@@ -31,14 +32,15 @@ export async function generateMetadata({
     return { title: "Không tìm thấy dự án" };
   }
 
-  return {
-    title: `${project.title} | Dự án MPC`,
-    description:
-      project.description?.slice(0, 160) || "Dự án của câu lạc bộ MPC",
-    openGraph: {
-      images: project.thumbnail ? [project.thumbnail] : [],
-    },
-  };
+  return generatePageSeo({
+    page: "projectDetail",
+    title: project.title,
+    description: project.description?.slice(0, 160) || undefined,
+    locale: locale || "vi",
+    pathname: `/projects/${slug}`,
+    image: project.thumbnail || undefined,
+    type: "article",
+  });
 }
 
 export default async function ProjectDetailPage({

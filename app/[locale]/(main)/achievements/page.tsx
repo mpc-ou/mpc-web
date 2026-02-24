@@ -1,9 +1,9 @@
 import { Trophy } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { getAchievementsPageData } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { generatePageSeo } from "@/utils/seo";
 import { AchievementsClient } from "./client";
 import { LeadershipCarouselClient } from "./leadership-carousel.client";
 
@@ -13,13 +13,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
-
-  return {
-    title: `Thành tựu | ${t("metadata.siteName")}`,
-    description:
-      "Những thành tựu, giải thưởng và cột mốc đáng tự hào của câu lạc bộ",
-  };
+  return generatePageSeo({
+    page: "achievements",
+    locale,
+    pathname: "/achievements",
+  });
 }
 
 export default async function AchievementsPage({

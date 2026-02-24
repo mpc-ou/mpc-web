@@ -1,8 +1,8 @@
 import { Users } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { getMembersGroupedByYear } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { generatePageSeo } from "@/utils/seo";
 import { MembersClient } from "./client";
 import { MembersHeroClient } from "./hero.client";
 
@@ -12,13 +12,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
-
-  return {
-    title: `Thành viên | ${t("metadata.siteName")}`,
-    description:
-      "Danh sách thành viên câu lạc bộ, những người đã và đang cùng nhau xây dựng cộng đồng",
-  };
+  return generatePageSeo({
+    page: "members",
+    locale,
+    pathname: "/members",
+  });
 }
 
 export default async function MembersPage() {

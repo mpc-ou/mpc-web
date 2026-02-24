@@ -1,13 +1,24 @@
 import { CalendarDays } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getEventsPageData } from "@/app/[locale]/actions/events";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { generatePageSeo } from "@/utils/seo";
 import { DynamicEventsClient } from "./client";
 
 type Props = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageSeo({
+    page: "events",
+    locale,
+    pathname: "/events",
+  });
+}
 
 export default async function EventsPage({ params, searchParams }: Props) {
   const { locale } = await params;

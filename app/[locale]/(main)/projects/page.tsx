@@ -1,8 +1,8 @@
 import { Code2 } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { getProjectsPageData } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { generatePageSeo } from "@/utils/seo";
 import { ProjectsClient } from "./client";
 
 export async function generateMetadata({
@@ -11,12 +11,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
-
-  return {
-    title: `Dự án | ${t("metadata.siteName")}`,
-    description: "Nhưng dự án thực tế do chính sinh viên thực hiện",
-  };
+  return generatePageSeo({
+    page: "projects",
+    locale,
+    pathname: "/projects",
+  });
 }
 
 export default async function ProjectsPage({

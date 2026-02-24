@@ -320,5 +320,61 @@
     "learnMoreBtn": "Learn more",
     "followUpBtn": "Follow up",
     "exhibitionTitle": "Featured Projects"
+  },
+  "seo": {
+    "home": {
+      "title": "Home – MPC Club",
+      "description": "Mobile Programming Club — Faculty of Information Technology, Ho Chi Minh City Open University"
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Learn about Mobile Programming Club (MPC) — Mission, fields of activity and team"
+    },
+    "events": {
+      "title": "Events",
+      "description": "Upcoming and past events of MPClub"
+    },
+    "eventDetail": {
+      "title": "Event",
+      "description": "An event by MPC Club"
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Real-world projects built by MPClub students"
+    },
+    "projectDetail": {
+      "title": "Project",
+      "description": "A project by MPC Club"
+    },
+    "members": {
+      "title": "Members",
+      "description": "MPClub members who have been building the community together"
+    },
+    "memberDetail": {
+      "title": "Member",
+      "description": "MPClub member profile"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Achievements, awards and proud milestones of MPClub"
+    },
+    "sponsors": {
+      "title": "Sponsors",
+      "description": "Partners and sponsors supporting MPClub's growth"
+    },
+    "training": {
+      "title": "Training",
+      "description": "Basic tutorials, programming fundamentals, and academic knowledge review throughout your studies"
+    },
+    "activities": {
+      "title": "Activities",
+      "description": "Internal and external activities of MPClub"
+    },
+    "notFound": {
+      "event": "Event not found",
+      "project": "Project not found",
+      "member": "Not found",
+      "profile": "Profile"
+    }
   }
 }

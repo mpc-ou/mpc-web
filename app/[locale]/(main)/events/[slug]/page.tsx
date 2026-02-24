@@ -7,16 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { EventJsonLd } from "@/components/seo/json-ld";
 import { Link } from "@/configs/i18n/routing";
 import { sanitizeHtml } from "@/utils/sanitize-html";
+import { generatePageSeo } from "@/utils/seo";
 import { EventContentClient } from "./client";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const { data } = await getEventBySlug(slug);
   // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
   const event = (data?.payload as any)?.event;
@@ -25,22 +27,23 @@ export async function generateMetadata({
     return { title: "Không tìm thấy sự kiện" };
   }
 
-  return {
-    title: `${event.title} | Sự kiện MPC`,
-    description:
-      event.description?.slice(0, 160) || "Sự kiện của câu lạc bộ MPC",
-    openGraph: {
-      images: event.thumbnail ? [event.thumbnail] : [],
-    },
-  };
+  return generatePageSeo({
+    page: "eventDetail",
+    title: event.title,
+    description: event.description?.slice(0, 160) || undefined,
+    locale: locale || "vi",
+    pathname: `/events/${slug}`,
+    image: event.thumbnail || undefined,
+    type: "article",
+  });
 }
 
 export default async function EventDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
 
   const { data } = await getEventBySlug(slug);
   // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
@@ -49,6 +52,8 @@ export default async function EventDetailPage({
   if (!event) {
     notFound();
   }
+
+  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
 
   const statusMap: Record<
     string,
@@ -91,6 +96,15 @@ export default async function EventDetailPage({
 
   return (
     <div className="min-h-screen bg-background">
+      <EventJsonLd
+        description={event.description || ""}
+        endDate={event.endAt || undefined}
+        image={event.thumbnail || undefined}
+        location={event.location || undefined}
+        name={event.title}
+        startDate={event.startAt}
+        url={eventUrl}
+      />
       {/* ── HERO IMAGE ─────────────────────────────────────────────── */}
       {event.thumbnail ? (
         <div className="relative h-[55vh] min-h-90 w-full overflow-hidden">

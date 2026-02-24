@@ -1,8 +1,8 @@
 import { Handshake } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { getSponsorsPageData } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { generatePageSeo } from "@/utils/seo";
 import { SponsorsClient } from "./client";
 
 export async function generateMetadata({
@@ -11,13 +11,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
-
-  return {
-    title: `Nhà tài trợ | ${t("metadata.siteName")}`,
-    description:
-      "Những đối tác và nhà tài trợ đồng hành cùng sự phát triển của câu lạc bộ",
-  };
+  return generatePageSeo({
+    page: "sponsors",
+    locale,
+    pathname: "/sponsors",
+  });
 }
 
 export default async function SponsorsPage() {

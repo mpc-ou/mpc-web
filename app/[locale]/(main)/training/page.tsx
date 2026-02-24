@@ -1,8 +1,8 @@
 import { BookOpen, Code2, Globe2, Layers, Rocket } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { getTrainingPageData } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { generatePageSeo } from "@/utils/seo";
 import { FeaturedProjectsClient } from "./featured-projects.client";
 
 export async function generateMetadata({
@@ -11,13 +11,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
-
-  return {
-    title: `Đào tạo | ${t("metadata.siteName")}`,
-    description:
-      "Hướng dẫn cơ bản, nhập môn lập trình, ôn tập các kiến thức liên quan đến ngành trong suốt quá trình học tập",
-  };
+  return generatePageSeo({
+    page: "training",
+    locale,
+    pathname: "/training",
+  });
 }
 
 const PHASES = [

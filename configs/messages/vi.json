@@ -320,5 +320,61 @@
     "learnMoreBtn": "Tìm hiểu thêm",
     "followUpBtn": "Theo dõi ngay!",
     "exhibitionTitle": "Các dự án tiêu biểu"
+  },
+  "seo": {
+    "home": {
+      "title": "Trang chủ – CLB MPC",
+      "description": "Câu lạc bộ Lập trình trên Thiết bị Di động — Khoa CNTT, Trường Đại học Mở TP.HCM"
+    },
+    "about": {
+      "title": "Về chúng tôi",
+      "description": "Tìm hiểu về Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) — Sứ mệnh, lĩnh vực hoạt động và đội ngũ"
+    },
+    "events": {
+      "title": "Sự kiện",
+      "description": "Các sự kiện sắp tới và đã diễn ra của câu lạc bộ MPClub"
+    },
+    "eventDetail": {
+      "title": "Sự kiện",
+      "description": "Sự kiện của câu lạc bộ MPC"
+    },
+    "projects": {
+      "title": "Dự án",
+      "description": "Những dự án thực tế do chính sinh viên MPClub thực hiện"
+    },
+    "projectDetail": {
+      "title": "Dự án",
+      "description": "Dự án của câu lạc bộ MPC"
+    },
+    "members": {
+      "title": "Thành viên",
+      "description": "Danh sách thành viên câu lạc bộ MPClub, những người đã và đang cùng nhau xây dựng cộng đồng"
+    },
+    "memberDetail": {
+      "title": "Thành viên",
+      "description": "Hồ sơ thành viên MPClub"
+    },
+    "achievements": {
+      "title": "Thành tựu",
+      "description": "Những thành tựu, giải thưởng và cột mốc đáng tự hào của câu lạc bộ MPClub"
+    },
+    "sponsors": {
+      "title": "Nhà tài trợ",
+      "description": "Những đối tác và nhà tài trợ đồng hành cùng sự phát triển của MPClub"
+    },
+    "training": {
+      "title": "Đào tạo",
+      "description": "Hướng dẫn cơ bản, nhập môn lập trình, ôn tập các kiến thức liên quan đến ngành trong suốt quá trình học tập"
+    },
+    "activities": {
+      "title": "Hoạt động",
+      "description": "Các hoạt động nội bộ và đối ngoại của câu lạc bộ MPClub"
+    },
+    "notFound": {
+      "event": "Không tìm thấy sự kiện",
+      "project": "Không tìm thấy dự án",
+      "member": "Không tìm thấy",
+      "profile": "Trang cá nhân"
+    }
   }
 }

@@ -25,6 +25,7 @@ export const getLeadership = async () =>
         },
         select: {
           id: true,
+          slug: true,
           firstName: true,
           lastName: true,
           avatar: true,

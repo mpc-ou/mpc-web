@@ -366,6 +366,7 @@ export const adminBuildRecapData = async (
           thumbnail: a.thumbnail,
           description: a.content || a.summary,
           achievementType: a.type,
+          images: a.images?.filter(Boolean) ?? [],
           members: a.members.map((am) => ({
             firstName: am.member.firstName,
             lastName: am.member.lastName,

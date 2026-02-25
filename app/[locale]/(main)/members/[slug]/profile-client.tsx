@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  type ProjectDetail,
-  ProjectDetailDialog,
-} from "@/components/project-detail-dialog";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -117,9 +115,7 @@ type Member = {
 
 export function ProfilePageClient({ member }: { member: Member }) {
   const [activeTab, setActiveTab] = useState("about");
-  const [selectedProject, setSelectedProject] = useState<ProjectDetail | null>(
-    null,
-  );
+  const locale = useLocale();
   const fullName = `${member.firstName} ${member.lastName}`;
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
@@ -372,7 +368,10 @@ export function ProfilePageClient({ member }: { member: Member }) {
                           <div className="relative" key={achievement.id}>
                             <div className="absolute top-3 -left-[31px] lg:-left-[39px] h-4 w-4 rounded-full border-2 border-background bg-primary shadow-sm" />
 
-                            <div className="group flex flex-col sm:flex-row overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md">
+                            <Link
+                              className="group flex flex-col sm:flex-row overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md"
+                              href={`/${locale}/achievements/${achievement.slug}`}
+                            >
                               <div className="relative h-40 sm:h-auto sm:w-48 shrink-0 overflow-hidden bg-muted">
                                 {achievement.thumbnail ? (
                                   // eslint-disable-next-line @next/next/no-img-element
@@ -421,7 +420,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                   </div>
                                 )}
                               </div>
-                            </div>
+                            </Link>
                           </div>
                         ))}
                     </div>
@@ -498,16 +497,10 @@ export function ProfilePageClient({ member }: { member: Member }) {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {member.projects.map(({ project, role }) => (
-                  <button
-                    className="group cursor-pointer overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md"
+                  <Link
+                    className="group overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md"
+                    href={`/${locale}/projects/${project.slug}`}
                     key={project.id}
-                    onClick={() =>
-                      setSelectedProject({
-                        ...project,
-                        viewerRole: role,
-                      })
-                    }
-                    type="button"
                   >
                     <div className="relative h-48 w-full overflow-hidden bg-muted">
                       {project.thumbnail ? (
@@ -560,24 +553,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
                         )}
                       </div>
                     </div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}
           </TabsContent>
         </Tabs>
       </div>
-
-      {/* Project detail modal */}
-      <ProjectDetailDialog
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedProject(null);
-          }
-        }}
-        open={!!selectedProject}
-        project={selectedProject}
-      />
 
       {/* Bottom padding */}
       <div className="h-16" />

@@ -193,8 +193,8 @@ export default async function ProjectDetailPage({
         {/* ── MEMBERS ── */}
         {project.members && project.members.length > 0 && (
           <ScrollReveal variant="fade-up">
-            <section className="mb-14">
-              <h2 className="mb-5 flex items-center gap-2 border-border border-y pb-2 font-bold text-xl">
+            <section className="mb-14 mt-8">
+              <h2 className="mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl">
                 <Users className="h-5 w-5 text-primary" /> Đội ngũ phát triển
               </h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">

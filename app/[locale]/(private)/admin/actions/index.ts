@@ -56,3 +56,12 @@ export {
   adminUpdateProject
 } from "./projects";
 export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";
+export {
+  adminGetRecaps,
+  adminGetRecap,
+  adminCreateRecap,
+  adminUpdateRecap,
+  adminDeleteRecap,
+  adminGetRecapCandidates,
+  adminBuildRecapData
+} from "./recaps";

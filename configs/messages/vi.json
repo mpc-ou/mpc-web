@@ -286,6 +286,16 @@
     },
     "learnMore": "Tìm hiểu thêm"
   },
+  "recap": {
+    "title": "Year Recap",
+    "subtitle": "Nhìn lại hành trình hoạt động của CLB qua từng năm",
+    "selectYear": "Chọn năm",
+    "statsTitle": "Một năm nhìn lại",
+    "newMembersTitle": "Chào mừng thành viên mới",
+    "thankYou": "Cảm ơn bạn đã đồng hành!",
+    "autoPlay": "Tự động chạy",
+    "exit": "Thoát"
+  },
   "webdesign": {
     "title": "Cuộc thi học thuật \nWeb Design",
     "subtitle": "Web Design là một cuộc thi lập trình giao diện Website được tổ chức thường niên bởi Câu lạc bộ Lập Trình Trên Thiết Bị Di Động với mong muốn mang đến một sân chơi đầy ý nghĩa và sáng tạo.",

@@ -75,7 +75,8 @@ export const ModelName = {
   Achievement: 'Achievement',
   AchievementMember: 'AchievementMember',
   Project: 'Project',
-  ProjectMember: 'ProjectMember'
+  ProjectMember: 'ProjectMember',
+  YearRecap: 'YearRecap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -476,6 +477,24 @@ export const ProjectMemberScalarFieldEnum = {
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
+
+
+export const YearRecapScalarFieldEnum = {
+  year: 'year',
+  name: 'name',
+  description: 'description',
+  coverImage: 'coverImage',
+  coverImage2: 'coverImage2',
+  coverImage3: 'coverImage3',
+  endImage: 'endImage',
+  musicUrl: 'musicUrl',
+  data: 'data',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type YearRecapScalarFieldEnum = (typeof YearRecapScalarFieldEnum)[keyof typeof YearRecapScalarFieldEnum]
 
 
 export const SortOrder = {

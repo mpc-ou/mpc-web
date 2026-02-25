@@ -53,6 +53,7 @@ export const adminCreateEvent = async (data: {
   endAt?: string;
   status?: string;
   type?: string;
+  images?: string[];
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -70,7 +71,8 @@ export const adminCreateEvent = async (data: {
           endAt: data.endAt ? new Date(data.endAt) : null,
           status: (data.status as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED") ?? "UPCOMING",
           type: (data.type as any) ?? "OTHER",
-          creatorId: admin.id
+          creatorId: admin.id,
+          images: data.images || []
         }
       });
       revalidateTag(_CACHE_EVENTS, "default");

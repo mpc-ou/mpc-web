@@ -286,6 +286,16 @@
     },
     "learnMore": "Learn more"
   },
+  "recap": {
+    "title": "Year Recap",
+    "subtitle": "Look back at the club's journey through the years",
+    "selectYear": "Select year",
+    "statsTitle": "A year in review",
+    "newMembersTitle": "Welcome new members",
+    "thankYou": "Thank you for being with us!",
+    "autoPlay": "Auto play",
+    "exit": "Exit"
+  },
   "webdesign": {
     "title": "Academic Competition \nWeb Design",
     "subtitle": "Web Design is an annual website interface programming competition organized by the Mobile Programming Club with the desire to bring a meaningful and creative playground.",

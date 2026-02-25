@@ -21,6 +21,7 @@ import { MarkdownContent } from "@/components/markdown-content";
 import { generatePageSeo } from "@/utils/seo";
 import { getTranslations } from "next-intl/server";
 import { EventContentClient } from "./client";
+import { GalleryCarousel } from "../../gallery-carousel.client";
 
 export async function generateMetadata({
   params,
@@ -94,6 +95,22 @@ export default async function EventDetailPage({
         day: "numeric",
       })
     : null;
+
+  // Combine images and gallery
+  const combinedGalleryImages = [
+    ...(event.images || []).map((url: string, i: number) => ({
+      id: `img-${i}`,
+      url,
+      caption: null,
+      order: i,
+    })),
+    ...(event.gallery || []).map((g: any) => ({
+      id: g.id,
+      url: g.url,
+      caption: g.caption || null,
+      order: 1000 + (g.order || 0),
+    })),
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -191,6 +208,18 @@ export default async function EventDetailPage({
           </ScrollReveal>
         ) : null}
 
+        {/* ── ADDITIONAL IMAGES (Carousel) ── */}
+        {combinedGalleryImages.length > 0 && (
+          <ScrollReveal delay={150} variant="fade-up">
+            <section className="mt-10 mb-14">
+              <h2 className="mb-6 border-border border-b pb-2 font-bold text-2xl">
+                Hình ảnh sự kiện
+              </h2>
+              <GalleryCarousel images={combinedGalleryImages} />
+            </section>
+          </ScrollReveal>
+        )}
+
         {/* ── ORGANIZERS ── */}
         {event.organizers && event.organizers.length > 0 && (
           <ScrollReveal variant="fade-up">
@@ -228,11 +257,6 @@ export default async function EventDetailPage({
               </div>
             </section>
           </ScrollReveal>
-        )}
-
-        {/* ── GALLERY ── */}
-        {event.gallery && event.gallery.length > 0 && (
-          <EventContentClient gallery={event.gallery} />
         )}
       </div>
     </div>

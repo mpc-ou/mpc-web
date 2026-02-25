@@ -12,3 +12,4 @@ export const _CACHE_GALLERY = "gallery" as const;
 export const _CACHE_HOMEPAGE = "homepage" as const;
 export const _CACHE_ACHIEVEMENTS = "achievements" as const;
 export const _CACHE_PROJECTS = "projects" as const;
+export const _CACHE_RECAPS = "recaps" as const;

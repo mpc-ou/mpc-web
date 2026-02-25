@@ -664,3 +664,27 @@ model ProjectMember {
   @@id([projectId, memberId])
   @@schema("public")
 }
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║                      YEAR RECAP                             ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+/// Tổng kết hoạt động CLB theo năm
+/// Dữ liệu recap được lưu dạng JSON tổng hợp từ Events, Achievements, Projects
+model YearRecap {
+  year         Int       @id                    // PK = năm (2024, 2025...)
+  name         String                           // Tên recap (VD: "MPC Recap 2024")
+  description  String?                          // Mô tả
+  coverImage   String?                          // Ảnh bìa chào (slide 1)
+  coverImage2  String?                          // Ảnh bìa thông số (slide 2)
+  coverImage3  String?                          // Ảnh bìa "bể cá" thành viên mới (slide 3)
+  endImage     String?                          // Ảnh bìa kết thúc (slide cuối)
+  musicUrl     String?                          // URL nhạc nền (Supabase Storage)
+  data         Json?     @default("{}")         // JSON tổng hợp recap
+  isPublished  Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("public")
+}

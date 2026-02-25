@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.4.1
- * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
+ * Prisma Client JS version: 7.4.0
+ * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.4.1",
-  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
+  client: "7.4.0",
+  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
 }
 
 /**
@@ -408,7 +408,8 @@ export const ModelName = {
   Achievement: 'Achievement',
   AchievementMember: 'AchievementMember',
   Project: 'Project',
-  ProjectMember: 'ProjectMember'
+  ProjectMember: 'ProjectMember',
+  YearRecap: 'YearRecap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -424,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "activity" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember"
+    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "activity" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember" | "yearRecap"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2278,6 +2279,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    YearRecap: {
+      payload: Prisma.$YearRecapPayload<ExtArgs>
+      fields: Prisma.YearRecapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.YearRecapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.YearRecapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        findFirst: {
+          args: Prisma.YearRecapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.YearRecapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        findMany: {
+          args: Prisma.YearRecapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>[]
+        }
+        create: {
+          args: Prisma.YearRecapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        createMany: {
+          args: Prisma.YearRecapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.YearRecapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>[]
+        }
+        delete: {
+          args: Prisma.YearRecapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        update: {
+          args: Prisma.YearRecapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        deleteMany: {
+          args: Prisma.YearRecapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.YearRecapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.YearRecapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>[]
+        }
+        upsert: {
+          args: Prisma.YearRecapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$YearRecapPayload>
+        }
+        aggregate: {
+          args: Prisma.YearRecapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateYearRecap>
+        }
+        groupBy: {
+          args: Prisma.YearRecapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.YearRecapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.YearRecapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.YearRecapCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2701,6 +2776,24 @@ export const ProjectMemberScalarFieldEnum = {
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
 
 
+export const YearRecapScalarFieldEnum = {
+  year: 'year',
+  name: 'name',
+  description: 'description',
+  coverImage: 'coverImage',
+  coverImage2: 'coverImage2',
+  coverImage3: 'coverImage3',
+  endImage: 'endImage',
+  musicUrl: 'musicUrl',
+  data: 'data',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type YearRecapScalarFieldEnum = (typeof YearRecapScalarFieldEnum)[keyof typeof YearRecapScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3049,6 +3142,7 @@ export type GlobalOmitConfig = {
   achievementMember?: Prisma.AchievementMemberOmit
   project?: Prisma.ProjectOmit
   projectMember?: Prisma.ProjectMemberOmit
+  yearRecap?: Prisma.YearRecapOmit
 }
 
 /* Types for Logging */

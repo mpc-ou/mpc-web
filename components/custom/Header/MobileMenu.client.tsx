@@ -72,9 +72,10 @@ const MobileMenu = () => {
     {
       label: tNav("about"),
       children: [
-        { label: tNav("about"), href: "/recap" },
+        { label: tNav("about"), href: "/about" },
         { label: tNav("members"), href: "/members" },
         { label: tNav("projects"), href: "/projects" },
+        { label: tNav("recap"), href: "/recap" },
       ],
     },
   ];

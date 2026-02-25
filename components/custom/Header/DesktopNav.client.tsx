@@ -68,13 +68,17 @@ const DesktopNav = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem asChild>
-            <Link href={"/recap" as any}>{tNav("about")}</Link>
+            <Link href="/about">{tNav("about")}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/members">{tNav("members")}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/projects">{tNav("projects")}</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href={"/recap" as any}>{tNav("recap")}</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

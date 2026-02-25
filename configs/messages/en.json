@@ -180,13 +180,22 @@
       "submit": "Save",
       "firstName": "First Name",
       "lastName": "Last Name",
-      "bio": "Bio"
+      "bio": "Bio",
+      "linkGithub": "Link GitHub",
+      "linkedGithub": "Unlink GitHub",
+      "linkingGithub": "Processing...",
+      "linkGithubDesc": "Link your GitHub account for faster login.",
+      "linkedGithubDesc": "Your GitHub account is successfully linked for login."
     }
   },
   "auth": {
     "title": "Login",
     "title2": "Who are you?",
-    "description": "Login to your account so we know who you are! ^^"
+    "description": "Login to your account so we know who you are! ^^",
+    "errorPageTitle": "Authentication Error",
+    "error": {
+      "title": "Login failed"
+    }
   },
   "defaultPage": {
     "error": {
@@ -268,6 +277,13 @@
         "desc": "An exchange, performance, and club introduction event for all university students organized by the University Youth Union."
       }
     ],
+    "types": {
+      "ACADEMIC": "Academic Competition",
+      "MEMBER_ACTIVITY": "Member Activity",
+      "VOLUNTEER": "Volunteer Activity",
+      "SEMINAR": "Seminar / Workshop",
+      "OTHER": "Other"
+    },
     "learnMore": "Learn more"
   },
   "webdesign": {
@@ -320,6 +336,24 @@
     "learnMoreBtn": "Learn more",
     "followUpBtn": "Follow up",
     "exhibitionTitle": "Featured Projects"
+  },
+  "achievements": {
+    "leadership": {
+      "emptyData": "No executive board member data available.",
+      "leader": "Leader",
+      "termHistory": "> TERM HISTORY",
+      "present": "Present",
+      "viewProfile": "VIEW PROFILE",
+      "achievementsCount": "Achievements",
+      "projectsCount": "Projects",
+      "positions": {
+        "PRESIDENT": "Club President",
+        "VICE_PRESIDENT": "Vice President",
+        "DEPARTMENT_LEADER": "Head of Department",
+        "DEPARTMENT_VICE_LEADER": "Deputy Head",
+        "ADVISOR": "Advisor"
+      }
+    }
   },
   "seo": {
     "home": {

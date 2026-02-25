@@ -7,10 +7,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/utils/supabase-upload";
+import {
+  ImageCropperModal,
+  readFileAsDataURL,
+} from "@/components/image-cropper";
 import { adminUpdateMember } from "../actions";
 import type { MemberRow } from "./columns";
 
@@ -24,16 +34,21 @@ export function MemberProfileTab({ member, onClose }: Props) {
   const [saving, setSaving] = useState(false);
   const [slugValue, setSlugValue] = useState(member?.slug ?? "");
   const [slugError, setSlugError] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(member?.avatar ?? null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    member?.avatar ?? null,
+  );
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [coverUrl, setCoverUrl] = useState<string | null>(
-    (member as { coverImage?: string | null })?.coverImage ?? null
+    (member as { coverImage?: string | null })?.coverImage ?? null,
   );
   const [coverUploading, setCoverUploading] = useState(false);
   const [isAvatarDragOver, setIsAvatarDragOver] = useState(false);
   const [isCoverDragOver, setIsCoverDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const [isAvatarCropOpen, setIsAvatarCropOpen] = useState(false);
+  const [avatarCropSrc, setAvatarCropSrc] = useState("");
 
   const processAvatarFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -44,17 +59,31 @@ export function MemberProfileTab({ member, onClose }: Props) {
       toast({ variant: "destructive", description: "Ảnh tối đa 3MB" });
       return;
     }
+    try {
+      const src = await readFileAsDataURL(file);
+      setAvatarCropSrc(src);
+      setIsAvatarCropOpen(true);
+    } catch {
+      toast({ variant: "destructive", description: "Không thể đọc file ảnh" });
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleAvatarCropConfirm = async (croppedBlob: Blob) => {
     setAvatarUploading(true);
     try {
+      const file = new File([croppedBlob], "avatar-cropped.jpg", {
+        type: "image/jpeg",
+      });
       const url = await uploadToStorage(file, "media", "avatars");
       setAvatarUrl(url);
     } catch {
       toast({ variant: "destructive", description: "Upload avatar thất bại" });
     } finally {
       setAvatarUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     }
   };
 
@@ -109,7 +138,9 @@ export function MemberProfileTab({ member, onClose }: Props) {
       return;
     }
     if (!/^[a-z0-9_-]+$/.test(slug)) {
-      setSlugError("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới");
+      setSlugError(
+        "Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới",
+      );
       return;
     }
     setSlugError(null);
@@ -138,7 +169,9 @@ export function MemberProfileTab({ member, onClose }: Props) {
         dob: (fd.get("dob") as string) || null,
         studentId: (fd.get("studentId") as string) || undefined,
         bio: (fd.get("bio") as string) || undefined,
-        webRole: fd.get("webRole") as "MEMBER" | "COLLABORATOR"
+        webRole: fd.get("webRole") as "MEMBER" | "COLLABORATOR",
+        githubEmail: (fd.get("githubEmail") as string) || undefined,
+        password: (fd.get("password") as string) || undefined,
         // Notice: `adminAddMember` currently doesn't accept avatar, coverImage, slug directly in creation
         // We will need to update it again or run a subsequent update.
         // Actually, let's update adminAddMember to take avatar and coverImage in a moment!
@@ -150,7 +183,7 @@ export function MemberProfileTab({ member, onClose }: Props) {
         await adminUpdateMember(payloadId, {
           slug,
           avatar: avatarUrl ?? undefined,
-          coverImage: coverUrl ?? undefined
+          coverImage: coverUrl ?? undefined,
         });
       }
     } else {
@@ -161,10 +194,16 @@ export function MemberProfileTab({ member, onClose }: Props) {
         dob: (fd.get("dob") as string) || null,
         studentId: (fd.get("studentId") as string) || undefined,
         bio: (fd.get("bio") as string) || undefined,
-        webRole: fd.get("webRole") as "ADMIN" | "COLLABORATOR" | "MEMBER" | "GUEST",
+        webRole: fd.get("webRole") as
+          | "ADMIN"
+          | "COLLABORATOR"
+          | "MEMBER"
+          | "GUEST",
         avatar: avatarUrl ?? undefined,
         coverImage: coverUrl ?? undefined,
-        slug
+        githubEmail: (fd.get("githubEmail") as string) || undefined,
+        password: (fd.get("password") as string) || undefined,
+        slug,
       });
     }
 
@@ -178,7 +217,7 @@ export function MemberProfileTab({ member, onClose }: Props) {
   };
 
   return (
-    <div className='space-y-4 pt-2'>
+    <div className="space-y-4 pt-2">
       {/* Avatar */}
       <div
         className={`flex items-center gap-4 rounded-xl border-2 border-dashed p-4 transition-colors ${isAvatarDragOver ? "border-primary bg-primary/10" : "border-transparent"}`}
@@ -198,128 +237,180 @@ export function MemberProfileTab({ member, onClose }: Props) {
           }
         }}
       >
-        <Avatar className='h-16 w-16'>
+        <Avatar className="h-16 w-16">
           <AvatarImage src={avatarUrl ?? undefined} />
-          <AvatarFallback className='bg-primary/10 text-primary text-xl'>
-            {avatarUploading ? <Loader2 className='h-6 w-6 animate-spin' /> : <UserCircle className='h-8 w-8' />}
+          <AvatarFallback className="bg-primary/10 text-primary text-xl">
+            {avatarUploading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <UserCircle className="h-8 w-8" />
+            )}
           </AvatarFallback>
         </Avatar>
-        <div className='flex flex-col gap-1'>
+        <div className="flex flex-col gap-1">
           <Button
-            className='h-8 text-xs'
+            className="h-8 text-xs"
             disabled={avatarUploading}
             onClick={() => fileInputRef.current?.click()}
-            size='sm'
-            type='button'
-            variant='outline'
+            size="sm"
+            type="button"
+            variant="outline"
           >
-            <Upload className='mr-1 h-3 w-3' />
+            <Upload className="mr-1 h-3 w-3" />
             {avatarUploading ? "Đang upload..." : "Đổi avatar"}
           </Button>
           {avatarUrl && (
             <Button
-              className='h-7 text-destructive text-xs'
+              className="h-7 text-destructive text-xs"
               onClick={() => setAvatarUrl(null)}
-              size='sm'
-              type='button'
-              variant='ghost'
+              size="sm"
+              type="button"
+              variant="ghost"
             >
               Xóa ảnh
             </Button>
           )}
-          <span className='text-[11px] text-muted-foreground'>JPG, PNG, WebP · max 3MB</span>
+          <span className="text-[11px] text-muted-foreground">
+            JPG, PNG, WebP · max 3MB
+          </span>
         </div>
         <input
-          accept='image/*'
-          className='hidden'
+          accept="image/*"
+          className="hidden"
           onChange={handleAvatarUpload}
           ref={fileInputRef}
-          title='Upload avatar'
-          type='file'
+          title="Upload avatar"
+          type="file"
         />
       </div>
 
       <Separator />
 
-      <form className='grid gap-4' id='profile-form' onSubmit={handleSubmit}>
+      <form className="grid gap-4" id="profile-form" onSubmit={handleSubmit}>
         {!member && (
-          <div className='grid gap-1.5'>
-            <Label htmlFor='email'>Email Google *</Label>
-            <Input id='email' name='email' placeholder='email@gmail.com' required type='email' />
+          <div className="grid gap-1.5">
+            <Label htmlFor="email">Email Google *</Label>
+            <Input
+              id="email"
+              name="email"
+              placeholder="email@gmail.com"
+              required
+              type="email"
+            />
           </div>
         )}
-        <div className='grid grid-cols-2 gap-3'>
-          <div className='grid gap-1.5'>
-            <Label htmlFor='firstName'>Họ *</Label>
-            <Input defaultValue={member?.firstName ?? ""} id='firstName' name='firstName' required />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-1.5">
+            <Label htmlFor="password">Mật khẩu (Email/Password login)</Label>
+            <Input
+              defaultValue={""}
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Bỏ trống nếu không đổi"
+            />
           </div>
-          <div className='grid gap-1.5'>
-            <Label htmlFor='lastName'>Tên *</Label>
-            <Input defaultValue={member?.lastName ?? ""} id='lastName' name='lastName' required />
+          <div className="grid gap-1.5">
+            <Label htmlFor="githubEmail">GitHub Email (Để link acc)</Label>
+            <Input
+              defaultValue={member?.githubEmail ?? ""}
+              id="githubEmail"
+              name="githubEmail"
+              type="email"
+              placeholder="github@example.com"
+            />
           </div>
         </div>
-        <div className='grid grid-cols-2 gap-3'>
-          <div className='grid gap-1.5'>
-            <Label htmlFor='phone'>Điện thoại</Label>
-            <Input defaultValue={member?.phone ?? ""} id='phone' name='phone' />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-1.5">
+            <Label htmlFor="firstName">Họ *</Label>
+            <Input
+              defaultValue={member?.firstName ?? ""}
+              id="firstName"
+              name="firstName"
+              required
+            />
           </div>
-          <div className='grid gap-1.5'>
-            <Label htmlFor='studentId'>Mã sinh viên</Label>
-            <Input defaultValue={member?.studentId ?? ""} id='studentId' name='studentId' />
+          <div className="grid gap-1.5">
+            <Label htmlFor="lastName">Tên *</Label>
+            <Input
+              defaultValue={member?.lastName ?? ""}
+              id="lastName"
+              name="lastName"
+              required
+            />
           </div>
         </div>
-        <div className='grid gap-1.5'>
-          <Label htmlFor='slug'>Slug (đường dẫn hồ sơ)</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-1.5">
+            <Label htmlFor="phone">Điện thoại</Label>
+            <Input defaultValue={member?.phone ?? ""} id="phone" name="phone" />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="studentId">Mã sinh viên</Label>
+            <Input
+              defaultValue={member?.studentId ?? ""}
+              id="studentId"
+              name="studentId"
+            />
+          </div>
+        </div>
+        <div className="grid gap-1.5">
+          <Label htmlFor="slug">Slug (đường dẫn hồ sơ)</Label>
           <Input
-            id='slug'
-            name='slug'
+            id="slug"
+            name="slug"
             onChange={(e) => {
               setSlugValue(e.target.value.toLowerCase().replace(/\s+/g, "-"));
               setSlugError(null);
             }}
-            placeholder='vd: nguyen-van-a'
+            placeholder="vd: nguyen-van-a"
             value={slugValue}
           />
-          {slugError && <p className='text-destructive text-xs'>{slugError}</p>}
+          {slugError && <p className="text-destructive text-xs">{slugError}</p>}
         </div>
-        <div className='grid gap-1.5'>
-          <Label htmlFor='dob'>Ngày sinh</Label>
+        <div className="grid gap-1.5">
+          <Label htmlFor="dob">Ngày sinh</Label>
           <Input
-            defaultValue={member?.dob ? new Date(member.dob).toISOString().split("T")[0] : ""}
-            id='dob'
-            name='dob'
-            type='date'
+            defaultValue={
+              member?.dob
+                ? new Date(member.dob).toISOString().split("T")[0]
+                : ""
+            }
+            id="dob"
+            name="dob"
+            type="date"
           />
         </div>
-        <div className='grid gap-1.5'>
-          <Label htmlFor='bio'>Giới thiệu bản thân</Label>
+        <div className="grid gap-1.5">
+          <Label htmlFor="bio">Giới thiệu bản thân</Label>
           <textarea
-            className='min-h-18 rounded-md border border-input bg-background px-3 py-2 text-sm'
+            className="min-h-18 rounded-md border border-input bg-background px-3 py-2 text-sm"
             defaultValue={member?.bio ?? ""}
-            id='bio'
-            name='bio'
-            placeholder='Viết vài dòng về bản thân...'
+            id="bio"
+            name="bio"
+            placeholder="Viết vài dòng về bản thân..."
           />
         </div>
-        <div className='grid gap-1.5'>
-          <Label htmlFor='webRole'>Vai trò hệ thống</Label>
-          <Select defaultValue={member?.webRole ?? "MEMBER"} name='webRole'>
-            <SelectTrigger id='webRole'>
+        <div className="grid gap-1.5">
+          <Label htmlFor="webRole">Vai trò hệ thống</Label>
+          <Select defaultValue={member?.webRole ?? "MEMBER"} name="webRole">
+            <SelectTrigger id="webRole">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {member && <SelectItem value='ADMIN'>Admin</SelectItem>}
-              <SelectItem value='COLLABORATOR'>Cộng tác viên</SelectItem>
-              <SelectItem value='MEMBER'>Thành viên</SelectItem>
-              {member && <SelectItem value='GUEST'>Khách</SelectItem>}
+              {member && <SelectItem value="ADMIN">Admin</SelectItem>}
+              <SelectItem value="COLLABORATOR">Cộng tác viên</SelectItem>
+              <SelectItem value="MEMBER">Thành viên</SelectItem>
+              {member && <SelectItem value="GUEST">Khách</SelectItem>}
             </SelectContent>
           </Select>
         </div>
-        <div className='flex justify-end'>
-          <Button disabled={saving} type='submit'>
+        <div className="flex justify-end">
+          <Button disabled={saving} type="submit">
             {saving ? (
               <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Đang lưu...
               </>
             ) : (
@@ -331,24 +422,24 @@ export function MemberProfileTab({ member, onClose }: Props) {
 
       {/* Cover photo */}
       <Separator />
-      <div className='space-y-2'>
+      <div className="space-y-2">
         <Label>Ảnh bìa (Cover Photo)</Label>
         {coverUrl ? (
-          <div className='relative overflow-hidden rounded-lg border'>
+          <div className="relative overflow-hidden rounded-lg border">
             <Image
-              alt='Cover'
-              className='object-cover'
+              alt="Cover"
+              className="object-cover"
               fill
-              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               src={coverUrl}
             />
             <button
-              className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
+              className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
               onClick={() => setCoverUrl(null)}
-              title='Xóa ảnh bìa'
-              type='button'
+              title="Xóa ảnh bìa"
+              type="button"
             >
-              <X className='h-3.5 w-3.5' />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
         ) : (
@@ -371,30 +462,38 @@ export function MemberProfileTab({ member, onClose }: Props) {
                 processCoverFile(e.dataTransfer.files[0]);
               }
             }}
-            type='button'
+            type="button"
           >
             {coverUploading ? (
               <>
-                <Loader2 className='h-4 w-4 animate-spin' />
-                <span className='text-xs'>Đang upload...</span>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-xs">Đang upload...</span>
               </>
             ) : (
               <>
-                <ImagePlus className='h-4 w-4' />
-                <span className='text-xs'>Upload ảnh bìa (max 5MB)</span>
+                <ImagePlus className="h-4 w-4" />
+                <span className="text-xs">Upload ảnh bìa (max 5MB)</span>
               </>
             )}
           </button>
         )}
         <input
-          accept='image/*'
-          className='hidden'
+          accept="image/*"
+          className="hidden"
           onChange={handleCoverUpload}
           ref={coverInputRef}
-          title='Upload ảnh bìa'
-          type='file'
+          title="Upload ảnh bìa"
+          type="file"
         />
       </div>
+
+      <ImageCropperModal
+        isOpen={isAvatarCropOpen}
+        onOpenChange={setIsAvatarCropOpen}
+        imageSrc={avatarCropSrc}
+        onConfirm={handleAvatarCropConfirm}
+        aspect={1}
+      />
     </div>
   );
 }

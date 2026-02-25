@@ -148,6 +148,12 @@ export type EventTag = Prisma.EventTagModel
  */
 export type EventGallery = Prisma.EventGalleryModel
 /**
+ * Model Activity
+ * Hoạt động CLB (Thay thế cho events.json data)
+ * Gồm các loại hoạt động/chương trình của CLB
+ */
+export type Activity = Prisma.ActivityModel
+/**
  * Model Sponsor
  * Nhà tài trợ / Đối tác / Nhà đồng hành
  * Lưu thông tin cơ bản của đơn vị tài trợ

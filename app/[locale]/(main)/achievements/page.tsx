@@ -2,7 +2,6 @@ import { Trophy } from "lucide-react";
 import type { Metadata } from "next";
 import { getAchievementsPageData } from "@/app/[locale]/actions";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generatePageSeo } from "@/utils/seo";
 import { AchievementsClient } from "./client";
 import { LeadershipCarouselClient } from "./leadership-carousel.client";
@@ -57,35 +56,26 @@ export default async function AchievementsPage({
           </p>
         </ScrollReveal>
 
-        {/* Content Tabs */}
-        <Tabs className="space-y-12" defaultValue="achievements">
-          <div className="flex justify-center">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="achievements">
-                Bảng vàng thành tích
-              </TabsTrigger>
-              <TabsTrigger value="leadership">Bảng vàng điều hành</TabsTrigger>
-            </TabsList>
-          </div>
+        {/* 1. Bảng vàng điều hành */}
+      </div>
 
-          <TabsContent
-            className="fade-in-50 mt-0 animate-in space-y-8 duration-500"
-            value="achievements"
-          >
-            <AchievementsClient
-              achievements={achievements}
-              currentPage={validPage}
-              totalPages={totalPages}
-            />
-          </TabsContent>
+      <div className="w-full">
+        <LeadershipCarouselClient leaders={leaders} />
+      </div>
 
-          <TabsContent
-            className="fade-in-50 mt-0 animate-in duration-500"
-            value="leadership"
-          >
-            <LeadershipCarouselClient leaders={leaders} />
-          </TabsContent>
-        </Tabs>
+      <div className="container mt-20 mx-auto max-w-6xl px-4">
+        {/* 2. Bảng vàng thành tích */}
+        <div className="mb-8 text-center">
+          <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
+            Bảng vàng thành tích
+          </h2>
+        </div>
+
+        <AchievementsClient
+          achievements={achievements}
+          currentPage={validPage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

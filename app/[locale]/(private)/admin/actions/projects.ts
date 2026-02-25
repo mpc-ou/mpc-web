@@ -82,6 +82,7 @@ export const adminUpdateProject = async (
     startDate?: string | null;
     endDate?: string | null;
     isActive?: boolean;
+    images?: string[];
   }
 ) =>
   handleErrorServerWithAuth({
@@ -100,7 +101,8 @@ export const adminUpdateProject = async (
           ...(data.technologies && { technologies: data.technologies }),
           ...(data.startDate !== undefined && { startDate: data.startDate ? new Date(data.startDate) : null }),
           ...(data.endDate !== undefined && { endDate: data.endDate ? new Date(data.endDate) : null }),
-          ...(data.isActive !== undefined && { isActive: data.isActive })
+          ...(data.isActive !== undefined && { isActive: data.isActive }),
+          ...(data.images !== undefined && { images: data.images })
         }
       });
       revalidateTag(_CACHE_PROJECTS, "default");

@@ -20,6 +20,7 @@ export const adminGetEvents = async () =>
           startAt: true,
           endAt: true,
           status: true,
+          type: true,
           creator: { select: { firstName: true, lastName: true } }
         }
       });
@@ -51,6 +52,7 @@ export const adminCreateEvent = async (data: {
   startAt: string;
   endAt?: string;
   status?: string;
+  type?: string;
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -67,6 +69,7 @@ export const adminCreateEvent = async (data: {
           startAt: new Date(data.startAt),
           endAt: data.endAt ? new Date(data.endAt) : null,
           status: (data.status as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED") ?? "UPCOMING",
+          type: (data.type as any) ?? "OTHER",
           creatorId: admin.id
         }
       });
@@ -84,8 +87,10 @@ export const adminUpdateEvent = async (
     thumbnail?: string | null;
     location?: string;
     status?: string;
+    type?: string;
     startAt?: string;
     endAt?: string | null;
+    images?: string[];
   }
 ) =>
   handleErrorServerWithAuth({
@@ -100,8 +105,10 @@ export const adminUpdateEvent = async (
           ...(data.thumbnail !== undefined && { thumbnail: data.thumbnail }),
           ...(data.location !== undefined && { location: data.location }),
           ...(data.status && { status: data.status as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED" }),
+          ...(data.type && { type: data.type as any }),
           ...(data.startAt && { startAt: new Date(data.startAt) }),
-          ...(data.endAt !== undefined && { endAt: data.endAt ? new Date(data.endAt) : null })
+          ...(data.endAt !== undefined && { endAt: data.endAt ? new Date(data.endAt) : null }),
+          ...(data.images !== undefined && { images: data.images })
         }
       });
       revalidateTag(_CACHE_EVENTS, "default");

@@ -3,7 +3,11 @@
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownEditor } from "@/components/markdown-editor";
-import { type LinkedMember, type MemberOption, MemberSelector } from "@/components/member-selector";
+import {
+  type LinkedMember,
+  type MemberOption,
+  MemberSelector,
+} from "@/components/member-selector";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,14 +15,20 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/utils/supabase-upload";
-import { adminCreateProject, adminLinkProjectMember, adminUnlinkProjectMember, adminUpdateProject } from "../actions";
+import {
+  adminCreateProject,
+  adminLinkProjectMember,
+  adminUnlinkProjectMember,
+  adminUpdateProject,
+} from "../actions";
+import { MultiImageUpload } from "@/components/multi-image-upload";
 import type { ProjectRow } from "./columns";
 
 type Props = {
@@ -28,17 +38,27 @@ type Props = {
   allMembers?: MemberOption[];
 };
 
-export function ProjectFormDialog({ open, onOpenChange, project, allMembers = [] }: Props) {
+export function ProjectFormDialog({
+  open,
+  onOpenChange,
+  project,
+  allMembers = [],
+}: Props) {
   const isEdit = !!project;
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [techs, setTechs] = useState<string[]>(project?.technologies ?? []);
   const [techInput, setTechInput] = useState("");
   const [linked, setLinked] = useState<LinkedMember[]>([]);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(project?.thumbnail ?? null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
+    project?.thumbnail ?? null,
+  );
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const [imagesUrls, setImagesUrls] = useState<string[]>(
+    (project as { images?: string[] } | null | undefined)?.images ?? [],
+  );
 
   useEffect(() => {
     setTechs(project?.technologies ?? []);
@@ -52,15 +72,23 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
             lastName: m.member.lastName,
             avatar: null,
             studentId: null,
-            webRole: ""
+            webRole: "",
           } as MemberOption,
-          role: m.role
-        }))
+          role: m.role,
+        })),
       );
     } else {
       setLinked([]);
     }
   }, [project?.technologies, project?.thumbnail, project?.members]);
+
+  // Sync imagesUrls when project changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional
+  useEffect(() => {
+    setImagesUrls(
+      (project as { images?: string[] } | null | undefined)?.images ?? [],
+    );
+  }, [project?.id]);
 
   const processThumbnailFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -78,7 +106,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
     } catch {
       toast({
         variant: "destructive",
-        description: "Upload thumbnail thất bại"
+        description: "Upload thumbnail thất bại",
       });
     } finally {
       setThumbnailUploading(false);
@@ -108,7 +136,11 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
       setLinked((prev) => [...prev, { member, role: role || null }]);
       return;
     }
-    const res = await adminLinkProjectMember(project.id, member.id, role || undefined);
+    const res = await adminLinkProjectMember(
+      project.id,
+      member.id,
+      role || undefined,
+    );
     if (res.error) {
       toast({ variant: "destructive", description: res.error?.message });
       return;
@@ -127,17 +159,19 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
     setLinked((prev) => prev.filter((l) => l.member.id !== memberId));
   };
 
-  const persistProject = async (payload: Parameters<typeof adminCreateProject>[0]) => {
+  const persistProject = async (
+    payload: Parameters<typeof adminCreateProject>[0],
+  ) => {
     if (isEdit && project) {
       return {
         error: (await adminUpdateProject(project.id, payload)).error,
-        id: project.id
+        id: project.id,
       };
     }
     const res = await adminCreateProject(payload);
     return {
       error: res.error,
-      id: (res.data?.payload as { id: string } | undefined)?.id ?? null
+      id: (res.data?.payload as { id: string } | undefined)?.id ?? null,
     };
   };
 
@@ -155,7 +189,8 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
       videoUrl: (fd.get("videoUrl") as string) || undefined,
       technologies: techs,
       startDate: (fd.get("startDate") as string) || undefined,
-      endDate: (fd.get("endDate") as string) || undefined
+      endDate: (fd.get("endDate") as string) || undefined,
+      images: imagesUrls,
     };
 
     const { error, id: entityId } = await persistProject(payload);
@@ -168,7 +203,11 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
     // Link pending members on create
     if (!isEdit && entityId) {
       for (const l of linked) {
-        await adminLinkProjectMember(entityId, l.member.id, l.role ?? undefined);
+        await adminLinkProjectMember(
+          entityId,
+          l.member.id,
+          l.role ?? undefined,
+        );
       }
     }
 
@@ -176,44 +215,56 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
     onOpenChange(false);
   };
 
-  const fmtDate = (d: string | null) => (d ? new Date(d).toISOString().split("T")[0] : "");
+  const fmtDate = (d: string | null) =>
+    d ? new Date(d).toISOString().split("T")[0] : "";
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className='max-h-[90vh] max-w-6xl overflow-y-auto'>
+      <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Chỉnh sửa dự án" : "Thêm dự án mới"}</DialogTitle>
-          <DialogDescription>{isEdit ? "Cập nhật thông tin dự án." : "Thêm dự án mới."}</DialogDescription>
+          <DialogTitle>
+            {isEdit ? "Chỉnh sửa dự án" : "Thêm dự án mới"}
+          </DialogTitle>
+          <DialogDescription>
+            {isEdit ? "Cập nhật thông tin dự án." : "Thêm dự án mới."}
+          </DialogDescription>
         </DialogHeader>
-        <form className='grid gap-4 py-2' id='project-form' onSubmit={handleSubmit}>
-          <div className='grid gap-1.5'>
+        <form
+          className="grid gap-4 py-2"
+          id="project-form"
+          onSubmit={handleSubmit}
+        >
+          <div className="grid gap-1.5">
             <Label>Tên dự án *</Label>
-            <Input defaultValue={project?.title} name='title' required />
+            <Input defaultValue={project?.title} name="title" required />
           </div>
-          <div className='grid gap-1.5'>
+          <div className="grid gap-1.5">
             <Label>Mô tả ngắn</Label>
-            <Input defaultValue={project?.description ?? ""} name='description' />
+            <Input
+              defaultValue={project?.description ?? ""}
+              name="description"
+            />
           </div>
           {/* Thumbnail */}
-          <div className='grid gap-1.5'>
+          <div className="grid gap-1.5">
             <Label>Ảnh thumbnail</Label>
             {thumbnailUrl ? (
-              <div className='relative aspect-video w-full overflow-hidden rounded-lg border bg-muted'>
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-muted">
                 {/* biome-ignore lint/performance/noImgElement: admin preview */}
                 <img
-                  alt='Thumbnail'
-                  className='h-full w-full object-cover'
+                  alt="Thumbnail"
+                  className="h-full w-full object-cover"
                   height={720}
                   src={thumbnailUrl}
                   width={1280}
                 />
                 <button
-                  className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
+                  className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
                   onClick={() => setThumbnailUrl(null)}
-                  title='Xóa thumbnail'
-                  type='button'
+                  title="Xóa thumbnail"
+                  type="button"
                 >
-                  <X className='h-3.5 w-3.5' />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </div>
             ) : (
@@ -236,59 +287,71 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
                     processThumbnailFile(e.dataTransfer.files[0]);
                   }
                 }}
-                type='button'
+                type="button"
               >
                 {thumbnailUploading ? (
                   <>
-                    <Loader2 className='h-5 w-5 animate-spin' />
-                    <span className='text-xs'>Đang upload...</span>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span className="text-xs">Đang upload...</span>
                   </>
                 ) : (
                   <>
-                    <ImagePlus className='h-5 w-5' />
-                    <span className='text-xs'>Upload thumbnail (max 3MB)</span>
+                    <ImagePlus className="h-5 w-5" />
+                    <span className="text-xs">Upload thumbnail (max 3MB)</span>
                   </>
                 )}
               </button>
             )}
             <input
-              accept='image/*'
-              className='hidden'
+              accept="image/*"
+              className="hidden"
               onChange={handleThumbnailUpload}
               ref={thumbnailInputRef}
-              title='Upload thumbnail'
-              type='file'
+              title="Upload thumbnail"
+              type="file"
             />
           </div>
-          <div className='grid gap-1.5'>
+          <div className="grid gap-1.5">
             <Label>Chi tiết</Label>
             <MarkdownEditor
               defaultValue={project?.content ?? ""}
-              minHeight='160px'
-              name='content'
-              placeholder='Chi tiết dự án (Markdown)...'
+              minHeight="160px"
+              name="content"
+              placeholder="Chi tiết dự án (Markdown)..."
             />
           </div>
-          <div className='grid grid-cols-3 gap-3'>
-            <div className='grid gap-1.5'>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="grid gap-1.5">
               <Label>GitHub</Label>
-              <Input defaultValue={project?.githubUrl ?? ""} name='githubUrl' type='url' />
+              <Input
+                defaultValue={project?.githubUrl ?? ""}
+                name="githubUrl"
+                type="url"
+              />
             </div>
-            <div className='grid gap-1.5'>
+            <div className="grid gap-1.5">
               <Label>Website</Label>
-              <Input defaultValue={project?.websiteUrl ?? ""} name='websiteUrl' type='url' />
+              <Input
+                defaultValue={project?.websiteUrl ?? ""}
+                name="websiteUrl"
+                type="url"
+              />
             </div>
-            <div className='grid gap-1.5'>
+            <div className="grid gap-1.5">
               <Label>Video</Label>
-              <Input defaultValue={project?.videoUrl ?? ""} name='videoUrl' type='url' />
+              <Input
+                defaultValue={project?.videoUrl ?? ""}
+                name="videoUrl"
+                type="url"
+              />
             </div>
           </div>
           {/* Tech tags */}
-          <div className='grid gap-1.5'>
+          <div className="grid gap-1.5">
             <Label>Công nghệ</Label>
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Input
-                className='h-8 text-sm'
+                className="h-8 text-sm"
                 onChange={(e) => setTechInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -296,22 +359,30 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
                     addTech();
                   }
                 }}
-                placeholder='Tên công nghệ, Enter để thêm...'
+                placeholder="Tên công nghệ, Enter để thêm..."
                 value={techInput}
               />
-              <Button onClick={addTech} size='sm' type='button' variant='outline'>
+              <Button
+                onClick={addTech}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
                 +
               </Button>
             </div>
             {techs.length > 0 && (
-              <div className='flex flex-wrap gap-1'>
+              <div className="flex flex-wrap gap-1">
                 {techs.map((t) => (
-                  <span className='inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs' key={t}>
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs"
+                    key={t}
+                  >
                     {t}
                     <button
-                      className='hover:text-destructive'
+                      className="hover:text-destructive"
                       onClick={() => setTechs(techs.filter((x) => x !== t))}
-                      type='button'
+                      type="button"
                     >
                       ×
                     </button>
@@ -320,26 +391,47 @@ export function ProjectFormDialog({ open, onOpenChange, project, allMembers = []
               </div>
             )}
           </div>
-          <div className='grid grid-cols-2 gap-3'>
-            <div className='grid gap-1.5'>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-1.5">
               <Label>Bắt đầu</Label>
-              <Input defaultValue={fmtDate(project?.startDate ?? null)} name='startDate' type='date' />
+              <Input
+                defaultValue={fmtDate(project?.startDate ?? null)}
+                name="startDate"
+                type="date"
+              />
             </div>
-            <div className='grid gap-1.5'>
+            <div className="grid gap-1.5">
               <Label>Kết thúc</Label>
-              <Input defaultValue={fmtDate(project?.endDate ?? null)} name='endDate' type='date' />
+              <Input
+                defaultValue={fmtDate(project?.endDate ?? null)}
+                name="endDate"
+                type="date"
+              />
             </div>
           </div>
 
+          <MultiImageUpload
+            initialImages={imagesUrls}
+            label="Ảnh bổ sung dự án"
+            maxImages={10}
+            onChange={setImagesUrls}
+            storagePath="projects/gallery"
+          />
+
           <Separator />
 
-          <MemberSelector allMembers={allMembers} linked={linked} onLink={handleLink} onUnlink={handleUnlink} />
+          <MemberSelector
+            allMembers={allMembers}
+            linked={linked}
+            onLink={handleLink}
+            onUnlink={handleUnlink}
+          />
         </form>
         <DialogFooter>
-          <Button disabled={loading} form='project-form' type='submit'>
+          <Button disabled={loading} form="project-form" type="submit">
             {loading ? (
               <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Đang lưu...
               </>
             ) : isEdit ? (

@@ -1,4 +1,4 @@
-export type Department = { id: string; name: string };
+export type Department = { id: string; nameVi: string; nameEn: string; slug: string };
 
 export type ClubRoleEntry = {
   id: string;

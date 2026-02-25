@@ -7,7 +7,6 @@ import {
   UserCircle,
   Users,
 } from "lucide-react";
-import { marked } from "marked";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProjectDetail } from "@/app/[locale]/actions";
@@ -16,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
-import { sanitizeHtml } from "@/utils/sanitize-html";
+import { MarkdownContent } from "@/components/markdown-content";
 import { generatePageSeo } from "@/utils/seo";
 
 export async function generateMetadata({
@@ -59,15 +58,6 @@ export default async function ProjectDetailPage({
   const techs = Array.isArray(project.technologies)
     ? (project.technologies as string[])
     : [];
-
-  const rawHtml = project.content
-    ? marked.parse(project.content, { gfm: true, breaks: true })
-    : null;
-  const contentHtml = rawHtml
-    ? typeof rawHtml === "string"
-      ? rawHtml
-      : await rawHtml
-    : null;
 
   const startDateLabel = project.startDate
     ? new Date(project.startDate).toLocaleDateString("vi-VN", {
@@ -190,13 +180,9 @@ export default async function ProjectDetailPage({
         <Separator className="mb-10" />
 
         {/* ── ARTICLE BODY ── */}
-        {contentHtml ? (
+        {project.content ? (
           <ScrollReveal delay={100} variant="fade-up">
-            <article
-              className="prose prose-neutral dark:prose-invert prose-img:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h2:mt-10 prose-h3:mt-8 mb-14 prose-h2:mb-4 prose-h3:mb-3 max-w-none prose-code:rounded prose-img:rounded-2xl prose-pre:rounded-xl prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-pre:bg-muted prose-pre:p-4 prose-code:px-1.5 prose-code:py-0.5 prose-headings:font-bold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline-offset-4 prose-img:shadow-lg"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(contentHtml) }}
-            />
+            <MarkdownContent content={project.content} />
           </ScrollReveal>
         ) : (
           <p className="mb-14 text-muted-foreground italic">

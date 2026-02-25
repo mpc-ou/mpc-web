@@ -37,9 +37,15 @@ export type DepartmentSumAggregateOutputType = {
 
 export type DepartmentMinAggregateOutputType = {
   id: string | null
-  name: string | null
   slug: string | null
-  description: string | null
+  nameVi: string | null
+  descriptionVi: string | null
+  linkLabelVi: string | null
+  nameEn: string | null
+  descriptionEn: string | null
+  linkLabelEn: string | null
+  icon: string | null
+  bgImage: string | null
   order: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -48,9 +54,15 @@ export type DepartmentMinAggregateOutputType = {
 
 export type DepartmentMaxAggregateOutputType = {
   id: string | null
-  name: string | null
   slug: string | null
-  description: string | null
+  nameVi: string | null
+  descriptionVi: string | null
+  linkLabelVi: string | null
+  nameEn: string | null
+  descriptionEn: string | null
+  linkLabelEn: string | null
+  icon: string | null
+  bgImage: string | null
   order: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -59,9 +71,17 @@ export type DepartmentMaxAggregateOutputType = {
 
 export type DepartmentCountAggregateOutputType = {
   id: number
-  name: number
   slug: number
-  description: number
+  nameVi: number
+  descriptionVi: number
+  missionsVi: number
+  linkLabelVi: number
+  nameEn: number
+  descriptionEn: number
+  missionsEn: number
+  linkLabelEn: number
+  icon: number
+  bgImage: number
   order: number
   isActive: number
   createdAt: number
@@ -80,9 +100,15 @@ export type DepartmentSumAggregateInputType = {
 
 export type DepartmentMinAggregateInputType = {
   id?: true
-  name?: true
   slug?: true
-  description?: true
+  nameVi?: true
+  descriptionVi?: true
+  linkLabelVi?: true
+  nameEn?: true
+  descriptionEn?: true
+  linkLabelEn?: true
+  icon?: true
+  bgImage?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -91,9 +117,15 @@ export type DepartmentMinAggregateInputType = {
 
 export type DepartmentMaxAggregateInputType = {
   id?: true
-  name?: true
   slug?: true
-  description?: true
+  nameVi?: true
+  descriptionVi?: true
+  linkLabelVi?: true
+  nameEn?: true
+  descriptionEn?: true
+  linkLabelEn?: true
+  icon?: true
+  bgImage?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -102,9 +134,17 @@ export type DepartmentMaxAggregateInputType = {
 
 export type DepartmentCountAggregateInputType = {
   id?: true
-  name?: true
   slug?: true
-  description?: true
+  nameVi?: true
+  descriptionVi?: true
+  missionsVi?: true
+  linkLabelVi?: true
+  nameEn?: true
+  descriptionEn?: true
+  missionsEn?: true
+  linkLabelEn?: true
+  icon?: true
+  bgImage?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -200,9 +240,17 @@ export type DepartmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type DepartmentGroupByOutputType = {
   id: string
-  name: string
   slug: string
-  description: string | null
+  nameVi: string
+  descriptionVi: string | null
+  missionsVi: string[]
+  linkLabelVi: string | null
+  nameEn: string
+  descriptionEn: string | null
+  missionsEn: string[]
+  linkLabelEn: string | null
+  icon: string | null
+  bgImage: string | null
   order: number
   isActive: boolean
   createdAt: Date
@@ -234,9 +282,17 @@ export type DepartmentWhereInput = {
   OR?: Prisma.DepartmentWhereInput[]
   NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   id?: Prisma.StringFilter<"Department"> | string
-  name?: Prisma.StringFilter<"Department"> | string
   slug?: Prisma.StringFilter<"Department"> | string
-  description?: Prisma.StringNullableFilter<"Department"> | string | null
+  nameVi?: Prisma.StringFilter<"Department"> | string
+  descriptionVi?: Prisma.StringNullableFilter<"Department"> | string | null
+  missionsVi?: Prisma.StringNullableListFilter<"Department">
+  linkLabelVi?: Prisma.StringNullableFilter<"Department"> | string | null
+  nameEn?: Prisma.StringFilter<"Department"> | string
+  descriptionEn?: Prisma.StringNullableFilter<"Department"> | string | null
+  missionsEn?: Prisma.StringNullableListFilter<"Department">
+  linkLabelEn?: Prisma.StringNullableFilter<"Department"> | string | null
+  icon?: Prisma.StringNullableFilter<"Department"> | string | null
+  bgImage?: Prisma.StringNullableFilter<"Department"> | string | null
   order?: Prisma.IntFilter<"Department"> | number
   isActive?: Prisma.BoolFilter<"Department"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -246,9 +302,17 @@ export type DepartmentWhereInput = {
 
 export type DepartmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameVi?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  missionsVi?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  missionsEn?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  icon?: Prisma.SortOrderInput | Prisma.SortOrder
+  bgImage?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -262,8 +326,16 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   OR?: Prisma.DepartmentWhereInput[]
   NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
-  name?: Prisma.StringFilter<"Department"> | string
-  description?: Prisma.StringNullableFilter<"Department"> | string | null
+  nameVi?: Prisma.StringFilter<"Department"> | string
+  descriptionVi?: Prisma.StringNullableFilter<"Department"> | string | null
+  missionsVi?: Prisma.StringNullableListFilter<"Department">
+  linkLabelVi?: Prisma.StringNullableFilter<"Department"> | string | null
+  nameEn?: Prisma.StringFilter<"Department"> | string
+  descriptionEn?: Prisma.StringNullableFilter<"Department"> | string | null
+  missionsEn?: Prisma.StringNullableListFilter<"Department">
+  linkLabelEn?: Prisma.StringNullableFilter<"Department"> | string | null
+  icon?: Prisma.StringNullableFilter<"Department"> | string | null
+  bgImage?: Prisma.StringNullableFilter<"Department"> | string | null
   order?: Prisma.IntFilter<"Department"> | number
   isActive?: Prisma.BoolFilter<"Department"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -273,9 +345,17 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
 
 export type DepartmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameVi?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  missionsVi?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  missionsEn?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  icon?: Prisma.SortOrderInput | Prisma.SortOrder
+  bgImage?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -292,9 +372,17 @@ export type DepartmentScalarWhereWithAggregatesInput = {
   OR?: Prisma.DepartmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DepartmentScalarWhereWithAggregatesInput | Prisma.DepartmentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Department"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Department"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Department"> | string
-  description?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  nameVi?: Prisma.StringWithAggregatesFilter<"Department"> | string
+  descriptionVi?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  missionsVi?: Prisma.StringNullableListFilter<"Department">
+  linkLabelVi?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  nameEn?: Prisma.StringWithAggregatesFilter<"Department"> | string
+  descriptionEn?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  missionsEn?: Prisma.StringNullableListFilter<"Department">
+  linkLabelEn?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  icon?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  bgImage?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   order?: Prisma.IntWithAggregatesFilter<"Department"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Department"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string
@@ -303,9 +391,17 @@ export type DepartmentScalarWhereWithAggregatesInput = {
 
 export type DepartmentCreateInput = {
   id?: string
-  name: string
   slug: string
-  description?: string | null
+  nameVi?: string
+  descriptionVi?: string | null
+  missionsVi?: Prisma.DepartmentCreatemissionsViInput | string[]
+  linkLabelVi?: string | null
+  nameEn?: string
+  descriptionEn?: string | null
+  missionsEn?: Prisma.DepartmentCreatemissionsEnInput | string[]
+  linkLabelEn?: string | null
+  icon?: string | null
+  bgImage?: string | null
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -315,9 +411,17 @@ export type DepartmentCreateInput = {
 
 export type DepartmentUncheckedCreateInput = {
   id?: string
-  name: string
   slug: string
-  description?: string | null
+  nameVi?: string
+  descriptionVi?: string | null
+  missionsVi?: Prisma.DepartmentCreatemissionsViInput | string[]
+  linkLabelVi?: string | null
+  nameEn?: string
+  descriptionEn?: string | null
+  missionsEn?: Prisma.DepartmentCreatemissionsEnInput | string[]
+  linkLabelEn?: string | null
+  icon?: string | null
+  bgImage?: string | null
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -327,9 +431,17 @@ export type DepartmentUncheckedCreateInput = {
 
 export type DepartmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -339,9 +451,17 @@ export type DepartmentUpdateInput = {
 
 export type DepartmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,9 +471,17 @@ export type DepartmentUncheckedUpdateInput = {
 
 export type DepartmentCreateManyInput = {
   id?: string
-  name: string
   slug: string
-  description?: string | null
+  nameVi?: string
+  descriptionVi?: string | null
+  missionsVi?: Prisma.DepartmentCreatemissionsViInput | string[]
+  linkLabelVi?: string | null
+  nameEn?: string
+  descriptionEn?: string | null
+  missionsEn?: Prisma.DepartmentCreatemissionsEnInput | string[]
+  linkLabelEn?: string | null
+  icon?: string | null
+  bgImage?: string | null
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -362,9 +490,17 @@ export type DepartmentCreateManyInput = {
 
 export type DepartmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,20 +509,44 @@ export type DepartmentUpdateManyMutationInput = {
 
 export type DepartmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type DepartmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  nameVi?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  missionsVi?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
+  missionsEn?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
+  bgImage?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -399,9 +559,15 @@ export type DepartmentAvgOrderByAggregateInput = {
 
 export type DepartmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  nameVi?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
+  bgImage?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -410,9 +576,15 @@ export type DepartmentMaxOrderByAggregateInput = {
 
 export type DepartmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  nameVi?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
+  bgImage?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -426,6 +598,24 @@ export type DepartmentSumOrderByAggregateInput = {
 export type DepartmentNullableScalarRelationFilter = {
   is?: Prisma.DepartmentWhereInput | null
   isNot?: Prisma.DepartmentWhereInput | null
+}
+
+export type DepartmentCreatemissionsViInput = {
+  set: string[]
+}
+
+export type DepartmentCreatemissionsEnInput = {
+  set: string[]
+}
+
+export type DepartmentUpdatemissionsViInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type DepartmentUpdatemissionsEnInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type DepartmentCreateNestedOneWithoutClubRolesInput = {
@@ -446,9 +636,17 @@ export type DepartmentUpdateOneWithoutClubRolesNestedInput = {
 
 export type DepartmentCreateWithoutClubRolesInput = {
   id?: string
-  name: string
   slug: string
-  description?: string | null
+  nameVi?: string
+  descriptionVi?: string | null
+  missionsVi?: Prisma.DepartmentCreatemissionsViInput | string[]
+  linkLabelVi?: string | null
+  nameEn?: string
+  descriptionEn?: string | null
+  missionsEn?: Prisma.DepartmentCreatemissionsEnInput | string[]
+  linkLabelEn?: string | null
+  icon?: string | null
+  bgImage?: string | null
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -457,9 +655,17 @@ export type DepartmentCreateWithoutClubRolesInput = {
 
 export type DepartmentUncheckedCreateWithoutClubRolesInput = {
   id?: string
-  name: string
   slug: string
-  description?: string | null
+  nameVi?: string
+  descriptionVi?: string | null
+  missionsVi?: Prisma.DepartmentCreatemissionsViInput | string[]
+  linkLabelVi?: string | null
+  nameEn?: string
+  descriptionEn?: string | null
+  missionsEn?: Prisma.DepartmentCreatemissionsEnInput | string[]
+  linkLabelEn?: string | null
+  icon?: string | null
+  bgImage?: string | null
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -484,9 +690,17 @@ export type DepartmentUpdateToOneWithWhereWithoutClubRolesInput = {
 
 export type DepartmentUpdateWithoutClubRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,9 +709,17 @@ export type DepartmentUpdateWithoutClubRolesInput = {
 
 export type DepartmentUncheckedUpdateWithoutClubRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsVi?: Prisma.DepartmentUpdatemissionsViInput | string[]
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  missionsEn?: Prisma.DepartmentUpdatemissionsEnInput | string[]
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bgImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -537,9 +759,17 @@ export type DepartmentCountOutputTypeCountClubRolesArgs<ExtArgs extends runtime.
 
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
   slug?: boolean
-  description?: boolean
+  nameVi?: boolean
+  descriptionVi?: boolean
+  missionsVi?: boolean
+  linkLabelVi?: boolean
+  nameEn?: boolean
+  descriptionEn?: boolean
+  missionsEn?: boolean
+  linkLabelEn?: boolean
+  icon?: boolean
+  bgImage?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -550,9 +780,17 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type DepartmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
   slug?: boolean
-  description?: boolean
+  nameVi?: boolean
+  descriptionVi?: boolean
+  missionsVi?: boolean
+  linkLabelVi?: boolean
+  nameEn?: boolean
+  descriptionEn?: boolean
+  missionsEn?: boolean
+  linkLabelEn?: boolean
+  icon?: boolean
+  bgImage?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -561,9 +799,17 @@ export type DepartmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
   slug?: boolean
-  description?: boolean
+  nameVi?: boolean
+  descriptionVi?: boolean
+  missionsVi?: boolean
+  linkLabelVi?: boolean
+  nameEn?: boolean
+  descriptionEn?: boolean
+  missionsEn?: boolean
+  linkLabelEn?: boolean
+  icon?: boolean
+  bgImage?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -572,16 +818,24 @@ export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type DepartmentSelectScalar = {
   id?: boolean
-  name?: boolean
   slug?: boolean
-  description?: boolean
+  nameVi?: boolean
+  descriptionVi?: boolean
+  missionsVi?: boolean
+  linkLabelVi?: boolean
+  nameEn?: boolean
+  descriptionEn?: boolean
+  missionsEn?: boolean
+  linkLabelEn?: boolean
+  icon?: boolean
+  bgImage?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
+export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "nameVi" | "descriptionVi" | "missionsVi" | "linkLabelVi" | "nameEn" | "descriptionEn" | "missionsEn" | "linkLabelEn" | "icon" | "bgImage" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clubRoles?: boolean | Prisma.Department$clubRolesArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -596,9 +850,17 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
     slug: string
-    description: string | null
+    nameVi: string
+    descriptionVi: string | null
+    missionsVi: string[]
+    linkLabelVi: string | null
+    nameEn: string
+    descriptionEn: string | null
+    missionsEn: string[]
+    linkLabelEn: string | null
+    icon: string | null
+    bgImage: string | null
     order: number
     isActive: boolean
     createdAt: Date
@@ -1028,9 +1290,17 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
  */
 export interface DepartmentFieldRefs {
   readonly id: Prisma.FieldRef<"Department", 'String'>
-  readonly name: Prisma.FieldRef<"Department", 'String'>
   readonly slug: Prisma.FieldRef<"Department", 'String'>
-  readonly description: Prisma.FieldRef<"Department", 'String'>
+  readonly nameVi: Prisma.FieldRef<"Department", 'String'>
+  readonly descriptionVi: Prisma.FieldRef<"Department", 'String'>
+  readonly missionsVi: Prisma.FieldRef<"Department", 'String[]'>
+  readonly linkLabelVi: Prisma.FieldRef<"Department", 'String'>
+  readonly nameEn: Prisma.FieldRef<"Department", 'String'>
+  readonly descriptionEn: Prisma.FieldRef<"Department", 'String'>
+  readonly missionsEn: Prisma.FieldRef<"Department", 'String[]'>
+  readonly linkLabelEn: Prisma.FieldRef<"Department", 'String'>
+  readonly icon: Prisma.FieldRef<"Department", 'String'>
+  readonly bgImage: Prisma.FieldRef<"Department", 'String'>
   readonly order: Prisma.FieldRef<"Department", 'Int'>
   readonly isActive: Prisma.FieldRef<"Department", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Department", 'DateTime'>

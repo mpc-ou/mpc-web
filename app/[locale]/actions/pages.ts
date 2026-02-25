@@ -42,7 +42,14 @@ export const getAchievementsPageData = async (validPage: number, take: number) =
               lastName: true,
               avatar: true,
               slug: true,
-              socials: true
+              socials: true,
+              coverImage: true,
+              _count: {
+                select: {
+                  achievements: true,
+                  projects: true
+                }
+              }
             }
           },
           department: true
@@ -63,7 +70,7 @@ export const getAchievementsPageData = async (validPage: number, take: number) =
           position: r.position,
           startAt: r.startAt.toISOString(),
           endAt: r.endAt?.toISOString() || null,
-          departmentName: r.department?.name || null
+          departmentName: r.department?.nameVi || null
         });
       });
 
@@ -73,6 +80,21 @@ export const getAchievementsPageData = async (validPage: number, take: number) =
       });
 
       return { achievements, totalPages, leaders };
+    }
+  });
+
+export const getAchievementBySlug = async (slug: string) =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      const achievement = await prisma.achievement.findUnique({
+        where: { slug },
+        include: {
+          members: {
+            include: { member: true }
+          }
+        }
+      });
+      return { achievement };
     }
   });
 

@@ -34,7 +34,7 @@ export {
   adminUpsertSetting
 } from "./content";
 export { adminGetDashboardStats } from "./dashboard";
-export { adminCreateDepartment, adminDeleteDepartment, adminGetDepartments } from "./departments";
+export { adminCreateDepartment, adminDeleteDepartment, adminGetDepartments, adminUpdateDepartment } from "./departments";
 export { adminCreateEvent, adminDeleteEvent, adminGetEvents, adminUpdateEvent } from "./events";
 export {
   adminAddClubRole,

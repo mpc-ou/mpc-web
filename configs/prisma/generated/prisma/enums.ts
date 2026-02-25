@@ -60,3 +60,14 @@ export const AchievementType = {
 } as const
 
 export type AchievementType = (typeof AchievementType)[keyof typeof AchievementType]
+
+
+export const EventType = {
+  ACADEMIC: 'ACADEMIC',
+  MEMBER_ACTIVITY: 'MEMBER_ACTIVITY',
+  VOLUNTEER: 'VOLUNTEER',
+  SEMINAR: 'SEMINAR',
+  OTHER: 'OTHER'
+} as const
+
+export type EventType = (typeof EventType)[keyof typeof EventType]

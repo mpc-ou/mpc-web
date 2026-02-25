@@ -78,6 +78,17 @@ enum AchievementType {
   @@schema("public")
 }
 
+/// Phân loại sự kiện
+enum EventType {
+  ACADEMIC        // Tổ chức cuộc thi học thuật
+  MEMBER_ACTIVITY // Hoạt động thành viên
+  VOLUNTEER       // Hoạt động tình nguyện
+  SEMINAR         // Hội thảo / Seminar
+  OTHER           // Khác
+
+  @@schema("public")
+}
+
 // ╔══════════════════════════════════════════════════════════════╗
 // ║                     SITE SETTINGS                           ║
 // ╚══════════════════════════════════════════════════════════════╝
@@ -181,6 +192,9 @@ model Member {
   id           String    @id @default(cuid())
   authId       String    @unique // Supabase Auth User ID (from Google login)
   email        String    @unique
+  password     String?   // Password for email/password login
+  githubId     String?   @unique // GitHub User ID
+  githubEmail  String?   @unique // Email verified for GitHub login by admin
   firstName    String // Họ
   lastName     String // Tên
   avatar       String?   // URL ảnh đại diện trên Supabase Storage
@@ -224,12 +238,24 @@ model Member {
 /// Ban / Phòng trong CLB
 /// VD: Ban Lập trình, Ban Sự kiện & Hậu cần, Ban Truyền thông
 model Department {
-  id          String  @id @default(cuid())
-  name        String // "Ban Lập Trình", "Ban Sự Kiện & Hậu Cần", "Ban Truyền Thông"
-  slug        String  @unique // "programming", "events-logistics", "communication"
-  description String? // Mô tả chức năng ban
-  order       Int     @default(0) // Thứ tự hiển thị
-  isActive    Boolean @default(true) // Có đang hoạt động không
+  id            String   @id @default(cuid())
+  slug          String   @unique // "programming", "events-logistics", "communication"
+
+  nameVi        String   @default("") // "Ban Lập Trình"
+  descriptionVi String?  // Mô tả chức năng ban
+  missionsVi    String[] @default([]) // Các nhiệm vụ chính
+  linkLabelVi   String?  // Nút xem chi tiết (VD: "Xem các dự án")
+
+  nameEn        String   @default("") // "Programming Dept"
+  descriptionEn String?  
+  missionsEn    String[] @default([])
+  linkLabelEn   String?
+
+  icon          String?  // Mã icon Lucide (VD: "Code", "Camera")
+  bgImage       String?  // Đường dẫn ảnh nền (VD: "/images/bg/lt.jpg")
+
+  order         Int      @default(0) // Thứ tự hiển thị
+  isActive      Boolean  @default(true) // Có đang hoạt động không
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -394,9 +420,11 @@ model Event {
   description String? // Mô tả ngắn
   content     String? // Nội dung chi tiết (Markdown/HTML)
   thumbnail   String? // Ảnh bìa sự kiện (Supabase Storage URL)
+  images      String[] @default([]) // Các ảnh sự kiện bổ sung
   location    String? // Địa điểm tổ chức
   maxAttendees Int?       // Số người tham dự tối đa (null = không giới hạn)
   status      EventStatus @default(UPCOMING) // Trạng thái sự kiện
+  type        EventType?  @default(OTHER) // Phân loại sự kiện
   startAt     DateTime // Ngày giờ bắt đầu
   endAt       DateTime? // Ngày giờ kết thúc
   creatorId   String // Người tạo sự kiện
@@ -466,6 +494,36 @@ model EventGallery {
 }
 
 // ╔══════════════════════════════════════════════════════════════╗
+// ║                     ACTIVITIES                              ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+/// Hoạt động CLB (Thay thế cho events.json data)
+/// Gồm các loại hoạt động/chương trình của CLB
+model Activity {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+
+  titleVi       String
+  descriptionVi String?
+  
+  titleEn       String?
+  descriptionEn String?
+
+  hyperlink     String?  // Nút bấm chuyển tiếp (vd: /activities/webdesign)
+  thumbnail     String?  // Ảnh đại diện
+  images        String[] @default([]) // Danh sách các ảnh bổ sung (vd: từ imageFolder trước đây)
+  
+  isInternal    Boolean  @default(false) // Phân biệt nội bộ hay bên ngoài
+  isActive      Boolean  @default(true) // Có đang hiển thị không
+  order         Int      @default(0) // Thứ tự hiển thị
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@schema("public")
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
 // ║                  SPONSORS & PARTNERS                        ║
 // ╚══════════════════════════════════════════════════════════════╝
 
@@ -531,6 +589,7 @@ model Achievement {
   summary     String? // Tóm tắt hiển thị trên card
   content     String? // Chi tiết Markdown
   thumbnail   String? // Ảnh card (Supabase Storage)
+  images      String[] @default([]) // Các ảnh bổ sung
   date        DateTime // Ngày đạt được
   type        AchievementType @default(TEAM)
   isHighlight Boolean         @default(false) // Nổi bật trang chủ
@@ -575,6 +634,7 @@ model Project {
   description  String? // Mô tả ngắn
   content      String? // Markdown chi tiết
   thumbnail    String? // Supabase Storage
+  images       String[] @default([]) // Các ảnh dự án bổ sung
   githubUrl    String? // Link GitHub
   websiteUrl   String? // Link demo/website
   videoUrl     String? // YouTube embed URL

@@ -63,6 +63,7 @@ export type AchievementCountAggregateOutputType = {
   summary: number
   content: number
   thumbnail: number
+  images: number
   date: number
   type: number
   isHighlight: number
@@ -113,6 +114,7 @@ export type AchievementCountAggregateInputType = {
   summary?: true
   content?: true
   thumbnail?: true
+  images?: true
   date?: true
   type?: true
   isHighlight?: true
@@ -202,6 +204,7 @@ export type AchievementGroupByOutputType = {
   summary: string | null
   content: string | null
   thumbnail: string | null
+  images: string[]
   date: Date
   type: $Enums.AchievementType
   isHighlight: boolean
@@ -239,6 +242,7 @@ export type AchievementWhereInput = {
   summary?: Prisma.StringNullableFilter<"Achievement"> | string | null
   content?: Prisma.StringNullableFilter<"Achievement"> | string | null
   thumbnail?: Prisma.StringNullableFilter<"Achievement"> | string | null
+  images?: Prisma.StringNullableListFilter<"Achievement">
   date?: Prisma.DateTimeFilter<"Achievement"> | Date | string
   type?: Prisma.EnumAchievementTypeFilter<"Achievement"> | $Enums.AchievementType
   isHighlight?: Prisma.BoolFilter<"Achievement"> | boolean
@@ -257,6 +261,7 @@ export type AchievementOrderByWithRelationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isHighlight?: Prisma.SortOrder
@@ -278,6 +283,7 @@ export type AchievementWhereUniqueInput = Prisma.AtLeast<{
   summary?: Prisma.StringNullableFilter<"Achievement"> | string | null
   content?: Prisma.StringNullableFilter<"Achievement"> | string | null
   thumbnail?: Prisma.StringNullableFilter<"Achievement"> | string | null
+  images?: Prisma.StringNullableListFilter<"Achievement">
   date?: Prisma.DateTimeFilter<"Achievement"> | Date | string
   type?: Prisma.EnumAchievementTypeFilter<"Achievement"> | $Enums.AchievementType
   isHighlight?: Prisma.BoolFilter<"Achievement"> | boolean
@@ -296,6 +302,7 @@ export type AchievementOrderByWithAggregationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isHighlight?: Prisma.SortOrder
@@ -318,6 +325,7 @@ export type AchievementScalarWhereWithAggregatesInput = {
   summary?: Prisma.StringNullableWithAggregatesFilter<"Achievement"> | string | null
   content?: Prisma.StringNullableWithAggregatesFilter<"Achievement"> | string | null
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Achievement"> | string | null
+  images?: Prisma.StringNullableListFilter<"Achievement">
   date?: Prisma.DateTimeWithAggregatesFilter<"Achievement"> | Date | string
   type?: Prisma.EnumAchievementTypeWithAggregatesFilter<"Achievement"> | $Enums.AchievementType
   isHighlight?: Prisma.BoolWithAggregatesFilter<"Achievement"> | boolean
@@ -334,6 +342,7 @@ export type AchievementCreateInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -351,6 +360,7 @@ export type AchievementUncheckedCreateInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -368,6 +378,7 @@ export type AchievementUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -385,6 +396,7 @@ export type AchievementUncheckedUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -402,6 +414,7 @@ export type AchievementCreateManyInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -418,6 +431,7 @@ export type AchievementUpdateManyMutationInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -433,6 +447,7 @@ export type AchievementUncheckedUpdateManyInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -459,6 +474,7 @@ export type AchievementCountOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   content?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isHighlight?: Prisma.SortOrder
@@ -547,6 +563,15 @@ export type AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput = {
   deleteMany?: Prisma.AchievementScalarWhereInput | Prisma.AchievementScalarWhereInput[]
 }
 
+export type AchievementCreateimagesInput = {
+  set: string[]
+}
+
+export type AchievementUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type EnumAchievementTypeFieldUpdateOperationsInput = {
   set?: $Enums.AchievementType
 }
@@ -572,6 +597,7 @@ export type AchievementCreateWithoutRelatedPostInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -588,6 +614,7 @@ export type AchievementUncheckedCreateWithoutRelatedPostInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -633,6 +660,7 @@ export type AchievementScalarWhereInput = {
   summary?: Prisma.StringNullableFilter<"Achievement"> | string | null
   content?: Prisma.StringNullableFilter<"Achievement"> | string | null
   thumbnail?: Prisma.StringNullableFilter<"Achievement"> | string | null
+  images?: Prisma.StringNullableListFilter<"Achievement">
   date?: Prisma.DateTimeFilter<"Achievement"> | Date | string
   type?: Prisma.EnumAchievementTypeFilter<"Achievement"> | $Enums.AchievementType
   isHighlight?: Prisma.BoolFilter<"Achievement"> | boolean
@@ -649,6 +677,7 @@ export type AchievementCreateWithoutMembersInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -665,6 +694,7 @@ export type AchievementUncheckedCreateWithoutMembersInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -697,6 +727,7 @@ export type AchievementUpdateWithoutMembersInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -713,6 +744,7 @@ export type AchievementUncheckedUpdateWithoutMembersInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -729,6 +761,7 @@ export type AchievementCreateManyRelatedPostInput = {
   summary?: string | null
   content?: string | null
   thumbnail?: string | null
+  images?: Prisma.AchievementCreateimagesInput | string[]
   date: Date | string
   type?: $Enums.AchievementType
   isHighlight?: boolean
@@ -744,6 +777,7 @@ export type AchievementUpdateWithoutRelatedPostInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -760,6 +794,7 @@ export type AchievementUncheckedUpdateWithoutRelatedPostInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -776,6 +811,7 @@ export type AchievementUncheckedUpdateManyWithoutRelatedPostInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.AchievementUpdateimagesInput | string[]
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType
   isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -822,6 +858,7 @@ export type AchievementSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   summary?: boolean
   content?: boolean
   thumbnail?: boolean
+  images?: boolean
   date?: boolean
   type?: boolean
   isHighlight?: boolean
@@ -841,6 +878,7 @@ export type AchievementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   summary?: boolean
   content?: boolean
   thumbnail?: boolean
+  images?: boolean
   date?: boolean
   type?: boolean
   isHighlight?: boolean
@@ -858,6 +896,7 @@ export type AchievementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   summary?: boolean
   content?: boolean
   thumbnail?: boolean
+  images?: boolean
   date?: boolean
   type?: boolean
   isHighlight?: boolean
@@ -875,6 +914,7 @@ export type AchievementSelectScalar = {
   summary?: boolean
   content?: boolean
   thumbnail?: boolean
+  images?: boolean
   date?: boolean
   type?: boolean
   isHighlight?: boolean
@@ -884,7 +924,7 @@ export type AchievementSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AchievementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "summary" | "content" | "thumbnail" | "date" | "type" | "isHighlight" | "relatedUrl" | "relatedPostId" | "createdAt" | "updatedAt", ExtArgs["result"]["achievement"]>
+export type AchievementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "summary" | "content" | "thumbnail" | "images" | "date" | "type" | "isHighlight" | "relatedUrl" | "relatedPostId" | "createdAt" | "updatedAt", ExtArgs["result"]["achievement"]>
 export type AchievementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   relatedPost?: boolean | Prisma.Achievement$relatedPostArgs<ExtArgs>
   members?: boolean | Prisma.Achievement$membersArgs<ExtArgs>
@@ -910,6 +950,7 @@ export type $AchievementPayload<ExtArgs extends runtime.Types.Extensions.Interna
     summary: string | null
     content: string | null
     thumbnail: string | null
+    images: string[]
     date: Date
     type: $Enums.AchievementType
     isHighlight: boolean
@@ -1348,6 +1389,7 @@ export interface AchievementFieldRefs {
   readonly summary: Prisma.FieldRef<"Achievement", 'String'>
   readonly content: Prisma.FieldRef<"Achievement", 'String'>
   readonly thumbnail: Prisma.FieldRef<"Achievement", 'String'>
+  readonly images: Prisma.FieldRef<"Achievement", 'String[]'>
   readonly date: Prisma.FieldRef<"Achievement", 'DateTime'>
   readonly type: Prisma.FieldRef<"Achievement", 'AchievementType'>
   readonly isHighlight: Prisma.FieldRef<"Achievement", 'Boolean'>

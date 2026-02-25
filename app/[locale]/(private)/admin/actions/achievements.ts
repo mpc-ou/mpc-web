@@ -30,7 +30,8 @@ export const adminCreateAchievement = async (data: {
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      const slug = data.slug || generateSlug(data.title);
+      const randomSuffix = Math.random().toString(36).substring(2, 8);
+      const slug = data.slug || `${generateSlug(data.title)}-${randomSuffix}`;
       const created = await prisma.achievement.create({
         data: {
           title: data.title,
@@ -62,6 +63,7 @@ export const adminUpdateAchievement = async (
     isHighlight?: boolean;
     relatedUrl?: string;
     relatedPostId?: string | null;
+    images?: string[];
   }
 ) =>
   handleErrorServerWithAuth({
@@ -78,7 +80,8 @@ export const adminUpdateAchievement = async (
           ...(data.type && { type: data.type as "INDIVIDUAL" | "TEAM" | "CLUB" }),
           ...(data.isHighlight !== undefined && { isHighlight: data.isHighlight }),
           ...(data.relatedUrl !== undefined && { relatedUrl: data.relatedUrl }),
-          ...(data.relatedPostId !== undefined && { relatedPostId: data.relatedPostId })
+          ...(data.relatedPostId !== undefined && { relatedPostId: data.relatedPostId }),
+          ...(data.images !== undefined && { images: data.images })
         }
       });
       revalidateTag(_CACHE_ACHIEVEMENTS, "default");

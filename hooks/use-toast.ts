@@ -7,8 +7,9 @@ import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
-const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1_000_000;
+const TOAST_LIMIT = 3;
+const TOAST_REMOVE_DELAY = 1_000;
+const TOAST_AUTO_DISMISS_DELAY = 5_000;
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -164,6 +165,11 @@ function toast({ ...props }: Toast) {
       }
     }
   });
+
+  // Auto-dismiss sau 5 giây
+  setTimeout(() => {
+    dismiss();
+  }, TOAST_AUTO_DISMISS_DELAY);
 
   return {
     id,

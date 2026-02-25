@@ -16,17 +16,41 @@ export const adminGetDepartments = async () =>
   });
 
 export const adminCreateDepartment = async (data: {
-  name: string;
+  nameVi: string;
+  nameEn?: string;
   slug: string;
-  description?: string;
+  descriptionVi?: string;
+  descriptionEn?: string;
+  icon?: string;
+  bgImage?: string;
   order?: number;
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      const created = await prisma.department.create({ data });
+      const created = await prisma.department.create({ data: { ...data, order: data.order ?? 0 } });
       revalidateTag(_CACHE_DEPARTMENTS, "default");
       return created;
+    }
+  });
+
+export const adminUpdateDepartment = async (id: string, data: {
+  nameVi?: string;
+  nameEn?: string;
+  slug?: string;
+  descriptionVi?: string;
+  descriptionEn?: string;
+  icon?: string;
+  bgImage?: string;
+  order?: number;
+  isActive?: boolean;
+}) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const updated = await prisma.department.update({ where: { id }, data });
+      revalidateTag(_CACHE_DEPARTMENTS, "default");
+      return updated;
     }
   });
 
@@ -39,3 +63,4 @@ export const adminDeleteDepartment = async (id: string) =>
       return { success: true };
     }
   });
+

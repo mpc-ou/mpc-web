@@ -68,7 +68,7 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
     socials: unknown;
     clubRoles: {
       position: ClubPosition;
-      department: { name: string } | null;
+      department: { nameVi: string; slug: string } | null;
     }[];
   };
 
@@ -86,7 +86,10 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
   );
 
   const getTopRole = (
-    roles: { position: ClubPosition; department: { name: string } | null }[],
+    roles: {
+      position: ClubPosition;
+      department: { nameVi: string; slug: string } | null;
+    }[],
   ) => {
     const sorted = [...roles].sort((a, b) => {
       const order = [
@@ -102,7 +105,7 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
       return "";
     }
     const label = positionLabel[top.position] ?? top.position;
-    return top.department ? `${label} – ${top.department.name}` : label;
+    return top.department ? `${label} – ${top.department.nameVi}` : label;
   };
 
   return (
@@ -272,7 +275,7 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                           "DEPARTMENT_LEADER",
                           "DEPARTMENT_VICE_LEADER",
                         ].includes(r.position),
-                      )?.department?.name || "Thành viên ban";
+                      )?.department?.nameVi || "Thành viên ban";
 
                     return (
                       <div className="group relative" key={member.id}>

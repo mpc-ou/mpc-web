@@ -27,9 +27,6 @@ const prismaGlobal = globalThis as unknown as {
 
 const prisma = prismaGlobal.prisma ?? prismaClientSingleton();
 
-// In development, preserve the client across HMR (hot-module-reload).
-// In production (long-running server / standalone), the module-level
-// `prisma` variable already acts as a singleton.
 if (process.env.NODE_ENV !== "production") {
   prismaGlobal.prisma = prisma;
 }

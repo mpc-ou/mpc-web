@@ -63,7 +63,7 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
 }
 
 /**
- * Sync the Prisma member record after a successful Google OAuth login.
+ * Sync the Prisma member record after a successful Google or GitHub OAuth login/link.
  *
  * Cases:
  *  1. Member was pre-created by admin (authId = "pending-*"):
@@ -75,13 +75,13 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
  *  3. Completely new user (never pre-created):
  *     - Create member record with GUEST role, data from Google
  */
-async function syncMemberFromGoogle(user: User): Promise<void> {
+async function syncMemberFromOAuth(user: User): Promise<void> {
   if (!user.email) {
     return;
   }
 
   const meta = (user.user_metadata ?? {}) as Record<string, string>;
-  const googleAvatar = meta.avatar_url ?? meta.picture ?? null;
+  const googleAvatar = meta.avatar_url || meta.picture || null;
   const email = user.email;
 
   const existing = await prisma.member.findUnique({ where: { email } });
@@ -104,6 +104,27 @@ async function syncMemberFromGoogle(user: User): Promise<void> {
       updates.slug = await generateUniqueSlug(email);
     }
 
+    // 4. Auto-inject GitHub social link if linked
+    const githubIdentity = user.identities?.find((id) => id.provider === "github");
+    if (githubIdentity) {
+      const githubUsername = githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
+      if (githubUsername) {
+        const existingSocials = Array.isArray(existing.socials) ? (existing.socials as any[]) : [];
+        const hasGithub = existingSocials.some((s: any) => s.platform === "GitHub");
+        
+        if (!hasGithub) {
+          updates.socials = [
+            ...existingSocials,
+            {
+              id: Math.random().toString(36).substring(2, 9),
+              platform: "GitHub",
+              url: `https://github.com/${githubUsername}`
+            }
+          ];
+        }
+      }
+    }
+
     if (Object.keys(updates).length > 0) {
       await prisma.member.update({ where: { email }, data: updates });
     }
@@ -114,16 +135,31 @@ async function syncMemberFromGoogle(user: User): Promise<void> {
   const { firstName, lastName } = parseGoogleName(meta);
   const slug = await generateUniqueSlug(email);
 
+  // 4. Auto-inject GitHub social link if linked
+  const socials = [];
+  const githubIdentity = user.identities?.find((id) => id.provider === "github");
+  if (githubIdentity) {
+    const githubUsername = githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
+    if (githubUsername) {
+      socials.push({
+        id: Math.random().toString(36).substring(2, 9),
+        platform: "GitHub",
+        url: `https://github.com/${githubUsername}`
+      });
+    }
+  }
+
   await prisma.member.create({
     data: {
       authId: user.id,
       email,
       firstName: firstName || email.split("@")[0],
       lastName,
-      avatar: googleAvatar ?? undefined,
+      avatar: googleAvatar || undefined,
       slug,
+      socials: socials.length > 0 ? socials : undefined,
       webRole: "GUEST",
-      createdBy: null // self-registered via Google
+      createdBy: null // self-registered via Google/GitHub
     }
   });
 }
@@ -149,7 +185,7 @@ export async function GET(request: Request) {
 
       if (user) {
         try {
-          await syncMemberFromGoogle(user);
+          await syncMemberFromOAuth(user);
         } catch (syncErr) {
           // Non-fatal: log and continue — user can still navigate the site
           console.error("[auth/callback] member sync failed:", syncErr);
@@ -169,5 +205,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  return NextResponse.redirect(`${origin}/auth`);
 }

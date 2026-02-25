@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.4.0
- * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+ * Prisma Client JS version: 7.4.1
+ * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.4.0",
-  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
+  client: "7.4.1",
+  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
 }
 
 /**
@@ -402,6 +402,7 @@ export const ModelName = {
   EventOrganizer: 'EventOrganizer',
   EventTag: 'EventTag',
   EventGallery: 'EventGallery',
+  Activity: 'Activity',
   Sponsor: 'Sponsor',
   EventSponsorship: 'EventSponsorship',
   Achievement: 'Achievement',
@@ -423,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember"
+    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "activity" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1759,6 +1760,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Activity: {
+      payload: Prisma.$ActivityPayload<ExtArgs>
+      fields: Prisma.ActivityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        update: {
+          args: Prisma.ActivityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivity>
+        }
+        groupBy: {
+          args: Prisma.ActivityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityCountAggregateOutputType> | number
+        }
+      }
+    }
     Sponsor: {
       payload: Prisma.$SponsorPayload<ExtArgs>
       fields: Prisma.SponsorFieldRefs
@@ -2328,6 +2403,9 @@ export const MemberScalarFieldEnum = {
   id: 'id',
   authId: 'authId',
   email: 'email',
+  password: 'password',
+  githubId: 'githubId',
+  githubEmail: 'githubEmail',
   firstName: 'firstName',
   lastName: 'lastName',
   avatar: 'avatar',
@@ -2353,9 +2431,17 @@ export type MemberScalarFieldEnum = (typeof MemberScalarFieldEnum)[keyof typeof 
 
 export const DepartmentScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   slug: 'slug',
-  description: 'description',
+  nameVi: 'nameVi',
+  descriptionVi: 'descriptionVi',
+  missionsVi: 'missionsVi',
+  linkLabelVi: 'linkLabelVi',
+  nameEn: 'nameEn',
+  descriptionEn: 'descriptionEn',
+  missionsEn: 'missionsEn',
+  linkLabelEn: 'linkLabelEn',
+  icon: 'icon',
+  bgImage: 'bgImage',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -2455,9 +2541,11 @@ export const EventScalarFieldEnum = {
   description: 'description',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   location: 'location',
   maxAttendees: 'maxAttendees',
   status: 'status',
+  type: 'type',
   startAt: 'startAt',
   endAt: 'endAt',
   creatorId: 'creatorId',
@@ -2497,6 +2585,26 @@ export const EventGalleryScalarFieldEnum = {
 } as const
 
 export type EventGalleryScalarFieldEnum = (typeof EventGalleryScalarFieldEnum)[keyof typeof EventGalleryScalarFieldEnum]
+
+
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  titleVi: 'titleVi',
+  descriptionVi: 'descriptionVi',
+  titleEn: 'titleEn',
+  descriptionEn: 'descriptionEn',
+  hyperlink: 'hyperlink',
+  thumbnail: 'thumbnail',
+  images: 'images',
+  isInternal: 'isInternal',
+  isActive: 'isActive',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
 export const SponsorScalarFieldEnum = {
@@ -2540,6 +2648,7 @@ export const AchievementScalarFieldEnum = {
   summary: 'summary',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   date: 'date',
   type: 'type',
   isHighlight: 'isHighlight',
@@ -2568,6 +2677,7 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   githubUrl: 'githubUrl',
   websiteUrl: 'websiteUrl',
   videoUrl: 'videoUrl',
@@ -2765,6 +2875,20 @@ export type ListEnumEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'EventType'
+ */
+export type EnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType'>
+    
+
+
+/**
+ * Reference to a field of type 'EventType[]'
+ */
+export type ListEnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -2918,6 +3042,7 @@ export type GlobalOmitConfig = {
   eventOrganizer?: Prisma.EventOrganizerOmit
   eventTag?: Prisma.EventTagOmit
   eventGallery?: Prisma.EventGalleryOmit
+  activity?: Prisma.ActivityOmit
   sponsor?: Prisma.SponsorOmit
   eventSponsorship?: Prisma.EventSponsorshipOmit
   achievement?: Prisma.AchievementOmit

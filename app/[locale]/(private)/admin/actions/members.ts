@@ -4,6 +4,8 @@ import { revalidateTag } from "next/cache";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { isRootAdmin } from "@/utils/admin";
 import { generateUniqueSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./_helpers";
+import { createAdminClient } from "@/configs/supabase/admin";
+import { getDiceBearUrl } from "@/utils/dicebear-avatar";
 
 const SLUG_REGEX = /^[a-z0-9_-]+$/;
 
@@ -20,6 +22,9 @@ export const adminGetMembers = async () =>
         createdAt: m.createdAt.toISOString(),
         updatedAt: m.updatedAt.toISOString(),
         dob: m.dob ? m.dob.toISOString() : null,
+        leftClubAt: m.leftClubAt ? m.leftClubAt.toISOString() : null,
+        joinedClubAt: m.joinedClubAt ? m.joinedClubAt.toISOString() : null,
+        isActive: !m.leftClubAt,
         clubRoles: m.clubRoles.map((cr) => ({
           ...cr,
           createdAt: cr.createdAt.toISOString(),
@@ -77,7 +82,10 @@ export const adminAddMember = async (data: {
   dob?: string | null;
   studentId?: string;
   bio?: string;
+  githubEmail?: string;
+  password?: string;
   socials?: string;
+  randomAvatar?: boolean;
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -88,9 +96,28 @@ export const adminAddMember = async (data: {
         throw new Error("Email đã tồn tại trong hệ thống");
       }
       const slug = await generateUniqueSlug(data.email);
+      const supabaseAdmin = createAdminClient();
+      let authId = `pending-${Date.now()}`;
+
+      // Create user in Supabase Auth directly if we have an admin client ready
+      if (data.password) {
+        const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
+          email: data.email,
+          password: data.password,
+          email_confirm: true,
+          user_metadata: { full_name: `${data.firstName} ${data.lastName}` }
+        });
+        if (userError) {
+          throw new Error("Không thể tạo người dùng trên hệ thống xác thực. " + userError.message);
+        }
+        if (userData?.user) {
+          authId = userData.user.id;
+        }
+      }
+
       const created = await prisma.member.create({
         data: {
-          authId: `pending-${Date.now()}`, // Placeholder until user logs in
+          authId: authId,
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -101,7 +128,9 @@ export const adminAddMember = async (data: {
           dob: data.dob ? new Date(data.dob) : null,
           studentId: data.studentId || null,
           bio: data.bio || null,
-          socials: data.socials ? JSON.parse(data.socials) : []
+          githubEmail: data.githubEmail || null,
+          socials: data.socials ? JSON.parse(data.socials) : [],
+          avatar: data.randomAvatar !== false ? getDiceBearUrl(data.email) : null
         }
       });
       revalidateTag(_CACHE_MEMBERS, "default");
@@ -143,6 +172,10 @@ export const adminUpdateMember = async (
     socials?: string; // JSON string
     webRole?: "ADMIN" | "COLLABORATOR" | "MEMBER" | "GUEST";
     slug?: string;
+    githubEmail?: string;
+    password?: string;
+    leftClubAt?: string | null;
+    joinedClubAt?: string | null;
   }
 ) =>
   handleErrorServerWithAuth({
@@ -161,9 +194,30 @@ export const adminUpdateMember = async (
         await validateAndCheckSlug(data.slug, memberId);
       }
 
+      // Sync password to Supabase Auth Admin if requested
+      if (data.password) {
+        const supabaseAdmin = createAdminClient();
+        if (target.authId && !target.authId.startsWith("pending")) {
+          const { error } = await supabaseAdmin.auth.admin.updateUserById(target.authId, { password: data.password });
+          if (error) throw new Error("Cập nhật mật khẩu trên hệ thống xác thực thất bại: " + error.message);
+        } else {
+          // It's a pending user, let's create them on supabase if we can
+          const { data: userData, error } = await supabaseAdmin.auth.admin.createUser({
+            email: target.email,
+            password: data.password,
+            email_confirm: true,
+            user_metadata: { full_name: `${data.firstName || target.firstName} ${data.lastName || target.lastName}` }
+          });
+          if (!error && userData?.user) {
+            target.authId = userData.user.id; // prepare to update authId in prisma
+          }
+        }
+      }
+
       const updated = await prisma.member.update({
         where: { id: memberId },
         data: {
+          ...(target.authId && !target.authId.startsWith("pending") ? { authId: target.authId } : {}),
           ...(data.firstName && { firstName: data.firstName }),
           ...(data.lastName && { lastName: data.lastName }),
           ...(data.phone !== undefined && { phone: data.phone || null }),
@@ -174,7 +228,10 @@ export const adminUpdateMember = async (
           ...(data.avatar !== undefined && { avatar: data.avatar || null }),
           ...(data.coverImage !== undefined && { coverImage: data.coverImage || null }),
           ...(data.socials !== undefined && { socials: data.socials ? JSON.parse(data.socials) : {} }),
-          ...(data.slug !== undefined && { slug: data.slug.trim() })
+          ...(data.slug !== undefined && { slug: data.slug.trim() }),
+          ...(data.githubEmail !== undefined && { githubEmail: data.githubEmail || null }),
+          ...(data.leftClubAt !== undefined && { leftClubAt: data.leftClubAt ? new Date(data.leftClubAt) : null }),
+          ...(data.joinedClubAt !== undefined && { joinedClubAt: data.joinedClubAt ? new Date(data.joinedClubAt) : null })
         }
       });
       revalidateTag(_CACHE_MEMBERS, "default");

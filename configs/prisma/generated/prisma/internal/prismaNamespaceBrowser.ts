@@ -69,6 +69,7 @@ export const ModelName = {
   EventOrganizer: 'EventOrganizer',
   EventTag: 'EventTag',
   EventGallery: 'EventGallery',
+  Activity: 'Activity',
   Sponsor: 'Sponsor',
   EventSponsorship: 'EventSponsorship',
   Achievement: 'Achievement',
@@ -179,6 +180,9 @@ export const MemberScalarFieldEnum = {
   id: 'id',
   authId: 'authId',
   email: 'email',
+  password: 'password',
+  githubId: 'githubId',
+  githubEmail: 'githubEmail',
   firstName: 'firstName',
   lastName: 'lastName',
   avatar: 'avatar',
@@ -204,9 +208,17 @@ export type MemberScalarFieldEnum = (typeof MemberScalarFieldEnum)[keyof typeof 
 
 export const DepartmentScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   slug: 'slug',
-  description: 'description',
+  nameVi: 'nameVi',
+  descriptionVi: 'descriptionVi',
+  missionsVi: 'missionsVi',
+  linkLabelVi: 'linkLabelVi',
+  nameEn: 'nameEn',
+  descriptionEn: 'descriptionEn',
+  missionsEn: 'missionsEn',
+  linkLabelEn: 'linkLabelEn',
+  icon: 'icon',
+  bgImage: 'bgImage',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -306,9 +318,11 @@ export const EventScalarFieldEnum = {
   description: 'description',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   location: 'location',
   maxAttendees: 'maxAttendees',
   status: 'status',
+  type: 'type',
   startAt: 'startAt',
   endAt: 'endAt',
   creatorId: 'creatorId',
@@ -348,6 +362,26 @@ export const EventGalleryScalarFieldEnum = {
 } as const
 
 export type EventGalleryScalarFieldEnum = (typeof EventGalleryScalarFieldEnum)[keyof typeof EventGalleryScalarFieldEnum]
+
+
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  titleVi: 'titleVi',
+  descriptionVi: 'descriptionVi',
+  titleEn: 'titleEn',
+  descriptionEn: 'descriptionEn',
+  hyperlink: 'hyperlink',
+  thumbnail: 'thumbnail',
+  images: 'images',
+  isInternal: 'isInternal',
+  isActive: 'isActive',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
 export const SponsorScalarFieldEnum = {
@@ -391,6 +425,7 @@ export const AchievementScalarFieldEnum = {
   summary: 'summary',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   date: 'date',
   type: 'type',
   isHighlight: 'isHighlight',
@@ -419,6 +454,7 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   content: 'content',
   thumbnail: 'thumbnail',
+  images: 'images',
   githubUrl: 'githubUrl',
   websiteUrl: 'websiteUrl',
   videoUrl: 'videoUrl',

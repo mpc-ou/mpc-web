@@ -3,9 +3,16 @@
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { adminAddMember } from "../actions";
 
@@ -16,6 +23,7 @@ type Props = {
 export function MemberCreateForm({ onClose }: Props) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [randomAvatar, setRandomAvatar] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +33,8 @@ export function MemberCreateForm({ onClose }: Props) {
       email: fd.get("email") as string,
       firstName: fd.get("firstName") as string,
       lastName: fd.get("lastName") as string,
-      webRole: fd.get("webRole") as "MEMBER" | "COLLABORATOR"
+      webRole: fd.get("webRole") as "MEMBER" | "COLLABORATOR",
+      randomAvatar,
     });
     if (res.error) {
       toast({ variant: "destructive", description: res.error?.message });
@@ -37,38 +46,56 @@ export function MemberCreateForm({ onClose }: Props) {
   };
 
   return (
-    <form className='grid gap-4 py-2' onSubmit={handleSubmit}>
-      <div className='grid gap-1.5'>
+    <form className="grid gap-4 py-2" onSubmit={handleSubmit}>
+      <div className="grid gap-1.5">
         <Label>Email Google *</Label>
-        <Input name='email' placeholder='email@gmail.com' required type='email' />
+        <Input
+          name="email"
+          placeholder="email@gmail.com"
+          required
+          type="email"
+        />
       </div>
-      <div className='grid grid-cols-2 gap-3'>
-        <div className='grid gap-1.5'>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="grid gap-1.5">
           <Label>Họ *</Label>
-          <Input name='firstName' required />
+          <Input name="firstName" required />
         </div>
-        <div className='grid gap-1.5'>
+        <div className="grid gap-1.5">
           <Label>Tên *</Label>
-          <Input name='lastName' required />
+          <Input name="lastName" required />
         </div>
       </div>
-      <div className='grid gap-1.5'>
+      <div className="grid gap-1.5">
         <Label>Vai trò</Label>
-        <Select defaultValue='MEMBER' name='webRole'>
+        <Select defaultValue="MEMBER" name="webRole">
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='COLLABORATOR'>Cộng tác viên</SelectItem>
-            <SelectItem value='MEMBER'>Thành viên</SelectItem>
+            <SelectItem value="COLLABORATOR">Cộng tác viên</SelectItem>
+            <SelectItem value="MEMBER">Thành viên</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div className='flex justify-end'>
-        <Button disabled={saving} type='submit'>
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id="randomAvatar"
+          checked={randomAvatar}
+          onCheckedChange={(v) => setRandomAvatar(!!v)}
+        />
+        <Label
+          htmlFor="randomAvatar"
+          className="cursor-pointer font-normal text-sm"
+        >
+          Tạo avatar tự động (DiceBear Avataaars)
+        </Label>
+      </div>
+      <div className="flex justify-end">
+        <Button disabled={saving} type="submit">
           {saving ? (
             <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Đang tạo...
             </>
           ) : (

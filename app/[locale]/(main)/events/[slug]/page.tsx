@@ -1,5 +1,13 @@
-import { CalendarDays, ChevronLeft, MapPin, UserCircle } from "lucide-react";
-import { marked } from "marked";
+import {
+  CalendarDays,
+  ChevronLeft,
+  Globe2,
+  MapPin,
+  Play,
+  Share2,
+  Users,
+  UserCircle,
+} from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getEventBySlug } from "@/app/[locale]/actions/events";
@@ -9,8 +17,9 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { EventJsonLd } from "@/components/seo/json-ld";
 import { Link } from "@/configs/i18n/routing";
-import { sanitizeHtml } from "@/utils/sanitize-html";
+import { MarkdownContent } from "@/components/markdown-content";
 import { generatePageSeo } from "@/utils/seo";
+import { getTranslations } from "next-intl/server";
 import { EventContentClient } from "./client";
 
 export async function generateMetadata({
@@ -53,6 +62,7 @@ export default async function EventDetailPage({
     notFound();
   }
 
+  const t = await getTranslations();
   const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
 
   const statusMap: Record<
@@ -64,19 +74,10 @@ export default async function EventDetailPage({
     COMPLETED: { label: "Đã diễn ra", variant: "outline" },
   };
 
-  const statusInfo = statusMap[event.status] ?? {
+  const statusInfo = statusMap[event.status as keyof typeof statusMap] ?? {
     label: event.status,
     variant: "outline" as const,
   };
-
-  const rawHtml = event.description
-    ? marked.parse(event.description, { gfm: true, breaks: true })
-    : null;
-  const descriptionHtml = rawHtml
-    ? typeof rawHtml === "string"
-      ? rawHtml
-      : await rawHtml
-    : null;
 
   const dateLabel = event.startAt
     ? new Date(event.startAt).toLocaleDateString("vi-VN", {
@@ -143,6 +144,14 @@ export default async function EventDetailPage({
             <Badge className="px-3 py-1" variant={statusInfo.variant}>
               {statusInfo.label}
             </Badge>
+            {event.type && event.type !== "OTHER" && (
+              <Badge
+                className="px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20"
+                variant="secondary"
+              >
+                {t(`events.types.${event.type}` as any) || event.type}
+              </Badge>
+            )}
             {event.tags?.map((t: any) => (
               <Badge className="px-3 py-1" key={t.tag.id} variant="secondary">
                 {t.tag.name}
@@ -176,15 +185,9 @@ export default async function EventDetailPage({
         <Separator className="mb-10" />
 
         {/* ── ARTICLE BODY ── */}
-        {descriptionHtml ? (
+        {event.description ? (
           <ScrollReveal delay={100} variant="fade-up">
-            <article
-              className="prose prose-neutral dark:prose-invert prose-img:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h2:mt-10 prose-h3:mt-8 mb-14 prose-h2:mb-4 prose-h3:mb-3 max-w-none prose-code:rounded prose-img:rounded-2xl prose-pre:rounded-xl prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-pre:bg-muted prose-pre:p-4 prose-code:px-1.5 prose-code:py-0.5 prose-headings:font-bold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline-offset-4 prose-img:shadow-lg"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(descriptionHtml),
-              }}
-            />
+            <MarkdownContent content={event.description} />
           </ScrollReveal>
         ) : null}
 

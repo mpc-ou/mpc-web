@@ -180,13 +180,22 @@
       "submit": "Lưu",
       "firstName": "Họ",
       "lastName": "Tên",
-      "bio": "Giới thiệu"
+      "bio": "Giới thiệu",
+      "linkGithub": "Liên kết GitHub",
+      "linkedGithub": "Hủy liên kết GitHub",
+      "linkingGithub": "Đang xử lý...",
+      "linkGithubDesc": "Liên kết tài khoản GitHub để đăng nhập nhanh hơn.",
+      "linkedGithubDesc": "Tài khoản GitHub của bạn đã được liên kết thành công để đăng nhập."
     }
   },
   "auth": {
     "title": "Đăng nhập",
     "title2": "Bạn là ai đó?",
-    "description": "Đăng nhập vào tài khoản của bạn để tụi mình biết bạn là ai nè! ^^"
+    "description": "Đăng nhập vào tài khoản của bạn để tụi mình biết bạn là ai nè! ^^",
+    "errorPageTitle": "Lỗi xác thực",
+    "error": {
+      "title": "Đăng nhập thất bại"
+    }
   },
   "defaultPage": {
     "error": {
@@ -268,6 +277,13 @@
         "desc": "Sự kiện giao lưu, trình diễn, giới thiệu về CLB cho sinh viên toàn trường do Đoàn trường tổ chức."
       }
     ],
+    "types": {
+      "ACADEMIC": "Cuộc thi học thuật",
+      "MEMBER_ACTIVITY": "Hoạt động thành viên",
+      "VOLUNTEER": "Hoạt động tình nguyện",
+      "SEMINAR": "Hội thảo / Seminar",
+      "OTHER": "Chi tiết - Khác"
+    },
     "learnMore": "Tìm hiểu thêm"
   },
   "webdesign": {
@@ -320,6 +336,24 @@
     "learnMoreBtn": "Tìm hiểu thêm",
     "followUpBtn": "Theo dõi ngay!",
     "exhibitionTitle": "Các dự án tiêu biểu"
+  },
+  "achievements": {
+    "leadership": {
+      "emptyData": "Chưa có dữ liệu thành viên ban điều hành.",
+      "leader": "Lãnh đạo",
+      "termHistory": "> LỊCH SỬ NHIỆM KỲ",
+      "present": "Hiện tại",
+      "viewProfile": "TRUY XUẤT HỒ SƠ",
+      "achievementsCount": "Thành tựu",
+      "projectsCount": "Dự án",
+      "positions": {
+        "PRESIDENT": "Chủ nhiệm CLB",
+        "VICE_PRESIDENT": "Phó chủ nhiệm",
+        "DEPARTMENT_LEADER": "Trưởng ban",
+        "DEPARTMENT_VICE_LEADER": "Phó ban",
+        "ADVISOR": "Cố vấn"
+      }
+    }
   },
   "seo": {
     "home": {

@@ -1,6 +1,7 @@
 import { ArrowRight, CalendarDays, Image as ImageIcon } from "lucide-react";
 import { connection } from "next/server";
 import { getRecentEvents } from "@/app/[locale]/actions/events";
+import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
@@ -9,6 +10,7 @@ import { Link } from "@/configs/i18n/routing";
 export async function RecentEventsSection() {
   await connection(); // opt-out of static prerender
   const { data } = await getRecentEvents(3);
+  const t = await getTranslations();
   // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
   const events = (data?.payload as any)?.events || [];
 
@@ -78,13 +80,21 @@ export async function RecentEventsSection() {
                         <ImageIcon className="h-12 w-12 opacity-50" />
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 flex gap-2">
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-2 pr-3">
                       <Badge
                         className="bg-background/80 shadow-xs backdrop-blur-md"
                         variant={statusInfo.variant}
                       >
                         {statusInfo.label}
                       </Badge>
+                      {event.type && event.type !== "OTHER" && (
+                        <Badge
+                          className="bg-background/80 text-foreground shadow-xs backdrop-blur-md hover:bg-background/90"
+                          variant="secondary"
+                        >
+                          {t(`events.types.${event.type}` as any) || event.type}
+                        </Badge>
+                      )}
                     </div>
                   </div>
 

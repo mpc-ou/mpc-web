@@ -10,7 +10,7 @@ const prismaClientSingleton = () => {
     connectionString,
     max: 2,
     idleTimeoutMillis: 20_000,
-    connectionTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 10_000
   });
 
   pool.on("error", (err) => {

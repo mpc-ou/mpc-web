@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +18,7 @@ const POSITION_LABELS: Record<string, string> = {
 };
 
 import { SOCIAL_COLLECTION } from "@/constants/common";
+import { getFullName } from "@/lib/utils";
 
 const getSocialMeta = (platform: string) => {
   const p = platform.toLowerCase();
@@ -116,7 +117,7 @@ type Member = {
 export function ProfilePageClient({ member }: { member: Member }) {
   const [activeTab, setActiveTab] = useState("about");
   const locale = useLocale();
-  const fullName = `${member.firstName} ${member.lastName}`;
+  const fullName = getFullName(member.firstName, member.lastName, locale);
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
 
@@ -200,8 +201,8 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     </Badge>
                   ) : (
                     <Badge
+                      className="border-primary/50 bg-primary/5 text-primary"
                       variant="outline"
-                      className="border-primary/50 text-primary bg-primary/5"
                     >
                       🎖 Thành viên CLB • {activeYears} năm hoạt động
                     </Badge>
@@ -283,14 +284,14 @@ export function ProfilePageClient({ member }: { member: Member }) {
                 <div className="rounded-xl border bg-card p-6 shadow-sm">
                   <ul className="space-y-4 text-sm">
                     <li className="flex items-start gap-3">
-                      <span className="shrink-0 w-32 font-medium text-muted-foreground">
+                      <span className="w-32 shrink-0 font-medium text-muted-foreground">
                         Họ và Tên
                       </span>
                       <span className="font-semibold">{fullName}</span>
                     </li>
                     {member.studentId && (
                       <li className="flex items-start gap-3">
-                        <span className="shrink-0 w-32 font-medium text-muted-foreground">
+                        <span className="w-32 shrink-0 font-medium text-muted-foreground">
                           Mã sinh viên
                         </span>
                         <span className="font-mono font-semibold">
@@ -303,10 +304,10 @@ export function ProfilePageClient({ member }: { member: Member }) {
                         s.platform.toLowerCase().includes("mail"),
                       )) && (
                       <li className="flex items-start gap-3">
-                        <span className="shrink-0 w-32 font-medium text-muted-foreground">
+                        <span className="w-32 shrink-0 font-medium text-muted-foreground">
                           Email
                         </span>
-                        <span className="font-semibold text-primary truncate max-w-full">
+                        <span className="max-w-full truncate font-semibold text-primary">
                           {member.email ||
                             socials
                               .find((s) =>
@@ -318,7 +319,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     )}
                     {member.phone && (
                       <li className="flex items-start gap-3">
-                        <span className="shrink-0 w-32 font-medium text-muted-foreground">
+                        <span className="w-32 shrink-0 font-medium text-muted-foreground">
                           Số điện thoại
                         </span>
                         <span className="font-semibold">{member.phone}</span>
@@ -326,7 +327,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     )}
                     {(member.joinedClubAt || member.clubRoles.length > 0) && (
                       <li className="flex items-start gap-3">
-                        <span className="shrink-0 w-32 font-medium text-muted-foreground">
+                        <span className="w-32 shrink-0 font-medium text-muted-foreground">
                           Tham gia từ
                         </span>
                         <span className="font-semibold">
@@ -366,13 +367,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
                         )
                         .map(({ achievement, role }) => (
                           <div className="relative" key={achievement.id}>
-                            <div className="absolute top-3 -left-[31px] lg:-left-[39px] h-4 w-4 rounded-full border-2 border-background bg-primary shadow-sm" />
+                            <div className="absolute top-3 -left-[31px] h-4 w-4 rounded-full border-2 border-background bg-primary shadow-sm lg:-left-[39px]" />
 
                             <Link
-                              className="group flex flex-col sm:flex-row overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md"
+                              className="group flex flex-col overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md sm:flex-row"
                               href={`/${locale}/achievements/${achievement.slug}`}
                             >
-                              <div className="relative h-40 sm:h-auto sm:w-48 shrink-0 overflow-hidden bg-muted">
+                              <div className="relative h-40 shrink-0 overflow-hidden bg-muted sm:h-auto sm:w-48">
                                 {achievement.thumbnail ? (
                                   // eslint-disable-next-line @next/next/no-img-element
                                   <img
@@ -389,7 +390,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                 )}
                               </div>
                               <div className="flex flex-1 flex-col p-4 sm:p-5">
-                                <div className="mb-2 flex items-center justify-between gap-2 flex-wrap">
+                                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                                   <div className="flex items-center gap-2">
                                     <Badge
                                       className="text-[10px]"
@@ -398,12 +399,12 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                       {achievement.type}
                                     </Badge>
                                     {achievement.isHighlight && (
-                                      <Badge className="bg-yellow-500 text-black shadow hover:bg-yellow-400 text-[10px]">
+                                      <Badge className="bg-yellow-500 text-[10px] text-black shadow hover:bg-yellow-400">
                                         ⭐ Nổi bật
                                       </Badge>
                                     )}
                                   </div>
-                                  <span className="text-muted-foreground text-xs whitespace-nowrap">
+                                  <span className="whitespace-nowrap text-muted-foreground text-xs">
                                     {new Date(
                                       achievement.date,
                                     ).toLocaleDateString("vi-VN")}
@@ -414,7 +415,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                 </h4>
                                 {role && (
                                   <div className="mt-auto pt-2">
-                                    <span className="rounded bg-primary/10 px-2 py-1 font-semibold text-primary text-[11px] uppercase">
+                                    <span className="rounded bg-primary/10 px-2 py-1 font-semibold text-[11px] text-primary uppercase">
                                       Vai trò: {role}
                                     </span>
                                   </div>

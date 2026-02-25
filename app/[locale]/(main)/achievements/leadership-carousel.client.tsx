@@ -8,10 +8,11 @@ import {
   Trophy,
 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
-import { useTranslations } from "next-intl";
+import { getFullName } from "@/lib/utils";
 
 type Role = {
   id: string;
@@ -40,6 +41,7 @@ type Leader = {
 
 export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
   const t = useTranslations("achievements");
+  const locale = useLocale();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -104,7 +106,11 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
           key={leader.member.id}
         >
           <Image
-            alt={`${leader.member.lastName} ${leader.member.firstName}`}
+            alt={getFullName(
+              leader.member.firstName,
+              leader.member.lastName,
+              locale,
+            )}
             className="object-cover"
             fill
             priority={index === 0}
@@ -124,9 +130,9 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
             key={`content-${activeLeader.member.id}`}
           >
             {/* Header / Name and Avatar */}
-            <div className="mb-6 flex flex-col-reverse md:flex-row md:items-end md:justify-between gap-6">
+            <div className="mb-6 flex flex-col-reverse gap-6 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="flex items-end gap-6 uppercase tracking-widest text-[#FFF700] mb-2 font-mono text-xs font-bold">
+                <div className="mb-2 flex items-end gap-6 font-bold font-mono text-[#FFF700] text-xs uppercase tracking-widest">
                   <span>[ REC ]</span>
                   <span className="opacity-80">
                     {activeLeader.roles[0]?.position
@@ -143,11 +149,13 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
                   className="text-balance font-bold text-4xl text-white tracking-tight sm:text-5xl lg:text-6xl"
                   style={{ textShadow: "0px 2px 8px rgba(0,0,0,0.8)" }}
                 >
-                  {activeLeader.member.firstName}{" "}
-                  <br className="hidden md:block" />
-                  {activeLeader.member.lastName}
+                  {getFullName(
+                    activeLeader.member.firstName,
+                    activeLeader.member.lastName,
+                    locale,
+                  )}
                 </h2>
-                <div className="mt-4 flex flex-wrap gap-4 text-sm font-medium">
+                <div className="mt-4 flex flex-wrap gap-4 font-medium text-sm">
                   <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-white backdrop-blur-sm">
                     <Trophy className="h-4 w-4 text-yellow-400" />
                     <span>
@@ -168,16 +176,16 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
               </div>
 
               {/* Active Avatar */}
-              <div className="shrink-0 mb-2 md:mb-0">
+              <div className="mb-2 shrink-0 md:mb-0">
                 {activeLeader.member.avatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     alt={activeLeader.member.firstName}
-                    className="h-20 w-20 md:h-56 md:w-56 rounded-full border-2 border-primary object-cover shadow-xl"
+                    className="h-20 w-20 rounded-full border-2 border-primary object-cover shadow-xl md:h-56 md:w-56"
                     src={activeLeader.member.avatar}
                   />
                 ) : (
-                  <div className="flex h-20 w-20 md:h-56 md:w-56 items-center justify-center rounded-full border-2 border-primary bg-muted font-bold text-2xl md:text-4xl text-foreground shadow-xl">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-muted font-bold text-2xl text-foreground shadow-xl md:h-56 md:w-56 md:text-4xl">
                     {activeLeader.member.firstName[0]}
                   </div>
                 )}
@@ -189,7 +197,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
 
             {/* Timeline / Terms */}
             <div className="max-w-xl text-white/90">
-              <h3 className="mb-4 font-mono text-sm uppercase tracking-widest text-white/70">
+              <h3 className="mb-4 font-mono text-sm text-white/70 uppercase tracking-widest">
                 {t("leadership.termHistory")}
               </h3>
 
@@ -205,14 +213,14 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
                       className="flex items-start gap-4 border-white/20 border-l pl-4"
                       key={role.id}
                     >
-                      <div className="-ml-[21px] mt-1.5 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-black" />
+                      <div className="mt-1.5 -ml-[21px] h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-black" />
                       <div>
                         <div className="font-bold text-base text-white">
                           {(t as any)(
                             `leadership.positions.${role.position}`,
                           ) || role.position}
                         </div>
-                        <div className="font-mono text-xs text-white/70 tracking-tight">
+                        <div className="font-mono text-white/70 text-xs tracking-tight">
                           {role.departmentName
                             ? `${role.departmentName} // `
                             : ""}
@@ -229,7 +237,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
             <div className="mt-8">
               <Button
                 asChild
-                className="rounded-none border-primary bg-primary/10 px-8 py-6 text-primary hover:bg-primary hover:text-primary-foreground font-mono transition-all duration-300 backdrop-blur-sm"
+                className="rounded-none border-primary bg-primary/10 px-8 py-6 font-mono text-primary backdrop-blur-sm transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
                 variant="outline"
               >
                 <Link href={`/members/${activeLeader.member.slug}`}>
@@ -245,7 +253,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
         {leaders.length > 1 && (
           <div className="mt-8 flex w-full items-center gap-4">
             <Button
-              className="hidden md:flex h-10 w-10 shrink-0 rounded-full border border-white/20 bg-black/50 text-white/70 hover:bg-white/20 hover:text-white"
+              className="hidden h-10 w-10 shrink-0 rounded-full border border-white/20 bg-black/50 text-white/70 hover:bg-white/20 hover:text-white md:flex"
               onClick={prev}
               size="icon"
               variant="outline"
@@ -254,18 +262,18 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
             </Button>
 
             <div
-              ref={scrollContainerRef}
-              className="flex w-full min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-4 scrollbar-hide md:pb-0 touch-pan-x"
+              className="scrollbar-hide flex w-full min-w-0 flex-1 touch-pan-x items-center gap-3 overflow-x-auto pb-4 md:pb-0"
               onWheel={(e) => {
                 e.currentTarget.scrollLeft += e.deltaY;
               }}
+              ref={scrollContainerRef}
             >
               {leaders.map((leader, i) => {
                 const isActive = i === currentIndex;
                 return (
                   <button
                     aria-label={`Select ${leader.member.firstName}`}
-                    className={`relative shrink-0 flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-300 sm:h-14 sm:w-14 ${
+                    className={`relative flex h-18 w-18 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-300 sm:h-14 sm:w-14 ${
                       isActive
                         ? "scale-100 border-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]"
                         : "scale-90 border-white/20 opacity-50 hover:scale-100 hover:opacity-100"
@@ -291,7 +299,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
             </div>
 
             <Button
-              className="hidden md:flex h-10 w-10 shrink-0 rounded-full border border-white/20 bg-black/50 text-white/70 hover:bg-white/20 hover:text-white"
+              className="hidden h-10 w-10 shrink-0 rounded-full border border-white/20 bg-black/50 text-white/70 hover:bg-white/20 hover:text-white md:flex"
               onClick={next}
               size="icon"
               variant="outline"

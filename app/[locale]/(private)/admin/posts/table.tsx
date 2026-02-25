@@ -7,9 +7,16 @@ import { AdminViewDialog } from "@/components/custom/admin-view-dialog";
 import { DataTable } from "@/components/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
+import { getFullName } from "@/lib/utils";
 import { adminDeletePost } from "../actions";
 import { createColumns, type PostRow } from "./columns";
 import { PostFormDialog } from "./form-dialog";
@@ -40,14 +47,14 @@ export function PostsDataTable({ data }: { data: PostRow[] }) {
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa bài viết?",
-      description: "Hành động này không thể hoàn tác."
+      description: "Hành động này không thể hoàn tác.",
     });
     if (!ok) {
       return;
     }
     await handleErrorClient({
       cb: () => adminDeletePost(id),
-      onSuccess: () => router.refresh()
+      onSuccess: () => router.refresh(),
     });
   };
   const handleCreate = () => {
@@ -56,7 +63,7 @@ export function PostsDataTable({ data }: { data: PostRow[] }) {
   };
   const columns = useMemo(
     () => createColumns(handleEdit, handleDelete, handleView),
-    [handleDelete, handleEdit, handleView]
+    [handleDelete, handleEdit, handleView],
   );
 
   return (
@@ -66,27 +73,27 @@ export function PostsDataTable({ data }: { data: PostRow[] }) {
         columns={columns}
         data={filteredData}
         filterComponent={
-          <div className='flex items-center gap-2'>
+          <div className="flex items-center gap-2">
             <Select onValueChange={setStatusFilter} value={statusFilter}>
-              <SelectTrigger className='h-8 w-40'>
-                <SelectValue placeholder='Lọc trạng thái' />
+              <SelectTrigger className="h-8 w-40">
+                <SelectValue placeholder="Lọc trạng thái" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='ALL'>Tất cả</SelectItem>
-                <SelectItem value='DRAFT'>Nháp</SelectItem>
-                <SelectItem value='PENDING_REVIEW'>Chờ duyệt</SelectItem>
-                <SelectItem value='PUBLISHED'>Đã xuất bản</SelectItem>
-                <SelectItem value='ARCHIVED'>Lưu trữ</SelectItem>
+                <SelectItem value="ALL">Tất cả</SelectItem>
+                <SelectItem value="DRAFT">Nháp</SelectItem>
+                <SelectItem value="PENDING_REVIEW">Chờ duyệt</SelectItem>
+                <SelectItem value="PUBLISHED">Đã xuất bản</SelectItem>
+                <SelectItem value="ARCHIVED">Lưu trữ</SelectItem>
               </SelectContent>
             </Select>
-            <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
-              <Plus className='mr-2 h-4 w-4' />
+            <Button className="ml-auto h-8" onClick={handleCreate} size="sm">
+              <Plus className="mr-2 h-4 w-4" />
               Tạo bài viết
             </Button>
           </div>
         }
-        searchKey='title'
-        searchPlaceholder='Tìm theo tiêu đề...'
+        searchKey="title"
+        searchPlaceholder="Tìm theo tiêu đề..."
       />
 
       <AdminViewDialog
@@ -98,21 +105,29 @@ export function PostsDataTable({ data }: { data: PostRow[] }) {
                 { label: "Chuyên mục", value: viewPost.category?.name || "—" },
                 {
                   label: "Tác giả",
-                  value: viewPost.author ? `${viewPost.author.firstName} ${viewPost.author.lastName}` : "—"
+                  value: viewPost.author
+                    ? getFullName(
+                        viewPost.author.firstName,
+                        viewPost.author.lastName,
+                        "vi",
+                      )
+                    : "—",
                 },
                 {
                   label: "Trạng thái",
-                  value: <Badge variant='outline'>{viewPost.status}</Badge>
+                  value: <Badge variant="outline">{viewPost.status}</Badge>,
                 },
                 {
                   label: "Ngày tạo",
-                  value: new Date(viewPost.createdAt).toLocaleString("vi-VN")
+                  value: new Date(viewPost.createdAt).toLocaleString("vi-VN"),
                 },
                 {
                   label: "Ngày xuất bản",
-                  value: viewPost.publishedAt ? new Date(viewPost.publishedAt).toLocaleString("vi-VN") : "—"
+                  value: viewPost.publishedAt
+                    ? new Date(viewPost.publishedAt).toLocaleString("vi-VN")
+                    : "—",
                 },
-                { label: "Tóm tắt", value: viewPost.summary, colSpan: 2 }
+                { label: "Tóm tắt", value: viewPost.summary, colSpan: 2 },
               ]
             : []
         }
@@ -134,7 +149,7 @@ export function PostsDataTable({ data }: { data: PostRow[] }) {
           }
         }}
         open={!!viewPost}
-        title='Thông tin bài viết'
+        title="Thông tin bài viết"
       />
 
       <PostFormDialog

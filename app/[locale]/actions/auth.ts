@@ -12,7 +12,9 @@ export const signInWithPassword = async ({ email, password }: { email: string; p
         email,
         password
       });
-      if (error) throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
       return data;
     }
   });
@@ -22,7 +24,9 @@ export const updatePassword = async (password: string) =>
     cb: async () => {
       const supabase = await createClientSsr();
       const { data, error } = await supabase.auth.updateUser({ password });
-      if (error) throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
       return data;
     }
   });
@@ -35,7 +39,9 @@ export const signInWithOAuth = async (provider: Provider, redirectTo: string) =>
         provider,
         options: { redirectTo }
       });
-      if (error) throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
       return data;
     }
   });
@@ -48,7 +54,9 @@ export const linkGithubIdentity = async (redirectTo: string) =>
         provider: "github",
         options: { redirectTo }
       });
-      if (error) throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
       return data;
     }
   });
@@ -57,13 +65,19 @@ export const unlinkGithubIdentity = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const supabase = await createClientSsr();
-      if (!user) throw new Error("Unauthorized");
-      
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+
       const githubIdentity = user.identities?.find((id) => id.provider === "github");
-      if (!githubIdentity) throw new Error("GitHub identity not found");
+      if (!githubIdentity) {
+        throw new Error("GitHub identity not found");
+      }
 
       const { data, error } = await supabase.auth.unlinkIdentity(githubIdentity);
-      if (error) throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
       return data;
     }
   });

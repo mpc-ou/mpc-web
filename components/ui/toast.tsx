@@ -16,7 +16,7 @@ const ToastViewport = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Viewport
     className={cn(
-      "fixed bottom-4 right-4 z-[100] flex max-h-screen w-full max-w-[400px] flex-col gap-2 p-0",
+      "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px] gap-2",
       className,
     )}
     ref={ref}
@@ -29,8 +29,8 @@ const toastVariants = cva(
   [
     "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-xl border p-4 shadow-lg",
     "transition-all duration-300 ease-in-out",
-    "data-[state=open]:animate-in data-[state=open]:slide-in-from-right-full data-[state=open]:fade-in-0",
-    "data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right-full data-[state=closed]:fade-out-80",
+    "data-[state=open]:animate-in data-[state=open]:slide-in-from-top-full sm:data-[state=open]:slide-in-from-bottom-full data-[state=open]:fade-in-0",
+    "data-[state=closed]:animate-out data-[state=closed]:slide-out-to-top-full sm:data-[state=closed]:slide-out-to-right-full data-[state=closed]:fade-out-80",
     "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]",
     "data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
   ].join(" "),

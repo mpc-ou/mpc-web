@@ -4,18 +4,13 @@ import { MembersDataTable } from "./table";
 import type { Department } from "./types";
 
 export default async function AdminMembersPage() {
-  const [membersRes, depsRes] = await Promise.all([
-    adminGetMembers(),
-    adminGetDepartments(),
-  ]);
+  const [membersRes, depsRes] = await Promise.all([adminGetMembers(), adminGetDepartments()]);
   const members = (membersRes.data?.payload ?? []) as MemberRow[];
   const departments = (depsRes.data?.payload ?? []) as Department[];
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="font-bold text-2xl text-foreground">
-        👥 Quản lý Thành viên
-      </h1>
+    <div className='flex flex-col gap-6'>
+      <h1 className='font-bold text-2xl text-foreground'>👥 Quản lý Thành viên</h1>
       <MembersDataTable data={members} departments={departments} />
     </div>
   );

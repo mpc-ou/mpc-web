@@ -17,7 +17,7 @@ const STATIC_ROUTES = [
   "/sponsors",
   "/training",
   "/activities",
-  "/activities/webdesign",
+  "/activities/webdesign"
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -31,10 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: route === "" ? "weekly" : "monthly",
       priority: route === "" ? 1.0 : 0.8,
       alternates: {
-        languages: Object.fromEntries(
-          _LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${route}`]),
-        ),
-      },
+        languages: Object.fromEntries(_LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${route}`]))
+      }
     });
   }
 
@@ -43,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const events = await prisma.event.findMany({
       where: { status: { in: ["UPCOMING", "ONGOING", "COMPLETED"] } },
       select: { slug: true, updatedAt: true },
-      orderBy: { startAt: "desc" },
+      orderBy: { startAt: "desc" }
     });
 
     for (const event of events) {
@@ -54,12 +52,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
         alternates: {
           languages: Object.fromEntries(
-            _LOCALES.map((locale) => [
-              locale,
-              `${SITE_URL}/${locale}/events/${event.slug}`,
-            ]),
-          ),
-        },
+            _LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}/events/${event.slug}`])
+          )
+        }
       });
     }
   } catch {
@@ -71,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const projects = await prisma.project.findMany({
       where: { isActive: true },
       select: { slug: true, updatedAt: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "desc" }
     });
 
     for (const project of projects) {
@@ -82,12 +77,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
         alternates: {
           languages: Object.fromEntries(
-            _LOCALES.map((locale) => [
-              locale,
-              `${SITE_URL}/${locale}/projects/${project.slug}`,
-            ]),
-          ),
-        },
+            _LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}/projects/${project.slug}`])
+          )
+        }
       });
     }
   } catch {
@@ -98,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const members = await prisma.member.findMany({
       where: { isActive: true, webRole: { not: "GUEST" } },
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true }
     });
 
     for (const member of members) {
@@ -109,12 +101,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
         alternates: {
           languages: Object.fromEntries(
-            _LOCALES.map((locale) => [
-              locale,
-              `${SITE_URL}/${locale}/members/${member.slug}`,
-            ]),
-          ),
-        },
+            _LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}/members/${member.slug}`])
+          )
+        }
       });
     }
   } catch {

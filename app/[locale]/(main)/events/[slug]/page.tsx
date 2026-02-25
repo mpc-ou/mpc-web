@@ -5,23 +5,24 @@ import {
   MapPin,
   Play,
   Share2,
-  Users,
   UserCircle,
+  Users,
 } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getEventBySlug } from "@/app/[locale]/actions/events";
+import { MarkdownContent } from "@/components/markdown-content";
+import { EventJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
-import { EventJsonLd } from "@/components/seo/json-ld";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { MarkdownContent } from "@/components/markdown-content";
 import { generatePageSeo } from "@/utils/seo";
-import { getTranslations } from "next-intl/server";
-import { EventContentClient } from "./client";
 import { GalleryCarousel } from "../../gallery-carousel.client";
+import { EventContentClient } from "./client";
+import { getFullName } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -163,7 +164,7 @@ export default async function EventDetailPage({
             </Badge>
             {event.type && event.type !== "OTHER" && (
               <Badge
-                className="px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20"
+                className="bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20"
                 variant="secondary"
               >
                 {t(`events.types.${event.type}` as any) || event.type}
@@ -233,7 +234,11 @@ export default async function EventDetailPage({
                     {org.member.avatar ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        alt={`${org.member.firstName} ${org.member.lastName}`}
+                        alt={getFullName(
+                          org.member.firstName,
+                          org.member.lastName,
+                          locale,
+                        )}
                         className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border"
                         src={org.member.avatar}
                       />
@@ -244,7 +249,11 @@ export default async function EventDetailPage({
                     )}
                     <div className="min-w-0">
                       <p className="truncate font-medium text-sm">
-                        {org.member.firstName} {org.member.lastName}
+                        {getFullName(
+                          org.member.firstName,
+                          org.member.lastName,
+                          locale,
+                        )}
                       </p>
                       {org.role && (
                         <p className="truncate text-muted-foreground text-xs">

@@ -21,8 +21,10 @@ export async function generateMetadata({
 
 export default async function AchievementsPage({
   searchParams,
+  locale,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  locale: string;
 }) {
   const sp = await searchParams;
   const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
@@ -63,7 +65,7 @@ export default async function AchievementsPage({
         <LeadershipCarouselClient leaders={leaders} />
       </div>
 
-      <div className="container mt-20 mx-auto max-w-6xl px-4">
+      <div className="container mx-auto mt-20 max-w-6xl px-4">
         {/* 2. Bảng vàng thành tích */}
         <div className="mb-8 text-center">
           <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
@@ -75,6 +77,7 @@ export default async function AchievementsPage({
           achievements={achievements}
           currentPage={validPage}
           totalPages={totalPages}
+          locale={locale}
         />
       </div>
     </div>

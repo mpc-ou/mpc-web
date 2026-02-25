@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import {
-  OG_IMAGE,
-  SITE_NAME,
-  SITE_URL,
-} from "@/constants/seo";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/constants/seo";
 
 type PageSeoOptions = {
   /** Translation key under "seo" namespace, e.g. "home", "events", "about" */
@@ -38,7 +34,7 @@ export async function generatePageSeo({
   description: descOverride,
   image,
   type = "website",
-  keywords,
+  keywords
 }: PageSeoOptions): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "seo" });
 
@@ -62,22 +58,22 @@ export async function generatePageSeo({
       images: [
         {
           url: ogImage,
-          alt: title,
-        },
-      ],
+          alt: title
+        }
+      ]
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${SITE_NAME}`,
       description,
-      images: [ogImage],
+      images: [ogImage]
     },
     alternates: {
       canonical: url,
       languages: {
         vi: `${SITE_URL}/vi${pathname}`,
-        en: `${SITE_URL}/en${pathname}`,
-      },
-    },
+        en: `${SITE_URL}/en${pathname}`
+      }
+    }
   };
 }

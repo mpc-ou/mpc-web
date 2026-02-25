@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { getFullName } from "@/lib/utils";
 import { adminUpdateMember } from "../actions";
 import type { MemberRow } from "./columns";
 
@@ -83,7 +84,7 @@ export function MemberViewDialog({
           </Avatar>
           <div className="flex flex-col gap-1">
             <DialogTitle className="text-left text-2xl">
-              {member.firstName} {member.lastName}
+              {getFullName(member.firstName, member.lastName, "vi")}
             </DialogTitle>
             <div className="flex items-center gap-2 text-muted-foreground">
               <span className="flex items-center gap-1 text-sm">

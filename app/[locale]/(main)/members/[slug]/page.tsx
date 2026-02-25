@@ -4,6 +4,7 @@ import { createClientSsr } from "@/configs/supabase/server";
 import { generatePageSeo } from "@/utils/seo";
 import { getMemberBySlug, getMemberSlugByAuthId } from "./actions";
 import { ProfilePageClient } from "./profile-client";
+import { getFullName } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return generatePageSeo({
     page: "memberDetail",
-    title: `${member.firstName} ${member.lastName}`,
+    title: getFullName(member.firstName, member.lastName, locale),
     description: member.bio || undefined,
     locale: locale || "vi",
     pathname: `/members/${slug}`,

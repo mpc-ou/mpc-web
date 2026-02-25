@@ -58,7 +58,7 @@ export function MemberCreateForm({ onClose }: Props) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="grid gap-1.5">
-          <Label>Họ *</Label>
+          <Label>Họ và tên đệm*</Label>
           <Input name="firstName" required />
         </div>
         <div className="grid gap-1.5">
@@ -80,13 +80,13 @@ export function MemberCreateForm({ onClose }: Props) {
       </div>
       <div className="flex items-center gap-2">
         <Checkbox
-          id="randomAvatar"
           checked={randomAvatar}
+          id="randomAvatar"
           onCheckedChange={(v) => setRandomAvatar(!!v)}
         />
         <Label
-          htmlFor="randomAvatar"
           className="cursor-pointer font-normal text-sm"
+          htmlFor="randomAvatar"
         >
           Tạo avatar tự động (DiceBear Avataaars)
         </Label>

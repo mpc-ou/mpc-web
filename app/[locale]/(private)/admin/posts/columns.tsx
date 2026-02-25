@@ -10,8 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getFullName } from "@/lib/utils";
 
 export type PostRow = {
   id: string;
@@ -37,31 +38,40 @@ const statusBadge: Record<
   PENDING_REVIEW: { label: "Chờ duyệt", variant: "secondary" },
   PUBLISHED: { label: "Đã xuất bản", variant: "default" },
   ARCHIVED: { label: "Lưu trữ", variant: "outline" },
-  REJECTED: { label: "Từ chối", variant: "destructive" }
+  REJECTED: { label: "Từ chối", variant: "destructive" },
 };
 
 export const createColumns = (
   onEdit: (post: PostRow) => void,
   onDelete: (id: string) => void,
-  onView: (post: PostRow) => void
+  onView: (post: PostRow) => void,
 ): ColumnDef<PostRow>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+      <Button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        variant="ghost"
+      >
         Tiêu đề
-        <ArrowUpDown className='ml-2 h-4 w-4' />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
       <div
-        className='-m-1 cursor-pointer rounded-md p-1 transition-colors hover:bg-muted/50'
+        className="-m-1 cursor-pointer rounded-md p-1 transition-colors hover:bg-muted/50"
         onClick={() => onView(row.original)}
       >
-        <div className='max-w-[300px] truncate font-medium text-primary hover:underline'>{row.original.title}</div>
-        {row.original.category && <div className='text-muted-foreground text-xs'>{row.original.category.name}</div>}
+        <div className="max-w-[300px] truncate font-medium text-primary hover:underline">
+          {row.original.title}
+        </div>
+        {row.original.category && (
+          <div className="text-muted-foreground text-xs">
+            {row.original.category.name}
+          </div>
+        )}
       </div>
-    )
+    ),
   },
   {
     id: "author",
@@ -69,13 +79,13 @@ export const createColumns = (
     cell: ({ row }) => {
       const a = row.original.author;
       return a ? (
-        <span className='text-sm'>
-          {a.firstName} {a.lastName}
+        <span className="text-sm">
+          {getFullName(a.firstName, a.lastName, "vi")}
         </span>
       ) : (
-        <span className='text-muted-foreground'>—</span>
+        <span className="text-muted-foreground">—</span>
       );
-    }
+    },
   },
   {
     accessorKey: "status",
@@ -85,17 +95,21 @@ export const createColumns = (
       const info = statusBadge[s] ?? { label: s, variant: "outline" as const };
       return <Badge variant={info.variant}>{info.label}</Badge>;
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id))
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
   },
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+      <Button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        variant="ghost"
+      >
         Ngày tạo
-        <ArrowUpDown className='ml-2 h-4 w-4' />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleDateString("vi-VN")
+    cell: ({ row }) =>
+      new Date(row.getValue("createdAt")).toLocaleDateString("vi-VN"),
   },
   {
     id: "actions",
@@ -104,20 +118,25 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
+            <Button className="h-8 w-8 p-0" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(post)}>Chỉnh sửa</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(post)}>
+              Chỉnh sửa
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(post.id)}>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => onDelete(post.id)}
+            >
               Xóa bài viết
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    }
-  }
+    },
+  },
 ];

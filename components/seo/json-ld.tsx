@@ -10,11 +10,7 @@ export function OrganizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
-    alternateName: [
-      "MPC",
-      "Mobile Programming Club",
-      "Câu lạc bộ Lập trình trên Thiết bị Di động",
-    ],
+    alternateName: ["MPC", "Mobile Programming Club", "Câu lạc bộ Lập trình trên Thiết bị Di động"],
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.png`,
     description: SITE_DESCRIPTION_VI,
@@ -23,16 +19,16 @@ export function OrganizationJsonLd() {
       "@type": "EducationalOrganization",
       name: "Trường Đại học Mở TP.HCM",
       alternateName: "HCMOU",
-      url: "https://ou.edu.vn",
+      url: "https://ou.edu.vn"
     },
-    sameAs: ["https://www.facebook.com/mpc.ou"],
+    sameAs: ["https://www.facebook.com/mpc.ou"]
   };
 
   return (
     <script
       // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      type="application/ld+json"
+      type='application/ld+json'
     />
   );
 }
@@ -47,14 +43,14 @@ export function WebSiteJsonLd() {
     "@type": "WebSite",
     name: SITE_NAME,
     url: SITE_URL,
-    inLanguage: ["vi", "en"],
+    inLanguage: ["vi", "en"]
   };
 
   return (
     <script
       // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      type="application/ld+json"
+      type='application/ld+json'
     />
   );
 }
@@ -73,15 +69,7 @@ type EventJsonLdProps = {
  * JSON-LD Event structured data for event detail pages.
  * @see https://schema.org/Event
  */
-export function EventJsonLd({
-  name,
-  description,
-  startDate,
-  endDate,
-  location,
-  image,
-  url,
-}: EventJsonLdProps) {
+export function EventJsonLd({ name, description, startDate, endDate, location, image, url }: EventJsonLdProps) {
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -92,8 +80,8 @@ export function EventJsonLd({
     organizer: {
       "@type": "Organization",
       name: SITE_NAME,
-      url: SITE_URL,
-    },
+      url: SITE_URL
+    }
   };
 
   if (endDate) {
@@ -102,7 +90,7 @@ export function EventJsonLd({
   if (location) {
     jsonLd.location = {
       "@type": "Place",
-      name: location,
+      name: location
     };
   }
   if (image) {
@@ -113,7 +101,7 @@ export function EventJsonLd({
     <script
       // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      type="application/ld+json"
+      type='application/ld+json'
     />
   );
 }

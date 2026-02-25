@@ -3,6 +3,10 @@
 import { ImagePlus, Loader2, Upload, UserCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import {
+  ImageCropperModal,
+  readFileAsDataURL,
+} from "@/components/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +21,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/utils/supabase-upload";
-import {
-  ImageCropperModal,
-  readFileAsDataURL,
-} from "@/components/image-cropper";
 import { adminUpdateMember } from "../actions";
 import type { MemberRow } from "./columns";
 
@@ -306,8 +306,8 @@ export function MemberProfileTab({ member, onClose }: Props) {
               defaultValue={""}
               id="password"
               name="password"
-              type="password"
               placeholder="Bỏ trống nếu không đổi"
+              type="password"
             />
           </div>
           <div className="grid gap-1.5">
@@ -316,27 +316,27 @@ export function MemberProfileTab({ member, onClose }: Props) {
               defaultValue={member?.githubEmail ?? ""}
               id="githubEmail"
               name="githubEmail"
-              type="email"
               placeholder="github@example.com"
+              type="email"
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="grid gap-1.5">
-            <Label htmlFor="firstName">Họ *</Label>
-            <Input
-              defaultValue={member?.firstName ?? ""}
-              id="firstName"
-              name="firstName"
-              required
-            />
-          </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="lastName">Tên *</Label>
+            <Label htmlFor="lastName">Họ và tên đệm *</Label>
             <Input
               defaultValue={member?.lastName ?? ""}
               id="lastName"
               name="lastName"
+              required
+            />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="firstName">Tên *</Label>
+            <Input
+              defaultValue={member?.firstName ?? ""}
+              id="firstName"
+              name="firstName"
               required
             />
           </div>
@@ -488,11 +488,11 @@ export function MemberProfileTab({ member, onClose }: Props) {
       </div>
 
       <ImageCropperModal
-        isOpen={isAvatarCropOpen}
-        onOpenChange={setIsAvatarCropOpen}
-        imageSrc={avatarCropSrc}
-        onConfirm={handleAvatarCropConfirm}
         aspect={1}
+        imageSrc={avatarCropSrc}
+        isOpen={isAvatarCropOpen}
+        onConfirm={handleAvatarCropConfirm}
+        onOpenChange={setIsAvatarCropOpen}
       />
     </div>
   );

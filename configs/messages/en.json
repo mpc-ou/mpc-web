@@ -187,6 +187,22 @@
       "linkingGithub": "Processing...",
       "linkGithubDesc": "Link your GitHub account for faster login.",
       "linkedGithubDesc": "Your GitHub account is successfully linked for login."
+    },
+    "memberCard": {
+      "title": "My Card",
+      "downloadFront": "Download Front",
+      "downloadBack": "Download Back",
+      "front": "Front",
+      "back": "Back",
+      "orientation": "Vertical",
+      "clubName": "Mobile Programing Club",
+      "cardTitle": "Member Card",
+      "faculty": "Faculty",
+      "IT": "Information Technology",
+      "unknownRole": "Member",
+      "studentId": "Student ID",
+      "joinedYear": "Joined Year",
+      "notAuthorized": "You must be a club member to view this card."
     }
   },
   "auth": {

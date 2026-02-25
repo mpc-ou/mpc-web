@@ -230,7 +230,10 @@ export function AboutClient({
               Những thành viên nhiều thành tựu nhất
             </h2>
           </ScrollReveal>
-          <TopMembersCarouselClient members={serializedTopMembers} />
+          <TopMembersCarouselClient
+            members={serializedTopMembers}
+            locale={locale}
+          />
         </div>
       </section>
 

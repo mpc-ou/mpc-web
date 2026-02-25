@@ -10,10 +10,7 @@ interface MarkdownContentProps {
   className?: string;
 }
 
-export function MarkdownContent({
-  content,
-  className = "",
-}: MarkdownContentProps) {
+export function MarkdownContent({ content, className = "" }: MarkdownContentProps) {
   const htmlContent = useMemo(() => {
     if (!content) {
       return "";
@@ -34,7 +31,7 @@ export function MarkdownContent({
       const images = containerRef.current.querySelectorAll("img");
       const zoom = mediumZoom(images, {
         margin: 24,
-        background: "rgba(0,0,0,0.85)",
+        background: "rgba(0,0,0,0.85)"
       });
 
       return () => {

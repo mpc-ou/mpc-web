@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getFullName } from "@/lib/utils";
 
 export type EventRow = {
   id: string;
@@ -74,8 +75,8 @@ export const createColumns = (
           <div className="flex items-center gap-2 font-medium text-primary hover:underline">
             <span className="line-clamp-1">{e.title}</span>
             <Badge
+              className="shrink-0 px-1.5 py-0 font-normal text-[10px] sm:text-xs"
               variant="secondary"
-              className="px-1.5 py-0 text-[10px] sm:text-xs shrink-0 font-normal"
             >
               {typeBadge[e.type] ?? "Khác"}
             </Badge>
@@ -132,7 +133,7 @@ export const createColumns = (
       const c = row.original.creator;
       return c ? (
         <span className="text-sm">
-          {c.firstName} {c.lastName}
+          {getFullName(c.firstName, c.lastName, "vi")}
         </span>
       ) : (
         <span className="text-muted-foreground">—</span>

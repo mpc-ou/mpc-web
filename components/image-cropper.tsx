@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import Cropper, { type Point, type Area } from "react-easy-crop";
+import { useCallback, useState } from "react";
+import Cropper, { type Area, type Point } from "react-easy-crop";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 
 // Utility to convert a File into a preview URL
@@ -23,10 +23,7 @@ export function readFileAsDataURL(file: File): Promise<string> {
 }
 
 // Utility to create a cropped image HTMLCanvasElement
-export async function getCroppedImg(
-  imageSrc: string,
-  pixelCrop: Area,
-): Promise<Blob> {
+export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<Blob> {
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -56,7 +53,7 @@ export async function getCroppedImg(
     0,
     0,
     pixelCrop.width,
-    pixelCrop.height,
+    pixelCrop.height
   );
 
   return new Promise((resolve, reject) => {
@@ -69,7 +66,7 @@ export async function getCroppedImg(
         resolve(blob);
       },
       "image/jpeg",
-      0.9,
+      0.9
     );
   });
 }
@@ -82,26 +79,19 @@ interface ImageCropperModalProps {
   aspect?: number;
 }
 
-export function ImageCropperModal({
-  isOpen,
-  onOpenChange,
-  imageSrc,
-  onConfirm,
-  aspect = 1,
-}: ImageCropperModalProps) {
+export function ImageCropperModal({ isOpen, onOpenChange, imageSrc, onConfirm, aspect = 1 }: ImageCropperModalProps) {
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-  const onCropComplete = useCallback(
-    (croppedArea: Area, croppedAreaPixels: Area) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    [],
-  );
+  const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
 
   const handleConfirm = async () => {
-    if (!croppedAreaPixels) return;
+    if (!croppedAreaPixels) {
+      return;
+    }
     try {
       const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
       onConfirm(croppedBlob);
@@ -112,15 +102,13 @@ export function ImageCropperModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-w-full m-2 rounded-xl">
+    <Dialog onOpenChange={onOpenChange} open={isOpen}>
+      <DialogContent className='m-2 max-w-full rounded-xl sm:max-w-md'>
         <DialogHeader>
           <DialogTitle>Mô phỏng hình đại diện</DialogTitle>
-          <DialogDescription>
-            Kéo thả hoặc thu phóng để chọn phần hình ảnh phù hợp.
-          </DialogDescription>
+          <DialogDescription>Kéo thả hoặc thu phóng để chọn phần hình ảnh phù hợp.</DialogDescription>
         </DialogHeader>
-        <div className="relative h-[300px] w-full sm:h-[400px]">
+        <div className='relative h-[300px] w-full sm:h-[400px]'>
           {imageSrc && (
             <Cropper
               aspect={aspect}
@@ -134,20 +122,20 @@ export function ImageCropperModal({
             />
           )}
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Thu phóng</label>
+        <div className='flex flex-col gap-2'>
+          <label className='font-medium text-sm'>Thu phóng</label>
           <input
-            type="range"
-            min={1}
+            className='w-full'
             max={3}
-            step={0.1}
-            value={zoom}
+            min={1}
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="w-full"
+            step={0.1}
+            type='range'
+            value={zoom}
           />
         </div>
-        <DialogFooter className="mt-4 flex sm:justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className='mt-4 flex gap-2 sm:justify-end'>
+          <Button onClick={() => onOpenChange(false)} variant='outline'>
             Hủy bỏ
           </Button>
           <Button onClick={handleConfirm}>Xong</Button>

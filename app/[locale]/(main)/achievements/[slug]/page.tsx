@@ -1,22 +1,23 @@
 import {
-  Trophy,
-  ChevronLeft,
   Calendar,
+  ChevronLeft,
+  Trophy,
   User2,
-  Users,
   UserCircle,
+  Users,
 } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { GalleryCarousel } from "@/app/[locale]/(main)/gallery-carousel.client";
 import { getAchievementBySlug } from "@/app/[locale]/actions/pages";
+import { MarkdownContent } from "@/components/markdown-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { MarkdownContent } from "@/components/markdown-content";
-import { GalleryCarousel } from "@/app/[locale]/(main)/gallery-carousel.client";
 import { generatePageSeo } from "@/utils/seo";
+import { getFullName } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -101,13 +102,13 @@ export default async function AchievementDetailPage({
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-16">
           {/* Left / Main Content */}
           <div className="lg:col-span-3">
             <ScrollReveal>
               <div className="mb-6 flex flex-wrap items-center gap-2">
                 {achievement.isHighlight && (
-                  <Badge className="bg-yellow-500 text-black px-3 py-1 text-sm font-semibold hover:bg-yellow-400">
+                  <Badge className="bg-yellow-500 px-3 py-1 font-semibold text-black text-sm hover:bg-yellow-400">
                     ⭐ Nổi bật
                   </Badge>
                 )}
@@ -142,7 +143,7 @@ export default async function AchievementDetailPage({
               </div>
 
               {achievement.summary && (
-                <p className="mb-10 text-xl font-medium text-foreground/80 border-l-4 border-primary pl-4">
+                <p className="mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl">
                   {achievement.summary}
                 </p>
               )}
@@ -179,10 +180,10 @@ export default async function AchievementDetailPage({
                 <Button asChild>
                   <a
                     href={achievement.relatedUrl}
-                    target="_blank"
                     rel="noreferrer"
+                    target="_blank"
                   >
-                    <Trophy className="h-4 w-4 mr-2" /> Trích xuất Link minh
+                    <Trophy className="mr-2 h-4 w-4" /> Trích xuất Link minh
                     chứng
                   </a>
                 </Button>
@@ -191,7 +192,7 @@ export default async function AchievementDetailPage({
           </div>
 
           {/* Right Sidebar: Members */}
-          <div className="lg:col-span-1 border-border lg:border-l lg:pl-8">
+          <div className="border-border lg:col-span-1 lg:border-l lg:pl-8">
             {achievement.members && achievement.members.length > 0 && (
               <ScrollReveal variant="fade-up">
                 <div className="sticky top-24">
@@ -207,7 +208,11 @@ export default async function AchievementDetailPage({
                         {m.member.avatar ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
-                            alt={`${m.member.firstName} ${m.member.lastName}`}
+                            alt={getFullName(
+                              m.member.firstName,
+                              m.member.lastName,
+                              locale,
+                            )}
                             className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border"
                             src={m.member.avatar}
                           />
@@ -221,11 +226,15 @@ export default async function AchievementDetailPage({
                             className="block truncate font-medium text-sm hover:text-primary hover:underline"
                             href={`/members/${m.member.slug || m.member.memberId || m.member.id}`}
                           >
-                            {m.member.lastName} {m.member.firstName}
+                            {getFullName(
+                              m.member.firstName,
+                              m.member.lastName,
+                              locale,
+                            )}
                           </Link>
                           {m.role && (
                             <p
-                              className="line-clamp-2 text-muted-foreground text-xs uppercase font-mono mt-0.5"
+                              className="mt-0.5 line-clamp-2 font-mono text-muted-foreground text-xs uppercase"
                               title={m.role}
                             >
                               {m.role}

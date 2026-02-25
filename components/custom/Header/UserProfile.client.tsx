@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings, Shield, User } from "lucide-react";
+import { CreditCard, LogOut, Settings, Shield, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useRouter } from "@/configs/i18n/routing";
 import { createClient } from "@/configs/supabase/client";
-import { _ROUTE_ADMIN, _ROUTE_AUTH, _ROUTE_MEMBERS, _ROUTE_PROFILE } from "@/constants/route";
+import { _ROUTE_ADMIN, _ROUTE_AUTH, _ROUTE_MEMBER_CARD, _ROUTE_MEMBERS, _ROUTE_PROFILE } from "@/constants/route";
 import { type UserProfileData, type WebRole } from "@/types/common";
 
 const WEB_ROLE_LABEL: Record<WebRole, string> = {
@@ -39,6 +39,7 @@ type Props = {
 
 const UserProfile = ({ profile }: Props) => {
   const t = useTranslations("common.nav");
+  const tProfile = useTranslations("profile");
   const router = useRouter();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
@@ -81,6 +82,15 @@ const UserProfile = ({ profile }: Props) => {
               {t("settings")}
             </Link>
           </DropdownMenuItem>
+
+          {profile.webRole !== "GUEST" && (
+            <DropdownMenuItem asChild>
+              <Link href={_ROUTE_MEMBER_CARD}>
+                <CreditCard className='mr-2 h-4 w-4' />
+                {tProfile("memberCard.title")}
+              </Link>
+            </DropdownMenuItem>
+          )}
 
           {profile.isAdmin && (
             <DropdownMenuItem asChild>

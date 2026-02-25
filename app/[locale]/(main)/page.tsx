@@ -18,14 +18,12 @@ type PageType = {
   params: Promise<{ locale: locale }>;
 };
 
-export async function generateMetadata({
-  params,
-}: PageType): Promise<Metadata> {
+export async function generateMetadata({ params }: PageType): Promise<Metadata> {
   const { locale } = await params;
   return generatePageSeo({
     page: "home",
     locale,
-    pathname: "",
+    pathname: ""
   });
 }
 
@@ -34,7 +32,7 @@ export default async function Page({ params }: PageType) {
   setRequestLocale(locale as locale);
 
   return (
-    <div className="flex flex-col">
+    <div className='flex flex-col'>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
       <HeroSection />

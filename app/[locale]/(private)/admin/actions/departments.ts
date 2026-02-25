@@ -34,17 +34,20 @@ export const adminCreateDepartment = async (data: {
     }
   });
 
-export const adminUpdateDepartment = async (id: string, data: {
-  nameVi?: string;
-  nameEn?: string;
-  slug?: string;
-  descriptionVi?: string;
-  descriptionEn?: string;
-  icon?: string;
-  bgImage?: string;
-  order?: number;
-  isActive?: boolean;
-}) =>
+export const adminUpdateDepartment = async (
+  id: string,
+  data: {
+    nameVi?: string;
+    nameEn?: string;
+    slug?: string;
+    descriptionVi?: string;
+    descriptionEn?: string;
+    icon?: string;
+    bgImage?: string;
+    order?: number;
+    isActive?: boolean;
+  }
+) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
@@ -63,4 +66,3 @@ export const adminDeleteDepartment = async (id: string) =>
       return { success: true };
     }
   });
-

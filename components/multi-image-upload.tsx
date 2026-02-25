@@ -19,7 +19,7 @@ export function MultiImageUpload({
   initialImages = [],
   maxImages = 10,
   storagePath,
-  onChange,
+  onChange
 }: Props) {
   const { toast } = useToast();
   const [images, setImages] = useState<string[]>(initialImages);
@@ -31,7 +31,9 @@ export function MultiImageUpload({
 
   const handleFiles = async (files: File[]) => {
     const allowed = files.slice(0, maxImages - images.length);
-    if (allowed.length === 0) return;
+    if (allowed.length === 0) {
+      return;
+    }
 
     setUploading(true);
     const urls: string[] = [];
@@ -39,14 +41,14 @@ export function MultiImageUpload({
       if (!file.type.startsWith("image/")) {
         toast({
           variant: "destructive",
-          description: `Bỏ qua "${file.name}": chỉ nhận file ảnh`,
+          description: `Bỏ qua "${file.name}": chỉ nhận file ảnh`
         });
         continue;
       }
       if (file.size > 8 * 1024 * 1024) {
         toast({
           variant: "destructive",
-          description: `Bỏ qua "${file.name}": ảnh tối đa 8MB`,
+          description: `Bỏ qua "${file.name}": ảnh tối đa 8MB`
         });
         continue;
       }
@@ -56,7 +58,7 @@ export function MultiImageUpload({
       } catch {
         toast({
           variant: "destructive",
-          description: `Upload thất bại: ${file.name}`,
+          description: `Upload thất bại: ${file.name}`
         });
       }
     }
@@ -64,7 +66,9 @@ export function MultiImageUpload({
     const updated = [...images, ...urls];
     setImages(updated);
     onChange(updated);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const removeImage = (idx: number) => {
@@ -74,38 +78,38 @@ export function MultiImageUpload({
   };
 
   return (
-    <div className="space-y-2">
+    <div className='space-y-2'>
       <Label>
         {label}{" "}
-        <span className="text-muted-foreground text-xs font-normal">
+        <span className='font-normal text-muted-foreground text-xs'>
           ({images.length}/{maxImages})
         </span>
       </Label>
 
       {/* Gallery grid */}
       {images.length > 0 && (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+        <div className='grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5'>
           {images.map((url, idx) => (
             <div
-              className="group relative aspect-square overflow-hidden rounded-lg border bg-muted"
+              className='group relative aspect-square overflow-hidden rounded-lg border bg-muted'
               // biome-ignore lint/suspicious/noArrayIndexKey: order-based key is fine for images
               key={idx}
             >
               {/* biome-ignore lint/performance/noImgElement: admin preview */}
               <img
                 alt={`Gallery ${idx + 1}`}
-                className="h-full w-full object-cover"
+                className='h-full w-full object-cover'
                 height={200}
                 src={url}
                 width={200}
               />
               <button
-                className="absolute top-1 right-1 hidden group-hover:flex rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+                className='absolute top-1 right-1 hidden rounded-full bg-black/60 p-1 text-white hover:bg-black/80 group-hover:flex'
                 onClick={() => removeImage(idx)}
-                title="Xóa ảnh"
-                type="button"
+                title='Xóa ảnh'
+                type='button'
               >
-                <X className="h-3 w-3" />
+                <X className='h-3 w-3' />
               </button>
             </div>
           ))}
@@ -135,31 +139,29 @@ export function MultiImageUpload({
             setIsDragOver(false);
             handleFiles(Array.from(e.dataTransfer.files));
           }}
-          type="button"
+          type='button'
         >
           {uploading ? (
             <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              <span className="text-xs">Đang upload...</span>
+              <Loader2 className='h-5 w-5 animate-spin' />
+              <span className='text-xs'>Đang upload...</span>
             </>
           ) : (
             <>
-              <ImagePlus className="h-5 w-5" />
-              <span className="text-xs">
-                Thêm ảnh (max {maxImages} ảnh, mỗi ảnh ≤8MB)
-              </span>
+              <ImagePlus className='h-5 w-5' />
+              <span className='text-xs'>Thêm ảnh (max {maxImages} ảnh, mỗi ảnh ≤8MB)</span>
             </>
           )}
         </button>
       )}
 
       <input
-        accept="image/*"
-        className="hidden"
+        accept='image/*'
+        className='hidden'
         multiple
         onChange={(e) => handleFiles(Array.from(e.target.files ?? []))}
         ref={fileInputRef}
-        type="file"
+        type='file'
       />
     </div>
   );

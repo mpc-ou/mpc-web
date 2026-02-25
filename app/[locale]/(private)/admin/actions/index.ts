@@ -34,7 +34,12 @@ export {
   adminUpsertSetting
 } from "./content";
 export { adminGetDashboardStats } from "./dashboard";
-export { adminCreateDepartment, adminDeleteDepartment, adminGetDepartments, adminUpdateDepartment } from "./departments";
+export {
+  adminCreateDepartment,
+  adminDeleteDepartment,
+  adminGetDepartments,
+  adminUpdateDepartment
+} from "./departments";
 export { adminCreateEvent, adminDeleteEvent, adminGetEvents, adminUpdateEvent } from "./events";
 export {
   adminAddClubRole,
@@ -55,13 +60,13 @@ export {
   adminUnlinkProjectMember,
   adminUpdateProject
 } from "./projects";
-export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";
 export {
-  adminGetRecaps,
-  adminGetRecap,
+  adminBuildRecapData,
   adminCreateRecap,
-  adminUpdateRecap,
   adminDeleteRecap,
+  adminGetRecap,
   adminGetRecapCandidates,
-  adminBuildRecapData
+  adminGetRecaps,
+  adminUpdateRecap
 } from "./recaps";
+export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";

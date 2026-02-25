@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { createAdminClient } from "@/configs/supabase/admin";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { isRootAdmin } from "@/utils/admin";
-import { generateUniqueSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./_helpers";
-import { createAdminClient } from "@/configs/supabase/admin";
 import { getDiceBearUrl } from "@/utils/dicebear-avatar";
+import { generateUniqueSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./_helpers";
 
 const SLUG_REGEX = /^[a-z0-9_-]+$/;
 
@@ -117,7 +117,7 @@ export const adminAddMember = async (data: {
 
       const created = await prisma.member.create({
         data: {
-          authId: authId,
+          authId,
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -199,7 +199,9 @@ export const adminUpdateMember = async (
         const supabaseAdmin = createAdminClient();
         if (target.authId && !target.authId.startsWith("pending")) {
           const { error } = await supabaseAdmin.auth.admin.updateUserById(target.authId, { password: data.password });
-          if (error) throw new Error("Cập nhật mật khẩu trên hệ thống xác thực thất bại: " + error.message);
+          if (error) {
+            throw new Error("Cập nhật mật khẩu trên hệ thống xác thực thất bại: " + error.message);
+          }
         } else {
           // It's a pending user, let's create them on supabase if we can
           const { data: userData, error } = await supabaseAdmin.auth.admin.createUser({
@@ -231,7 +233,9 @@ export const adminUpdateMember = async (
           ...(data.slug !== undefined && { slug: data.slug.trim() }),
           ...(data.githubEmail !== undefined && { githubEmail: data.githubEmail || null }),
           ...(data.leftClubAt !== undefined && { leftClubAt: data.leftClubAt ? new Date(data.leftClubAt) : null }),
-          ...(data.joinedClubAt !== undefined && { joinedClubAt: data.joinedClubAt ? new Date(data.joinedClubAt) : null })
+          ...(data.joinedClubAt !== undefined && {
+            joinedClubAt: data.joinedClubAt ? new Date(data.joinedClubAt) : null
+          })
         }
       });
       revalidateTag(_CACHE_MEMBERS, "default");

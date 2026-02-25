@@ -18,6 +18,7 @@ const POSITION_LABELS: Record<string, string> = {
 };
 
 import { SOCIAL_COLLECTION } from "@/constants/common";
+import { getFullName } from "@/lib/utils";
 
 const getSocialMeta = (platform: string) => {
   const p = platform.toLowerCase();
@@ -53,7 +54,13 @@ const getSocialMeta = (platform: string) => {
   return SOCIAL_COLLECTION.WEBSITE;
 };
 
-export function TopMembersCarouselClient({ members }: { members: any[] }) {
+export function TopMembersCarouselClient({
+  members,
+  locale,
+}: {
+  members: any[];
+  locale: string;
+}) {
   const [emblaRef] = useEmblaCarousel(
     { dragFree: true, loop: true, align: "start" },
     [AutoScroll({ playOnInit: true, speed: 1.5 })],
@@ -63,7 +70,11 @@ export function TopMembersCarouselClient({ members }: { members: any[] }) {
     <div className="" ref={emblaRef}>
       <div className="flex touch-pan-y pt-4 pb-8">
         {members.map((member) => {
-          const fullName = `${member.firstName} ${member.lastName}`;
+          const fullName = getFullName(
+            member.firstName,
+            member.lastName,
+            locale,
+          );
           const initials = `${member.firstName[0]}${member.lastName[0]}`;
           const role = member.currentRole;
           const positionLabel = role

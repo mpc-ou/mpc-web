@@ -17,14 +17,12 @@ type PageType = {
   params: Promise<{ locale: locale }>;
 };
 
-export async function generateMetadata({
-  params,
-}: PageType): Promise<Metadata> {
+export async function generateMetadata({ params }: PageType): Promise<Metadata> {
   const { locale } = await params;
   return generatePageSeo({
     page: "about",
     locale,
-    pathname: "/about",
+    pathname: "/about"
   });
 }
 
@@ -45,7 +43,7 @@ export default async function AboutPage({ params }: PageType) {
       name: localeData.name,
       description: localeData.description,
       missions: localeData.missions,
-      linkLabel: localeData.linkLabel,
+      linkLabel: localeData.linkLabel
     };
   });
 
@@ -53,7 +51,7 @@ export default async function AboutPage({ params }: PageType) {
     <AboutClient
       benefitsSection={<BenefitsSection locale={locale as any} />}
       faqSection={
-        <div className="border-border border-t">
+        <div className='border-border border-t'>
           <FaqSection locale={locale as any} />
         </div>
       }
@@ -66,7 +64,7 @@ export default async function AboutPage({ params }: PageType) {
       }
       serializedTopMembers={serializedTopMembers}
       statsSection={
-        <div className="border-border border-t bg-muted/30">
+        <div className='border-border border-t bg-muted/30'>
           <Suspense fallback={<LoadingComponent />}>
             <StatsSection locale={locale as any} />
           </Suspense>

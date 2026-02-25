@@ -1,6 +1,6 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { Suspense } from "react";
 import { getRecapByYear } from "@/app/[locale]/actions/recaps";
 import { parseRecapData } from "@/lib/recap-data";
 import { RecapSlideViewer } from "./client";
@@ -13,11 +13,15 @@ async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
   await connection();
   const yearStr = await yearPromise;
   const year = Number(yearStr);
-  if (isNaN(year)) notFound();
+  if (isNaN(year)) {
+    notFound();
+  }
 
   const { data } = await getRecapByYear(year);
   const recap = (data?.payload as any)?.recap;
-  if (!recap) notFound();
+  if (!recap) {
+    notFound();
+  }
 
   const recapData = parseRecapData(recap.data);
 
@@ -37,7 +41,7 @@ async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
 
 export default function RecapYearPage({ params }: Props) {
   return (
-    <Suspense fallback={<div className="fixed inset-0 bg-black" />}>
+    <Suspense fallback={<div className='fixed inset-0 bg-black' />}>
       <RecapContent yearPromise={params.then((p) => p.year)} />
     </Suspense>
   );

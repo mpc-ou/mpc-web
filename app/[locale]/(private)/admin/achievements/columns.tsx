@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 export type AchievementRow = {
@@ -41,35 +41,28 @@ const typeBadge: Record<
 > = {
   INDIVIDUAL: { label: "Cá nhân", variant: "secondary" },
   TEAM: { label: "Nhóm", variant: "default" },
-  CLUB: { label: "Toàn CLB", variant: "destructive" },
+  CLUB: { label: "Toàn CLB", variant: "destructive" }
 };
 
 export const createColumns = (
   onEdit: (a: AchievementRow) => void,
-  onDelete: (id: string) => void,
+  onDelete: (id: string) => void
 ): ColumnDef<AchievementRow>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        Thành tựu <ArrowUpDown className="ml-2 h-4 w-4" />
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+        Thành tựu <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => (
       <div>
-        <div className="max-w-[250px] truncate font-medium">
-          {row.original.title}
-        </div>
+        <div className='max-w-[250px] truncate font-medium'>{row.original.title}</div>
         {row.original.summary && (
-          <div className="max-w-[250px] truncate text-muted-foreground text-xs">
-            {row.original.summary}
-          </div>
+          <div className='max-w-[250px] truncate text-muted-foreground text-xs'>{row.original.summary}</div>
         )}
       </div>
-    ),
+    )
   },
   {
     accessorKey: "type",
@@ -79,37 +72,31 @@ export const createColumns = (
       const info = typeBadge[t] ?? { label: t, variant: "outline" as const };
       return <Badge variant={info.variant}>{info.label}</Badge>;
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    filterFn: (row, id, value) => value.includes(row.getValue(id))
   },
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        Ngày <ArrowUpDown className="ml-2 h-4 w-4" />
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+        Ngày <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
-    cell: ({ row }) =>
-      new Date(row.getValue("date")).toLocaleDateString("vi-VN"),
+    cell: ({ row }) => new Date(row.getValue("date")).toLocaleDateString("vi-VN")
   },
   {
     accessorKey: "isHighlight",
     header: "Nổi bật",
     cell: ({ row }) =>
       row.original.isHighlight ? (
-        <span className="text-yellow-500">⭐</span>
+        <span className='text-yellow-500'>⭐</span>
       ) : (
-        <span className="text-muted-foreground">—</span>
-      ),
+        <span className='text-muted-foreground'>—</span>
+      )
   },
   {
     id: "memberCount",
     header: "Thành viên",
-    cell: ({ row }) => (
-      <span className="text-sm">{row.original.members.length || "—"}</span>
-    ),
+    cell: ({ row }) => <span className='text-sm'>{row.original.members.length || "—"}</span>
   },
   {
     id: "actions",
@@ -118,25 +105,20 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button className='h-8 w-8 p-0' variant='ghost'>
+              <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(a)}>
-              Chỉnh sửa
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(a)}>Chỉnh sửa</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={() => onDelete(a.id)}
-            >
+            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(a.id)}>
               Xóa
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    },
-  },
+    }
+  }
 ];

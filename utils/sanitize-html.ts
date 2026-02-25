@@ -1,5 +1,5 @@
-import DOMPurify from "dompurify";
 import type { Config } from "dompurify";
+import DOMPurify from "dompurify";
 
 const PURIFY_CONFIG: Config = {
   ADD_TAGS: ["iframe"],

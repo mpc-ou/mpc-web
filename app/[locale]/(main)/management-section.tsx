@@ -1,4 +1,3 @@
-import { Facebook, Github, Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getLeadership } from "@/app/[locale]/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +13,7 @@ const positionLabel: Record<string, string> = {
 };
 
 import { SOCIAL_COLLECTION } from "@/constants/common";
+import { getFullName } from "@/lib/utils";
 
 const getSocialMeta = (platform: string) => {
   const p = platform.toLowerCase();
@@ -150,13 +150,20 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                           <Avatar className="h-20 w-20 ring-2 ring-primary/20 transition-transform duration-300 group-hover:scale-105 group-hover:ring-primary/50">
                             <AvatarImage src={member.avatar ?? undefined} />
                             <AvatarFallback className="bg-primary/10 font-bold text-lg text-primary">
-                              {member.firstName[0]}
-                              {member.lastName[0]}
+                              {getFullName(
+                                member.firstName,
+                                member.lastName,
+                                locale,
+                              )}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
                             <p className="font-semibold text-foreground">
-                              {member.firstName} {member.lastName}
+                              {getFullName(
+                                member.firstName,
+                                member.lastName,
+                                locale,
+                              )}
                             </p>
                             <p className="mt-0.5 font-medium text-muted-foreground text-xs">
                               {topRole}
@@ -180,14 +187,21 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                                   <AvatarImage src={member.avatar} />
                                 )}
                                 <AvatarFallback>
-                                  {member.firstName[0]}
-                                  {member.lastName[0]}
+                                  {getFullName(
+                                    member.firstName,
+                                    member.lastName,
+                                    locale,
+                                  )}
                                 </AvatarFallback>
                               </Avatar>
 
                               <div>
                                 <h3 className="font-bold">
-                                  {member.firstName} {member.lastName}
+                                  {getFullName(
+                                    member.firstName,
+                                    member.lastName,
+                                    locale,
+                                  )}
                                 </h3>
                                 <p className="text-muted-foreground text-xs">
                                   Phân ban điều hành
@@ -284,13 +298,20 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                           <Avatar className="h-14 w-14 ring-2 ring-border transition-transform duration-300 group-hover:scale-105 group-hover:ring-primary/50">
                             <AvatarImage src={member.avatar ?? undefined} />
                             <AvatarFallback className="bg-muted font-bold text-foreground text-sm">
-                              {member.firstName[0]}
-                              {member.lastName[0]}
+                              {getFullName(
+                                member.firstName,
+                                member.lastName,
+                                locale,
+                              )}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
                             <p className="font-semibold text-foreground text-sm">
-                              {member.firstName} {member.lastName}
+                              {getFullName(
+                                member.firstName,
+                                member.lastName,
+                                locale,
+                              )}
                             </p>
                             <p className="mt-0.5 text-muted-foreground text-xs">
                               {topRole}
@@ -309,14 +330,21 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                                   <AvatarImage src={member.avatar} />
                                 )}
                                 <AvatarFallback>
-                                  {member.firstName[0]}
-                                  {member.lastName[0]}
+                                  {getFullName(
+                                    member.firstName,
+                                    member.lastName,
+                                    locale,
+                                  )}
                                 </AvatarFallback>
                               </Avatar>
 
                               <div>
                                 <h3 className="font-bold">
-                                  {member.firstName} {member.lastName}
+                                  {getFullName(
+                                    member.firstName,
+                                    member.lastName,
+                                    locale,
+                                  )}
                                 </h3>
                                 <p className="text-muted-foreground text-xs">
                                   {topDept}

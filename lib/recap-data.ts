@@ -69,14 +69,16 @@ export function parseRecapData(raw: unknown): RecapData {
       totalAchievements: 0,
       totalProjects: 0,
       totalMembersBefore: 0,
-      newMembersInYear: 0,
+      newMembersInYear: 0
     },
     executiveBoard: [],
     newMembers: [],
-    timeline: [],
+    timeline: []
   };
 
-  if (!raw || typeof raw !== "object") return empty;
+  if (!raw || typeof raw !== "object") {
+    return empty;
+  }
 
   try {
     const data = raw as RecapData;
@@ -84,7 +86,7 @@ export function parseRecapData(raw: unknown): RecapData {
       stats: data.stats ?? empty.stats,
       executiveBoard: Array.isArray(data.executiveBoard) ? data.executiveBoard : [],
       newMembers: Array.isArray(data.newMembers) ? data.newMembers : [],
-      timeline: Array.isArray(data.timeline) ? data.timeline : [],
+      timeline: Array.isArray(data.timeline) ? data.timeline : []
     };
   } catch {
     return empty;

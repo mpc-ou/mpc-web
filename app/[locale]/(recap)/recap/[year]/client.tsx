@@ -1,26 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Home, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Pause,
-  Play,
-  Volume2,
-  VolumeX,
-  X,
-  Home,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { RecapData } from "@/lib/recap-data";
 
 import { SlideCover } from "./components/slide-cover";
-import { SlideStats } from "./components/slide-stats";
-import { SlideNewMembers } from "./components/slide-new-members";
 import { SlideExecutiveBoard } from "./components/slide-executive-board";
-import { SlideTimeline } from "./components/slide-timeline";
+import { SlideNewMembers } from "./components/slide-new-members";
+import { SlideStats } from "./components/slide-stats";
 import { SlideThankYou } from "./components/slide-thank-you";
+import { SlideTimeline } from "./components/slide-timeline";
 
 export function RecapSlideViewer({
   recapData,
@@ -30,7 +21,7 @@ export function RecapSlideViewer({
   coverImage2,
   coverImage3,
   endImage,
-  musicUrl,
+  musicUrl
 }: {
   recapData: RecapData;
   name: string;
@@ -43,8 +34,7 @@ export function RecapSlideViewer({
 }) {
   const router = useRouter();
 
-  const hasExec =
-    recapData.executiveBoard && recapData.executiveBoard.length > 0;
+  const hasExec = recapData.executiveBoard && recapData.executiveBoard.length > 0;
   const execOffset = hasExec ? 1 : 0;
   // Cover, Stats, NewMembers, [ExecBoard?], ...timeline, ThankYou
   const totalSlides = 3 + execOffset + recapData.timeline.length + 1;
@@ -55,15 +45,14 @@ export function RecapSlideViewer({
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const goNext = useCallback(
-    () => setCurrent((p) => Math.min(p + 1, totalSlides - 1)),
-    [totalSlides],
-  );
+  const goNext = useCallback(() => setCurrent((p) => Math.min(p + 1, totalSlides - 1)), [totalSlides]);
   const goPrev = useCallback(() => setCurrent((p) => Math.max(p - 1, 0)), []);
 
   // Auto-play
   useEffect(() => {
-    if (!autoPlay) return;
+    if (!autoPlay) {
+      return;
+    }
     const timer = setInterval(goNext, 8000);
     return () => clearInterval(timer);
   }, [autoPlay, goNext]);
@@ -71,9 +60,15 @@ export function RecapSlideViewer({
   // Keyboard
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === " ") goNext();
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "Escape") router.push("/recap");
+      if (e.key === "ArrowRight" || e.key === " ") {
+        goNext();
+      }
+      if (e.key === "ArrowLeft") {
+        goPrev();
+      }
+      if (e.key === "Escape") {
+        router.push("/recap");
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -113,11 +108,21 @@ export function RecapSlideViewer({
   };
 
   const getSlideInfo = (idx: number) => {
-    if (idx === 0) return { title: "Trang bìa", date: "" };
-    if (idx === 1) return { title: "Tình hình hoạt động", date: "" };
-    if (idx === 2) return { title: "Thế hệ tiếp nối", date: "" };
-    if (hasExec && idx === 3) return { title: "Ban điều hành", date: "" };
-    if (idx === totalSlides - 1) return { title: "Lời tri ân", date: "" };
+    if (idx === 0) {
+      return { title: "Trang bìa", date: "" };
+    }
+    if (idx === 1) {
+      return { title: "Tình hình hoạt động", date: "" };
+    }
+    if (idx === 2) {
+      return { title: "Thế hệ tiếp nối", date: "" };
+    }
+    if (hasExec && idx === 3) {
+      return { title: "Ban điều hành", date: "" };
+    }
+    if (idx === totalSlides - 1) {
+      return { title: "Lời tri ân", date: "" };
+    }
 
     const timelineIdx = idx - (3 + execOffset);
     const item = recapData.timeline[timelineIdx];
@@ -125,7 +130,7 @@ export function RecapSlideViewer({
       const d = new Date(item.date).toLocaleDateString("vi-VN", {
         day: "2-digit",
         month: "2-digit",
-        year: "numeric",
+        year: "numeric"
       });
       return { title: item.title, date: d };
     }
@@ -136,10 +141,7 @@ export function RecapSlideViewer({
   const progress = totalSlides > 1 ? (current / (totalSlides - 1)) * 100 : 0;
 
   return (
-    <div
-      className="fixed inset-0 z-[100] bg-slate-950 select-none cursor-default"
-      onClick={startAudio}
-    >
+    <div className='fixed inset-0 z-[100] cursor-default select-none bg-slate-950' onClick={startAudio}>
       {/* Audio */}
       {musicUrl && (
         // eslint-disable-next-line jsx-a11y/media-has-caption
@@ -147,71 +149,63 @@ export function RecapSlideViewer({
       )}
 
       {/* Top bar */}
-      <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3">
+      <div className='absolute top-0 right-0 left-0 z-30 flex items-center justify-between px-4 py-3'>
         {/* Left */}
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <button
-            className="rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white"
+            className='rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white'
             onClick={() => router.push("/recap")}
-            title="Thoát"
+            title='Thoát'
           >
-            <X className="h-4 w-4" />
+            <X className='h-4 w-4' />
           </button>
           <button
-            className="rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white"
+            className='rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white'
             onClick={() => router.push("/")}
-            title="Trang chủ"
+            title='Trang chủ'
           >
-            <Home className="h-4 w-4" />
+            <Home className='h-4 w-4' />
           </button>
         </div>
 
         {/* Center — slide counter */}
-        <span className="rounded-full bg-white/10 px-3 py-1 text-white/60 text-xs backdrop-blur-md tabular-nums">
+        <span className='rounded-full bg-white/10 px-3 py-1 text-white/60 text-xs tabular-nums backdrop-blur-md'>
           {current + 1} / {totalSlides}
         </span>
 
         {/* Right */}
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {/* Auto-play toggle */}
           <button
             className={`rounded-full p-2 backdrop-blur-md transition-colors ${autoPlay ? "bg-orange-500/30 text-orange-500" : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"}`}
             onClick={() => setAutoPlay(!autoPlay)}
             title={autoPlay ? "Tạm dừng tự động" : "Tự động chạy"}
           >
-            {autoPlay ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
+            {autoPlay ? <Pause className='h-4 w-4' /> : <Play className='h-4 w-4' />}
           </button>
 
           {/* Volume */}
           {musicUrl && (
-            <div className="group relative">
+            <div className='group relative'>
               <button
-                className="rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white"
+                className='rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white'
                 onClick={() => {
                   setMuted(!muted);
                   startAudio();
                 }}
                 title={muted ? "Bật nhạc" : "Tắt nhạc"}
               >
-                {muted ? (
-                  <VolumeX className="h-4 w-4" />
-                ) : (
-                  <Volume2 className="h-4 w-4" />
-                )}
+                {muted ? <VolumeX className='h-4 w-4' /> : <Volume2 className='h-4 w-4' />}
               </button>
-              <div className="absolute right-0 top-full mt-0 hidden rounded-lg bg-white/10 p-4 backdrop-blur-md group-hover:block">
+              <div className='absolute top-full right-0 mt-0 hidden rounded-lg bg-white/10 p-4 backdrop-blur-md group-hover:block'>
                 <input
-                  className="h-20 w-1 accent-orange-500"
+                  className='h-20 w-1 accent-orange-500'
                   max={1}
                   min={0}
                   onChange={(e) => setVolume(Number(e.target.value))}
                   step={0.1}
                   style={{ writingMode: "vertical-lr", direction: "rtl" }}
-                  type="range"
+                  type='range'
                   value={volume}
                 />
               </div>
@@ -221,62 +215,42 @@ export function RecapSlideViewer({
       </div>
 
       {/* Slide content */}
-      <div className="h-full w-full">
-        {current === 0 && (
-          <SlideCover coverImage={coverImage} name={name} year={year} />
+      <div className='h-full w-full'>
+        {current === 0 && <SlideCover coverImage={coverImage} name={name} year={year} />}
+        {current === 1 && <SlideStats active={current === 1} coverImage2={coverImage2} stats={recapData.stats} />}
+        {current === 2 && <SlideNewMembers coverImage3={coverImage3} members={recapData.newMembers} />}
+        {hasExec && current === 3 && <SlideExecutiveBoard members={recapData.executiveBoard} />}
+        {current >= 3 + execOffset && current < 3 + execOffset + recapData.timeline.length && (
+          <SlideTimeline item={recapData.timeline[current - (3 + execOffset)]} />
         )}
-        {current === 1 && (
-          <SlideStats
-            active={current === 1}
-            coverImage2={coverImage2}
-            stats={recapData.stats}
-          />
-        )}
-        {current === 2 && (
-          <SlideNewMembers
-            coverImage3={coverImage3}
-            members={recapData.newMembers}
-          />
-        )}
-        {hasExec && current === 3 && (
-          <SlideExecutiveBoard members={recapData.executiveBoard} />
-        )}
-        {current >= 3 + execOffset &&
-          current < 3 + execOffset + recapData.timeline.length && (
-            <SlideTimeline
-              item={recapData.timeline[current - (3 + execOffset)]}
-            />
-          )}
-        {current === totalSlides - 1 && (
-          <SlideThankYou endImage={endImage} year={year} />
-        )}
+        {current === totalSlides - 1 && <SlideThankYou endImage={endImage} year={year} />}
       </div>
 
       {/* Navigation arrows (desktop arrows) */}
       <button
-        className="absolute inset-y-0 left-0 z-20 flex w-20 md:w-32 items-center justify-start pl-4 opacity-0 transition-opacity hover:opacity-100 bg-gradient-to-r from-black/50 to-transparent"
+        className='absolute inset-y-0 left-0 z-20 flex w-20 items-center justify-start bg-gradient-to-r from-black/50 to-transparent pl-4 opacity-0 transition-opacity hover:opacity-100 md:w-32'
         onClick={() => {
           startAudio();
           goPrev();
         }}
       >
-        <ChevronLeft className="h-10 w-10 text-white/70 hover:text-white transition-colors" />
+        <ChevronLeft className='h-10 w-10 text-white/70 transition-colors hover:text-white' />
       </button>
       <button
-        className="absolute inset-y-0 right-0 z-20 flex w-20 md:w-32 items-center justify-end pr-4 opacity-0 transition-opacity hover:opacity-100 bg-gradient-to-l from-black/50 to-transparent"
+        className='absolute inset-y-0 right-0 z-20 flex w-20 items-center justify-end bg-gradient-to-l from-black/50 to-transparent pr-4 opacity-0 transition-opacity hover:opacity-100 md:w-32'
         onClick={() => {
           startAudio();
           goNext();
         }}
       >
-        <ChevronRight className="h-10 w-10 text-white/70 hover:text-white transition-colors" />
+        <ChevronRight className='h-10 w-10 text-white/70 transition-colors hover:text-white' />
       </button>
 
       {/* Seek Progress Bar (bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 h-2 hover:h-4 lg:hover:h-5 transition-all group/progress z-50 flex cursor-pointer bg-black/40">
+      <div className='group/progress absolute right-0 bottom-0 left-0 z-50 flex h-2 cursor-pointer bg-black/40 transition-all hover:h-4 lg:hover:h-5'>
         {/* Filled secondary progress */}
         <div
-          className="absolute top-0 left-0 bottom-0 bg-orange-500 transition-all duration-500 ease-out z-0 pointer-events-none backdrop-blur-sm"
+          className='pointer-events-none absolute top-0 bottom-0 left-0 z-0 bg-orange-500 backdrop-blur-sm transition-all duration-500 ease-out'
           style={{ width: `${progress}%` }}
         />
 
@@ -284,7 +258,7 @@ export function RecapSlideViewer({
           const info = getSlideInfo(i);
           return (
             <div
-              className="relative h-full flex-1 z-10 group/node hover:bg-white/10 transition-colors"
+              className='group/node relative z-10 h-full flex-1 transition-colors hover:bg-white/10'
               key={i}
               onClick={(e) => {
                 e.stopPropagation();
@@ -293,19 +267,15 @@ export function RecapSlideViewer({
               }}
             >
               {/* Hidden line mark for items */}
-              <div className="absolute top-1/2 -translate-y-1/2 left-0 h-full w-[1px] bg-white/20 hidden group-hover/progress:block" />
+              <div className='absolute top-1/2 left-0 hidden h-full w-[1px] -translate-y-1/2 bg-white/20 group-hover/progress:block' />
 
-              <div className="pointer-events-none absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 flex-col items-center group-hover/node:flex w-max z-[100]">
-                <div className="rounded-xl bg-black/90 px-3 py-2 text-center text-xs text-white shadow-xl backdrop-blur-md border border-white/10">
-                  <p className="font-bold whitespace-nowrap">{info.title}</p>
-                  {info.date && (
-                    <p className="text-orange-400 mt-0.5 text-[10px] font-semibold">
-                      {info.date}
-                    </p>
-                  )}
+              <div className='pointer-events-none absolute bottom-full left-1/2 z-[100] mb-3 hidden w-max -translate-x-1/2 flex-col items-center group-hover/node:flex'>
+                <div className='rounded-xl border border-white/10 bg-black/90 px-3 py-2 text-center text-white text-xs shadow-xl backdrop-blur-md'>
+                  <p className='whitespace-nowrap font-bold'>{info.title}</p>
+                  {info.date && <p className='mt-0.5 font-semibold text-[10px] text-orange-400'>{info.date}</p>}
                 </div>
                 {/* Arrow down */}
-                <div className="h-2 w-2 rotate-45 bg-black/90 border-r border-b border-white/10 -mt-1 shadow-sm" />
+                <div className='-mt-1 h-2 w-2 rotate-45 border-white/10 border-r border-b bg-black/90 shadow-sm' />
               </div>
             </div>
           );
@@ -373,7 +343,7 @@ export function RecapSlideViewer({
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
               background: rgba(255, 255, 255, 0.3);
             }
-          `,
+          `
         }}
       />
     </div>

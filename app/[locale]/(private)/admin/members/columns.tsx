@@ -13,6 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "@/configs/i18n/routing";
+import { _ROUTE_MEMBER_CARD } from "@/constants/route";
+import { getFullName } from "@/lib/utils";
 
 export type MemberRow = {
   id: string;
@@ -83,7 +86,7 @@ export const createColumns = (
           </Avatar>
           <div>
             <div className="font-medium">
-              {m.firstName} {m.lastName}
+              {getFullName(m.firstName, m.lastName, "vi")}
             </div>
             {m.studentId && (
               <div className="text-muted-foreground text-xs">{m.studentId}</div>
@@ -160,6 +163,16 @@ export const createColumns = (
             <DropdownMenuItem onClick={() => onEdit(member)}>
               Chỉnh sửa
             </DropdownMenuItem>
+            {member.slug && (
+              <DropdownMenuItem asChild>
+                <Link
+                  target="_blank"
+                  href={`${_ROUTE_MEMBER_CARD}?member=${member.slug}`}
+                >
+                  Xem thẻ thành viên
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="text-destructive"
               onClick={() => onDelete(member.id)}

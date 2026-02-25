@@ -11,7 +11,7 @@ import { PrismaClient } from "../configs/prisma/generated/prisma/client";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL ?? "",
-  max: 2,
+  max: 2
 });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
@@ -26,7 +26,7 @@ async function main() {
 
   const members = await prisma.member.findMany({
     where: { avatar: null },
-    select: { id: true, email: true, firstName: true, lastName: true },
+    select: { id: true, email: true, firstName: true, lastName: true }
   });
 
   if (members.length === 0) {
@@ -44,7 +44,7 @@ async function main() {
       const avatarUrl = getDiceBearUrl(member.email);
       await prisma.member.update({
         where: { id: member.id },
-        data: { avatar: avatarUrl },
+        data: { avatar: avatarUrl }
       });
       console.log(`  ✓ ${member.firstName} ${member.lastName} (${member.email})`);
       updated++;

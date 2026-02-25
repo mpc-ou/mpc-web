@@ -8,15 +8,9 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { getFullName } from "@/lib/utils";
 
 type AchievementMember = {
   role: string | null;
@@ -46,10 +40,12 @@ export function AchievementsClient({
   achievements,
   currentPage,
   totalPages,
+  locale,
 }: {
   achievements: Achievement[];
   currentPage: number;
   totalPages: number;
+  locale: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -134,12 +130,18 @@ export function AchievementsClient({
                         className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full border-2 border-background bg-muted shadow-sm"
                         key={m.member.id}
                         style={{ zIndex: 10 - idx }}
-                        title={`${m.member.lastName} ${m.member.firstName}`}
+                        title={getFullName(
+                          m.member.firstName,
+                          m.member.lastName,
+                        )}
                       >
                         {m.member.avatar ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
-                            alt={m.member.firstName}
+                            alt={getFullName(
+                              m.member.firstName,
+                              m.member.lastName,
+                            )}
                             className="h-full w-full object-cover"
                             src={m.member.avatar}
                           />

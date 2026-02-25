@@ -107,11 +107,12 @@ async function syncMemberFromOAuth(user: User): Promise<void> {
     // 4. Auto-inject GitHub social link if linked
     const githubIdentity = user.identities?.find((id) => id.provider === "github");
     if (githubIdentity) {
-      const githubUsername = githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
+      const githubUsername =
+        githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
       if (githubUsername) {
         const existingSocials = Array.isArray(existing.socials) ? (existing.socials as any[]) : [];
         const hasGithub = existingSocials.some((s: any) => s.platform === "GitHub");
-        
+
         if (!hasGithub) {
           updates.socials = [
             ...existingSocials,

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
+import { getFullName } from "@/lib/utils";
 import { adminDeleteMember } from "../actions";
 import { createColumns, type MemberRow } from "./columns";
 import { MemberFormDialog } from "./form-dialog";
@@ -97,7 +98,7 @@ export function MembersDataTable({
 
   const handleExportExcel = () => {
     const exportData = filteredData.map((m) => ({
-      "Họ tên": `${m.firstName || ""} ${m.lastName || ""}`.trim(),
+      "Họ tên": getFullName(m.firstName, m.lastName, "vi"),
       Email: m.email,
       SĐT: m.phone || "",
       MSSV: m.studentId || "",

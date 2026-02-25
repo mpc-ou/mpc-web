@@ -1,10 +1,11 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn, getFullName } from "@/lib/utils";
 
 const POSITION_LABELS: Record<string, string> = {
   PRESIDENT: "Chủ nhiệm CLB",
@@ -53,10 +54,11 @@ const getSocialMeta = (platform: string) => {
 };
 
 export function MembersClient({ groupMembers }: { groupMembers: any[] }) {
+  const locale = useLocale();
   return (
     <div className="flex flex-wrap gap-4">
       {groupMembers.map((member) => {
-        const fullName = `${member.firstName} ${member.lastName}`;
+        const fullName = getFullName(member.firstName, member.lastName, locale);
         const initials = `${member.firstName[0]}${member.lastName[0]}`;
         const role = member.currentRole;
         const positionLabel = role

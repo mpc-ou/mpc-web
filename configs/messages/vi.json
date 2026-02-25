@@ -178,15 +178,31 @@
     "description": "Thông tin hiện tại của bạn.",
     "loginWith": "Đăng nhập bằng",
     "form": {
-      "submit": "Lưu",
-      "firstName": "Họ",
-      "lastName": "Tên",
-      "bio": "Giới thiệu",
-      "linkGithub": "Liên kết GitHub",
-      "linkedGithub": "Hủy liên kết GitHub",
-      "linkingGithub": "Đang xử lý...",
-      "linkGithubDesc": "Liên kết tài khoản GitHub để đăng nhập nhanh hơn.",
-      "linkedGithubDesc": "Tài khoản GitHub của bạn đã được liên kết thành công để đăng nhập."
+      "submit": "Lưu thay đổi",
+      "firstName": "Tên",
+      "lastName": "Họ và tên đệm",
+      "bio": "Giới thiệu bản thân",
+      "linkGithub": "Liên kết Github",
+      "linkedGithub": "Hủy liên kết Github",
+      "linkingGithub": "Đang thao tác...",
+      "linkGithubDesc": "Liên kết tài khoản Github để đăng nhập nhanh hơn.",
+      "linkedGithubDesc": "Tài khoản Github của bạn đã được liên kết thành công để đăng nhập."
+    },
+    "memberCard": {
+      "title": "Thẻ của tôi",
+      "downloadFront": "Tải mặt trước",
+      "downloadBack": "Tải mặt sau",
+      "front": "Mặt trước",
+      "back": "Mặt sau",
+      "orientation": "Chiều dọc",
+      "clubName": "Mobile Programing Club",
+      "cardTitle": "Thẻ Thành Viên",
+      "faculty": "Khoa",
+      "IT": "Công nghệ thông tin",
+      "unknownRole": "Thành viên",
+      "studentId": "MSSV",
+      "joinedYear": "Tham gia năm",
+      "notAuthorized": "Bạn phải là thành viên CLB để xem thẻ này."
     }
   },
   "auth": {

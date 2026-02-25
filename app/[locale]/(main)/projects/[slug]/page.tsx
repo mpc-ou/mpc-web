@@ -10,13 +10,14 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProjectDetail } from "@/app/[locale]/actions";
+import { MarkdownContent } from "@/components/markdown-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { MarkdownContent } from "@/components/markdown-content";
 import { generatePageSeo } from "@/utils/seo";
+import { getFullName } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -45,9 +46,9 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const { data } = await getProjectDetail(slug);
   const project = (data?.payload as any)?.project;
 
@@ -193,7 +194,7 @@ export default async function ProjectDetailPage({
         {/* ── MEMBERS ── */}
         {project.members && project.members.length > 0 && (
           <ScrollReveal variant="fade-up">
-            <section className="mb-14 mt-8">
+            <section className="mt-8 mb-14">
               <h2 className="mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl">
                 <Users className="h-5 w-5 text-primary" /> Đội ngũ phát triển
               </h2>
@@ -203,7 +204,11 @@ export default async function ProjectDetailPage({
                     {m.member.avatar ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        alt={`${m.member.firstName} ${m.member.lastName}`}
+                        alt={getFullName(
+                          m.member.firstName,
+                          m.member.lastName,
+                          locale,
+                        )}
                         className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border"
                         src={m.member.avatar}
                       />
@@ -217,7 +222,11 @@ export default async function ProjectDetailPage({
                         className="block truncate font-medium text-sm hover:text-primary hover:underline"
                         href={`/members/${m.member.slug || m.member.id}`}
                       >
-                        {m.member.firstName} {m.member.lastName}
+                        {getFullName(
+                          m.member.firstName,
+                          m.member.lastName,
+                          locale,
+                        )}
                       </Link>
                       {m.role && (
                         <p className="truncate text-muted-foreground text-xs">

@@ -63,7 +63,8 @@
   --animate-blink-cursor: blink-cursor 0.75s steps(1) infinite;
 
   @keyframes blink-cursor {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -289,6 +290,6 @@
   }
 }
 
-body{
+body {
   overflow-x: hidden;
 }

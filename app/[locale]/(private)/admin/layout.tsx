@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { prisma } from "@/configs/prisma/db";
 import { createClientSsr } from "@/configs/supabase/server";
 import { isRootAdmin } from "@/utils/admin";
+import { getFullName } from "@/lib/utils";
 import { AdminHeader } from "./admin-header";
 import { AdminSidebar } from "./sidebar";
 
@@ -61,7 +62,7 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
     redirect("/");
   }
 
-  const memberName = `${member.firstName} ${member.lastName}`;
+  const memberName = getFullName(member.firstName, member.lastName, "vi");
 
   return (
     <div className="flex h-screen flex-col">

@@ -3,23 +3,16 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  type SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable,
+  type SortingState,
+  useReactTable
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 type Props<T> = {
   data: T[];
@@ -38,29 +31,25 @@ export function RecapTable<T>({ data, columns }: Props<T>) {
     onColumnFiltersChange: setFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getFilteredRowModel: getFilteredRowModel()
   });
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       <Input
-        className="max-w-xs"
-        onChange={(e) =>
-          table.getColumn("name")?.setFilterValue(e.target.value)
-        }
-        placeholder="Tìm kiếm recap..."
+        className='max-w-xs'
+        onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
+        placeholder='Tìm kiếm recap...'
         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
       />
-      <div className="rounded-md border">
+      <div className='rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
                 {hg.headers.map((h) => (
                   <TableHead key={h.id}>
-                    {h.isPlaceholder
-                      ? null
-                      : flexRender(h.column.columnDef.header, h.getContext())}
+                    {h.isPlaceholder ? null : flexRender(h.column.columnDef.header, h.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -71,21 +60,13 @@ export function RecapTable<T>({ data, columns }: Props<T>) {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  className="h-24 text-center"
-                  colSpan={columns.length}
-                >
+                <TableCell className='h-24 text-center' colSpan={columns.length}>
                   Chưa có recap nào.
                 </TableCell>
               </TableRow>

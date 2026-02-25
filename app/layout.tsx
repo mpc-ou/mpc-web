@@ -1,18 +1,13 @@
 import "@/app/globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import {
-  OG_IMAGE,
-  SITE_DESCRIPTION_EN,
-  SITE_NAME,
-  SITE_URL,
-} from "@/constants/seo";
+import { OG_IMAGE, SITE_DESCRIPTION_EN, SITE_NAME, SITE_URL } from "@/constants/seo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     template: `%s | ${SITE_NAME}`,
-    default: `${SITE_NAME} — Where there's a bug, there's MPC!`,
+    default: `${SITE_NAME} — Where there's a bug, there's MPC!`
   },
   description: SITE_DESCRIPTION_EN,
   applicationName: SITE_NAME,
@@ -33,7 +28,7 @@ export const metadata: Metadata = {
     "Khoa Công nghệ Thông tin",
     "Student Club",
     "web development",
-    "programming",
+    "programming"
   ],
   robots: {
     index: true,
@@ -43,8 +38,8 @@ export const metadata: Metadata = {
       follow: true,
       "max-video-preview": -1,
       "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+      "max-snippet": -1
+    }
   },
   openGraph: {
     type: "website",
@@ -59,27 +54,27 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 512,
         height: 512,
-        alt: `${SITE_NAME} Logo`,
-      },
-    ],
+        alt: `${SITE_NAME} Logo`
+      }
+    ]
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Where there's a bug, there's MPC!`,
     description: SITE_DESCRIPTION_EN,
-    images: [OG_IMAGE],
+    images: [OG_IMAGE]
   },
   alternates: {
     canonical: SITE_URL,
     languages: {
       vi: `${SITE_URL}/vi`,
-      en: `${SITE_URL}/en`,
-    },
+      en: `${SITE_URL}/en`
+    }
   },
   verification: {
     // Add your Google Search Console verification code here
     // google: "YOUR_GOOGLE_VERIFICATION_CODE",
-  },
+  }
 };
 
 type Props = {

@@ -15,11 +15,11 @@ export const getPublishedRecaps = async () =>
           year: true,
           name: true,
           description: true,
-          coverImage: true,
-        },
+          coverImage: true
+        }
       });
       return { recaps };
-    },
+    }
   });
 
 export const getRecapByYear = async (year: number) =>
@@ -29,16 +29,18 @@ export const getRecapByYear = async (year: number) =>
       cacheTag(_CACHE_RECAPS);
 
       const recap = await prisma.yearRecap.findUnique({
-        where: { year, isPublished: true },
+        where: { year, isPublished: true }
       });
-      if (!recap) return { recap: null };
+      if (!recap) {
+        return { recap: null };
+      }
 
       return {
         recap: {
           ...recap,
           createdAt: recap.createdAt.toISOString(),
-          updatedAt: recap.updatedAt.toISOString(),
-        },
+          updatedAt: recap.updatedAt.toISOString()
+        }
       };
-    },
+    }
   });

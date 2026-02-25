@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getFullName } from "@/lib/utils";
 import type { MemberRow } from "./columns";
 import { MemberProfileTab } from "./member-profile-tab";
 import { MemberRolesTab } from "./member-roles-tab";
@@ -35,7 +36,7 @@ export function MemberFormDialog({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-4xl">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? (
@@ -46,7 +47,7 @@ export function MemberFormDialog({
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                {member.firstName} {member.lastName}
+                {getFullName(member.firstName, member.lastName, "vi")}
               </span>
             ) : (
               "Thêm thành viên mới"

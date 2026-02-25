@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 export type DeptRow = {
@@ -25,74 +25,49 @@ export type DeptRow = {
   _count: { clubRoles: number };
 };
 
-export const createColumns = (
-  onEdit: (d: DeptRow) => void,
-  onDelete: (id: string) => void,
-): ColumnDef<DeptRow>[] => [
+export const createColumns = (onEdit: (d: DeptRow) => void, onDelete: (id: string) => void): ColumnDef<DeptRow>[] => [
   {
     accessorKey: "order",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        # <ArrowUpDown className="ml-2 h-4 w-4" />
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+        # <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm">
-        {row.original.order}
-      </span>
-    ),
+    cell: ({ row }) => <span className='text-muted-foreground text-sm'>{row.original.order}</span>
   },
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        Tên <ArrowUpDown className="ml-2 h-4 w-4" />
+      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
+        Tên <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
     ),
     cell: ({ row }) => (
-      <span className="font-medium">
+      <span className='font-medium'>
         {row.original.nameVi}{" "}
-        {row.original.nameEn ? (
-          <span className="text-muted-foreground text-xs">
-            / {row.original.nameEn}
-          </span>
-        ) : null}
+        {row.original.nameEn ? <span className='text-muted-foreground text-xs'>/ {row.original.nameEn}</span> : null}
       </span>
-    ),
+    )
   },
   {
     accessorKey: "slug",
     header: "Slug",
-    cell: ({ row }) => (
-      <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
-        {row.original.slug}
-      </code>
-    ),
+    cell: ({ row }) => <code className='rounded bg-muted px-1.5 py-0.5 font-mono text-xs'>{row.original.slug}</code>
   },
   {
     accessorKey: "description",
     header: "Mô tả",
     cell: ({ row }) =>
       row.original.descriptionVi ? (
-        <span className="max-w-xs truncate text-muted-foreground text-sm">
-          {row.original.descriptionVi}
-        </span>
+        <span className='max-w-xs truncate text-muted-foreground text-sm'>{row.original.descriptionVi}</span>
       ) : (
-        <span className="text-muted-foreground">—</span>
-      ),
+        <span className='text-muted-foreground'>—</span>
+      )
   },
   {
     id: "members",
     header: "Thành viên",
-    cell: ({ row }) => (
-      <Badge variant="secondary">{row.original._count.clubRoles}</Badge>
-    ),
+    cell: ({ row }) => <Badge variant='secondary'>{row.original._count.clubRoles}</Badge>
   },
   {
     accessorKey: "isActive",
@@ -101,7 +76,7 @@ export const createColumns = (
       <Badge variant={row.original.isActive ? "default" : "outline"}>
         {row.original.isActive ? "Hoạt động" : "Tạm ngưng"}
       </Badge>
-    ),
+    )
   },
   {
     id: "actions",
@@ -110,25 +85,20 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button className='h-8 w-8 p-0' variant='ghost'>
+              <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(d)}>
-              Chỉnh sửa
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(d)}>Chỉnh sửa</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={() => onDelete(d.id)}
-            >
+            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(d.id)}>
               Xóa
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
-    },
-  },
+    }
+  }
 ];

@@ -205,6 +205,11 @@
       "notAuthorized": "Bạn phải là thành viên CLB để xem thẻ này."
     }
   },
+  "clubUniform": {
+    "badge": "Đồng phục",
+    "title": "Áo Câu Lạc Bộ",
+    "description": "Thiết kế áo đồng phục chính thức của câu lạc bộ. Lấy cảm hứng từ sự năng động và nhiệt huyết của tuổi trẻ. Tương tác 3D để thu phóng và xoay thiết kế."
+  },
   "auth": {
     "title": "Đăng nhập",
     "title2": "Bạn là ai đó?",

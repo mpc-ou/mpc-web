@@ -8,6 +8,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { DepartmentsCarouselClient } from "./departments-carousel.client";
 import { TopMembersCarouselClient } from "./top-members.client";
+import { ClubShirtModelClient } from "./club-shirt-model.client";
 
 type AboutClientProps = {
   locale: string;
@@ -185,6 +186,8 @@ export function AboutClient({
       <div className="w-full">{benefitsSection}</div>
 
       <DepartmentsCarouselClient departments={localizedDepartments} />
+
+      <ClubShirtModelClient />
 
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4">

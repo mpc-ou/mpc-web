@@ -205,6 +205,11 @@
       "notAuthorized": "You must be a club member to view this card."
     }
   },
+  "clubUniform": {
+    "badge": "Uniform",
+    "title": "Club Shirt",
+    "description": "The official club uniform design. Inspired by the dynamism and enthusiasm of youth. Interact in 3D to zoom and rotate the design."
+  },
   "auth": {
     "title": "Login",
     "title2": "Who are you?",

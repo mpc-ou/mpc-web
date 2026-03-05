@@ -2,7 +2,7 @@ import { adminGetAnnouncements } from "../actions";
 import type { AnnouncementRow } from "./columns";
 import { AnnouncementsDataTable } from "./manager";
 
-export default async function AdminAnnouncementsPage() {
+export default async function AdminAnnouncementsPage(): Promise<React.ReactNode> {
   const { data } = await adminGetAnnouncements();
   const announcements = (data?.payload ?? []) as AnnouncementRow[];
 

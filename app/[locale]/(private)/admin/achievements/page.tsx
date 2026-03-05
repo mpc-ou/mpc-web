@@ -3,7 +3,7 @@ import { adminGetAchievements, adminGetMembers } from "../actions";
 import type { AchievementRow } from "./columns";
 import { AchievementsDataTable } from "./manager";
 
-export default async function AdminAchievementsPage() {
+export default async function AdminAchievementsPage(): Promise<React.ReactNode> {
   const [achievementsRes, membersRes] = await Promise.all([adminGetAchievements(), adminGetMembers()]);
   const achievements = (achievementsRes.data?.payload ?? []) as AchievementRow[];
   const allMembers = (membersRes.data?.payload ?? []) as MemberOption[];

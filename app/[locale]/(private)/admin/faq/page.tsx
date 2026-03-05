@@ -2,7 +2,7 @@ import { adminGetFaqItems, adminGetSettings } from "../actions";
 import type { FaqRow } from "./columns";
 import { FaqDataTable } from "./manager";
 
-export default async function AdminFaqPage() {
+export default async function AdminFaqPage(): Promise<React.ReactNode> {
   const [{ data: faqData }, { data: settingsData }] = await Promise.all([adminGetFaqItems(), adminGetSettings()]);
 
   const items = (faqData?.payload ?? []) as FaqRow[];

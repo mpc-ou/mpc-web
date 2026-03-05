@@ -2,7 +2,7 @@ import { adminGetEvents } from "../actions";
 import type { EventRow } from "./columns";
 import { EventsDataTable } from "./table";
 
-export default async function AdminEventsPage() {
+export default async function AdminEventsPage(): Promise<React.ReactNode> {
   const { data } = await adminGetEvents();
   const events = (data?.payload ?? []) as EventRow[];
 

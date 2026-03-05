@@ -2,8 +2,6 @@
 
 import { Code, Monitor, Smartphone, Target } from "lucide-react";
 import Image from "next/image";
-import { Suspense } from "react";
-import { LoadingComponent } from "@/components/custom/Loading";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { DepartmentsCarouselClient } from "./departments-carousel.client";
@@ -34,7 +32,7 @@ function CapabilityCard({
   desc,
   image,
 }: {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   desc: string;
   image: string;

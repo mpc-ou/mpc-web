@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function EventsPage({ params, searchParams }: Props) {
+export default async function EventsPage({ params, searchParams }: Props): Promise<React.ReactNode> {
   const { locale } = await params;
   setRequestLocale(locale);
 

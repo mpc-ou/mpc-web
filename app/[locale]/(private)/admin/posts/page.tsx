@@ -2,7 +2,7 @@ import { adminGetPosts } from "../actions";
 import type { PostRow } from "./columns";
 import { PostsDataTable } from "./table";
 
-export default async function AdminPostsPage() {
+export default async function AdminPostsPage(): Promise<React.ReactNode> {
   const { data } = await adminGetPosts();
   const posts = (data?.payload ?? []) as PostRow[];
 

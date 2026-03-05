@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageType) {
   };
 }
 
-export default async function Page({ params }: PageType) {
+export default async function Page({ params }: PageType): Promise<React.ReactNode> {
   const { locale } = await params;
   setRequestLocale(locale as locale);
 

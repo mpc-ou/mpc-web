@@ -2,7 +2,7 @@ import { adminGetDepartments } from "../actions";
 import type { DeptRow } from "./columns";
 import { DepartmentsDataTable } from "./manager";
 
-export default async function AdminDepartmentsPage() {
+export default async function AdminDepartmentsPage(): Promise<React.ReactNode> {
   const { data } = await adminGetDepartments();
   const departments = (data?.payload ?? []) as DeptRow[];
 

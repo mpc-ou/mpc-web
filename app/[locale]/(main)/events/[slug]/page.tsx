@@ -53,7 +53,7 @@ export default async function EventDetailPage({
   params,
 }: {
   params: Promise<{ slug: string; locale: string }>;
-}) {
+}): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
   const { data } = await getEventBySlug(slug);

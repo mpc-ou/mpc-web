@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Page() {
+export default async function Page(): Promise<React.ReactNode> {
   const { data, error } = await getProfile();
 
   if (error) {

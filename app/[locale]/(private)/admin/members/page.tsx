@@ -3,7 +3,7 @@ import type { MemberRow } from "./columns";
 import { MembersDataTable } from "./table";
 import type { Department } from "./types";
 
-export default async function AdminMembersPage() {
+export default async function AdminMembersPage(): Promise<React.ReactNode> {
   const [membersRes, depsRes] = await Promise.all([adminGetMembers(), adminGetDepartments()]);
   const members = (membersRes.data?.payload ?? []) as MemberRow[];
   const departments = (depsRes.data?.payload ?? []) as Department[];

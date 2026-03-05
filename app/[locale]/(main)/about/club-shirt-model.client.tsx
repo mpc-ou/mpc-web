@@ -86,5 +86,4 @@ export function ClubShirtModelClient() {
   );
 }
 
-// Preload the model
 useGLTF.preload("/models/AoCLB.glb");

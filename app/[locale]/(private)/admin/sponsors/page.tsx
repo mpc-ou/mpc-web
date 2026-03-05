@@ -2,7 +2,7 @@ import { adminGetSponsors } from "../actions";
 import type { SponsorRow } from "./columns";
 import { SponsorsDataTable } from "./table";
 
-export default async function AdminSponsorsPage() {
+export default async function AdminSponsorsPage(): Promise<React.ReactNode> {
   const { data } = await adminGetSponsors();
   const sponsors = (data?.payload ?? []) as SponsorRow[];
 

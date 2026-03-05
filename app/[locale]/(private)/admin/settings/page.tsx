@@ -1,7 +1,7 @@
 import { adminGetExternalLinks, adminGetSettings } from "../actions";
 import { SettingsManager } from "./manager";
 
-export default async function AdminSettingsPage() {
+export default async function AdminSettingsPage(): Promise<React.ReactNode> {
   const [{ data: settingsData }, { data: linksData }] = await Promise.all([
     adminGetSettings(),
     adminGetExternalLinks()

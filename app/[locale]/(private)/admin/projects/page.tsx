@@ -3,7 +3,7 @@ import { adminGetMembers, adminGetProjects } from "../actions";
 import type { ProjectRow } from "./columns";
 import { ProjectsDataTable } from "./manager";
 
-export default async function AdminProjectsPage() {
+export default async function AdminProjectsPage(): Promise<React.ReactNode> {
   const [projectsRes, membersRes] = await Promise.all([adminGetProjects(), adminGetMembers()]);
   const projects = (projectsRes.data?.payload ?? []) as ProjectRow[];
   const allMembers = (membersRes.data?.payload ?? []) as MemberOption[];

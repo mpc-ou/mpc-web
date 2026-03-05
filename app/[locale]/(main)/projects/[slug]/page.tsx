@@ -47,7 +47,7 @@ export default async function ProjectDetailPage({
   params,
 }: {
   params: Promise<{ slug: string; locale: string }>;
-}) {
+}): Promise<React.ReactNode> {
   const { slug, locale } = await params;
   const { data } = await getProjectDetail(slug);
   const project = (data?.payload as any)?.project;

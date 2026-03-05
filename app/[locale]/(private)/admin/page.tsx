@@ -2,7 +2,7 @@ import { Building2, Calendar, FileText, Heart, HelpCircle, Image, Megaphone, Use
 import { Link } from "@/configs/i18n/routing";
 import { adminGetDashboardStats } from "./actions";
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard(): Promise<React.ReactNode> {
   const { data } = await adminGetDashboardStats();
   const stats = (data?.payload ?? {}) as Record<string, number>;
 

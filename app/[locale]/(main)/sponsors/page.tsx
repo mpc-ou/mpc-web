@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-export default async function SponsorsPage() {
+export default async function SponsorsPage(): Promise<React.ReactNode> {
   const { data } = await getSponsorsPageData();
   const payload = data?.payload as { sponsors: any[] } | undefined;
   const sponsors = payload?.sponsors ?? [];

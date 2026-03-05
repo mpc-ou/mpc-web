@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function MemberProfilePage({ params }: Props) {
+export default async function MemberProfilePage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
   // Handle /members/me → redirect to user's slug

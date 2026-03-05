@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function ActivitiesPage({ params }: Props) {
+export default async function ActivitiesPage({ params }: Props): Promise<React.ReactNode> {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("events");

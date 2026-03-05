@@ -9,7 +9,7 @@ type GalleryImage = {
   isActive: boolean;
 };
 
-export default async function AdminGalleryPage() {
+export default async function AdminGalleryPage(): Promise<React.ReactNode> {
   const { data } = await adminGetGalleryImages();
   const images = (data?.payload ?? []) as GalleryImage[];
 

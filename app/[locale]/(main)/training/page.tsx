@@ -49,7 +49,7 @@ const PHASES = [
   }
 ];
 
-export default async function TrainingPage() {
+export default async function TrainingPage(): Promise<React.ReactNode> {
   const { data } = await getTrainingPageData();
   const latestProjects = (data?.payload as any)?.latestProjects ?? [];
 

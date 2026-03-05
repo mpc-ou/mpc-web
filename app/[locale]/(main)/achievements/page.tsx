@@ -25,7 +25,7 @@ export default async function AchievementsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
   locale: string;
-}) {
+}): Promise<React.ReactNode> {
   const sp = await searchParams;
   const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
   const validPage = Number.isNaN(page) || page < 1 ? 1 : page;

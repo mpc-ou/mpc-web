@@ -2,7 +2,7 @@ import { adminGetHomepageSections } from "../actions";
 import type { SectionRow } from "./columns";
 import { HomepageDataTable } from "./manager";
 
-export default async function AdminHomepagePage() {
+export default async function AdminHomepagePage(): Promise<React.ReactNode> {
   const { data } = await adminGetHomepageSections();
   const sections = (data?.payload ?? []) as SectionRow[];
 

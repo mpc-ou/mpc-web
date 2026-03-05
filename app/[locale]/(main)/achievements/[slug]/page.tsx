@@ -48,7 +48,7 @@ export default async function AchievementDetailPage({
   params,
 }: {
   params: Promise<{ slug: string; locale: string }>;
-}) {
+}): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
   const { data } = await getAchievementBySlug(slug);

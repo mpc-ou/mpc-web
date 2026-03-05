@@ -36,7 +36,7 @@ export default async function MemberCardPage({
 }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+}): Promise<React.ReactNode> {
   const { locale } = await params;
   const resolvedSearchParams = await searchParams;
   const targetMemberSlug = resolvedSearchParams?.member as string | undefined;

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-export default async function MembersPage() {
+export default async function MembersPage(): Promise<React.ReactNode> {
   const { data } = await getMembersGroupedByYear();
   const payload = data?.payload as { sortedYears: number[]; groupedByYear: Record<number, any[]> } | undefined;
   const sortedYears = payload?.sortedYears ?? [];

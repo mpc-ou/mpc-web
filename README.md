@@ -2,7 +2,16 @@
 
 Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động (MPC)** — Khoa Công nghệ Thông tin, Trường Đại học Mở TP.HCM.
 
-> **Stack:** Next.js 16 · React 19 · TypeScript 5 · Tailwind CSS 4 · Prisma 7 · Supabase · pnpm
+## 🛠️ Tech Stack
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-38B2AC?logo=tailwindcss)
+![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma)
+![Supabase](https://img.shields.io/badge/Supabase-1-3FCF8E?logo=supabase)
+![pnpm](https://img.shields.io/badge/pnpm-1-F69220?logo=pnpm)
+
 
 ---
 
@@ -166,4 +175,4 @@ MIT License
 
 ## 👥 Team
 
-Phát triển bởi **MPC — Mobile Programming Club**, ĐH Mở TP.HCM.
+Phát triển bởi **MPC — Mobile Programming Club**, Trường ĐH Mở TP.HCM.

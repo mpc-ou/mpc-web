@@ -1,0 +1,273 @@
+import {
+  CalendarDays,
+  ChevronLeft,
+  Globe2,
+  MapPin,
+  Play,
+  Share2,
+  UserCircle,
+  Users,
+} from "lucide-react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { getEventBySlug } from "@/app/[locale]/actions/events";
+import { MarkdownContent } from "@/components/markdown-content";
+import { EventJsonLd } from "@/components/seo/json-ld";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Separator } from "@/components/ui/separator";
+import { Link } from "@/configs/i18n/routing";
+import { generatePageSeo } from "@/utils/seo";
+import { GalleryCarousel } from "../../gallery-carousel.client";
+import { EventContentClient } from "./client";
+import { getFullName } from "@/lib/utils";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> {
+  const { slug, locale } = await params;
+  const { data } = await getEventBySlug(slug);
+  // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
+  const event = (data?.payload as any)?.event;
+
+  if (!event) {
+    return { title: "Không tìm thấy sự kiện" };
+  }
+
+  return generatePageSeo({
+    page: "eventDetail",
+    title: event.title,
+    description: event.description?.slice(0, 160) || undefined,
+    locale: locale || "vi",
+    pathname: `/events/${slug}`,
+    image: event.thumbnail || undefined,
+    type: "article",
+  });
+}
+
+export default async function EventDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<React.ReactNode> {
+  const { slug, locale } = await params;
+
+  const { data } = await getEventBySlug(slug);
+  // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
+  const event = (data?.payload as any)?.event;
+
+  if (!event) {
+    notFound();
+  }
+
+  const t = await getTranslations();
+  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
+
+  const statusMap: Record<
+    string,
+    { label: string; variant: "default" | "secondary" | "outline" }
+  > = {
+    UPCOMING: { label: "Sắp diễn ra", variant: "default" },
+    ONGOING: { label: "Đang diễn ra", variant: "secondary" },
+    COMPLETED: { label: "Đã diễn ra", variant: "outline" },
+  };
+
+  const statusInfo = statusMap[event.status as keyof typeof statusMap] ?? {
+    label: event.status,
+    variant: "outline" as const,
+  };
+
+  const dateLabel = event.startAt
+    ? new Date(event.startAt).toLocaleDateString("vi-VN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
+  const endDateLabel = event.endAt
+    ? new Date(event.endAt).toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
+
+  // Combine images and gallery
+  const combinedGalleryImages = [
+    ...(event.images || []).map((url: string, i: number) => ({
+      id: `img-${i}`,
+      url,
+      caption: null,
+      order: i,
+    })),
+    ...(event.gallery || []).map((g: any) => ({
+      id: g.id,
+      url: g.url,
+      caption: g.caption || null,
+      order: 1000 + (g.order || 0),
+    })),
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <EventJsonLd
+        description={event.description || ""}
+        endDate={event.endAt || undefined}
+        image={event.thumbnail || undefined}
+        location={event.location || undefined}
+        name={event.title}
+        startDate={event.startAt}
+        url={eventUrl}
+      />
+      {/* ── HERO IMAGE ─────────────────────────────────────────────── */}
+      {event.thumbnail ? (
+        <div className="relative h-[55vh] min-h-90 w-full overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt={event.title}
+            className="h-full w-full object-cover"
+            src={event.thumbnail}
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+        </div>
+      ) : (
+        <div className="h-24 sm:h-32" />
+      )}
+
+      {/* ── ARTICLE ────────────────────────────────────────────────── */}
+      <div className="container mx-auto max-w-3xl px-4 pb-24">
+        {/* Back link */}
+        <div className="py-5">
+          <Button
+            asChild
+            className="-ml-3 text-muted-foreground"
+            size="sm"
+            variant="ghost"
+          >
+            <Link href="/events">
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              Trở lại danh sách sự kiện
+            </Link>
+          </Button>
+        </div>
+
+        {/* Status + tags */}
+        <ScrollReveal>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <Badge className="px-3 py-1" variant={statusInfo.variant}>
+              {statusInfo.label}
+            </Badge>
+            {event.type && event.type !== "OTHER" && (
+              <Badge
+                className="bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20"
+                variant="secondary"
+              >
+                {t(`events.types.${event.type}` as any) || event.type}
+              </Badge>
+            )}
+            {event.tags?.map((t: any) => (
+              <Badge className="px-3 py-1" key={t.tag.id} variant="secondary">
+                {t.tag.name}
+              </Badge>
+            ))}
+          </div>
+
+          {/* Title */}
+          <h1 className="mb-5 font-bold text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            {event.title}
+          </h1>
+
+          {/* Byline — date & location */}
+          <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-muted-foreground text-sm">
+            {dateLabel && (
+              <span className="flex items-center gap-1.5">
+                <CalendarDays className="h-4 w-4 shrink-0 text-primary/60" />
+                {dateLabel}
+                {endDateLabel && <> — {endDateLabel}</>}
+              </span>
+            )}
+            {event.location && (
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4 shrink-0 text-primary/60" />
+                {event.location}
+              </span>
+            )}
+          </div>
+        </ScrollReveal>
+
+        <Separator className="mb-10" />
+
+        {/* ── ARTICLE BODY ── */}
+        {event.description ? (
+          <ScrollReveal delay={100} variant="fade-up">
+            <MarkdownContent content={event.description} />
+          </ScrollReveal>
+        ) : null}
+
+        {/* ── ADDITIONAL IMAGES (Carousel) ── */}
+        {combinedGalleryImages.length > 0 && (
+          <ScrollReveal delay={150} variant="fade-up">
+            <section className="mt-10 mb-14">
+              <h2 className="mb-6 border-border border-b pb-2 font-bold text-2xl">
+                Hình ảnh sự kiện
+              </h2>
+              <GalleryCarousel images={combinedGalleryImages} />
+            </section>
+          </ScrollReveal>
+        )}
+
+        {/* ── ORGANIZERS ── */}
+        {event.organizers && event.organizers.length > 0 && (
+          <ScrollReveal variant="fade-up">
+            <section className="mb-14">
+              <h2 className="mb-5 border-border border-b pb-2 font-bold text-xl">
+                Ban tổ chức
+              </h2>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {event.organizers.map((org: any) => (
+                  <div className="flex items-center gap-3" key={org.id}>
+                    {org.member.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        alt={getFullName(
+                          org.member.firstName,
+                          org.member.lastName,
+                          locale,
+                        )}
+                        className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border"
+                        src={org.member.avatar}
+                      />
+                    ) : (
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                        <UserCircle className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-sm">
+                        {getFullName(
+                          org.member.firstName,
+                          org.member.lastName,
+                          locale,
+                        )}
+                      </p>
+                      {org.role && (
+                        <p className="truncate text-muted-foreground text-xs">
+                          {org.role}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </ScrollReveal>
+        )}
+      </div>
+    </div>
+  );
+}

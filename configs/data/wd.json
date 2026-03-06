@@ -1,0 +1,67 @@
+{
+  "title": "Triễn lãm WebDesign",
+  "teams": [
+    {
+      "teamName": "Future",
+      "teamMembers": [],
+      "subjects": "35 Years Anniversary OU - WD2025",
+      "projectName": "Cổng thông tin 35 năm thành lập trường ĐH Mở TP.HCM",
+      "description": "Một giao diện cổng thông tin 35 năm thành lập trường ĐH Mở TP.HCM",
+      "github": "https://github.com/OUMPC/WebDesign2025-Future",
+      "live": "https://wd2025-future.vercel.app/",
+      "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://wd2025-future.vercel.app/",
+      "techStack": ["HTML", "CSS", "JavaScript"]
+    },
+    {
+      "teamName": "NTK",
+      "teamMembers": [],
+      "subjects": "35 Years Anniversary OU - WD2025",
+      "projectName": "Website giới thiệu khoa CNTT",
+      "description": "Website giới thiệu khoa CNTT",
+      "github": "https://github.com/Hehe-Boiz/NTK",
+      "live": "https://ntk-frontend.onrender.com/",
+      "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://ntk-frontend.onrender.com/",
+      "techStack": ["React", "Tailwind CSS", "Shadcn UI"]
+    },
+    {
+      "teamName": "THETHREE",
+      "teamMembers": [],
+      "subjects": "35 Years Anniversary OU - WD2025",
+      "projectName": "Website giới thiệu trường ĐH Mở TP.HCM",
+      "description": "Là một trang web giới thiệu trường ĐH Mở TP.HCM",
+      "github": "https://github.com/Teaching2504/WEBDESIGN_THETHREE",
+      "live": "https://webdesignthethree.netlify.app/",
+      "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://webdesignthethree.netlify.app/",
+      "techStack": ["HTML", "CSS", "JavaScript"]
+    },
+    {
+      "teamName": "Stack Lifo",
+      "teamMembers": [],
+      "subjects": "35 Years Anniversary OU - WD2025",
+      "projectName": "Website giới thiệu trường ĐH Mở TP.HCM",
+      "description": "Là một trang web giới thiệu trường ĐH Mở TP.HCM",
+      "github": "https://github.com/Theanh130124/WEB_DESIGN",
+      "live": "https://web-desgin-stacklifo.vercel.app/",
+      "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://web-desgin-stacklifo.vercel.app/",
+      "techStack": ["React", "Three.js"]
+    }
+  ],
+  "images": [
+    "/images/web-design/2025_7.jpg",
+    "/images/web-design/2025_6.jpg",
+    "/images/web-design/2025_5.jpg",
+    "/images/web-design/2025_4.jpg",
+    "/images/web-design/2025_3.jpg",
+    "/images/web-design/2025_2.jpg",
+    "/images/web-design/2025_1.jpg",
+    "/images/web-design/2025_0.jpg",
+    "/images/web-design/2023_4.jpg",
+    "/images/web-design/2023_3.jpg",
+    "/images/web-design/2023_2.jpg",
+    "/images/web-design/2023_1.jpg",
+    "/images/web-design/2023_0.png",
+    "/images/web-design/2022_2.jpg",
+    "/images/web-design/2022_1.jpg",
+    "/images/web-design/2022_0.jpg"
+  ]
+}

@@ -1,0 +1,105 @@
+[
+  {
+    "id": "programming",
+    "icon": "Code",
+    "bgImage": "/images/bg/lt.jpg",
+    "vi": {
+      "name": "Ban Lập trình",
+      "description": "Đây là ban nòng cốt của CLB MPC, thức thâu đêm để đọc hiểu được những ngôn ngữ của máy móc và xây dựng các sản phẩm, dự án hữu ích cho sinh viên.",
+      "missions": [
+        "Tổ chức các buổi training kỹ năng, ôn tập và chia sẻ kiến thức chuyên ngành",
+        "Thực hiện các bài test thực hành, giúp thành viên luôn nắm chắc kiến vững kiến thức chuyên ngành.",
+        "Xây dựng các sản phẩm số, ứng dụng cho CLB và cộng đồng sinh viên trường.",
+        "Tham gia tổ chức và đại diện tham gia các cuộc thi học thuật trong trường và ngoài cộng đồng sinh viên toàn quốc."
+      ],
+      "linkLabel": "Xem các dự án"
+    },
+    "en": {
+      "name": "Programming Dept",
+      "description": "The core department of MPC, staying up late to understand machine languages and build useful products and projects for students.",
+      "missions": [
+        "Organize skill training sessions, review and share specialized knowledge",
+        "Conduct practical tests to help members firmly grasp specialized knowledge",
+        "Build digital products and applications for the club and the student community",
+        "Organize and represent the club in academic competitions locally and nationally"
+      ],
+      "linkLabel": "View our projects"
+    },
+    "link": "/projects"
+  },
+  {
+    "id": "media",
+    "icon": "Camera",
+    "bgImage": "/images/bg/tt.jpg",
+    "vi": {
+      "name": "Ban Truyền Thông",
+      "description": "Ban phụ trách mọi nội dung liên quan đến hình ảnh – truyền thông của CLB. Đặc biệt là biến các hoạt động của CLB thành “content” triệu view.",
+      "missions": [
+        "Thiết kế ấn phẩm như Poster, Banner hoặc template.",
+        "Xây dựng nội dung thu hút để đăng tải trên fanpage.",
+        "Chụp ảnh, quay video tại workshop, sự kiện"
+      ],
+      "linkLabel": "Xem các sự kiện"
+    },
+    "en": {
+      "name": "Media Dept",
+      "description": "Responsible for all visual and media content. Specialized in turning club activities into million-view 'content'.",
+      "missions": [
+        "Design publications such as Posters, Banners, or templates",
+        "Create engaging content to post on the fanpage",
+        "Take photos and shoot videos at workshops and events"
+      ],
+      "linkLabel": "View our events"
+    },
+    "link": "/activities"
+  },
+  {
+    "id": "logistics",
+    "icon": "Settings",
+    "bgImage": "/images/bg/hc.jpg",
+    "vi": {
+      "name": "Ban Hậu Cần",
+      "description": "Đây là team luôn đảm bảo mọi sự kiện diễn ra suôn sẻ và không để lại vụn.",
+      "missions": [
+        "Chuẩn bị, sắp xếp địa điểm, cơ sở vật chất, âm thanh, ánh sáng...",
+        "Quản lý chi tiêu và vật dụng của CLB",
+        "Cẩn thận, nhanh nhẹn, hỗ trợ tốt về kỹ thuật và tinh thần teamwork cao"
+      ]
+    },
+    "en": {
+      "name": "Logistics Dept",
+      "description": "The team that ensures every event runs smoothly and leaves no trace behind.",
+      "missions": [
+        "Prepare, arrange locations, facilities, sound, and lighting...",
+        "Manage the club's expenses and supplies",
+        "Careful, agile, providing excellent technical support and high teamwork spirit"
+      ]
+    }
+  },
+  {
+    "id": "executive",
+    "icon": "Users",
+    "bgImage": "/images/bg/cn.jpg",
+    "vi": {
+      "name": "Ban Chủ Nhiệm",
+      "description": "Ban Chủ nhiệm chịu trách nhiệm điều hành, định hướng và đưa ra các quyết định quan trọng cho mọi hoạt động của CLB.",
+      "missions": [
+        "Định hướng và lên kế hoạch phát triển dài hạn cho CLB.",
+        "Quản lý, gắn kết và hỗ trợ các ban chuyên môn hoạt động hiệu quả.",
+        "Đại diện CLB làm việc với nhà trường, Đoàn - Hội và các đối tác ngoài."
+      ],
+      "linkLabel": "Gặp gỡ Ban Chủ Nhiệm"
+    },
+    "en": {
+      "name": "Executive Board",
+      "description": "The Executive Board is responsible for managing, directing, and making critical decisions for all club activities.",
+      "missions": [
+        "Direct and plan the long-term development of the club",
+        "Manage, connect, and support specialized departments to operate effectively",
+        "Represent the club in working with the school, Youth Union, and external partners"
+      ],
+      "linkLabel": "Meet the Board"
+    },
+    "link": "/members"
+  }
+]

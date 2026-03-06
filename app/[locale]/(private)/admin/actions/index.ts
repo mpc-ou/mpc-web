@@ -1,0 +1,72 @@
+// Barrel re-export — all admin server actions
+// Import from "../actions" still works (resolves to actions/index.ts)
+
+export {
+  adminCreateAchievement,
+  adminDeleteAchievement,
+  adminGetAchievements,
+  adminLinkAchievementMember,
+  adminUnlinkAchievementMember,
+  adminUpdateAchievement
+} from "./achievements";
+export {
+  adminCreateAnnouncement,
+  adminDeleteAnnouncement,
+  adminGetAnnouncements,
+  adminUpdateAnnouncement
+} from "./announcements";
+export {
+  adminCreateExternalLink,
+  adminCreateFaqItem,
+  adminCreateGalleryImage,
+  adminDeleteExternalLink,
+  adminDeleteFaqItem,
+  adminDeleteGalleryImage,
+  adminGetExternalLinks,
+  adminGetFaqItems,
+  adminGetGalleryImages,
+  adminGetHomepageSections,
+  adminGetSettings,
+  adminUpdateExternalLink,
+  adminUpdateFaqItem,
+  adminUpdateGalleryOrders,
+  adminUpsertHomepageSection,
+  adminUpsertSetting
+} from "./content";
+export { adminGetDashboardStats } from "./dashboard";
+export {
+  adminCreateDepartment,
+  adminDeleteDepartment,
+  adminGetDepartments,
+  adminUpdateDepartment
+} from "./departments";
+export { adminCreateEvent, adminDeleteEvent, adminGetEvents, adminUpdateEvent } from "./events";
+export {
+  adminAddClubRole,
+  adminAddMember,
+  adminDeleteMember,
+  adminGetMemberClubRoles,
+  adminGetMembers,
+  adminRemoveClubRole,
+  adminUpdateMember,
+  adminUpdateMemberRole
+} from "./members";
+export { adminCreatePost, adminDeletePost, adminGetPosts, adminUpdatePost, adminUpdatePostStatus } from "./posts";
+export {
+  adminCreateProject,
+  adminDeleteProject,
+  adminGetProjects,
+  adminLinkProjectMember,
+  adminUnlinkProjectMember,
+  adminUpdateProject
+} from "./projects";
+export {
+  adminBuildRecapData,
+  adminCreateRecap,
+  adminDeleteRecap,
+  adminGetRecap,
+  adminGetRecapCandidates,
+  adminGetRecaps,
+  adminUpdateRecap
+} from "./recaps";
+export { adminCreateSponsor, adminDeleteSponsor, adminGetSponsors, adminUpdateSponsor } from "./sponsors";

@@ -1,0 +1,446 @@
+{
+  "metadata": {
+    "siteName": "MPC"
+  },
+  "common": {
+    "locale": {
+      "en": "English",
+      "vi": "Vietnamese",
+      "select": "Select Language"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "toggle": "Toggle Theme"
+    },
+    "nav": {
+      "login": "Login",
+      "logout": "Logout",
+      "home": "Home",
+      "profile": "Profile",
+      "settings": "Account Settings",
+      "admin": "Admin Panel"
+    },
+    "text": {
+      "loading": "Loading...",
+      "loginWith": "Login with",
+      "here": "here"
+    },
+    "notify": {
+      "success": {
+        "title": "Success",
+        "message": "Operation completed successfully."
+      },
+      "error": {
+        "title": "Error",
+        "message": "Operation failed.",
+        "unknownError": "Unknown error. Please contact the administrator."
+      }
+    }
+  },
+  "header": {
+    "logoName": "MPC",
+    "clubFullName": "Mobile Programming Club",
+    "apiDocs": "API Docs",
+    "nav": {
+      "home": "Home",
+      "training": "Training",
+      "activities": "Activities",
+      "webDesign": "Web Design",
+      "introduction": "Introduction",
+      "events": "Events",
+      "achievements": "Achievements",
+      "projects": "Projects",
+      "sponsors": "Sponsors",
+      "members": "Members",
+      "about": "About Us",
+      "recap": "Recap"
+    },
+    "announcement": "🎉 MPC Club is recruiting new members! Don't miss the opportunity to grow your programming skills.",
+    "registerNow": "Register Now",
+    "dismiss": "Dismiss",
+    "feedback": "Feedback Box",
+    "searchPlaceholder": "Search...",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "description": "Mobile Programming Club (MPC) – a place to learn, grow, and share knowledge about technology.",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "activities": "Activities",
+    "achievements": "Achievements",
+    "aboutUs": "About Us",
+    "resources": "Resources",
+    "sponsors": "Sponsors",
+    "qa": "Q&A",
+    "externalLinks": "External Links",
+    "facultyLink": "Faculty of IT – OU",
+    "universityLink": "Ho Chi Minh City Open University",
+    "contact": "Contact",
+    "copyright": "© 2025 MPC Club – Mobile Programming Club. All rights reserved."
+  },
+  "home": {
+    "title": "Home – MPC Club",
+    "hero": {
+      "title": "Mobile Programming Club",
+      "subtitle": "Where there's a bug, there's MPC!",
+      "cta": "Learn More",
+      "ctaJoin": "Join Now"
+    },
+    "intro": {
+      "title": "About Us",
+      "description": "Mobile Programming Club (MPC) is one of the most dynamic and creative clubs at the Faculty of Information Technology – Ho Chi Minh City Open University. MPC was established to create an environment for learning, researching and developing IT skills across web, mobile, and more.",
+      "learnMore": "Learn More",
+      "viewMembers": "View Members"
+    },
+    "stats": {
+      "title": "MPC in Numbers",
+      "members": "Members",
+      "events": "Events Organized",
+      "years": "Years Active",
+      "projects": "Projects Completed"
+    },
+    "benefits": {
+      "title": "Benefits of Joining",
+      "subtitle": "Join MPC to grow together, learn from each other, and make a difference",
+      "skills": {
+        "title": "Skill Development",
+        "desc": "Learn and practice the latest technologies in Web, App, and AI through workshops and real projects."
+      },
+      "network": {
+        "title": "Network Building",
+        "desc": "Meet and work with like-minded people. Build lasting relationships in the tech community."
+      },
+      "opportunity": {
+        "title": "Opportunities",
+        "desc": "Participate in real projects, programming contests, and tech events. Gain experience for your career."
+      },
+      "community": {
+        "title": "Friendly Community",
+        "desc": "A positive learning environment that supports and is always ready to help new members."
+      }
+    },
+    "team": {
+      "title": "Club Organization",
+      "subtitle": "Our passionate and dedicated leadership team",
+      "president": "Executive Board",
+      "staff": "Department Leaders",
+      "viewAll": "View All Members",
+      "noLeadership": "No leadership information available."
+    },
+    "activities": {
+      "title": "Featured Activities",
+      "subtitle": "Signature events and projects from MPC Club"
+    },
+    "gallery": {
+      "title": "MPC Moments",
+      "subtitle": "Memorable moments with MPC"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Common questions about MPC Club",
+      "items": [
+        {
+          "q": "What is MPC?",
+          "a": "MPC (Mobile Programming Club) is the Mobile Programming Club at the Faculty of Information Technology – Ho Chi Minh City Open University, established to create a tech learning environment for students."
+        },
+        {
+          "q": "Do I need programming skills to join?",
+          "a": "Not required! The club welcomes all students passionate about technology, from beginners to experienced. The most important thing is a willingness to learn and enthusiasm."
+        },
+        {
+          "q": "How does the club operate?",
+          "a": "The club organizes programming skill workshops, tech seminars, competitions like Web Design and Robocode, and monthly teambuilding activities, plus real projects for members to practice."
+        },
+        {
+          "q": "How can I join MPC?",
+          "a": "Follow MPC's Facebook fanpage for updates on membership recruitment each semester. When recruitment opens, you can register via online form and participate in an interview."
+        },
+        {
+          "q": "What departments does the club have?",
+          "a": "MPC Club has several functional departments: Programming, Events & Logistics, Communications, Academic... Each handles different activities and you can choose the one that fits your interests."
+        },
+        {
+          "q": "Can students from other faculties join?",
+          "a": "The club prioritizes IT Faculty students but warmly welcomes students from other faculties who are passionate about programming and technology."
+        }
+      ]
+    },
+    "members": {
+      "title": "Club Members",
+      "description": "List of all active club members. To update your profile, please visit"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Your current information.",
+    "loginWith": "Login with",
+    "form": {
+      "submit": "Save",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "bio": "Bio",
+      "linkGithub": "Link GitHub",
+      "linkedGithub": "Unlink GitHub",
+      "linkingGithub": "Processing...",
+      "linkGithubDesc": "Link your GitHub account for faster login.",
+      "linkedGithubDesc": "Your GitHub account is successfully linked for login."
+    },
+    "memberCard": {
+      "title": "My Card",
+      "downloadFront": "Download Front",
+      "downloadBack": "Download Back",
+      "front": "Front",
+      "back": "Back",
+      "orientation": "Vertical",
+      "clubName": "Mobile Programing Club",
+      "cardTitle": "Member Card",
+      "faculty": "Faculty",
+      "IT": "Information Technology",
+      "unknownRole": "Member",
+      "studentId": "Student ID",
+      "joinedYear": "Joined Year",
+      "notAuthorized": "You must be a club member to view this card."
+    }
+  },
+  "clubUniform": {
+    "badge": "Uniform",
+    "title": "Club Shirt",
+    "description": "The official club uniform design. Inspired by the dynamism and enthusiasm of youth. Interact in 3D to zoom and rotate the design."
+  },
+  "auth": {
+    "title": "Login",
+    "title2": "Who are you?",
+    "description": "Login to your account so we know who you are! ^^",
+    "errorPageTitle": "Authentication Error",
+    "error": {
+      "title": "Login failed"
+    }
+  },
+  "defaultPage": {
+    "error": {
+      "title": "An Error Occurred!",
+      "description": "A small server error!",
+      "reminder": "Please notify the administrator!",
+      "tryAgain": "Try Again",
+      "redirect": "Back to Home"
+    },
+    "notFound": {
+      "title": "Page Not Found!",
+      "description": "Sorry, we couldn't find the page you're looking for. It may have been moved or no longer exists.",
+      "redirect": "Back to Home"
+    }
+  },
+  "admin": {
+    "title": "Admin Page",
+    "description": "Manage club content and members.",
+    "form": {
+      "selector": {
+        "linkedMembers": "Linked Members",
+        "removeLinkedMember": "Remove Linked Member",
+        "searchMembersPlaceholder": "Search members...",
+        "rolePlaceholder": "Select Role",
+        "clearSelectedMember": "Clear Selected Member"
+      }
+    }
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "The club regularly hosts events, large and small, organized to bond club members and expand networking outside the club. These events also serve as entertainment after school and club hours.",
+    "internalMenu": "Internal",
+    "externalMenu": "External",
+    "internal": {
+      "title": "Internal Club Activities",
+      "desc": "The club often organizes internal activities and events such as: offline meetings, birthdays, study groups,... aiming to bond members and create a comfortable learning/working environment."
+    },
+    "external": {
+      "title": "External Club Events",
+      "desc": "Organizing university events and academic competitions like WebDesign, RoboCode,... expanding relationships with other clubs and providing opportunities for self-expression."
+    },
+    "internalEvents": [
+      {
+        "title": "Offline Meetings",
+        "desc": "A gathering for club members at a specific location to meet, talk, socialize, share knowledge and experiences, and build relationships with each other."
+      },
+      {
+        "title": "Birthdays",
+        "desc": "The club annually celebrates its birthday, an occasion for everyone to meet, congratulate, and share joy together."
+      },
+      {
+        "title": "Event Organization",
+        "desc": "Club members often support each other in organizing events, helping everyone understand the event organization process better and creating opportunities for members to get closer."
+      },
+      {
+        "title": "Study Groups",
+        "desc": "The club frequently organizes study groups for members to learn and exchange knowledge and experiences together, helping everyone understand subjects better and creating a comfortable, effective learning environment."
+      }
+    ],
+    "externalEvents": [
+      {
+        "title": "WebDesign",
+        "desc": "Web Design is an annual website interface programming competition, providing participants with a meaningful academic playground."
+      },
+      {
+        "title": "Robocode",
+        "desc": "Aims to foster specialized knowledge, soft skills, and promote students creativity."
+      },
+      {
+        "title": "Freshman Welcome Activities",
+        "desc": "This activity helps orient Freshmen, helping them quickly integrate, understand the university environment, and the roles of the Youth Union - Student Association - Clubs."
+      },
+      {
+        "title": "Knowledge Sharing Sessions",
+        "desc": "Organizing sessions to share knowledge and experiences from club members, as well as industry experts."
+      },
+      {
+        "title": "The Open Clubs",
+        "desc": "An exchange, performance, and club introduction event for all university students organized by the University Youth Union."
+      }
+    ],
+    "types": {
+      "ACADEMIC": "Academic Competition",
+      "MEMBER_ACTIVITY": "Member Activity",
+      "VOLUNTEER": "Volunteer Activity",
+      "SEMINAR": "Seminar / Workshop",
+      "OTHER": "Other"
+    },
+    "learnMore": "Learn more"
+  },
+  "recap": {
+    "title": "Year Recap",
+    "subtitle": "Look back at the club's journey through the years",
+    "selectYear": "Select year",
+    "statsTitle": "A year in review",
+    "newMembersTitle": "Welcome new members",
+    "thankYou": "Thank you for being with us!",
+    "autoPlay": "Auto play",
+    "exit": "Exit"
+  },
+  "webdesign": {
+    "title": "Academic Competition \nWeb Design",
+    "subtitle": "Web Design is an annual website interface programming competition organized by the Mobile Programming Club with the desire to bring a meaningful and creative playground.",
+    "tag": "Events",
+    "heading": "Web Design Competition",
+    "purpose": "Purpose of Organization",
+    "purposeDesc": "Web Design was created to provide a healthy academic playground, helping students apply their learned knowledge into practice. Thereby helping competing teams develop teamwork skills, time management skills, UI/UX design, and Frontend programming. The competition emphasizes not only programming skills but also the usability and aesthetics of the product.",
+    "rulesTitle": "Rules",
+    "rules1": "Team Competition",
+    "rules1Desc": "Contestants register to form teams of up to 3 members",
+    "rules2": "Registration",
+    "rules2Desc": "The representative contestant fills out the organizing committees registration form",
+    "rules3": "Audience",
+    "rules3Desc": "Audiences follow and participate in mini-games at the finale",
+    "timelineTitle": "Timeline",
+    "phase1Title": "Phase 1",
+    "phase1": "Open Applications",
+    "phase1Desc": "Open registration form, announce competition theme",
+    "phase2Title": "Phase 2",
+    "phase2": "Media Activities",
+    "phase2Desc": "A series of media posts regarding rules and prize structure",
+    "phase3Title": "Phase 3",
+    "phase3": "Qualifiers",
+    "phase3Desc": "The process of finalizing and submitting projects by teams",
+    "phase4Title": "Phase 4",
+    "phase4": "Finals",
+    "phase4Desc": "Top scoring teams will present their products directly to the jury",
+    "criteriaTitle": "Criteria",
+    "criteria1": "Interface",
+    "criteria1Desc": "Transparent layout, harmonious colors, responsive design",
+    "criteria2": "Experience",
+    "criteria2Desc": "Easy to use, convenient operations, fast loading",
+    "criteria3": "Creativity",
+    "criteria3Desc": "Uniqueness in ideas, breakthrough UX",
+    "criteria4": "Relevance",
+    "criteria4Desc": "Fits the competition theme, practical and usable",
+    "galleryTitle": "Gallery",
+    "prizesTitle": "Prizes",
+    "prize1": "First Prize",
+    "prize1Desc": "Worth more than <b>1.000.000 VNĐ</b>, special gifts from sponsors and certificates",
+    "prize2": "Second Prize",
+    "prize2Desc": "Worth more than <b>700.000 VNĐ</b>, special gifts from sponsors and certificates",
+    "prize3": "Third Prize",
+    "prize3Desc": "Worth more than <b>500.000 VNĐ</b>, special gifts from sponsors and certificates",
+    "joinTitle": "Join",
+    "joinHeading": "How to Register",
+    "joinDesc": "See more details on our fanpage for additional information about the rules, prize structure, and how to register to participate.",
+    "learnMoreBtn": "Learn more",
+    "followUpBtn": "Follow up",
+    "exhibitionTitle": "Featured Projects"
+  },
+  "achievements": {
+    "leadership": {
+      "emptyData": "No executive board member data available.",
+      "leader": "Leader",
+      "termHistory": "> TERM HISTORY",
+      "present": "Present",
+      "viewProfile": "VIEW PROFILE",
+      "achievementsCount": "Achievements",
+      "projectsCount": "Projects",
+      "positions": {
+        "PRESIDENT": "Club President",
+        "VICE_PRESIDENT": "Vice President",
+        "DEPARTMENT_LEADER": "Head of Department",
+        "DEPARTMENT_VICE_LEADER": "Deputy Head",
+        "ADVISOR": "Advisor"
+      }
+    }
+  },
+  "seo": {
+    "home": {
+      "title": "Home – MPC Club",
+      "description": "Mobile Programming Club — Faculty of Information Technology, Ho Chi Minh City Open University"
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Learn about Mobile Programming Club (MPC) — Mission, fields of activity and team"
+    },
+    "events": {
+      "title": "Events",
+      "description": "Upcoming and past events of MPClub"
+    },
+    "eventDetail": {
+      "title": "Event",
+      "description": "An event by MPC Club"
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Real-world projects built by MPClub students"
+    },
+    "projectDetail": {
+      "title": "Project",
+      "description": "A project by MPC Club"
+    },
+    "members": {
+      "title": "Members",
+      "description": "MPClub members who have been building the community together"
+    },
+    "memberDetail": {
+      "title": "Member",
+      "description": "MPClub member profile"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Achievements, awards and proud milestones of MPClub"
+    },
+    "sponsors": {
+      "title": "Sponsors",
+      "description": "Partners and sponsors supporting MPClub's growth"
+    },
+    "training": {
+      "title": "Training",
+      "description": "Basic tutorials, programming fundamentals, and academic knowledge review throughout your studies"
+    },
+    "activities": {
+      "title": "Activities",
+      "description": "Internal and external activities of MPClub"
+    },
+    "notFound": {
+      "event": "Event not found",
+      "project": "Project not found",
+      "member": "Not found",
+      "profile": "Profile"
+    }
+  }
+}

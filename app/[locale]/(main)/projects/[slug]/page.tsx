@@ -27,7 +27,6 @@ import { Link } from "@/configs/i18n/routing";
 import { getFullName, pickLang } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
-import { GoldBoardSection } from "./_components/gold-board.client";
 
 export async function generateMetadata({
   params,
@@ -355,21 +354,6 @@ export default async function ProjectDetailPage({
           </div>
         </section>
       )}
-
-      {/* ── GOLD BOARD ── */}
-      <GoldBoardSection
-        labels={{
-          badge: t("goldBoard.badge"),
-          title: t("goldBoard.title"),
-          subtitle: t("goldBoard.subtitle"),
-          modalTitle: t("goldBoard.modalTitle"),
-          noAchievements: t("goldBoard.noAchievements"),
-          viewProfile: t("goldBoard.viewProfile"),
-        }}
-        locale={locale}
-        // biome-ignore lint/suspicious/noExplicitAny: API shape
-        members={goldMembers as any}
-      />
     </div>
   );
 }

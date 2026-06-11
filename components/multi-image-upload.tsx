@@ -28,7 +28,7 @@ export function MultiImageUpload({
   initialImages = [],
   maxImages = 10,
   storagePath,
-  onChange
+  onChange,
 }: Props) {
   const { toast } = useToast();
 
@@ -39,7 +39,7 @@ export function MultiImageUpload({
     return {
       url: img.url,
       title: img.title ?? "",
-      caption: img.caption ?? ""
+      caption: img.caption ?? "",
     };
   });
 
@@ -56,7 +56,7 @@ export function MultiImageUpload({
       return {
         url: img.url,
         title: img.title ?? "",
-        caption: img.caption ?? ""
+        caption: img.caption ?? "",
       };
     });
     if (JSON.stringify(norm) !== JSON.stringify(images)) {
@@ -78,14 +78,14 @@ export function MultiImageUpload({
       if (!file.type.startsWith("image/")) {
         toast({
           variant: "destructive",
-          description: `Bỏ qua "${file.name}": chỉ nhận file ảnh`
+          description: `Bỏ qua "${file.name}": chỉ nhận file ảnh`,
         });
         continue;
       }
       if (file.size > UPLOAD_MAX_BANNER_SIZE) {
         toast({
           variant: "destructive",
-          description: `Bỏ qua "${file.name}": ảnh tối đa 8MB`
+          description: `Bỏ qua "${file.name}": ảnh tối đa 8MB`,
         });
         continue;
       }
@@ -93,10 +93,10 @@ export function MultiImageUpload({
         const url = await uploadToStorage(file, STORAGE_BUCKET, storagePath);
         await adminRegisterTempImage(url);
         newItems.push({ url, title: "", caption: "" });
-      } catch {
+      } catch (err) {
         toast({
           variant: "destructive",
-          description: `Upload thất bại: ${file.name}`
+          description: `Upload thất bại "${file.name}": ${err instanceof Error ? err.message : "lỗi không xác định"}`,
         });
       }
     }
@@ -115,7 +115,11 @@ export function MultiImageUpload({
     onChange(updated);
   };
 
-  const updateImageField = (idx: number, field: "title" | "caption", value: string) => {
+  const updateImageField = (
+    idx: number,
+    field: "title" | "caption",
+    value: string,
+  ) => {
     const updated = images.map((img, i) => {
       if (i === idx) {
         return { ...img, [field]: value };
@@ -127,43 +131,54 @@ export function MultiImageUpload({
   };
 
   return (
-    <div className='space-y-3'>
+    <div className="space-y-3">
       <Label>
         {label}{" "}
-        <span className='font-normal text-muted-foreground text-xs'>
+        <span className="font-normal text-muted-foreground text-xs">
           ({images.length}/{maxImages})
         </span>
       </Label>
 
       {/* Gallery grid */}
       {images.length > 0 && (
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {images.map((img, idx) => (
-            <div className='group relative flex flex-col space-y-2 rounded-lg border bg-muted/40 p-2' key={idx}>
+            <div
+              className="group relative flex flex-col space-y-2 rounded-lg border bg-muted/40 p-2"
+              key={idx}
+            >
               {/* Image preview */}
-              <div className='relative aspect-video w-full overflow-hidden rounded-md border bg-muted'>
-                <img alt={`Gallery ${idx + 1}`} className='h-full w-full object-cover' src={img.url} />
+              <div className="relative aspect-video w-full overflow-hidden rounded-md border bg-muted">
+                <img
+                  alt={`Gallery ${idx + 1}`}
+                  className="h-full w-full object-cover"
+                  src={img.url}
+                />
                 <button
-                  className='absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
+                  className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
                   onClick={() => removeImage(idx)}
-                  title='Xóa ảnh'
-                  type='button'
+                  title="Xóa ảnh"
+                  type="button"
                 >
-                  <X className='h-3.5 w-3.5' />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </div>
 
-              <div className='space-y-1.5'>
+              <div className="space-y-1.5">
                 <input
-                  className='w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary'
-                  onChange={(e) => updateImageField(idx, "title", e.target.value)}
-                  placeholder='Tiêu đề ảnh...'
+                  className="w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                  onChange={(e) =>
+                    updateImageField(idx, "title", e.target.value)
+                  }
+                  placeholder="Tiêu đề ảnh..."
                   value={img.title || ""}
                 />
                 <input
-                  className='w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary'
-                  onChange={(e) => updateImageField(idx, "caption", e.target.value)}
-                  placeholder='Ghi chú/Mô tả ảnh...'
+                  className="w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                  onChange={(e) =>
+                    updateImageField(idx, "caption", e.target.value)
+                  }
+                  placeholder="Ghi chú/Mô tả ảnh..."
                   value={img.caption || ""}
                 />
               </div>
@@ -194,29 +209,31 @@ export function MultiImageUpload({
             setIsDragOver(false);
             handleFiles(Array.from(e.dataTransfer.files));
           }}
-          type='button'
+          type="button"
         >
           {uploading ? (
             <>
-              <Loader2 className='h-5 w-5 animate-spin' />
-              <span className='text-xs'>Đang upload...</span>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span className="text-xs">Đang upload...</span>
             </>
           ) : (
             <>
-              <ImagePlus className='h-5 w-5' />
-              <span className='text-xs'>Thêm ảnh (max {maxImages} ảnh, mỗi ảnh ≤8MB)</span>
+              <ImagePlus className="h-5 w-5" />
+              <span className="text-xs">
+                Thêm ảnh (max {maxImages} ảnh, mỗi ảnh ≤8MB)
+              </span>
             </>
           )}
         </button>
       )}
 
       <input
-        accept='image/*'
-        className='hidden'
+        accept="image/*"
+        className="hidden"
         multiple
         onChange={(e) => handleFiles(Array.from(e.target.files ?? []))}
         ref={fileInputRef}
-        type='file'
+        type="file"
       />
     </div>
   );

@@ -2,7 +2,12 @@
 
 import { revalidateTag } from "next/cache";
 import { _CACHE_PROJECTS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import {
+  generateSlug,
+  handleErrorServerWithAuth,
+  prisma,
+  requireAdmin,
+} from "./helpers";
 
 export const adminGetProjects = async () =>
   handleErrorServerWithAuth({
@@ -10,7 +15,7 @@ export const adminGetProjects = async () =>
       await requireAdmin(user);
       const projects = await prisma.project.findMany({
         orderBy: { createdAt: "desc" },
-        include: { members: { include: { member: true } } }
+        include: { members: { include: { member: true } } },
       });
       return projects.map((p) => ({
         ...p,
@@ -24,11 +29,11 @@ export const adminGetProjects = async () =>
             ...pm.member,
             createdAt: pm.member.createdAt.toISOString(),
             updatedAt: pm.member.updatedAt.toISOString(),
-            dob: pm.member.dob ? pm.member.dob.toISOString() : null
-          }
-        }))
+            dob: pm.member.dob ? pm.member.dob.toISOString() : null,
+          },
+        })),
       }));
-    }
+    },
   });
 
 export const adminGetProjectsPaginated = async (params: {
@@ -55,7 +60,7 @@ export const adminGetProjectsPaginated = async (params: {
       if (search) {
         where.OR = [
           { title: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } }
+          { description: { contains: search, mode: "insensitive" } },
         ];
       }
 
@@ -65,9 +70,9 @@ export const adminGetProjectsPaginated = async (params: {
           orderBy: { createdAt: "desc" },
           skip: (page - 1) * limit,
           take: limit,
-          include: { members: { include: { member: true } } }
+          include: { members: { include: { member: true } } },
         }),
-        prisma.project.count({ where })
+        prisma.project.count({ where }),
       ]);
 
       const totalPages = Math.ceil(total / limit);
@@ -85,14 +90,14 @@ export const adminGetProjectsPaginated = async (params: {
               ...pm.member,
               createdAt: pm.member.createdAt.toISOString(),
               updatedAt: pm.member.updatedAt.toISOString(),
-              dob: pm.member.dob ? pm.member.dob.toISOString() : null
-            }
-          }))
+              dob: pm.member.dob ? pm.member.dob.toISOString() : null,
+            },
+          })),
         })),
         totalPages,
-        totalCount: total
+        totalCount: total,
       };
-    }
+    },
   });
 
 export const adminCreateProject = async (data: {
@@ -110,6 +115,7 @@ export const adminCreateProject = async (data: {
   technologies?: string[];
   startDate?: string;
   endDate?: string;
+  images?: string[];
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -129,13 +135,14 @@ export const adminCreateProject = async (data: {
           websiteUrl: data.websiteUrl || null,
           videoUrl: data.videoUrl || null,
           technologies: data.technologies ?? [],
+          images: data.images ?? [],
           startDate: data.startDate ? new Date(data.startDate) : null,
-          endDate: data.endDate ? new Date(data.endDate) : null
-        }
+          endDate: data.endDate ? new Date(data.endDate) : null,
+        },
       });
       revalidateTag(_CACHE_PROJECTS, "default");
       return created;
-    }
+    },
   });
 
 export const adminUpdateProject = async (
@@ -156,7 +163,7 @@ export const adminUpdateProject = async (
     endDate?: string | null;
     isActive?: boolean;
     images?: string[];
-  }
+  },
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -167,10 +174,10 @@ export const adminUpdateProject = async (
           ...(data.title !== undefined && { title: data.title }),
           ...(data.titleEn !== undefined && { titleEn: data.titleEn }),
           ...(data.description !== undefined && {
-            description: data.description
+            description: data.description,
           }),
           ...(data.descriptionEn !== undefined && {
-            descriptionEn: data.descriptionEn
+            descriptionEn: data.descriptionEn,
           }),
           ...(data.content !== undefined && { content: data.content }),
           ...(data.contentEn !== undefined && { contentEn: data.contentEn }),
@@ -180,18 +187,18 @@ export const adminUpdateProject = async (
           ...(data.videoUrl !== undefined && { videoUrl: data.videoUrl }),
           ...(data.technologies && { technologies: data.technologies }),
           ...(data.startDate !== undefined && {
-            startDate: data.startDate ? new Date(data.startDate) : null
+            startDate: data.startDate ? new Date(data.startDate) : null,
           }),
           ...(data.endDate !== undefined && {
-            endDate: data.endDate ? new Date(data.endDate) : null
+            endDate: data.endDate ? new Date(data.endDate) : null,
           }),
           ...(data.isActive !== undefined && { isActive: data.isActive }),
-          ...(data.images !== undefined && { images: data.images })
-        }
+          ...(data.images !== undefined && { images: data.images }),
+        },
       });
       revalidateTag(_CACHE_PROJECTS, "default");
       return updated;
-    }
+    },
   });
 
 export const adminDeleteProject = async (id: string) =>
@@ -201,31 +208,38 @@ export const adminDeleteProject = async (id: string) =>
       await prisma.project.delete({ where: { id } });
       revalidateTag(_CACHE_PROJECTS, "default");
       return { success: true };
-    }
+    },
   });
 
-export const adminLinkProjectMember = async (projectId: string, memberId: string, role?: string) =>
+export const adminLinkProjectMember = async (
+  projectId: string,
+  memberId: string,
+  role?: string,
+) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
       const link = await prisma.projectMember.create({
-        data: { projectId, memberId, role: role || null }
+        data: { projectId, memberId, role: role || null },
       });
       revalidateTag(_CACHE_PROJECTS, "default");
       return link;
-    }
+    },
   });
 
-export const adminUnlinkProjectMember = async (projectId: string, memberId: string) =>
+export const adminUnlinkProjectMember = async (
+  projectId: string,
+  memberId: string,
+) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
       await prisma.projectMember.delete({
-        where: { projectId_memberId: { projectId, memberId } }
+        where: { projectId_memberId: { projectId, memberId } },
       });
       revalidateTag(_CACHE_PROJECTS, "default");
       return { success: true };
-    }
+    },
   });
 
 export const adminGetProjectById = async (id: string) =>
@@ -234,7 +248,7 @@ export const adminGetProjectById = async (id: string) =>
       await requireAdmin(user);
       const project = await prisma.project.findUnique({
         where: { id },
-        include: { members: { include: { member: true } } }
+        include: { members: { include: { member: true } } },
       });
       if (!project) {
         return { notFound: true };
@@ -251,9 +265,9 @@ export const adminGetProjectById = async (id: string) =>
             ...pm.member,
             createdAt: pm.member.createdAt.toISOString(),
             updatedAt: pm.member.updatedAt.toISOString(),
-            dob: pm.member.dob ? pm.member.dob.toISOString() : null
-          }
-        }))
+            dob: pm.member.dob ? pm.member.dob.toISOString() : null,
+          },
+        })),
       };
-    }
+    },
   });

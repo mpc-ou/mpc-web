@@ -12,7 +12,7 @@ import type { ProjectSummary } from "@/types/common";
 export function ProjectsClient({
   projects,
   currentPage,
-  totalPages
+  totalPages,
 }: {
   projects: ProjectSummary[];
   currentPage: number;
@@ -37,7 +37,9 @@ export function ProjectsClient({
     slug: p.slug,
     variant: "project",
     titleVi: p.title,
+    titleEn: (p as any).titleEn,
     summaryVi: p.description,
+    summaryEn: (p as any).descriptionEn,
     thumbnail: p.thumbnail ?? undefined,
     technologies: Array.isArray(p.technologies) ? p.technologies : [],
     startDate: p.startDate ?? null,
@@ -48,16 +50,20 @@ export function ProjectsClient({
         firstName: m.member.firstName,
         lastName: m.member.lastName,
         avatar: m.member.avatar,
-        slug: m.member.slug
-      })) ?? []
+        slug: m.member.slug,
+      })) ?? [],
   }));
 
   return (
-    <div className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}>
+    <div
+      className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}
+    >
       {projects.length === 0 ? (
-        <div className='py-20 text-center text-muted-foreground'>{t("emptyData")}</div>
+        <div className="py-20 text-center text-muted-foreground">
+          {t("emptyData")}
+        </div>
       ) : (
-        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (
             <PostCard data={card} key={card.id} />
           ))}
@@ -65,26 +71,30 @@ export function ProjectsClient({
       )}
 
       {totalPages > 1 && (
-        <div className='mt-12 flex items-center justify-center gap-2'>
+        <div className="mt-12 flex items-center justify-center gap-2">
           <Button
-            className='h-8 w-8 p-0'
+            className="h-8 w-8 p-0"
             disabled={currentPage <= 1 || isPending}
             onClick={() => handlePageChange(currentPage - 1)}
-            size='sm'
-            variant='outline'
+            size="sm"
+            variant="outline"
           >
-            <ChevronLeft className='h-4 w-4' />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className='flex items-center gap-1'>
+          <div className="flex items-center gap-1">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-              if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+              if (
+                p === 1 ||
+                p === totalPages ||
+                (p >= currentPage - 1 && p <= currentPage + 1)
+              ) {
                 return (
                   <Button
-                    className='h-8 w-8 p-0'
+                    className="h-8 w-8 p-0"
                     disabled={isPending || currentPage === p}
                     key={p}
                     onClick={() => handlePageChange(p)}
-                    size='sm'
+                    size="sm"
                     variant={currentPage === p ? "default" : "outline"}
                   >
                     {p}
@@ -93,7 +103,10 @@ export function ProjectsClient({
               }
               if (p === currentPage - 2 || p === currentPage + 2) {
                 return (
-                  <span className='flex h-8 w-8 items-center justify-center text-muted-foreground text-sm' key={p}>
+                  <span
+                    className="flex h-8 w-8 items-center justify-center text-muted-foreground text-sm"
+                    key={p}
+                  >
                     ...
                   </span>
                 );
@@ -102,13 +115,13 @@ export function ProjectsClient({
             })}
           </div>
           <Button
-            className='h-8 w-8 p-0'
+            className="h-8 w-8 p-0"
             disabled={currentPage >= totalPages || isPending}
             onClick={() => handlePageChange(currentPage + 1)}
-            size='sm'
-            variant='outline'
+            size="sm"
+            variant="outline"
           >
-            <ChevronRight className='h-4 w-4' />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       )}

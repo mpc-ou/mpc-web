@@ -18,8 +18,10 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
           select: {
             id: true,
             title: true,
+            titleEn: true,
             slug: true,
             description: true,
+            descriptionEn: true,
             thumbnail: true,
             technologies: true,
             startDate: true,
@@ -32,19 +34,19 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
                     firstName: true,
                     lastName: true,
                     avatar: true,
-                    slug: true
-                  }
-                }
-              }
-            }
-          }
-        })
+                    slug: true,
+                  },
+                },
+              },
+            },
+          },
+        }),
       ]);
 
       const totalPages = Math.ceil(total / take);
 
       return { total, projects, totalPages };
-    }
+    },
   });
 
 export const getProjectDetail = async (slug: string) =>
@@ -63,15 +65,15 @@ export const getProjectDetail = async (slug: string) =>
                   firstName: true,
                   lastName: true,
                   avatar: true,
-                  slug: true
-                }
-              }
-            }
-          }
-        }
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
       });
       return { project };
-    }
+    },
   });
 
 /**
@@ -89,8 +91,10 @@ export const getOtherProjects = async (excludeSlug: string) =>
         select: {
           id: true,
           title: true,
+          titleEn: true,
           slug: true,
           description: true,
+          descriptionEn: true,
           thumbnail: true,
           technologies: true,
           startDate: true,
@@ -103,15 +107,15 @@ export const getOtherProjects = async (excludeSlug: string) =>
                   firstName: true,
                   lastName: true,
                   avatar: true,
-                  slug: true
-                }
-              }
-            }
-          }
-        }
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
       });
       return { projects };
-    }
+    },
   });
 
 /**
@@ -134,7 +138,7 @@ export const getGoldBoardMembers = async () =>
           clubRoles: {
             include: { department: true },
             orderBy: { startAt: "desc" },
-            take: 1
+            take: 1,
           },
           achievementEntries: {
             include: {
@@ -146,18 +150,18 @@ export const getGoldBoardMembers = async () =>
                   achievementDate: true,
                   achievementType: true,
                   slug: true,
-                  thumbnail: true
-                }
-              }
+                  thumbnail: true,
+                },
+              },
             },
-            orderBy: { post: { achievementDate: "desc" } }
-          }
+            orderBy: { post: { achievementDate: "desc" } },
+          },
         },
         orderBy: { achievementEntries: { _count: "desc" } },
-        take: 12
+        take: 12,
       });
       return { members };
-    }
+    },
   });
 
 export const getTrainingPageData = async () =>
@@ -175,16 +179,16 @@ export const getTrainingPageData = async () =>
             slug: true,
             description: true,
             thumbnail: true,
-            technologies: true
-          }
+            technologies: true,
+          },
         }),
         prisma.siteSetting.findUnique({
-          where: { key: "training_form_url" }
-        })
+          where: { key: "training_form_url" },
+        }),
       ]);
       return {
         latestProjects,
-        trainingFormUrl: trainingFormSetting?.value || null
+        trainingFormUrl: trainingFormSetting?.value || null,
       };
-    }
+    },
   });

@@ -18,6 +18,7 @@ import {
 import { MarkdownContent } from "@/components/markdown-content";
 import type { PostCardData } from "@/components/post-card";
 import { PostCard } from "@/components/post-card";
+import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
@@ -84,6 +85,23 @@ export default async function ProjectDetailPage({
     ? (project.technologies as string[])
     : [];
 
+  // Build gallery: thumbnail + content images + project images
+  const thumbnail = project.thumbnail ? [project.thumbnail] : [];
+  const contentImages: string[] = [];
+  const imgRegex = /!\[.*?\]\((.*?)\)/g;
+  let match;
+  imgRegex.lastIndex = 0;
+  while ((match = imgRegex.exec(project.content || "")) !== null) {
+    if (match[1]) contentImages.push(match[1]);
+  }
+  const projectImages = Array.isArray(project.images) ? project.images : [];
+  const allImages = Array.from(
+    new Set([...thumbnail, ...contentImages, ...projectImages]),
+  ).filter(Boolean);
+  const hasGallery = allImages.length > 0;
+  const hasSidebar =
+    hasGallery || (project.members && project.members.length > 0);
+
   const startDateLabel = project.startDate
     ? formatLocalDate(project.startDate, locale, "MMMM yyyy")
     : null;
@@ -117,7 +135,7 @@ export default async function ProjectDetailPage({
     <div className="min-h-screen bg-background">
       {/* ── HERO IMAGE ─────────────────────────────────────────────── */}
       {project.thumbnail ? (
-        <div className="relative h-[55vh] min-h-90 w-full overflow-hidden">
+        <div className="relative h-[30vh] min-h-56 w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {/* biome-ignore lint/performance/noImgElement: allow external images */}
           {/* biome-ignore lint/correctness/useImageSize: allow responsive layout */}
@@ -133,7 +151,7 @@ export default async function ProjectDetailPage({
       )}
 
       {/* ── ARTICLE ────────────────────────────────────────────────── */}
-      <div className="container mx-auto max-w-3xl px-4 pb-24">
+      <div className="container mx-auto max-w-7xl px-4 pb-24">
         {/* Back link */}
         <div className="py-5">
           <Button
@@ -162,7 +180,7 @@ export default async function ProjectDetailPage({
           )}
 
           {/* Title */}
-          <h1 className="mb-5 font-bold text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl">
+          <h1 className="mb-5 font-bold text-3xl leading-tight tracking-tight sm:text-4xl">
             {pickLang(lang, project.title, project.titleEn)}
           </h1>
 
@@ -223,72 +241,88 @@ export default async function ProjectDetailPage({
 
         <Separator className="mb-10" />
 
-        {/* ── ARTICLE BODY ── */}
-        {project.content || project.contentEn ? (
-          <ScrollReveal delay={100} variant="fade-up">
-            <MarkdownContent
-              content={
-                pickLang(lang, project.content, project.contentEn) ||
-                project.content ||
-                ""
-              }
-            />
-          </ScrollReveal>
-        ) : (
-          <p className="mb-14 text-muted-foreground italic">{t("noDetail")}</p>
-        )}
+        {/* ── BODY + SIDEBAR ── */}
+        <div
+          className={`flex flex-col gap-10 ${hasSidebar ? "lg:flex-row lg:gap-12" : ""}`}
+        >
+          <div className={`min-w-0 ${hasSidebar ? "flex-1" : "w-full"}`}>
+            {/* Markdown content */}
+            {project.content || project.contentEn ? (
+              <ScrollReveal delay={100} variant="fade-up">
+                <MarkdownContent
+                  content={
+                    pickLang(lang, project.content, project.contentEn) ||
+                    project.content ||
+                    ""
+                  }
+                />
+              </ScrollReveal>
+            ) : (
+              <p className="mb-14 text-muted-foreground italic">
+                {t("noDetail")}
+              </p>
+            )}
+          </div>
 
-        {/* ── MEMBERS ── */}
-        {project.members && project.members.length > 0 && (
-          <ScrollReveal variant="fade-up">
-            <section className="mt-8 mb-14">
-              <h2 className="mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl">
-                <Users className="h-5 w-5 text-primary" /> {t("teamTitle")}
-              </h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {/* biome-ignore lint/suspicious/noExplicitAny: API shape */}
-                {project.members.map((m: any) => (
-                  <div className="flex items-center gap-3" key={m.member.id}>
-                    {m.member.avatar ? (
-                      // biome-ignore lint/performance/noImgElement lint/correctness/useImageSize: external avatar
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        alt={getFullName(
-                          m.member.firstName,
-                          m.member.lastName,
-                          locale,
-                        )}
-                        className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border"
-                        src={m.member.avatar}
-                      />
-                    ) : (
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
-                        <UserCircle className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <Link
-                        className="block truncate font-medium text-sm hover:text-primary hover:underline"
-                        href={`/members/${m.member.slug || m.member.id}`}
+          {/* Sidebar: Gallery + Members */}
+          {hasSidebar && (
+            <aside className="w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
+              {hasGallery && <PostGalleryPanel images={allImages} />}
+
+              {project.members && project.members.length > 0 && (
+                <section>
+                  <h2 className="mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl">
+                    <Users className="h-5 w-5 text-primary" /> {t("teamTitle")}
+                  </h2>
+                  <div className="flex flex-col gap-3">
+                    {/* biome-ignore lint/suspicious/noExplicitAny: API shape */}
+                    {project.members.map((m: any) => (
+                      <div
+                        className="flex items-center gap-3"
+                        key={m.member.id}
                       >
-                        {getFullName(
-                          m.member.firstName,
-                          m.member.lastName,
-                          locale,
+                        {m.member.avatar ? (
+                          // biome-ignore lint/performance/noImgElement lint/correctness/useImageSize: external avatar
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            alt={getFullName(
+                              m.member.firstName,
+                              m.member.lastName,
+                              locale,
+                            )}
+                            className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border"
+                            src={m.member.avatar}
+                          />
+                        ) : (
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                            <UserCircle className="h-6 w-6 text-muted-foreground" />
+                          </div>
                         )}
-                      </Link>
-                      {m.role && (
-                        <p className="truncate text-muted-foreground text-xs">
-                          {m.role}
-                        </p>
-                      )}
-                    </div>
+                        <div className="min-w-0">
+                          <Link
+                            className="block truncate font-medium text-sm hover:text-primary hover:underline"
+                            href={`/members/${m.member.slug || m.member.id}`}
+                          >
+                            {getFullName(
+                              m.member.firstName,
+                              m.member.lastName,
+                              locale,
+                            )}
+                          </Link>
+                          {m.role && (
+                            <p className="truncate text-muted-foreground text-xs">
+                              {m.role}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          </ScrollReveal>
-        )}
+                </section>
+              )}
+            </aside>
+          )}
+        </div>
       </div>
 
       {/* ── OTHER PROJECTS ── */}

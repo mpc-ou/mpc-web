@@ -3,8 +3,8 @@
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { adminGetRecap, adminGetRecapCandidates } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
-import { adminGetRecap, adminGetRecapCandidates } from "../../../actions";
 import { RecapWizard } from "../../wizard";
 
 export default function EditRecapPage() {

@@ -2,9 +2,9 @@
 
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { adminBuildRecapData, adminCreateRecap, adminGetRecapCandidates, adminUpdateRecap } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { adminBuildRecapData, adminCreateRecap, adminGetRecapCandidates, adminUpdateRecap } from "../actions";
 import { PhaseAchievements } from "./phase-achievements";
 import { PhaseEvents } from "./phase-events";
 import { PhaseInfo, type PhaseInfoData } from "./phase-info";

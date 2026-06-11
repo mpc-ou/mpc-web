@@ -1,17 +1,9 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 export type DeptRow = {
   id: string;
@@ -25,43 +17,52 @@ export type DeptRow = {
   _count: { clubRoles: number };
 };
 
-export const createColumns = (onEdit: (d: DeptRow) => void, onDelete: (id: string) => void): ColumnDef<DeptRow>[] => [
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
+export const createColumns = (
+  onEdit: (d: DeptRow) => void,
+  onDelete: (id: string) => void,
+  onView?: (d: DeptRow) => void
+): ColumnDef<DeptRow>[] => [
   {
     accessorKey: "order",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        # <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <span className='text-muted-foreground text-sm'>{row.original.order}</span>
+    header: ({ column }) => <SortHeader column={column} label='#' />,
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.order}</span>
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Tên <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
+    header: ({ column }) => <SortHeader column={column} label='Tên' />,
     cell: ({ row }) => (
-      <span className='font-medium'>
+      <span className='font-medium text-xs'>
         {row.original.nameVi}{" "}
-        {row.original.nameEn ? <span className='text-muted-foreground text-xs'>/ {row.original.nameEn}</span> : null}
+        {row.original.nameEn ? (
+          <span className='text-[10px] text-muted-foreground'>/ {row.original.nameEn}</span>
+        ) : null}
       </span>
     )
   },
   {
     accessorKey: "slug",
     header: "Slug",
-    cell: ({ row }) => <code className='rounded bg-muted px-1.5 py-0.5 font-mono text-xs'>{row.original.slug}</code>
+    cell: ({ row }) => <code className='rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]'>{row.original.slug}</code>
   },
   {
     accessorKey: "description",
     header: "Mô tả",
     cell: ({ row }) =>
       row.original.descriptionVi ? (
-        <span className='max-w-xs truncate text-muted-foreground text-sm'>{row.original.descriptionVi}</span>
+        <p className='max-w-xs truncate text-muted-foreground text-xs'>{row.original.descriptionVi}</p>
       ) : (
-        <span className='text-muted-foreground'>—</span>
+        <span className='text-muted-foreground text-xs'>—</span>
       )
   },
   {
@@ -83,21 +84,25 @@ export const createColumns = (onEdit: (d: DeptRow) => void, onDelete: (id: strin
     cell: ({ row }) => {
       const d = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
+        <div className='flex items-center gap-0.5'>
+          {onView && (
+            <Button className='h-7 w-7' onClick={() => onView(d)} size='icon' title='Xem' variant='ghost'>
+              <Eye className='h-3.5 w-3.5' />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(d)}>Chỉnh sửa</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(d.id)}>
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+          <Button className='h-7 w-7' onClick={() => onEdit(d)} size='icon' title='Chỉnh sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(d.id)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

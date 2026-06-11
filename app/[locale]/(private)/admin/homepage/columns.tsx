@@ -1,16 +1,9 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 export type SectionRow = {
   id: string;
@@ -21,20 +14,27 @@ export type SectionRow = {
   isActive: boolean;
 };
 
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
 export const createColumns = (onEdit: (s: SectionRow) => void): ColumnDef<SectionRow>[] => [
   {
     accessorKey: "order",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        # <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <span className='text-muted-foreground text-sm'>{row.original.order}</span>
+    header: ({ column }) => <SortHeader column={column} label='#' />,
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.order}</span>
   },
   {
     accessorKey: "key",
     header: "Key",
-    cell: ({ row }) => <code className='rounded bg-muted px-1.5 py-0.5 font-mono text-xs'>{row.original.key}</code>
+    cell: ({ row }) => <code className='rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]'>{row.original.key}</code>
   },
   {
     accessorKey: "type",
@@ -49,10 +49,10 @@ export const createColumns = (onEdit: (s: SectionRow) => void): ColumnDef<Sectio
       if (type === "image") {
         return (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt='preview' className='h-10 w-16 rounded object-cover' src={value} />
+          <img alt='preview' className='h-8 w-12 rounded object-cover' src={value} />
         );
       }
-      return <p className='max-w-xs truncate text-muted-foreground text-sm'>{value}</p>;
+      return <p className='max-w-xs truncate text-muted-foreground text-xs'>{value}</p>;
     }
   },
   {
@@ -67,17 +67,11 @@ export const createColumns = (onEdit: (s: SectionRow) => void): ColumnDef<Sectio
     cell: ({ row }) => {
       const s = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(s)}>Chỉnh sửa</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex items-center gap-0.5'>
+          <Button className='h-7 w-7' onClick={() => onEdit(s)} size='icon' title='Chỉnh sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

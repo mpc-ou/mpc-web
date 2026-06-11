@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "title": "Login",
+    "title2": "Who are you?",
+    "description": "Login to your account so we know who you are! ^^",
+    "errorPageTitle": "Authentication Error",
+    "error": {
+      "title": "Login failed"
+    }
+  }
+}

@@ -1,25 +1,29 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ExternalLink, Eye, EyeOff, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowUpDown, ExternalLink, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 export type RecapRow = {
   year: number;
   name: string;
   description: string | null;
+  coverImage?: string | null;
   isPublished: boolean;
   createdAt: string;
 };
+
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
 
 export const createColumns = (
   onEdit: (year: number) => void,
@@ -29,22 +33,17 @@ export const createColumns = (
 ): ColumnDef<RecapRow>[] => [
   {
     accessorKey: "year",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Năm
-        <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <span className='font-bold text-lg'>{row.original.year}</span>
+    header: ({ column }) => <SortHeader column={column} label='Năm' />,
+    cell: ({ row }) => <span className='font-bold text-sm'>{row.original.year}</span>
   },
   {
     accessorKey: "name",
     header: "Tên Recap",
     cell: ({ row }) => (
       <div>
-        <div className='font-medium'>{row.original.name}</div>
+        <div className='font-medium text-xs'>{row.original.name}</div>
         {row.original.description && (
-          <div className='mt-0.5 line-clamp-1 text-muted-foreground text-xs'>{row.original.description}</div>
+          <div className='mt-0.5 line-clamp-1 text-[10px] text-muted-foreground'>{row.original.description}</div>
         )}
       </div>
     )
@@ -60,40 +59,32 @@ export const createColumns = (
     cell: ({ row }) => {
       const recap = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onView(recap.year)}>
-              <ExternalLink className='mr-2 h-4 w-4' />
-              Xem Recap
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEdit(recap.year)}>
-              <Pencil className='mr-2 h-4 w-4' />
-              Chỉnh sửa
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onTogglePublish(recap.year, !recap.isPublished)}>
-              {recap.isPublished ? (
-                <>
-                  <EyeOff className='mr-2 h-4 w-4' /> Hủy xuất bản
-                </>
-              ) : (
-                <>
-                  <Eye className='mr-2 h-4 w-4' /> Xuất bản
-                </>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(recap.year)}>
-              <Trash2 className='mr-2 h-4 w-4' />
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex items-center gap-0.5'>
+          <Button className='h-7 w-7' onClick={() => onView(recap.year)} size='icon' title='Xem Recap' variant='ghost'>
+            <ExternalLink className='h-3.5 w-3.5' />
+          </Button>
+          <Button className='h-7 w-7' onClick={() => onEdit(recap.year)} size='icon' title='Sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7'
+            onClick={() => onTogglePublish(recap.year, !recap.isPublished)}
+            size='icon'
+            title={recap.isPublished ? "Hủy xuất bản" : "Xuất bản"}
+            variant='ghost'
+          >
+            {recap.isPublished ? <EyeOff className='h-3.5 w-3.5' /> : <Eye className='h-3.5 w-3.5' />}
+          </Button>
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(recap.year)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

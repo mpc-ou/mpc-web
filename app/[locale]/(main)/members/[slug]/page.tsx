@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { getMemberBySlug, getMemberSlugByAuthId } from "@/app/_actions/main/member-detail";
 import { createClientSsr } from "@/configs/supabase/server";
-import { generatePageSeo } from "@/utils/seo";
-import { getMemberBySlug, getMemberSlugByAuthId } from "./actions";
-import { ProfilePageClient } from "./profile-client";
 import { getFullName } from "@/lib/utils";
+import { generatePageSeo } from "@/utils/seo";
+import { ProfilePageClient } from "./profile-client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: member.bio || undefined,
     locale: locale || "vi",
     pathname: `/members/${slug}`,
-    image: member.avatar || undefined,
+    image: member.avatar || undefined
   });
 }
 
@@ -36,7 +36,7 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
   if (slug === "me") {
     const supabase = await createClientSsr();
     const {
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -60,11 +60,5 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
     notFound();
   }
 
-  return (
-    <ProfilePageClient
-      member={
-        member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]
-      }
-    />
-  );
+  return <ProfilePageClient member={member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]} />;
 }

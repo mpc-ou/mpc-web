@@ -1,7 +1,8 @@
 import { Film } from "lucide-react";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { getPublishedRecaps } from "@/app/[locale]/actions/recaps";
+import { getPublishedRecaps } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 
@@ -15,35 +16,33 @@ export default function RecapListPage() {
 
 async function RecapListContent() {
   await connection();
+  const t = await getTranslations("events");
   const { data } = await getPublishedRecaps();
   const recaps = (data?.payload as any)?.recaps ?? [];
 
   return (
     <div className='min-h-screen bg-background'>
-      {/* Minimal nav */}
       <nav className='sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md'>
         <div className='container mx-auto flex h-14 items-center justify-between px-4'>
           <Link className='text-muted-foreground text-sm transition-colors hover:text-primary' href='/'>
-            ← Trang chủ
+            ← {t("recap.home")}
           </Link>
-          <span className='font-semibold'>Year Recap</span>
+          <span className='font-semibold'>{t("recap.title")}</span>
           <div className='w-20' />
         </div>
       </nav>
 
-      <div className='container mx-auto max-w-5xl px-4 py-16'>
+      <div className='container mx-auto max-w-7xl px-4 py-16'>
         <ScrollReveal className='mb-12 text-center'>
           <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
             <Film className='h-8 w-8' />
           </div>
-          <h1 className='mb-3 font-black text-4xl tracking-tight sm:text-5xl'>Year Recap</h1>
-          <p className='mx-auto max-w-xl text-lg text-muted-foreground'>
-            Nhìn lại hành trình hoạt động của CLB qua từng năm
-          </p>
+          <h1 className='mb-3 font-black text-4xl tracking-tight sm:text-5xl'>{t("recap.title")}</h1>
+          <p className='mx-auto max-w-xl text-lg text-muted-foreground'>{t("recap.subtitle")}</p>
         </ScrollReveal>
 
         {recaps.length === 0 ? (
-          <div className='py-20 text-center text-muted-foreground'>Chưa có recap nào được xuất bản.</div>
+          <div className='py-20 text-center text-muted-foreground'>{t("recap.noRecaps")}</div>
         ) : (
           <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
             {recaps.map((recap: any) => (

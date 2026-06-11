@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "siteName": "MPC"
+  },
+  "common": {
+    "locale": {
+      "en": "English",
+      "vi": "Vietnamese",
+      "select": "Select Language"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "toggle": "Toggle Theme"
+    },
+    "nav": {
+      "login": "Login",
+      "logout": "Logout",
+      "home": "Home",
+      "profile": "Profile",
+      "settings": "Account Settings",
+      "admin": "Admin Panel"
+    },
+    "text": {
+      "loading": "Loading...",
+      "loginWith": "Login with",
+      "here": "here"
+    },
+    "notify": {
+      "success": {
+        "title": "Success",
+        "message": "Operation completed successfully."
+      },
+      "error": {
+        "title": "Error",
+        "message": "Operation failed.",
+        "unknownError": "Unknown error. Please contact the administrator."
+      }
+    }
+  },
+  "header": {
+    "logoName": "MPC",
+    "clubFullName": "Mobile Programming Club",
+    "apiDocs": "API Docs",
+    "nav": {
+      "home": "Home",
+      "activities": "Activities",
+      "news": "News",
+      "events": "Events",
+      "blogs": "Blog",
+      "achievements": "Achievements",
+      "projects": "Projects",
+      "about": "About",
+      "introduction": "Introduction",
+      "members": "Members",
+      "recap": "Recap",
+      "webdesign": "Web Design Contest",
+      "training": "Training",
+      "search": "Search"
+    },
+    "announcement": "🎉 MPC Club is recruiting new members! Don't miss the opportunity to grow your programming skills.",
+    "registerNow": "Register Now",
+    "dismiss": "Dismiss",
+    "feedback": "Feedback Box",
+    "searchPlaceholder": "Search posts, events, projects...",
+    "searchHint": "Type a keyword and press Enter to search across posts, events, projects, and members.",
+    "searchResultsFor": "Search results for",
+    "searchComingSoon": "Full-text search is coming soon. Results will include blog posts, events, achievements, projects, and members.",
+    "searchSections": {
+      "member": "Members",
+      "blog": "Blog",
+      "event": "Events",
+      "achievement": "Achievements",
+      "project": "Projects"
+    },
+    "searchNoResults": "No results found.",
+    "searchLoading": "Loading data...",
+    "searchError": "An error occurred while searching. Please try again later.",
+    "searchViewAll": "View all results for",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "member": {
+      "tabs": {
+        "about": "About",
+        "posts": "Posts",
+        "projects": "Projects"
+      },
+      "noPosts": "No posts yet",
+      "noProjects": "No projects yet",
+      "roleHistory": "Role History",
+      "noRoles": "No roles recorded."
+    }
+  },
+  "footer": {
+    "description": "Mobile Programming Club (MPC) – a place to learn, grow, and share knowledge about technology.",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "activities": "Activities",
+    "achievements": "Achievements",
+    "aboutUs": "About Us",
+    "resources": "Resources",
+    "sponsors": "Sponsors",
+    "qa": "Q&A",
+    "externalLinks": "External Links",
+    "facultyLink": "Faculty of IT – OU",
+    "universityLink": "Ho Chi Minh City Open University",
+    "contact": "Contact",
+    "copyright": "© 2025 MPC Club – Mobile Programming Club. All rights reserved."
+  },
+  "defaultPage": {
+    "error": {
+      "title": "An Error Occurred!",
+      "description": "A small server error!",
+      "reminder": "Please notify the administrator!",
+      "tryAgain": "Try Again",
+      "redirect": "Back to Home"
+    },
+    "notFound": {
+      "title": "Page Not Found!",
+      "description": "Sorry, we couldn't find the page you're looking for. It may have been moved or no longer exists.",
+      "redirect": "Back to Home"
+    },
+    "unauthorized": {
+      "title": "You are not signed in!",
+      "description": "Please sign in to access this page.",
+      "reminder": "After signing in, you will be redirected to the requested page.",
+      "redirect": "Sign In",
+      "home": "Back to Home"
+    },
+    "forbidden": {
+      "title": "Access Denied!",
+      "description": "Your account does not have permission to access this page.",
+      "reminder": "If you believe this is a mistake, please contact an administrator.",
+      "redirect": "Back to Home"
+    },
+    "serverError": {
+      "title": "Internal Server Error",
+      "description": "The server is experiencing issues. Please try again in a few minutes.",
+      "reminder": "The technical team has been notified about this issue.",
+      "redirect": "Back to Home"
+    },
+    "badGateway": {
+      "title": "Server Under Maintenance",
+      "description": "The service is temporarily unavailable. We are performing maintenance or upgrading the system.",
+      "reminder": "Please check back in a few minutes. Thank you for your patience.",
+      "redirect": "Back to Home"
+    }
+  }
+}

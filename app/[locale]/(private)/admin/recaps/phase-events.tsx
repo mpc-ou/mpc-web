@@ -1,9 +1,11 @@
 "use client";
 
 import { CalendarDays, CheckSquare, Square } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatLocalDate } from "@/utils/handle-datetime";
 
 type EventCandidate = {
   id: string;
@@ -32,6 +34,7 @@ const typeBadge: Record<string, string> = {
 };
 
 export function PhaseEvents({ events, selectedIds, onChange }: Props) {
+  const locale = useLocale();
   const allSelected = events.length > 0 && selectedIds.length === events.length;
 
   const toggle = (id: string) => {
@@ -96,7 +99,7 @@ export function PhaseEvents({ events, selectedIds, onChange }: Props) {
                   <div className='mt-1 flex items-center gap-3 text-muted-foreground text-xs'>
                     <span className='flex items-center gap-1'>
                       <CalendarDays className='h-3 w-3' />
-                      {new Date(event.startAt).toLocaleDateString("vi-VN")}
+                      {formatLocalDate(event.startAt, locale)}
                     </span>
                     {event.location && <span>📍 {event.location}</span>}
                   </div>

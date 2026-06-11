@@ -71,20 +71,20 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<
   });
 }
 
-interface ImageCropperModalProps {
+type ImageCropperModalProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   imageSrc: string;
   onConfirm: (croppedBlob: Blob) => void;
   aspect?: number;
-}
+};
 
 export function ImageCropperModal({ isOpen, onOpenChange, imageSrc, onConfirm, aspect = 1 }: ImageCropperModalProps) {
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-  const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+  const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 

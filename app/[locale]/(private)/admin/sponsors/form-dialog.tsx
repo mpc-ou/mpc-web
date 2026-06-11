@@ -2,6 +2,7 @@
 
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { adminCreateSponsor, adminUpdateSponsor } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,9 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
+import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/utils/supabase-upload";
-import { adminCreateSponsor, adminUpdateSponsor } from "../actions";
 import type { SponsorRow } from "./columns";
 
 type Props = {
@@ -42,14 +44,14 @@ export function SponsorFormDialog({ open, onOpenChange, sponsor }: Props) {
       toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > UPLOAD_MAX_IMAGE_SIZE) {
       toast({ variant: "destructive", description: "Ảnh tối đa 5MB" });
       return;
     }
 
     setLogoUploading(true);
     try {
-      const url = await uploadToStorage(file, "media", "sponsors");
+      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.sponsors);
       setLogoUrl(url);
     } catch {
       toast({ variant: "destructive", description: "Upload ảnh thất bại" });
@@ -174,7 +176,7 @@ export function SponsorFormDialog({ open, onOpenChange, sponsor }: Props) {
             <Label>Mô tả</Label>
             <textarea
               className='min-h-15 rounded-md border border-input bg-background px-3 py-2 text-sm'
-              defaultValue={sponsor?.description ?? ""}
+              defaultValue={sponsor?.descriptionVi ?? ""}
               name='description'
               title='Mô tả nhà tài trợ'
             />

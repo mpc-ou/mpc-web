@@ -1,0 +1,15 @@
+{
+  "admin": {
+    "title": "Admin Page",
+    "description": "Manage club content and members.",
+    "form": {
+      "selector": {
+        "linkedMembers": "Linked Members",
+        "removeLinkedMember": "Remove Linked Member",
+        "searchMembersPlaceholder": "Search members...",
+        "rolePlaceholder": "Select Role",
+        "clearSelectedMember": "Clear Selected Member"
+      }
+    }
+  }
+}

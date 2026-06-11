@@ -1,13 +1,8 @@
-import { adminGetGalleryImages } from "../actions";
+import { Images } from "lucide-react";
+import { adminGetGalleryImages } from "@/app/_actions/admin";
+import type { GalleryImage } from "@/configs/prisma/generated/prisma/client";
+import { AdminPageHeader } from "../_components/admin-page-header";
 import { GalleryManager } from "./manager";
-
-type GalleryImage = {
-  id: string;
-  url: string;
-  caption: string | null;
-  order: number;
-  isActive: boolean;
-};
 
 export default async function AdminGalleryPage(): Promise<React.ReactNode> {
   const { data } = await adminGetGalleryImages();
@@ -15,10 +10,11 @@ export default async function AdminGalleryPage(): Promise<React.ReactNode> {
 
   return (
     <div className='flex flex-col gap-6'>
-      <div>
-        <h1 className='font-bold text-2xl text-foreground'>🖼️ Quản lý Gallery</h1>
-        <p className='text-muted-foreground text-sm'>{images.length} ảnh</p>
-      </div>
+      <AdminPageHeader
+        description='Hình ảnh hiển thị trong phần gallery trên trang chủ'
+        icon={Images}
+        title='Quản lý Gallery'
+      />
       <GalleryManager images={images} />
     </div>
   );

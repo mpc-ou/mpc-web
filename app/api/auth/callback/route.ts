@@ -1,7 +1,10 @@
 import type { User } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { prisma } from "@/configs/prisma/db";
+import type { Member } from "@/configs/prisma/generated/prisma/client";
 import { createClientSsr } from "@/configs/supabase/server";
+import { isRootAdmin } from "@/utils/admin";
+import { validateEmailAllowed } from "@/utils/auth-val";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -35,6 +38,14 @@ async function generateUniqueSlug(email: string): Promise<string> {
   return `${base}${Date.now().toString().slice(-6)}`;
 }
 
+const SPLIT_WHITESPACE_REGEX = /\s+/;
+
+type SocialLink = {
+  id?: string;
+  platform: string;
+  url: string;
+};
+
 /**
  * Parse Google user_metadata into firstName / lastName.
  * Google may provide full_name (e.g. "Nguyễn Văn An") or separate given/family fields.
@@ -52,7 +63,7 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
   if (!full) {
     return { firstName: "", lastName: "" };
   }
-  const parts = full.split(/\s+/);
+  const parts = full.split(SPLIT_WHITESPACE_REGEX);
   if (parts.length === 1) {
     return { firstName: "", lastName: parts[0] };
   }
@@ -63,82 +74,100 @@ function parseGoogleName(meta: Record<string, string>): { firstName: string; las
 }
 
 /**
- * Sync the Prisma member record after a successful Google or GitHub OAuth login/link.
- *
- * Cases:
- *  1. Member was pre-created by admin (authId = "pending-*"):
- *     - Replace authId with real Supabase user id
- *     - Fill avatar from Google if still null
- *     - Generate slug if still null
- *  2. Member already fully set up (returning user):
- *     - Fill any still-null avatar / slug
- *  3. Completely new user (never pre-created):
- *     - Create member record with GUEST role, data from Google
+ * Find existing member matching any of the user's provider emails.
  */
-async function syncMemberFromOAuth(user: User): Promise<void> {
-  if (!user.email) {
-    return;
-  }
+async function findExistingMember(user: User, email: string): Promise<Member | null> {
+  const oauthEmails = new Set<string>();
+  oauthEmails.add(email.toLowerCase());
 
-  const meta = (user.user_metadata ?? {}) as Record<string, string>;
-  const googleAvatar = meta.avatar_url || meta.picture || null;
-  const email = user.email;
-
-  const existing = await prisma.member.findUnique({ where: { email } });
-
-  if (existing) {
-    const updates: Record<string, unknown> = {};
-
-    // 1. Replace pending authId placeholder with the real Supabase UID
-    if (existing.authId.startsWith("pending-")) {
-      updates.authId = user.id;
-    }
-
-    // 2. Fill avatar from Google if the member doesn't have one yet
-    if (!existing.avatar && googleAvatar) {
-      updates.avatar = googleAvatar;
-    }
-
-    // 3. Auto-generate slug if it's still missing
-    if (!existing.slug) {
-      updates.slug = await generateUniqueSlug(email);
-    }
-
-    // 4. Auto-inject GitHub social link if linked
-    const githubIdentity = user.identities?.find((id) => id.provider === "github");
-    if (githubIdentity) {
-      const githubUsername =
-        githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
-      if (githubUsername) {
-        const existingSocials = Array.isArray(existing.socials) ? (existing.socials as any[]) : [];
-        const hasGithub = existingSocials.some((s: any) => s.platform === "GitHub");
-
-        if (!hasGithub) {
-          updates.socials = [
-            ...existingSocials,
-            {
-              id: Math.random().toString(36).substring(2, 9),
-              platform: "GitHub",
-              url: `https://github.com/${githubUsername}`
-            }
-          ];
-        }
+  if (user.identities) {
+    for (const identity of user.identities) {
+      const idEmail = identity.identity_data?.email;
+      if (idEmail) {
+        oauthEmails.add(idEmail.toLowerCase());
       }
     }
-
-    if (Object.keys(updates).length > 0) {
-      await prisma.member.update({ where: { email }, data: updates });
-    }
-    return;
   }
 
-  // New user — auto-create with GUEST role (admin can promote later)
+  for (const oEmail of oauthEmails) {
+    const matched = await prisma.member.findFirst({
+      where: {
+        OR: [{ email: oEmail }, { githubEmail: oEmail }]
+      }
+    });
+    if (matched) {
+      return matched;
+    }
+  }
+  return null;
+}
+
+/**
+ * Update an existing member record with OAuth details.
+ */
+async function updateExistingMember(user: User, existing: Member, googleAvatar: string | null): Promise<void> {
+  const updates: Record<string, unknown> = {};
+
+  if (existing.authId.startsWith("pending-")) {
+    updates.authId = user.id;
+  }
+
+  if (!existing.avatar && googleAvatar) {
+    updates.avatar = googleAvatar;
+  }
+
+  if (!existing.slug) {
+    updates.slug = await generateUniqueSlug(existing.email);
+  }
+
+  const githubIdentity = user.identities?.find((id) => id.provider === "github");
+  if (githubIdentity) {
+    const githubUsername = githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
+    if (githubUsername) {
+      const existingSocials = Array.isArray(existing.socials) ? (existing.socials as unknown as SocialLink[]) : [];
+      const hasGithub = existingSocials.some((s) => s.platform === "GitHub");
+
+      if (!hasGithub) {
+        updates.socials = [
+          ...existingSocials,
+          {
+            id: Math.random().toString(36).substring(2, 9),
+            platform: "GitHub",
+            url: `https://github.com/${githubUsername}`
+          }
+        ];
+      }
+    }
+    const githubEmailVal = githubIdentity.identity_data?.email;
+    if (githubEmailVal && !existing.githubEmail) {
+      updates.githubEmail = githubEmailVal;
+    }
+  }
+
+  if (isRootAdmin(existing.email) && existing.webRole !== "ADMIN") {
+    updates.webRole = "ADMIN";
+  }
+
+  if (Object.keys(updates).length > 0) {
+    await prisma.member.update({ where: { id: existing.id }, data: updates });
+  }
+}
+
+/**
+ * Create a new member record with GUEST role.
+ */
+async function createNewMember(
+  user: User,
+  email: string,
+  googleAvatar: string | null,
+  meta: Record<string, string>
+): Promise<void> {
   const { firstName, lastName } = parseGoogleName(meta);
   const slug = await generateUniqueSlug(email);
 
-  // 4. Auto-inject GitHub social link if linked
-  const socials = [];
+  const socials: SocialLink[] = [];
   const githubIdentity = user.identities?.find((id) => id.provider === "github");
+  let githubEmailVal: string | undefined;
   if (githubIdentity) {
     const githubUsername = githubIdentity.identity_data?.preferred_username || githubIdentity.identity_data?.user_name;
     if (githubUsername) {
@@ -148,7 +177,10 @@ async function syncMemberFromOAuth(user: User): Promise<void> {
         url: `https://github.com/${githubUsername}`
       });
     }
+    githubEmailVal = githubIdentity.identity_data?.email;
   }
+
+  const isRoot = isRootAdmin(email);
 
   await prisma.member.create({
     data: {
@@ -159,10 +191,32 @@ async function syncMemberFromOAuth(user: User): Promise<void> {
       avatar: googleAvatar || undefined,
       slug,
       socials: socials.length > 0 ? socials : undefined,
-      webRole: "GUEST",
-      createdBy: null // self-registered via Google/GitHub
+      webRole: isRoot ? "ADMIN" : "GUEST",
+      githubEmail: githubEmailVal || undefined,
+      createdBy: null
     }
   });
+}
+
+/**
+ * Sync the Prisma member record after a successful Google or GitHub OAuth login/link.
+ */
+async function syncMemberFromOAuth(user: User): Promise<void> {
+  if (!user.email) {
+    return;
+  }
+
+  const meta = (user.user_metadata ?? {}) as Record<string, string>;
+  const googleAvatar = meta.avatar_url || meta.picture || null;
+  const email = user.email;
+
+  const existing = await findExistingMember(user, email);
+
+  if (existing) {
+    await updateExistingMember(user, existing, googleAvatar);
+  } else {
+    await createNewMember(user, email, googleAvatar, meta);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -184,7 +238,15 @@ export async function GET(request: Request) {
         data: { user }
       } = await supabase.auth.getUser();
 
-      if (user) {
+      if (user?.email) {
+        const check = await validateEmailAllowed(user.email);
+        if (!check.allowed) {
+          await supabase.auth.signOut();
+          return NextResponse.redirect(
+            `${origin}/auth#error_description=${encodeURIComponent(check.reason || "Đăng nhập bị từ chối.")}`
+          );
+        }
+
         try {
           await syncMemberFromOAuth(user);
         } catch (syncErr) {

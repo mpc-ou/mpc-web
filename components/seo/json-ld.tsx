@@ -33,10 +33,6 @@ export function OrganizationJsonLd() {
   );
 }
 
-/**
- * JSON-LD WebSite structured data with SearchAction.
- * Helps Google display a sitelinks search box.
- */
 export function WebSiteJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -65,10 +61,6 @@ type EventJsonLdProps = {
   url: string;
 };
 
-/**
- * JSON-LD Event structured data for event detail pages.
- * @see https://schema.org/Event
- */
 export function EventJsonLd({ name, description, startDate, endDate, location, image, url }: EventJsonLdProps) {
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",

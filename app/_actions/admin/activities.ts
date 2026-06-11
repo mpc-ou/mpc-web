@@ -1,0 +1,170 @@
+"use server";
+
+import { revalidateTag } from "next/cache";
+import { _CACHE_POSTS } from "@/constants/cache";
+import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+
+const _CACHE_ACTIVITIES = "activities";
+
+export const adminGetActivities = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      return prisma.activity.findMany({ orderBy: { order: "asc" } });
+    }
+  });
+
+export const adminCreateActivity = async (data: {
+  titleVi: string;
+  titleEn?: string;
+  slug?: string;
+  descriptionVi?: string;
+  descriptionEn?: string;
+  frequencyVi?: string;
+  frequencyEn?: string;
+  hyperlink?: string;
+  thumbnail?: string;
+  images?: string[];
+  isActive?: boolean;
+  order?: number;
+}) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const slug = data.slug || generateSlug(data.titleVi);
+      const created = await prisma.activity.create({
+        data: {
+          titleVi: data.titleVi,
+          titleEn: data.titleEn ?? "",
+          slug,
+          descriptionVi: data.descriptionVi ?? "",
+          descriptionEn: data.descriptionEn ?? "",
+          frequencyVi: data.frequencyVi ?? null,
+          frequencyEn: data.frequencyEn ?? null,
+          hyperlink: data.hyperlink ?? null,
+          thumbnail: data.thumbnail ?? null,
+          images: data.images ?? [],
+          isActive: data.isActive ?? true,
+          order: data.order ?? 0
+        }
+      });
+      revalidateTag(_CACHE_ACTIVITIES, "default");
+      return created;
+    }
+  });
+
+export const adminUpdateActivity = async (
+  id: string,
+  data: {
+    titleVi?: string;
+    titleEn?: string;
+    descriptionVi?: string;
+    descriptionEn?: string;
+    frequencyVi?: string | null;
+    frequencyEn?: string | null;
+    hyperlink?: string | null;
+    thumbnail?: string | null;
+    images?: string[];
+    isActive?: boolean;
+    order?: number;
+  }
+) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const updated = await prisma.activity.update({ where: { id }, data });
+      revalidateTag(_CACHE_ACTIVITIES, "default");
+      return updated;
+    }
+  });
+
+export const adminDeleteActivity = async (id: string) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      await prisma.activity.delete({ where: { id } });
+      revalidateTag(_CACHE_ACTIVITIES, "default");
+      return { success: true };
+    }
+  });
+
+export const adminSeedActivities = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const data = (await import("@/configs/data/activities.json")).default as {
+        internalEvents: Array<{
+          id: string;
+          vi: { title: string; description: string; frequency: string };
+          en: { title: string; description: string; frequency: string };
+          imageFolder?: string;
+          href?: string;
+        }>;
+        externalEvents: Array<{
+          id: string;
+          vi: { title: string; description: string; frequency: string };
+          en: { title: string; description: string; frequency: string };
+          imageFolder?: string;
+          href?: string;
+        }>;
+      };
+
+      let count = 0;
+      const all = [...data.internalEvents, ...data.externalEvents];
+
+      // Đọc ảnh từ folder public tương ứng
+      const fsModule = await import("node:fs");
+      const pathModule = await import("node:path");
+      const publicDir = pathModule.join(process.cwd(), "public");
+
+      for (let i = 0; i < all.length; i++) {
+        const item = all[i];
+        let images: string[] = [];
+
+        // Quét folder ảnh nếu có
+        if (item.imageFolder) {
+          const folderPath = pathModule.join(publicDir, item.imageFolder.replace(/^\//, ""));
+          if (fsModule.existsSync(folderPath)) {
+            images = fsModule
+              .readdirSync(folderPath)
+              .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+              .sort((a, b) => b.localeCompare(a))
+              .map((f) => `${item.imageFolder}/${f}`);
+          }
+        }
+
+        const thumbnail = images.length > 0 ? images[0] : null;
+
+        const existing = await prisma.activity.findUnique({
+          where: { slug: item.id }
+        });
+
+        const payload = {
+          slug: item.id,
+          titleVi: item.vi.title,
+          titleEn: item.en.title,
+          descriptionVi: item.vi.description,
+          descriptionEn: item.en.description,
+          frequencyVi: item.vi.frequency,
+          frequencyEn: item.en.frequency,
+          isInternal: data.internalEvents.some((e) => e.id === item.id),
+          thumbnail: thumbnail ?? undefined,
+          images,
+          order: i
+        };
+
+        if (existing) {
+          await prisma.activity.update({
+            where: { id: existing.id },
+            data: payload
+          });
+        } else {
+          await prisma.activity.create({ data: payload });
+        }
+        count++;
+      }
+
+      revalidateTag(_CACHE_ACTIVITIES, "default");
+      return { success: true, count };
+    }
+  });

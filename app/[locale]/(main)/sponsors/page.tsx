@@ -1,49 +1,49 @@
 import { Handshake } from "lucide-react";
 import type { Metadata } from "next";
-import { getSponsorsPageData } from "@/app/[locale]/actions";
+import { getSponsorsPageData } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { generatePageSeo } from "@/utils/seo";
 import { SponsorsClient } from "./client";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return generatePageSeo({
-    page: "sponsors",
-    locale,
-    pathname: "/sponsors"
-  });
+  return generatePageSeo({ page: "sponsors", locale, pathname: "/sponsors" });
 }
 
-export default async function SponsorsPage(): Promise<React.ReactNode> {
+export default async function SponsorsPage({ params }: Props): Promise<React.ReactNode> {
+  const { locale } = await params;
   const { data } = await getSponsorsPageData();
   const payload = data?.payload as { sponsors: any[] } | undefined;
   const sponsors = payload?.sponsors ?? [];
 
-  // Group by the year of their first sponsorship. If none, use createdAt year.
   const groupedByYear = sponsors.reduce(
     (acc, sponsor) => {
       let year = new Date(sponsor.createdAt).getFullYear();
-      if (sponsor.sponsorships.length > 0) {
-        year = new Date(sponsor.sponsorships[0].startAt).getFullYear();
+      if (sponsor.startAt) {
+        year = new Date(sponsor.startAt).getFullYear();
       }
 
       if (!acc[year]) {
         acc[year] = [];
       }
 
-      // Serialize data for client
       acc[year].push({
         id: sponsor.id,
-        name: sponsor.name,
+        name: locale === "en" ? sponsor.nameEn || sponsor.name : sponsor.name,
         slug: sponsor.slug,
         logo: sponsor.logo,
         website: sponsor.website,
-        description: sponsor.description,
-        sponsorships: sponsor.sponsorships.map((s: any) => ({
-          id: s.id,
-          title: s.title,
-          tier: s.tier
-        }))
+        email: sponsor.email,
+        phone: sponsor.phone,
+        description: locale === "en" ? sponsor.descriptionEn || sponsor.descriptionVi : sponsor.descriptionVi,
+        descriptionVi: sponsor.descriptionVi,
+        descriptionEn: sponsor.descriptionEn,
+        startAt: sponsor.startAt,
+        endAt: sponsor.endAt,
+        images: sponsor.images,
+        imageFolder: undefined
       });
       return acc;
     },
@@ -56,7 +56,7 @@ export default async function SponsorsPage(): Promise<React.ReactNode> {
 
   return (
     <div className='min-h-screen bg-background pt-10 pb-20 sm:pt-20'>
-      <div className='container mx-auto max-w-5xl px-4'>
+      <div className='container mx-auto max-w-7xl px-4'>
         {/* Header */}
         <ScrollReveal className='mb-16 text-center'>
           <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary'>

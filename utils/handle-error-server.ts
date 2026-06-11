@@ -4,7 +4,7 @@ import type { ResponseType } from "@/types/response";
 import { ErrorResponse, SuccessResponse } from "./response";
 
 type HandleErrorServerType = {
-  cb: ({ user }: { user?: User }) => Promise<object>;
+  cb: ({ user }: { user?: User }) => Promise<any>;
 };
 
 function isInternalCancelError(error: unknown): boolean {

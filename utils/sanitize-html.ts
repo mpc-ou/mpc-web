@@ -2,8 +2,27 @@ import type { Config } from "dompurify";
 import DOMPurify from "dompurify";
 
 const PURIFY_CONFIG: Config = {
-  ADD_TAGS: ["iframe"],
-  ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "src", "width", "height", "style", "target", "rel"]
+  ADD_TAGS: ["iframe", "input"],
+  ADD_ATTR: [
+    "allow",
+    "allowfullscreen",
+    "frameborder",
+    "scrolling",
+    "src",
+    "width",
+    "height",
+    "style",
+    "target",
+    "rel",
+    "class",
+    "type",
+    "checked",
+    "disabled",
+    "data-code",
+    "data-line-count",
+    "data-slug",
+    "data-href"
+  ]
 };
 
 /**

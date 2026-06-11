@@ -14,8 +14,8 @@ declare module 'medium-zoom' {
     close(): Promise<Zoom>;
     open({ target }?: { target?: HTMLElement }): Promise<Zoom>;
     toggle({ target }?: { target?: HTMLElement }): Promise<Zoom>;
-    on(type: string, listener: () => void, options?: boolean | AddEventListenerOptions): Zoom;
-    off(type: string, listener: () => void, options?: boolean | EventListenerOptions): Zoom;
+    on(type: string, listener: (event: { target: HTMLImageElement }) => void, options?: boolean | AddEventListenerOptions): Zoom;
+    off(type: string, listener: (event: { target: HTMLImageElement }) => void, options?: boolean | EventListenerOptions): Zoom;
     getZoomedImage(): HTMLElement | null;
   }
 

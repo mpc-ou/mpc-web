@@ -1,11 +1,9 @@
-import fs from "fs";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import path from "path";
-import eventsData from "@/configs/data/events.json";
+import { getActivitiesPageData } from "@/app/_actions/main";
 import { generatePageSeo } from "@/utils/seo";
+import { EventsHeroClient } from "./_components/activities-hero.client";
 import { EventsClient } from "./client";
-import { EventsHeroClient } from "./hero.client";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -24,46 +22,34 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("events");
+  const ta = await getTranslations("activities");
 
-  // Format data from eventsData using locale
-  const getLocalizedData = (events: any[]) => {
-    return events.map((e) => {
-      let images: string[] = [];
-      let thumbnail = "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image";
+  const res = await getActivitiesPageData();
+  const activities = (res.data?.payload as { activities: any[] })?.activities ?? [];
 
-      if (e.imageFolder) {
-        try {
-          const dirPath = path.join(process.cwd(), "public", e.imageFolder);
-          if (fs.existsSync(dirPath)) {
-            const files = fs.readdirSync(dirPath);
-            const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|webp|gif)$/i.test(file));
+  const internalEvents = activities
+    .filter((a: any) => a.isInternal)
+    .map((a: any) => ({
+      id: a.slug,
+      title: a[`title${locale === "en" ? "En" : "Vi"}`] || a.titleVi,
+      description: a[`description${locale === "en" ? "En" : "Vi"}`] || a.descriptionVi,
+      frequency: a[`frequency${locale === "en" ? "En" : "Vi"}`] || a.frequencyVi || "",
+      thumbnail: a.thumbnail || "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image",
+      images: a.images || [],
+      href: a.hyperlink || undefined
+    }));
 
-            // Sort Z-A
-            imageFiles.sort((a, b) => b.localeCompare(a));
-
-            images = imageFiles.map((file) => `${e.imageFolder}/${file}`);
-            if (images.length > 0) {
-              thumbnail = images[0];
-            }
-          }
-        } catch (error) {
-          console.error(`Error reading image folder ${e.imageFolder}:`, error);
-        }
-      }
-
-      return {
-        id: e.id,
-        title: e[locale]?.title || e.vi?.title,
-        description: e[locale]?.description || e.vi?.description,
-        thumbnail,
-        images,
-        href: e.href
-      };
-    });
-  };
-
-  const internalEvents = getLocalizedData(eventsData.internalEvents);
-  const externalEvents = getLocalizedData(eventsData.externalEvents);
+  const externalEvents = activities
+    .filter((a: any) => !a.isInternal)
+    .map((a: any) => ({
+      id: a.slug,
+      title: a[`title${locale === "en" ? "En" : "Vi"}`] || a.titleVi,
+      description: a[`description${locale === "en" ? "En" : "Vi"}`] || a.descriptionVi,
+      frequency: a[`frequency${locale === "en" ? "En" : "Vi"}`] || a.frequencyVi || "",
+      thumbnail: a.thumbnail || "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image",
+      images: a.images || [],
+      href: a.hyperlink || undefined
+    }));
 
   const clientTranslations = {
     internalTitle: t("internal.title"),
@@ -75,7 +61,7 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
 
   return (
     <div className='min-h-screen bg-background pb-20'>
-      <EventsHeroClient subtitle={t("subtitle")} title={t("title")} />
+      <EventsHeroClient subtitle={ta("subtitle")} title={ta("title")} />
       <EventsClient externalEvents={externalEvents} internalEvents={internalEvents} t={clientTranslations} />
     </div>
   );

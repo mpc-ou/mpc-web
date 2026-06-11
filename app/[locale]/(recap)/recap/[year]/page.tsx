@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { getRecapByYear } from "@/app/[locale]/actions/recaps";
+import { getRecapByYear } from "@/app/_actions/main";
 import { parseRecapData } from "@/lib/recap-data";
 import { RecapSlideViewer } from "./client";
 
@@ -13,7 +13,7 @@ async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
   await connection();
   const yearStr = await yearPromise;
   const year = Number(yearStr);
-  if (isNaN(year)) {
+  if (Number.isNaN(year)) {
     notFound();
   }
 

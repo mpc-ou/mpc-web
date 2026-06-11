@@ -1,32 +1,54 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Database, Pencil, Plus, Search } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { adminDeleteDepartment, adminSeedDepartments } from "@/app/_actions/admin";
 import { DataTable } from "@/components/data-table";
+import { MarkdownContent } from "@/components/markdown-content";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
-import { adminDeleteDepartment } from "../actions";
 import { createColumns, type DeptRow } from "./columns";
-import { DeptFormDialog } from "./form-dialog";
 
 export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
   const router = useRouter();
   const { handleErrorClient } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editDept, setEditDept] = useState<DeptRow | null>(null);
+  const [seeding, setSeeding] = useState(false);
+  const [viewDept, setViewDept] = useState<DeptRow | null>(null);
 
-  const handleEdit = (d: DeptRow) => {
-    setEditDept(d);
-    setDialogOpen(true);
-  };
+  const [searchVal, setSearchVal] = useState("");
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => setSearch(searchVal), 400);
+    return () => clearTimeout(handler);
+  }, [searchVal]);
+
+  const filteredData = useMemo(() => {
+    if (!search.trim()) {
+      return data;
+    }
+    const s = search.toLowerCase();
+    return data.filter(
+      (d) =>
+        d.nameVi.toLowerCase().includes(s) || d.nameEn?.toLowerCase().includes(s) || d.slug.toLowerCase().includes(s)
+    );
+  }, [data, search]);
+
+  const handleEdit = (d: DeptRow) => router.push(`/admin/departments/${d.id}/edit`);
+
+  const handleView = (d: DeptRow) => setViewDept(d);
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Xóa ban?",
-      description: "Hành động này không thể hoàn tác. Các vai trò thuộc ban này cũng sẽ bị ảnh hưởng."
+      description: "Hành động này không thể hoàn tác."
     });
     if (!ok) {
       return;
@@ -37,39 +59,137 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
     });
   };
 
-  const handleCreate = () => {
-    setEditDept(null);
-    setDialogOpen(true);
+  const handleSeed = async () => {
+    setSeeding(true);
+    await handleErrorClient({
+      cb: () => adminSeedDepartments(),
+      onSuccess: () => {
+        router.refresh();
+        setSeeding(false);
+      }
+    });
+    setSeeding(false);
   };
 
-  const columns = useMemo(() => createColumns(handleEdit, handleDelete), [handleDelete, handleEdit]);
+  const columns = useMemo(
+    () => createColumns(handleEdit, handleDelete, handleView),
+    [handleDelete, handleEdit, handleView]
+  );
 
   return (
-    <>
+    <div className='flex flex-col gap-4'>
       <ConfirmDialog />
-      <DataTable
-        columns={columns}
-        data={data}
-        filterComponent={
-          <Button className='ml-auto h-8' onClick={handleCreate} size='sm'>
-            <Plus className='mr-2 h-4 w-4' />
-            Thêm ban
-          </Button>
-        }
-        searchKey='name'
-        searchPlaceholder='Tìm theo tên...'
-      />
-      <DeptFormDialog
-        dept={editDept}
-        onOpenChange={(open) => {
-          setDialogOpen(open);
-          if (!open) {
-            setEditDept(null);
-            router.refresh();
-          }
-        }}
-        open={dialogOpen}
-      />
-    </>
+
+      <div className='flex items-center justify-end gap-2'>
+        <Button className='h-9' disabled={seeding} onClick={handleSeed} size='sm' variant='outline'>
+          <Database className='mr-2 h-4 w-4' />
+          {seeding ? "Đang nhập..." : "Ghi đè dữ liệu mẫu"}
+        </Button>
+        <Button className='h-9 font-medium' onClick={() => router.push("/admin/departments/new")}>
+          <Plus className='mr-2 h-4 w-4' /> Thêm ban
+        </Button>
+      </div>
+
+      <div className='flex flex-wrap items-center justify-between gap-2'>
+        <div className='relative min-w-50 max-w-sm flex-1'>
+          <Search className='absolute top-2.5 left-3 h-4 w-4 text-muted-foreground' />
+          <Input
+            className='h-9 pl-9 text-xs'
+            onChange={(e) => setSearchVal(e.target.value)}
+            placeholder='Tìm theo tên...'
+            value={searchVal}
+          />
+        </div>
+      </div>
+
+      <DataTable columns={columns} data={filteredData} />
+
+      {/* View Modal */}
+      <Dialog onOpenChange={(open) => !open && setViewDept(null)} open={!!viewDept}>
+        <DialogContent className='max-h-[90vh] max-w-lg overflow-y-auto'>
+          <DialogTitle className='sr-only'>{viewDept?.nameVi}</DialogTitle>
+          {viewDept && (
+            <div className='flex flex-col gap-5 py-2'>
+              {/* BG Image */}
+              {(viewDept as any)?.bgImage && (
+                <div className='relative -mx-6 -mt-6 h-40 overflow-hidden rounded-t-lg'>
+                  <img alt='' className='h-full w-full object-cover' src={(viewDept as any).bgImage} />
+                  <div className='absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent' />
+                </div>
+              )}
+
+              {/* Header */}
+              <div className='text-center'>
+                <div className='mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+                  <span className='font-bold text-lg text-primary'>{(viewDept as any).icon || viewDept.nameVi[0]}</span>
+                </div>
+                <h2 className='font-bold text-xl'>{viewDept.nameVi}</h2>
+                {viewDept.nameEn && <p className='text-muted-foreground text-sm'>{viewDept.nameEn}</p>}
+                <div className='mt-2 flex justify-center gap-2'>
+                  <Badge variant={viewDept.isActive ? "default" : "outline"}>
+                    {viewDept.isActive ? "Hoạt động" : "Tạm ngưng"}
+                  </Badge>
+                  <Badge variant='secondary'>Slug: {viewDept.slug}</Badge>
+                  <Badge variant='secondary'>Thứ tự: {viewDept.order}</Badge>
+                </div>
+              </div>
+
+              {/* Description */}
+              {(viewDept as any)?.descriptionVi && (
+                <div>
+                  <h4 className='mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>Mô tả</h4>
+                  <p className='text-muted-foreground text-sm leading-relaxed'>{(viewDept as any).descriptionVi}</p>
+                  {(viewDept as any)?.descriptionEn && (
+                    <p className='mt-1 text-muted-foreground/60 text-xs italic'>{(viewDept as any).descriptionEn}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Count */}
+              <div className='flex items-center gap-2 rounded-lg bg-muted/50 p-3'>
+                <span className='font-medium text-sm'>Thành viên:</span>
+                <Badge variant='secondary'>{viewDept._count.clubRoles}</Badge>
+              </div>
+
+              {/* Missions */}
+              {(viewDept as any)?.missionsVi && (
+                <div>
+                  <h4 className='mb-2 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>
+                    Nhiệm vụ
+                  </h4>
+                  <div className='prose prose-sm max-w-none rounded-lg border bg-muted/20 p-4'>
+                    <MarkdownContent content={(viewDept as any).missionsVi} />
+                  </div>
+                </div>
+              )}
+
+              {/* Link */}
+              {(viewDept as any)?.hyperlink && (
+                <div className='flex items-center gap-2 rounded-lg bg-primary/5 p-3'>
+                  <span className='font-medium text-primary text-sm'>Liên kết:</span>
+                  <a className='text-sm underline' href={(viewDept as any).hyperlink} target='_blank'>
+                    {(viewDept as any).linkLabelVi || (viewDept as any).hyperlink}
+                  </a>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className='flex justify-end gap-2 border-t pt-4'>
+                <Button
+                  onClick={() => {
+                    setViewDept(null);
+                    router.push(`/admin/departments/${viewDept.id}/edit`);
+                  }}
+                  size='sm'
+                  variant='outline'
+                >
+                  <Pencil className='mr-1.5 h-3.5 w-3.5' /> Chỉnh sửa
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

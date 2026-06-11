@@ -1,0 +1,15 @@
+{
+  "admin": {
+    "title": "Trang quản trị",
+    "description": "Quản lý nội dung và thành viên của CLB MPC.",
+    "form": {
+      "selector": {
+        "linkedMembers": "Thành viên đã liên kết",
+        "removeLinkedMember": "Bỏ liên kết thành viên",
+        "searchMembersPlaceholder": "Tìm kiếm thành viên...",
+        "rolePlaceholder": "Chọn vai trò",
+        "clearSelectedMember": "Xóa thành viên đã chọn"
+      }
+    }
+  }
+}

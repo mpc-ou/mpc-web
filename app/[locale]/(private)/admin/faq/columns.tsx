@@ -1,17 +1,10 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+import { FAQ_TARGETS } from "./constants";
 
 export type FaqRow = {
   id: string;
@@ -19,37 +12,54 @@ export type FaqRow = {
   answerVi: string;
   questionEn: string;
   answerEn: string;
+  target: string;
   order: number;
   isActive: boolean;
 };
 
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
 export const createColumns = (onEdit: (f: FaqRow) => void, onDelete: (id: string) => void): ColumnDef<FaqRow>[] => [
   {
     accessorKey: "order",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        # <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <span className='text-muted-foreground text-sm'>{row.original.order}</span>
+    header: ({ column }) => <SortHeader column={column} label='#' />,
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.order}</span>
   },
   {
     accessorKey: "questionVi",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Câu hỏi (VI) <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <p className='max-w-xs truncate font-medium'>{row.original.questionVi}</p>
+    header: ({ column }) => <SortHeader column={column} label='Câu hỏi (VI)' />,
+    cell: ({ row }) => <p className='max-w-xs truncate font-medium text-xs'>{row.original.questionVi}</p>
   },
   {
     accessorKey: "questionEn",
     header: "Câu hỏi (EN)",
     cell: ({ row }) => (
-      <p className='max-w-xs truncate text-muted-foreground text-sm'>
-        {row.original.questionEn || <span className='text-muted-foreground/50 italic'>—</span>}
+      <p className='max-w-xs truncate text-muted-foreground text-xs'>
+        {row.original.questionEn || <span className='text-muted-foreground/50 text-xs italic'>—</span>}
       </p>
     )
+  },
+  {
+    accessorKey: "target",
+    header: ({ column }) => <SortHeader column={column} label='Trang sử dụng' />,
+    cell: ({ row }) => {
+      const val = row.original.target;
+      const targetObj = FAQ_TARGETS.find((t) => t.value === val);
+      return (
+        <Badge className='font-medium text-[10px]' variant='secondary'>
+          {targetObj?.label ?? val}
+        </Badge>
+      );
+    }
   },
   {
     accessorKey: "isActive",
@@ -63,21 +73,20 @@ export const createColumns = (onEdit: (f: FaqRow) => void, onDelete: (id: string
     cell: ({ row }) => {
       const f = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(f)}>Chỉnh sửa</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(f.id)}>
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex items-center gap-0.5'>
+          <Button className='h-7 w-7' onClick={() => onEdit(f)} size='icon' title='Chỉnh sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(f.id)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

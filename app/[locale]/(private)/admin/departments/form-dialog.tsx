@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { adminCreateDepartment, adminUpdateDepartment } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { adminCreateDepartment, adminUpdateDepartment } from "../actions";
 import type { DeptRow } from "./columns";
 
 type Props = {

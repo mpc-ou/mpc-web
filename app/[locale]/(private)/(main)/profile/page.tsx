@@ -2,10 +2,10 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { LoadingComponent } from "@/components/custom/Loading";
+import { getProfile } from "@/app/_actions/profile/profile";
+import { LoadingComponent } from "@/components/custom/loading";
 import type { Member } from "@/configs/prisma/generated/prisma/client";
-import { getProfile } from "./actions";
-import { FormClient } from "./form.client";
+import { FormClient, FormSkeleton } from "./form.client";
 
 type UserWithMember = SupabaseUser & {
   member?: Member | null;
@@ -45,7 +45,8 @@ export default async function Page(): Promise<React.ReactNode> {
     slug: user?.member?.slug || "",
     avatar: user?.member?.avatar || user?.user_metadata.avatar_url || null,
     coverImage: (user?.member as any)?.coverImage || null,
-    socials: socialsArray
+    socials: socialsArray,
+    spotifyUri: user?.member?.spotifyUri || ""
   };
 
   const linkedProviders = user?.identities?.map((id) => id.provider) || [];

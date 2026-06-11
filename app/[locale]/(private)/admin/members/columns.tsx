@@ -1,18 +1,11 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Copy, ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "@/configs/i18n/routing";
 import { _ROUTE_MEMBER_CARD } from "@/constants/route";
 import { getFullName } from "@/lib/utils";
@@ -35,9 +28,11 @@ export type MemberRow = {
   leftClubAt: string | null;
   createdAt: string;
   clubRoles: Array<{
+    id: string;
     position: string;
     department: { nameVi: string; slug: string } | null;
     startAt: string;
+    endAt: string | null;
   }>;
 };
 
@@ -51,62 +46,119 @@ const roleBadge: Record<
   ADMIN: { label: "Admin", variant: "destructive" },
   COLLABORATOR: { label: "CTV", variant: "default" },
   MEMBER: { label: "Thành viên", variant: "secondary" },
-  GUEST: { label: "Khách", variant: "outline" },
+  GUEST: { label: "Khách", variant: "outline" }
 };
+
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
+function ClubRolesBadges({ roles }: { roles: MemberRow["clubRoles"] }) {
+  if (!roles.length) {
+    return <span className='text-muted-foreground text-xs'>—</span>;
+  }
+
+  const activeRoles = roles.filter((r) => !r.endAt);
+  const displayRoles = (activeRoles.length ? activeRoles : roles).slice(0, 3);
+
+  const uniqueDepts = Array.from(
+    new Map(
+      displayRoles
+        .map((r) => r.department)
+        .filter(Boolean)
+        .map((d) => [d?.slug, d?.nameVi])
+    ).entries()
+  );
+
+  if (!uniqueDepts.length) {
+    const pos = displayRoles[0]?.position;
+    const label =
+      pos === "PRESIDENT"
+        ? "Chủ nhiệm"
+        : pos === "VICE_PRESIDENT"
+          ? "Phó chủ nhiệm"
+          : pos === "ADVISOR"
+            ? "Cố vấn"
+            : (pos ?? "CLB");
+    return (
+      <Badge className='text-[10px]' variant='secondary'>
+        {label}
+      </Badge>
+    );
+  }
+
+  return (
+    <div className='flex flex-wrap gap-1'>
+      {uniqueDepts.map(([slug, name]) => (
+        <Badge className='text-[10px]' key={slug} variant='outline'>
+          {name}
+        </Badge>
+      ))}
+    </div>
+  );
+}
 
 export const createColumns = (
   onEdit: (member: MemberRow) => void,
   onDelete: (id: string) => void,
-  onView: (member: MemberRow) => void,
+  onView: (member: MemberRow) => void
 ): ColumnDef<MemberRow>[] => [
   {
-    accessorKey: "firstName",
-    header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        Thành viên
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        aria-label='Chọn tất cả'
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+      />
     ),
+    cell: ({ row }) => (
+      <Checkbox
+        aria-label='Chọn dòng'
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
+  {
+    accessorKey: "firstName",
+    header: ({ column }) => <SortHeader column={column} label='Thành viên' />,
     cell: ({ row }) => {
       const m = row.original;
       return (
         <div
-          className="-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50"
+          className='-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50'
           onClick={() => onView(m)}
         >
-          <Avatar className="h-8 w-8">
+          <Avatar className='h-8 w-8'>
             <AvatarImage src={m.avatar ?? undefined} />
-            <AvatarFallback className="bg-primary/10 font-bold text-primary text-xs">
+            <AvatarFallback className='bg-primary/10 font-bold text-primary text-xs'>
               {m.firstName?.[0]}
               {m.lastName?.[0]}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">
-              {getFullName(m.firstName, m.lastName, "vi")}
-            </div>
-            {m.studentId && (
-              <div className="text-muted-foreground text-xs">{m.studentId}</div>
-            )}
+            <div className='font-medium text-xs'>{getFullName(m.firstName, m.lastName, "vi")}</div>
+            {m.studentId && <div className='text-[10px] text-muted-foreground'>{m.studentId}</div>}
           </div>
         </div>
       );
-    },
+    }
   },
+  // ── Email ────────────────────────────────────────────────────────────
   {
     accessorKey: "email",
-    header: ({ column }) => (
-      <Button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        variant="ghost"
-      >
-        Email
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    header: ({ column }) => <SortHeader column={column} label='Email' />,
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.email}</span>
   },
   {
     accessorKey: "webRole",
@@ -115,73 +167,58 @@ export const createColumns = (
       const role = row.getValue("webRole") as string;
       const info = roleBadge[role] ?? {
         label: role,
-        variant: "outline" as const,
+        variant: "outline" as const
       };
       return <Badge variant={info.variant}>{info.label}</Badge>;
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    filterFn: (row, id, value) => value.includes(row.getValue(id))
   },
   {
     id: "clubRoles",
-    header: "Chức vụ CLB",
-    cell: ({ row }) => {
-      const roles = row.original.clubRoles;
-      if (!roles.length) {
-        return <span className="text-muted-foreground">—</span>;
-      }
-      return (
-        <div className="text-xs">
-          {roles
-            .map(
-              (r) =>
-                `${r.position}${r.department ? ` - ${r.department.nameVi}` : ""}`,
-            )
-            .join(", ")}
-        </div>
-      );
-    },
+    header: "Ban",
+    cell: ({ row }) => <ClubRolesBadges roles={row.original.clubRoles} />
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const member = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
+        <div className='flex items-center gap-0.5'>
+          <Button className='h-7 w-7' onClick={() => onView(member)} size='icon' title='Xem thông tin' variant='ghost'>
+            <Eye className='h-3.5 w-3.5' />
+          </Button>
+          <Button className='h-7 w-7' onClick={() => onEdit(member)} size='icon' title='Sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7'
+            onClick={() => {
+              navigator.clipboard.writeText(member.email);
+            }}
+            size='icon'
+            title='Copy email'
+            variant='ghost'
+          >
+            <Copy className='h-3.5 w-3.5' />
+          </Button>
+          {member.slug && (
+            <Button asChild className='h-7 w-7' size='icon' title='Xem thẻ thành viên' variant='ghost'>
+              <Link href={`${_ROUTE_MEMBER_CARD}?member=${member.slug}`} target='_blank'>
+                <ExternalLink className='h-3.5 w-3.5' />
+              </Link>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(member.email)}
-            >
-              Copy email
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(member)}>
-              Chỉnh sửa
-            </DropdownMenuItem>
-            {member.slug && (
-              <DropdownMenuItem asChild>
-                <Link
-                  target="_blank"
-                  href={`${_ROUTE_MEMBER_CARD}?member=${member.slug}`}
-                >
-                  Xem thẻ thành viên
-                </Link>
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={() => onDelete(member.id)}
-            >
-              Xóa thành viên
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(member.id)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
-    },
-  },
+    }
+  }
 ];

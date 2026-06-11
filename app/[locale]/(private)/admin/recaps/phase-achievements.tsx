@@ -1,9 +1,11 @@
 "use client";
 
 import { CalendarDays, CheckSquare, Square, Trophy } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatLocalDate } from "@/utils/handle-datetime";
 
 type AchievementCandidate = {
   id: string;
@@ -28,6 +30,7 @@ const typeBadge: Record<string, string> = {
 };
 
 export function PhaseAchievements({ achievements, selectedIds, onChange }: Props) {
+  const locale = useLocale();
   const allSelected = achievements.length > 0 && selectedIds.length === achievements.length;
 
   const toggle = (id: string) => {
@@ -91,7 +94,7 @@ export function PhaseAchievements({ achievements, selectedIds, onChange }: Props
                   <div className='mt-1 flex items-center gap-3 text-muted-foreground text-xs'>
                     <span className='flex items-center gap-1'>
                       <CalendarDays className='h-3 w-3' />
-                      {new Date(ach.date).toLocaleDateString("vi-VN")}
+                      {formatLocalDate(ach.date, locale)}
                     </span>
                     {ach.summary && <span className='line-clamp-1'>{ach.summary}</span>}
                   </div>

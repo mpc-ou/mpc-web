@@ -19,8 +19,9 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 
 ### 🌐 Trang công khai
 
-- **Trang chủ** — Hero banner, thống kê CLB, giới thiệu, quyền lợi thành viên, ban chủ nhiệm, gallery ảnh, FAQ
+- **Trang chủ** — Hero banner, thống kê CLB, giới thiệu, quyền lợi thành viên, ban chủ nhiệm, gallery ảnh, FAQ, terminal tương tác (auto-typing + full-screen với 13 lệnh CLI)
 - **Hồ sơ thành viên** — Trang cá nhân với slug tùy chỉnh (`/members/:slug`)
+- **Sitemap động** — Tự động index bài viết, sự kiện, thành tựu, dự án, thành viên với alternates song ngữ vi/en
 - **Đa ngôn ngữ** — Tiếng Việt (mặc định) & English qua `next-intl`
 - **Light / Dark mode** — Chuyển đổi giao diện với `next-themes`
 - **API Docs** — Swagger UI tự động tại `/api-docs`
@@ -36,7 +37,7 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 |---|---|
 | **Thành viên** | CRUD, quản lý vai trò CLB, chức vụ theo kỳ, mạng xã hội, slug |
 | **Ban / Phòng** | Quản lý cơ cấu tổ chức CLB |
-| **Bài viết** | Quy trình duyệt bài (Draft → Review → Published), lịch sử chỉnh sửa |
+| **Bài viết** | Quy trình duyệt bài (Draft → Review → Published/Unlisted), lịch sử chỉnh sửa |
 | **Sự kiện** | Quản lý workshop, seminar, cuộc thi với đăng ký, gallery |
 | **Thành tựu** | Giải thưởng cá nhân, đội, CLB |
 | **Dự án** | Showcase dự án với GitHub, tech stack, thành viên |
@@ -45,7 +46,7 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 | **FAQ** | Câu hỏi thường gặp, hỗ trợ đa ngôn ngữ |
 | **Gallery** | Quản lý ảnh trang chủ |
 | **Homepage** | Tùy chỉnh nội dung hero, intro, stats |
-| **Cài đặt** | Cấu hình site (tên, mô tả, logo, …) |
+| **Cài đặt** | Cấu hình site (tên, mô tả, logo, favicon, màu), auth (domain, chặn guest), footer social |
 
 ---
 
@@ -107,6 +108,8 @@ pnpm dev
 | `DATABASE_URL` | Connection pooler (port 6543) |
 | `DIRECT_URL` | Direct connection (port 5432) |
 | `ADMIN_ACCOUNT` | Email(s) root admin, JSON array |
+| `AUTH_ACCEPTED_DOMAINS` | Domain email cho phép đăng nhập (phân cách dấu phẩy), để trống = tất cả |
+| `AUTH_REQUIRE_MEMBER_ROLE` | `true` để chặn tài khoản GUEST đăng nhập |
 
 ---
 

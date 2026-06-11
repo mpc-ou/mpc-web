@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "title": "Đăng nhập",
+    "title2": "Bạn là ai đó?",
+    "description": "Đăng nhập vào tài khoản của bạn để tụi mình biết bạn là ai nè! ^^",
+    "errorPageTitle": "Lỗi xác thực",
+    "error": {
+      "title": "Đăng nhập thất bại"
+    }
+  }
+}

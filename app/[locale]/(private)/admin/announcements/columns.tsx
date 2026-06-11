@@ -1,55 +1,63 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+import { formatLocalDate } from "@/utils/handle-datetime";
 
 export type AnnouncementRow = {
   id: string;
-  content: string;
+  contentVi: string;
+  contentEn: string;
   linkUrl: string | null;
-  linkLabel: string | null;
+  linkLabelVi: string | null;
+  linkLabelEn: string | null;
   bgColor: string | null;
   isActive: boolean;
   startAt: string;
   endAt: string | null;
 };
 
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
 export const createColumns = (
   onEdit: (a: AnnouncementRow) => void,
   onToggle: (id: string, isActive: boolean) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  locale = "vi"
 ): ColumnDef<AnnouncementRow>[] => [
   {
-    accessorKey: "content",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Nội dung <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <p className='max-w-xs truncate text-sm'>{row.original.content}</p>
+    accessorKey: "contentVi",
+    header: ({ column }) => <SortHeader column={column} label='Nội dung' />,
+    cell: ({ row }) => (
+      <div className='max-w-xs text-xs'>
+        <p className='truncate font-medium'>{row.original.contentVi}</p>
+        <p className='truncate text-muted-foreground'>{row.original.contentEn}</p>
+      </div>
+    )
   },
   {
     id: "link",
     header: "Link CTA",
     cell: ({ row }) => {
-      const { linkUrl, linkLabel } = row.original;
+      const { linkUrl, linkLabelVi, linkLabelEn } = row.original;
       if (!linkUrl) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className='text-muted-foreground text-xs'>—</span>;
       }
       return (
-        <div className='flex flex-col gap-0.5'>
-          <span className='font-medium text-xs'>{linkLabel ?? "—"}</span>
-          <a className='text-primary text-xs hover:underline' href={linkUrl} rel='noopener noreferrer' target='_blank'>
+        <div className='flex flex-col gap-0.5 text-xs'>
+          <span className='font-medium'>{linkLabelVi || linkLabelEn || "—"}</span>
+          <a className='text-primary hover:underline' href={linkUrl} rel='noopener noreferrer' target='_blank'>
             {linkUrl}
           </a>
         </div>
@@ -62,12 +70,12 @@ export const createColumns = (
     cell: ({ row }) => {
       const bg = row.original.bgColor;
       if (!bg) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className='text-muted-foreground text-xs'>—</span>;
       }
       return (
-        <div className='flex items-center gap-2'>
-          <div className='h-5 w-12 rounded border' style={{ background: bg }} title={bg} />
-          <span className='max-w-25 truncate text-muted-foreground text-xs'>{bg}</span>
+        <div className='flex items-center gap-2 text-xs'>
+          <div className='h-4 w-10 rounded border' style={{ background: bg }} title={bg} />
+          <span className='max-w-25 truncate text-muted-foreground'>{bg}</span>
         </div>
       );
     }
@@ -77,7 +85,7 @@ export const createColumns = (
     header: "Hết hạn",
     cell: ({ row }) =>
       row.original.endAt ? (
-        <span className='text-xs'>{new Date(row.original.endAt).toLocaleDateString("vi-VN")}</span>
+        <span className='text-xs'>{formatLocalDate(row.original.endAt, locale)}</span>
       ) : (
         <span className='text-muted-foreground text-xs'>Vô thời hạn</span>
       )
@@ -96,24 +104,29 @@ export const createColumns = (
     cell: ({ row }) => {
       const a = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(a)}>Chỉnh sửa</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onToggle(a.id, a.isActive)}>
-              {a.isActive ? "Tắt thông báo" : "Bật thông báo"}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(a.id)}>
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex items-center gap-0.5'>
+          <Button className='h-7 w-7' onClick={() => onEdit(a)} size='icon' title='Chỉnh sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7 text-muted-foreground hover:text-foreground'
+            onClick={() => onToggle(a.id, a.isActive)}
+            size='icon'
+            title={a.isActive ? "Ẩn thông báo" : "Hiện thông báo"}
+            variant='ghost'
+          >
+            {a.isActive ? <EyeOff className='h-3.5 w-3.5' /> : <Eye className='h-3.5 w-3.5' />}
+          </Button>
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(a.id)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

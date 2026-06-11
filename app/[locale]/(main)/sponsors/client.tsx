@@ -1,10 +1,10 @@
 "use client";
 
-import { LinkIcon } from "lucide-react";
+import { Calendar, ExternalLink, Globe, Mail, Phone, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 type Sponsor = {
   id: string;
@@ -12,116 +12,177 @@ type Sponsor = {
   slug: string;
   logo: string | null;
   website: string | null;
+  email: string | null;
+  phone: string | null;
   description: string | null;
-  sponsorships: {
-    id: string;
-    title: string | null;
-    tier: string | null;
-  }[];
+  startAt: string | null;
+  endAt: string | null;
+  images: string[];
 };
 
 export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
   const [selected, setSelected] = useState<Sponsor | null>(null);
 
+  const hasActiveSponsorship = (s: Sponsor) => !s.endAt || new Date(s.endAt) > new Date();
+
   return (
     <>
-      <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {sponsors.map((item) => (
           <div
-            className='group flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md'
+            className={cn(
+              "group relative flex flex-col items-center rounded-2xl border bg-card p-8 shadow-sm transition-all duration-300",
+              "cursor-pointer hover:-translate-y-2 hover:border-primary/30 hover:shadow-lg"
+            )}
             key={item.id}
             onClick={() => setSelected(item)}
           >
-            <div className='relative mb-4 flex aspect-square w-full max-w-32 items-center justify-center overflow-hidden rounded-xl bg-muted/30'>
-              {item.logo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  alt={item.name}
-                  className='h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105'
-                  src={item.logo}
-                />
-              ) : (
-                <div className='flex h-full w-full items-center justify-center font-bold text-3xl text-muted-foreground/30 opacity-50'>
-                  {item.name.substring(0, 2).toUpperCase()}
-                </div>
-              )}
-            </div>
-
-            <h3 className='line-clamp-2 text-center font-semibold text-foreground text-sm leading-tight transition-colors group-hover:text-primary'>
-              {item.name}
-            </h3>
-
-            {/* Show Tier Badges if available */}
-            {item.sponsorships && item.sponsorships.length > 0 && (
-              <div className='mt-2 flex flex-wrap justify-center gap-1'>
-                {item.sponsorships.map((sponsor) => {
-                  if (!sponsor.tier) {
-                    return null;
-                  }
-                  const tierLower = sponsor.tier.toLowerCase();
-                  let colorClass = "bg-muted text-foreground";
-                  if (tierLower === "kim cương" || tierLower === "diamond") {
-                    colorClass =
-                      "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200 border-blue-200 dark:border-blue-800";
-                  }
-                  if (tierLower === "vàng" || tierLower === "gold") {
-                    colorClass =
-                      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800";
-                  }
-                  if (tierLower === "bạc" || tierLower === "silver") {
-                    colorClass =
-                      "bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-200 border-slate-200 dark:border-slate-700";
-                  }
-                  if (tierLower === "đồng" || tierLower === "bronze") {
-                    colorClass =
-                      "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200 border-orange-200 dark:border-orange-800";
-                  }
-
-                  return (
-                    <Badge className={`px-1.5 py-0 text-[10px] ${colorClass}`} key={sponsor.id} variant='outline'>
-                      {sponsor.tier}
-                    </Badge>
-                  );
-                })}
-              </div>
+            {/* Active badge */}
+            {hasActiveSponsorship(item) && (
+              <span className='absolute top-3 right-3 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-700 text-xs dark:bg-emerald-900/30 dark:text-emerald-300'>
+                Đang tài trợ
+              </span>
             )}
-          </div>
-        ))}
-      </div>
 
-      {/* Detail Dialog */}
-      <Dialog onOpenChange={(open) => !open && setSelected(null)} open={!!selected}>
-        <DialogContent className='sm:max-w-md'>
-          <DialogHeader>
-            <DialogTitle className='text-center text-xl'>{selected?.name}</DialogTitle>
-          </DialogHeader>
-
-          <div className='flex flex-col items-center gap-6 pt-4'>
-            <div className='flex aspect-video w-full max-w-[240px] items-center justify-center rounded-xl bg-muted/30 p-2'>
-              {selected?.logo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img alt={selected.name} className='max-h-full max-w-full object-contain' src={selected.logo} />
+            {/* Logo */}
+            <div className='mb-5 flex h-24 w-48 items-center justify-center rounded-xl bg-muted/20 p-3 transition-transform duration-300 group-hover:scale-105'>
+              {item.logo ? (
+                <img alt={item.name} className='max-h-full max-w-full object-contain' src={item.logo} />
               ) : (
-                <span className='font-bold text-4xl text-muted-foreground/30 opacity-50'>
-                  {selected?.name.substring(0, 2).toUpperCase()}
+                <span className='font-bold text-3xl text-muted-foreground/25'>
+                  {item.name.substring(0, 2).toUpperCase()}
                 </span>
               )}
             </div>
 
-            {selected?.description ? (
-              <p className='whitespace-pre-line text-muted-foreground text-sm'>{selected.description}</p>
-            ) : (
-              <p className='text-muted-foreground text-sm italic'>Chưa có mô tả chi tiết.</p>
+            {/* Name */}
+            <h3 className='mb-2 text-center font-bold text-foreground text-lg transition-colors group-hover:text-primary'>
+              {item.name}
+            </h3>
+
+            {/* Period */}
+            {item.startAt && (
+              <p className='mb-3 flex items-center gap-1.5 text-muted-foreground text-xs'>
+                <Calendar className='h-3 w-3' />
+                {new Date(item.startAt).getFullYear()}
+                {item.endAt ? ` – ${new Date(item.endAt).getFullYear()}` : " – Nay"}
+              </p>
             )}
 
-            {selected?.website && (
-              <Button asChild className='w-full'>
-                <a href={selected.website} rel='noopener noreferrer' target='_blank'>
-                  <LinkIcon className='mr-2 h-4 w-4' /> Truy cập website
+            {/* Quick actions */}
+            <div className='mt-1 flex gap-2'>
+              {item.website && (
+                <a
+                  className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 font-medium text-primary text-xs transition-colors hover:bg-primary/20'
+                  href={item.website}
+                  onClick={(e) => e.stopPropagation()}
+                  rel='noopener noreferrer'
+                  target='_blank'
+                >
+                  <Globe className='h-3 w-3' />
+                  Website
                 </a>
-              </Button>
-            )}
+              )}
+              {item.email && (
+                <a
+                  className='inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 font-medium text-muted-foreground text-xs transition-colors hover:bg-muted/80 hover:text-foreground'
+                  href={`mailto:${item.email}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Mail className='h-3 w-3' />
+                  Email
+                </a>
+              )}
+            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Detail Modal */}
+      <Dialog onOpenChange={(open) => !open && setSelected(null)} open={!!selected}>
+        <DialogContent className='max-h-[90vh] max-w-xl overflow-y-auto'>
+          <DialogTitle className='sr-only'>{selected?.name}</DialogTitle>
+
+          {selected && (
+            <div className='flex flex-col items-center gap-6 py-4'>
+              {/* Logo */}
+              <div className='flex h-28 w-56 items-center justify-center rounded-xl bg-muted/20 p-4'>
+                {selected.logo ? (
+                  <img alt={selected.name} className='max-h-full max-w-full object-contain' src={selected.logo} />
+                ) : (
+                  <span className='font-bold text-4xl text-muted-foreground/25'>
+                    {selected.name.substring(0, 2).toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              {/* Name */}
+              <h2 className='text-center font-bold text-2xl'>{selected.name}</h2>
+
+              {/* Meta info */}
+              <div className='flex flex-wrap justify-center gap-3'>
+                {selected.website && (
+                  <a
+                    className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-2 font-medium text-primary text-sm transition-colors hover:bg-primary/20'
+                    href={selected.website}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    <Globe className='h-4 w-4' /> Website
+                  </a>
+                )}
+                {selected.email && (
+                  <a
+                    className='inline-flex items-center gap-1.5 rounded-full bg-muted px-4 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-muted/80'
+                    href={`mailto:${selected.email}`}
+                  >
+                    <Mail className='h-4 w-4' /> {selected.email}
+                  </a>
+                )}
+                {selected.phone && (
+                  <span className='inline-flex items-center gap-1.5 rounded-full bg-muted px-4 py-2 font-medium text-muted-foreground text-sm'>
+                    <Phone className='h-4 w-4' /> {selected.phone}
+                  </span>
+                )}
+              </div>
+
+              {/* Period */}
+              {selected.startAt && (
+                <p className='flex items-center gap-1.5 text-muted-foreground text-sm'>
+                  <Calendar className='h-4 w-4' />
+                  {new Date(selected.startAt).toLocaleDateString("vi-VN")}
+                  {selected.endAt
+                    ? ` – ${new Date(selected.endAt).toLocaleDateString("vi-VN")}`
+                    : " – Đang tài trợ vô thời hạn"}
+                </p>
+              )}
+
+              {/* Description */}
+              {selected.description && (
+                <div className='w-full rounded-xl border bg-muted/20 p-5'>
+                  <p className='whitespace-pre-line text-muted-foreground text-sm leading-relaxed'>
+                    {selected.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Gallery */}
+              {selected.images && selected.images.length > 0 && (
+                <div className='w-full'>
+                  <h4 className='mb-3 font-semibold text-muted-foreground text-sm uppercase tracking-wider'>
+                    Hình ảnh
+                  </h4>
+                  <div className='grid grid-cols-2 gap-2'>
+                    {selected.images.map((img, i) => (
+                      <div className='aspect-video overflow-hidden rounded-lg bg-muted' key={i}>
+                        <img alt='' className='h-full w-full object-cover' src={img} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getProfile } from "@/app/[locale]/(private)/(main)/profile/actions";
-import { adminGetMembers } from "@/app/[locale]/(private)/admin/actions";
+import { adminGetMembers } from "@/app/_actions/admin";
+import { getProfile } from "@/app/_actions/profile/profile";
+import { formatLocalDate } from "@/utils/handle-datetime";
 import { MemberCardClient } from "./client";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profile");
   return {
-    title: t("memberCard.title"),
+    title: t("memberCard.title")
   };
 }
 
@@ -32,7 +33,7 @@ async function fetchImageAsBase64(url: string | null) {
 
 export default async function MemberCardPage({
   params,
-  searchParams,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -52,14 +53,10 @@ export default async function MemberCardPage({
 
   if (!member || member.webRole === "GUEST") {
     return (
-      <div className="flex h-[calc(100vh-4rem)] items-center justify-center p-4">
-        <div className="space-y-4 text-center">
-          <h1 className="font-bold text-2xl text-destructive">
-            Không có quyền truy cập
-          </h1>
-          <p className="text-muted-foreground">
-            Bạn phải là thành viên CLB để xem thẻ này.
-          </p>
+      <div className='flex h-[calc(100vh-4rem)] items-center justify-center p-4'>
+        <div className='space-y-4 text-center'>
+          <h1 className='font-bold text-2xl text-destructive'>Không có quyền truy cập</h1>
+          <p className='text-muted-foreground'>Bạn phải là thành viên CLB để xem thẻ này.</p>
         </div>
       </div>
     );
@@ -69,17 +66,14 @@ export default async function MemberCardPage({
   if (member.webRole === "ADMIN" && targetMemberSlug) {
     const allMembersRes = await adminGetMembers();
     if (allMembersRes.data?.payload) {
-      const targetMember = (allMembersRes.data.payload as any[]).find(
-        (m: any) => m.slug === targetMemberSlug,
-      );
+      const targetMember = (allMembersRes.data.payload as any[]).find((m: any) => m.slug === targetMemberSlug);
       if (targetMember) {
         member = targetMember;
       }
     }
   }
 
-  const activeRole =
-    member.clubRoles?.find((r: any) => !r.endAt) || member.clubRoles?.[0];
+  const activeRole = member.clubRoles?.find((r: any) => !r.endAt) || member.clubRoles?.[0];
   const departmentName = activeRole?.department?.nameVi || "Thành viên";
 
   let joinedYear = new Date().getFullYear().toString();
@@ -87,8 +81,7 @@ export default async function MemberCardPage({
     joinedYear = new Date(member.joinedClubAt).getFullYear().toString();
   } else if (member.clubRoles && member.clubRoles.length > 0) {
     const earliestRole = [...member.clubRoles].sort(
-      (a: any, b: any) =>
-        new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
+      (a: any, b: any) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     )[0];
     joinedYear = new Date(earliestRole.startAt).getFullYear().toString();
   }
@@ -100,12 +93,10 @@ export default async function MemberCardPage({
     firstName: member.firstName,
     lastName: member.lastName,
     studentId: member.studentId || "Không có MSSV",
-    dob: member.dob
-      ? new Date(member.dob).toLocaleDateString("vi-VN")
-      : "Bí mật",
+    dob: member.dob ? formatLocalDate(member.dob, locale, "dd/MM/yyyy") : "Bí mật",
     department: departmentName,
     joinedYear,
-    avatar: base64Avatar,
+    avatar: base64Avatar
   };
 
   return <MemberCardClient data={cardData} locale={locale} />;

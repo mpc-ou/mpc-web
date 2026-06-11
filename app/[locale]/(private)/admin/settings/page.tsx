@@ -1,4 +1,6 @@
-import { adminGetExternalLinks, adminGetSettings } from "../actions";
+import { Settings } from "lucide-react";
+import { adminGetExternalLinks, adminGetSettings } from "@/app/_actions/admin";
+import { AdminPageHeader } from "../_components/admin-page-header";
 import { SettingsManager } from "./manager";
 
 export default async function AdminSettingsPage(): Promise<React.ReactNode> {
@@ -24,10 +26,11 @@ export default async function AdminSettingsPage(): Promise<React.ReactNode> {
 
   return (
     <div className='flex flex-col gap-6'>
-      <div>
-        <h1 className='font-bold text-2xl text-foreground'>⚙️ Cài đặt Website</h1>
-        <p className='text-muted-foreground text-sm'>Cấu hình footer, liên kết mạng xã hội và liên kết ngoài</p>
-      </div>
+      <AdminPageHeader
+        description='Cấu hình footer, liên kết mạng xã hội và liên kết ngoài'
+        icon={Settings}
+        title='Cài đặt Website'
+      />
       <SettingsManager externalLinks={externalLinks} settings={settings} />
     </div>
   );

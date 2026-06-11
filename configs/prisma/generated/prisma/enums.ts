@@ -36,11 +36,29 @@ export const PostStatus = {
   DRAFT: 'DRAFT',
   PENDING_REVIEW: 'PENDING_REVIEW',
   PUBLISHED: 'PUBLISHED',
+  UNLISTED: 'UNLISTED',
   ARCHIVED: 'ARCHIVED',
   REJECTED: 'REJECTED'
 } as const
 
 export type PostStatus = (typeof PostStatus)[keyof typeof PostStatus]
+
+
+export const PostType = {
+  BLOG: 'BLOG',
+  EVENT: 'EVENT',
+  ACHIEVEMENT: 'ACHIEVEMENT'
+} as const
+
+export type PostType = (typeof PostType)[keyof typeof PostType]
+
+
+export const PostLanguage = {
+  VI: 'VI',
+  EN: 'EN'
+} as const
+
+export type PostLanguage = (typeof PostLanguage)[keyof typeof PostLanguage]
 
 
 export const EventStatus = {
@@ -71,3 +89,17 @@ export const EventType = {
 } as const
 
 export type EventType = (typeof EventType)[keyof typeof EventType]
+
+
+export const NotificationType = {
+  POST_APPROVED: 'POST_APPROVED',
+  POST_REJECTED: 'POST_REJECTED',
+  POST_PUBLISHED: 'POST_PUBLISHED',
+  EVENT_UPCOMING: 'EVENT_UPCOMING',
+  ACHIEVEMENT_NEW: 'ACHIEVEMENT_NEW',
+  ROLE_UPDATED: 'ROLE_UPDATED',
+  MEMBER_WELCOME: 'MEMBER_WELCOME',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

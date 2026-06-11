@@ -1,6 +1,31 @@
 "use client";
 
-import { Globe, ImagePlus, Loader2, Plus, Trash2, Upload, UserCircle, X } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  AtSign,
+  Baby,
+  Building2,
+  Camera,
+  Github,
+  Globe,
+  Hash,
+  ImagePlus,
+  Link2,
+  Loader2,
+  Lock,
+  Music2,
+  PencilLine,
+  Plus,
+  Quote,
+  Save,
+  ShieldCheck,
+  Smartphone,
+  Trash2,
+  Upload,
+  UserCircle,
+  UserPen,
+  X
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,19 +34,23 @@ import {
   linkGithubIdentity,
   unlinkGithubIdentity,
   updatePassword as updatePasswordAction
-} from "@/app/[locale]/actions/auth";
+} from "@/app/_actions/auth/auth";
+import { updateProfile } from "@/app/_actions/profile/profile";
 import { ImageCropperModal, readFileAsDataURL } from "@/components/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PLATFORMS } from "@/constants/common";
+import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
+import { UPLOAD_MAX_AVATAR_SIZE, UPLOAD_MAX_COVER_SIZE } from "@/constants/upload";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/utils/supabase-upload";
-import { updateProfile } from "./actions";
+
+// ── Types ──
 
 type FormClientType = {
   firstName: string;
@@ -34,59 +63,94 @@ type FormClientType = {
   avatar: string | null;
   coverImage: string | null;
   socials: { id?: string; platform: string; url: string }[];
+  spotifyUri?: string | null;
 };
-
-const PLATFORMS = [
-  {
-    value: "Facebook",
-    label: "Facebook",
-    icon: "/images/icons/facebook-icon.svg"
-  },
-  { value: "GitHub", label: "GitHub", icon: "/images/icons/github-icon.svg" },
-  {
-    value: "LinkedIn",
-    label: "LinkedIn",
-    icon: "/images/icons/linkedin-icon.svg"
-  },
-  {
-    value: "X (Twitter)",
-    label: "X (Twitter)",
-    icon: "/images/icons/x-icon.svg"
-  },
-  {
-    value: "Instagram",
-    label: "Instagram",
-    icon: "/images/icons/instagram-icon.svg"
-  },
-  { value: "TikTok", label: "TikTok", icon: "/images/icons/tiktok-icon.svg" },
-  {
-    value: "YouTube",
-    label: "YouTube",
-    icon: "/images/icons/youtube-icon.svg"
-  },
-  {
-    value: "Discord",
-    label: "Discord",
-    icon: "/images/icons/discord-icon.svg"
-  },
-  { value: "Email", label: "Email", icon: "/images/icons/email-icon.svg" },
-  {
-    value: "Website",
-    label: "Website / Khác",
-    icon: "/images/icons/website-icon.svg"
-  }
-];
 
 type Props = {
   initialData: FormClientType;
   linkedProviders: string[];
 };
 
+// ── Skeleton Loader ──
+
+function FormSkeleton() {
+  return (
+    <div className='flex flex-col gap-6'>
+      {[1, 2, 3].map((i) => (
+        <div className='overflow-hidden rounded-2xl border border-border/50 bg-card' key={i}>
+          <div className='space-y-3 border-border/50 border-b px-6 py-5'>
+            <Skeleton className='h-5 w-48' />
+            <Skeleton className='h-4 w-72' />
+          </div>
+          <div className='space-y-4 p-6'>
+            <Skeleton className='h-10 w-full' />
+            <div className='flex gap-4'>
+              <Skeleton className='h-10 flex-1' />
+              <Skeleton className='h-10 flex-1' />
+            </div>
+            <Skeleton className='h-10 w-full' />
+            <Skeleton className='h-24 w-full' />
+          </div>
+        </div>
+      ))}
+      <div className='flex justify-end'>
+        <Skeleton className='h-11 w-32' />
+      </div>
+    </div>
+  );
+}
+
+// ── Section Header ──
+
+function SectionHeader({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className='flex items-start gap-4 border-border/50 border-b px-6 py-5'>
+      <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+        {icon}
+      </div>
+      <div>
+        <h3 className='font-semibold text-base'>{title}</h3>
+        <p className='mt-0.5 text-muted-foreground text-sm'>{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Field Wrapper ──
+
+function Field({
+  label,
+  required,
+  children,
+  error,
+  hint
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+  error?: string | null;
+  hint?: string;
+}) {
+  return (
+    <div className='space-y-2'>
+      <Label>
+        {label}
+        {required && <span className='ml-1 text-destructive'>*</span>}
+      </Label>
+      {children}
+      {error && <p className='text-[13px] text-destructive'>{error}</p>}
+      {hint && !error && <p className='text-[13px] text-muted-foreground'>{hint}</p>}
+    </div>
+  );
+}
+
 const FormClient = ({ initialData, linkedProviders }: Props) => {
   const router = useRouter();
   const t = useTranslations("profile.form");
   const { toast } = useToast();
   const { handleErrorClient } = useHandleError();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     ...initialData,
     socials: initialData.socials.map((s: any) => ({
@@ -113,11 +177,11 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
 
   const processAvatarFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      window.alert("Chỉ chấp nhận file ảnh");
+      toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
       return;
     }
-    if (file.size > 3 * 1024 * 1024) {
-      window.alert("Ảnh tối đa 3MB");
+    if (file.size > UPLOAD_MAX_AVATAR_SIZE) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 3MB" });
       return;
     }
     try {
@@ -125,7 +189,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       setAvatarCropSrc(src);
       setIsAvatarCropOpen(true);
     } catch {
-      window.alert("Không thể đọc file ảnh");
+      toast({ variant: "destructive", description: "Không thể đọc file ảnh" });
     } finally {
       if (avatarInputRef.current) {
         avatarInputRef.current.value = "";
@@ -139,10 +203,10 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       const file = new File([croppedBlob], "avatar-cropped.jpg", {
         type: "image/jpeg"
       });
-      const url = await uploadToStorage(file, "media", "avatars");
+      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.avatars);
       setFormData((prev) => ({ ...prev, avatar: url }));
     } catch {
-      window.alert("Upload avatar thất bại");
+      toast({ variant: "destructive", description: "Upload avatar thất bại" });
     } finally {
       setAvatarUploading(false);
     }
@@ -157,19 +221,19 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
 
   const processCoverFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      window.alert("Chỉ nhận file ảnh");
+      toast({ variant: "destructive", description: "Chỉ nhận file ảnh" });
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      window.alert("Ảnh tối đa 5MB");
+    if (file.size > UPLOAD_MAX_COVER_SIZE) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 5MB" });
       return;
     }
     setCoverUploading(true);
     try {
-      const url = await uploadToStorage(file, "media", "covers");
+      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.covers);
       setFormData((prev) => ({ ...prev, coverImage: url }));
     } catch {
-      window.alert("Upload cover thất bại");
+      toast({ variant: "destructive", description: "Upload cover thất bại" });
     } finally {
       setCoverUploading(false);
       if (coverInputRef.current) {
@@ -245,9 +309,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     setIsLinkingGithub(true);
     await handleErrorClient({
       cb: async () => await unlinkGithubIdentity(),
-      onSuccess: () => {
-        router.refresh();
-      },
+      onSuccess: () => router.refresh(),
       withSuccessNotify: true
     });
     setIsLinkingGithub(false);
@@ -255,15 +317,12 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!(formData.firstName && formData.lastName)) {
       return;
     }
 
-    // Slug validation
     let slug = formData.slug.trim();
     if (!slug) {
-      // Auto-generate from first name + random suffix
       slug = `${formData.firstName.toLowerCase().replace(/\s+/g, "").slice(0, 12)}${Math.random().toString(36).slice(2, 6)}`;
       setFormData((prev) => ({ ...prev, slug }));
       setSlugError(`Slug đã được tạo tự động: "${slug}". Kiểm tra lại rồi lưu.`);
@@ -279,45 +338,95 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }
     setSlugError(null);
 
+    function parseSpotifyUri(input: string): string | null {
+      if (!input) {
+        return null;
+      }
+      const trimmed = input.trim();
+      if (trimmed.startsWith("spotify:")) {
+        const parts = trimmed.split(":");
+        if (parts.length >= 3) {
+          return `spotify:${parts[1]}:${parts[2]}`;
+        }
+        return trimmed;
+      }
+      try {
+        const urlString = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+        const url = new URL(urlString);
+        if (url.hostname.includes("spotify.com")) {
+          const parts = url.pathname.split("/").filter(Boolean);
+          if (parts.length >= 2) {
+            return `spotify:${parts[0]}:${parts[1]}`;
+          }
+        }
+      } catch {
+        const match = trimmed.match(/spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/);
+        if (match) {
+          return `spotify:${match[1]}:${match[2]}`;
+        }
+      }
+      return trimmed;
+    }
+
+    const parsedSpotifyUri = formData.spotifyUri ? parseSpotifyUri(formData.spotifyUri) : "";
     const payload = {
       ...formData,
       slug,
       dob: formData.dob ? new Date(formData.dob) : undefined,
-      socials: formData.socials.map(({ id, ...rest }) => rest)
+      socials: formData.socials.map(({ id: _id, ...rest }) => rest),
+      spotifyUri: parsedSpotifyUri || null
     };
 
+    setIsSubmitting(true);
     await handleErrorClient({
       cb: async () => updateProfile(payload as any),
       withSuccessNotify: true
     });
+    setIsSubmitting(false);
   };
 
   return (
-    <div className='flex flex-col space-y-6'>
-      <Card>
-        <CardHeader>
-          <CardTitle>Ảnh đại diện & Ảnh bìa</CardTitle>
-          <CardDescription>Cập nhật hình ảnh cá nhân của bạn.</CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-6'>
-          {/* Cover Photo */}
-          <div className='space-y-2'>
-            <Label>Ảnh bìa (Cover Photo)</Label>
+    <motion.div
+      animate={{ opacity: 1 }}
+      className='flex flex-col gap-6'
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* ── Images Card ── */}
+      <div className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'>
+        <SectionHeader
+          desc='Hình ảnh cá nhân sẽ hiển thị trên trang profile của bạn.'
+          icon={<Camera className='h-5 w-5' />}
+          title='Ảnh đại diện & Ảnh bìa'
+        />
+        <div className='space-y-6 p-6'>
+          {/* Cover */}
+          <div>
+            <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
+              <ImagePlus className='h-4 w-4 text-primary' />
+              Ảnh bìa
+            </Label>
             {formData.coverImage ? (
-              <div className='relative aspect-[3/1] w-full overflow-hidden rounded-lg border bg-muted'>
+              <div className='group relative aspect-3/1 w-full overflow-hidden rounded-xl border bg-muted'>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img alt='Cover' className='h-full w-full object-cover' src={formData.coverImage} />
+                <div className='absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/30' />
                 <button
-                  className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white transition-colors hover:bg-black/80'
+                  className='absolute top-3 right-3 z-10 rounded-full bg-black/60 p-2 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all hover:bg-black/80 group-hover:opacity-100'
                   onClick={() => setFormData((prev) => ({ ...prev, coverImage: null }))}
                   title='Xóa ảnh bìa'
                   type='button'
                 >
-                  <X className='h-4 w-4' />
+                  <Trash2 className='h-4 w-4' />
                 </button>
               </div>
             ) : (
               <button
-                className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${isCoverDragOver ? "border-primary bg-primary/10" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}
+                className={`flex h-36 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed transition-all ${
+                  isCoverDragOver
+                    ? "border-primary bg-primary/10"
+                    : "border-muted-foreground/20 bg-muted/20 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
+                }`}
                 disabled={coverUploading}
                 onClick={() => coverInputRef.current?.click()}
                 onDragLeave={(e) => {
@@ -339,95 +448,104 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
               >
                 {coverUploading ? (
                   <>
-                    <Loader2 className='h-6 w-6 animate-spin' />
-                    <span className='text-sm'>Đang upload...</span>
+                    <Loader2 className='h-7 w-7 animate-spin text-primary' />
+                    <span className='font-medium text-sm'>Đang upload...</span>
                   </>
                 ) : (
                   <>
-                    <ImagePlus className='h-8 w-8' />
-                    <span className='text-sm'>Upload ảnh bìa (max 5MB)</span>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10'>
+                      <ImagePlus className='h-6 w-6 text-primary' />
+                    </div>
+                    <span className='font-medium text-sm'>Thêm ảnh bìa</span>
+                    <span className='text-muted-foreground text-xs'>Kéo thả hoặc click để chọn · max 5MB</span>
                   </>
                 )}
               </button>
             )}
-            <input
-              accept='image/*'
-              className='hidden'
-              onChange={handleCoverUpload}
-              ref={coverInputRef}
-              title='Chọn ảnh bìa'
-              type='file'
-            />
+            <input accept='image/*' className='hidden' onChange={handleCoverUpload} ref={coverInputRef} type='file' />
           </div>
-
-          <Separator />
 
           {/* Avatar */}
-          <div
-            className={`flex items-center gap-6 rounded-xl border-2 border-dashed p-4 transition-colors ${isAvatarDragOver ? "border-primary bg-primary/10" : "border-transparent"}`}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(false);
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(true);
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(false);
-              if (e.dataTransfer.files?.[0]) {
-                processAvatarFile(e.dataTransfer.files[0]);
-              }
-            }}
-          >
-            <div className='relative'>
-              <Avatar className='h-24 w-24 border-2 shadow-sm'>
-                <AvatarImage src={formData.avatar ?? undefined} />
-                <AvatarFallback className='bg-primary/10 text-3xl text-primary'>
-                  {avatarUploading ? (
-                    <Loader2 className='h-8 w-8 animate-spin' />
-                  ) : (
-                    <UserCircle className='h-12 w-12' />
+          <div>
+            <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
+              <UserCircle className='h-4 w-4 text-primary' />
+              Ảnh đại diện
+            </Label>
+            <div
+              className={`flex flex-col items-center gap-5 rounded-xl border-2 border-dashed p-5 transition-colors sm:flex-row ${
+                isAvatarDragOver ? "border-primary bg-primary/10" : "border-muted-foreground/20"
+              }`}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(false);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(true);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(false);
+                if (e.dataTransfer.files?.[0]) {
+                  processAvatarFile(e.dataTransfer.files[0]);
+                }
+              }}
+            >
+              <div className='relative'>
+                <Avatar className='h-24 w-24 border-2 shadow-md ring-4 ring-background'>
+                  <AvatarImage src={formData.avatar ?? undefined} />
+                  <AvatarFallback className='bg-primary/5 text-4xl text-primary/40'>
+                    {avatarUploading ? (
+                      <Loader2 className='h-8 w-8 animate-spin' />
+                    ) : (
+                      <UserCircle className='h-14 w-14' />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                {avatarUploading && (
+                  <div className='absolute inset-0 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-[2px]'>
+                    <Loader2 className='h-6 w-6 animate-spin text-white' />
+                  </div>
+                )}
+              </div>
+              <div className='flex flex-col items-center gap-2 sm:items-start'>
+                <div className='flex gap-2'>
+                  <Button
+                    disabled={avatarUploading}
+                    onClick={() => avatarInputRef.current?.click()}
+                    size='sm'
+                    type='button'
+                    variant='outline'
+                  >
+                    <Upload className='mr-1.5 h-3.5 w-3.5' />
+                    {avatarUploading ? "Đang upload..." : "Đổi ảnh"}
+                  </Button>
+                  {formData.avatar && (
+                    <Button
+                      className='text-destructive'
+                      onClick={() => setFormData((prev) => ({ ...prev, avatar: null }))}
+                      size='sm'
+                      type='button'
+                      variant='ghost'
+                    >
+                      <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                      Xóa
+                    </Button>
                   )}
-                </AvatarFallback>
-              </Avatar>
+                </div>
+                <span className='text-muted-foreground text-xs'>JPG, PNG, WebP · max 3MB · Khung hình vuông</span>
+              </div>
+              <input
+                accept='image/*'
+                className='hidden'
+                onChange={handleAvatarUpload}
+                ref={avatarInputRef}
+                type='file'
+              />
             </div>
-            <div className='flex flex-col gap-2'>
-              <Button
-                disabled={avatarUploading}
-                onClick={() => avatarInputRef.current?.click()}
-                size='sm'
-                type='button'
-                variant='outline'
-              >
-                <Upload className='mr-2 h-4 w-4' />
-                {avatarUploading ? "Đang upload..." : "Đổi avatar"}
-              </Button>
-              {formData.avatar && (
-                <Button
-                  className='text-destructive'
-                  onClick={() => setFormData((prev) => ({ ...prev, avatar: null }))}
-                  size='sm'
-                  type='button'
-                  variant='ghost'
-                >
-                  Xóa ảnh
-                </Button>
-              )}
-              <span className='mt-1 text-muted-foreground text-xs'>JPG, PNG, WebP · max 3MB</span>
-            </div>
-            <input
-              accept='image/*'
-              className='hidden'
-              onChange={handleAvatarUpload}
-              ref={avatarInputRef}
-              title='Chọn ảnh đại diện'
-              type='file'
-            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <ImageCropperModal
         aspect={1}
@@ -436,126 +554,188 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
         onConfirm={handleAvatarCropConfirm}
         onOpenChange={setIsAvatarCropOpen}
       />
-      <form className='flex flex-col space-y-6' onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Thông tin cá nhân</CardTitle>
-            <CardDescription>Cập nhật thông tin chi tiết.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='flex flex-col gap-4 sm:flex-row sm:space-x-4'>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='firstName'>{t("firstName")} *</Label>
+
+      {/* ── Form ── */}
+      <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+        {/* Personal Info */}
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+        >
+          <SectionHeader
+            desc='Họ tên, slug, và các thông tin cơ bản.'
+            icon={<UserPen className='h-5 w-5' />}
+            title='Thông tin cá nhân'
+          />
+          <div className='space-y-5 p-6'>
+            <div className='flex flex-col gap-4 sm:flex-row'>
+              <Field label='Họ' required>
                 <Input
                   id='firstName'
-                  name='firstName'
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
                       firstName: e.target.value
                     }))
                   }
-                  placeholder={t("firstName")}
+                  placeholder='Nguyễn'
                   required
                   value={formData.firstName}
                 />
-              </div>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='lastName'>{t("lastName")} *</Label>
+              </Field>
+              <Field label='Tên' required>
                 <Input
                   id='lastName'
-                  name='lastName'
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
                       lastName: e.target.value
                     }))
                   }
-                  placeholder={t("lastName")}
+                  placeholder='Văn A'
                   required
                   value={formData.lastName}
                 />
-              </div>
+              </Field>
             </div>
 
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <div className='space-y-2'>
-                <Label htmlFor='slug'>Slug (Đường dẫn trang cá nhân) *</Label>
+            <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
+              <Field
+                error={slugError}
+                hint='Chữ thường, số, -, _. Không dùng "me".'
+                label='Slug (URL cá nhân)'
+                required
+              >
+                <div className='relative'>
+                  <AtSign className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    className='pl-9'
+                    id='slug'
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        slug: e.target.value
+                      }));
+                      setSlugError(null);
+                    }}
+                    placeholder='trieukon1011'
+                    value={formData.slug}
+                  />
+                </div>
+              </Field>
+              <Field label='Ngày sinh'>
+                <div className='relative'>
+                  <Baby className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    className='pl-9'
+                    id='dob'
+                    onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
+                    type='date'
+                    value={formData.dob ?? ""}
+                  />
+                </div>
+              </Field>
+              <Field label='Số điện thoại'>
+                <div className='relative'>
+                  <Smartphone className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    className='pl-9'
+                    id='phone'
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        phone: e.target.value
+                      }))
+                    }
+                    placeholder='0901234567'
+                    value={formData.phone}
+                  />
+                </div>
+              </Field>
+              <Field label='Mã số sinh viên'>
+                <div className='relative'>
+                  <Hash className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    className='pl-9'
+                    id='studentId'
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        studentId: e.target.value
+                      }))
+                    }
+                    placeholder='22110xxx'
+                    value={formData.studentId}
+                  />
+                </div>
+              </Field>
+            </div>
+
+            <Field label='Spotify URI'>
+              <div className='relative'>
+                <Music2 className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                 <Input
-                  id='slug'
-                  name='slug'
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, slug: e.target.value }));
-                    setSlugError(null);
-                  }}
-                  placeholder='ví dụ: trieukon1011'
-                  value={formData.slug}
-                />
-                {slugError && <p className='text-destructive text-xs'>{slugError}</p>}
-                <p className='text-muted-foreground text-xs'>
-                  Không được để trống, không được dùng "me". Chỉ chữ thường, số, -, _.
-                </p>
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='dob'>Ngày sinh</Label>
-                <Input
-                  id='dob'
-                  name='dob'
-                  onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
-                  type='date'
-                  value={formData.dob ?? ""}
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='phone'>Số điện thoại</Label>
-                <Input
-                  id='phone'
-                  name='phone'
-                  onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                  placeholder='Số điện thoại cá nhân'
-                  value={formData.phone}
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='studentId'>Mã sinh viên</Label>
-                <Input
-                  id='studentId'
-                  name='studentId'
+                  className='pl-9'
+                  id='spotifyUri'
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      studentId: e.target.value
+                      spotifyUri: e.target.value
                     }))
                   }
-                  placeholder='Mã số sinh viên'
-                  value={formData.studentId}
+                  placeholder={t("spotifyPlaceholder")}
+                  value={formData.spotifyUri ?? ""}
                 />
               </div>
-            </div>
+            </Field>
 
-            <div className='space-y-2'>
-              <Label htmlFor='bio'>{t("bio")}</Label>
-              <textarea
-                className='flex min-h-25 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
-                id='bio'
-                name='bio'
-                onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
-                placeholder={t("bio")}
-                value={formData.bio}
-              />
-            </div>
-          </CardContent>
-        </Card>
+            <Field label='Giới thiệu'>
+              <div className='relative'>
+                <Quote className='absolute top-3 left-3 h-4 w-4 text-muted-foreground' />
+                <textarea
+                  className='flex min-h-28 w-full rounded-xl border border-input bg-background px-3 py-2.5 pl-9 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  id='bio'
+                  onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
+                  placeholder='Đôi nét về bản thân...'
+                  value={formData.bio}
+                />
+              </div>
+            </Field>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Liên kết mạng xã hội</CardTitle>
-            <CardDescription>Các liên kết sẽ được hiển thị trên trang profile public của bạn.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            {formData.socials.map((social) => (
-              <div className='flex flex-col items-start gap-3 sm:flex-row sm:items-center' key={social.id}>
-                <div className='w-full shrink-0 sm:w-55'>
+        {/* Social Links */}
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <SectionHeader
+            desc='Hiển thị trên trang cá nhân công khai của bạn.'
+            icon={<Link2 className='h-5 w-5' />}
+            title='Liên kết mạng xã hội'
+          />
+          <div className='space-y-4 p-6'>
+            {formData.socials.length === 0 && (
+              <div className='flex flex-col items-center gap-3 py-6 text-center'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-muted'>
+                  <Globe className='h-6 w-6 text-muted-foreground/50' />
+                </div>
+                <p className='text-muted-foreground text-sm'>Chưa có liên kết nào. Thêm mạng xã hội bên dưới.</p>
+              </div>
+            )}
+            {formData.socials.map((social, idx) => (
+              <motion.div
+                animate={{ opacity: 1, x: 0 }}
+                className='flex flex-col gap-3 rounded-xl border border-border/50 bg-muted/20 p-4 sm:flex-row sm:items-center'
+                initial={{ opacity: 0, x: -10 }}
+                key={social.id}
+                transition={{ duration: 0.25, delay: idx * 0.03 }}
+              >
+                <div className='w-full shrink-0 sm:w-48'>
                   <Select
                     onValueChange={(val) => handleUpdateSocial(social.id!, "platform", val)}
                     value={social.platform || undefined}
@@ -567,7 +747,8 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                       {PLATFORMS.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           <span className='flex items-center gap-2'>
-                            <img alt={p.label} className='h-4 w-4 object-contain' src={p.icon} /> <span>{p.label}</span>
+                            <img alt={p.label} className='h-4 w-4 object-contain' src={p.icon} />
+                            <span>{p.label}</span>
                           </span>
                         </SelectItem>
                       ))}
@@ -581,7 +762,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                     value={social.url}
                   />
                   <Button
-                    className='shrink-0 text-destructive'
+                    className='shrink-0 text-muted-foreground hover:text-destructive'
                     onClick={() => handleRemoveSocial(social.id!)}
                     size='icon'
                     type='button'
@@ -590,98 +771,135 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                     <Trash2 className='h-4 w-4' />
                   </Button>
                 </div>
-              </div>
+              </motion.div>
             ))}
-
-            <Button
-              className='mt-2 w-full sm:w-auto'
-              onClick={handleAddSocial}
-              size='sm'
-              type='button'
-              variant='outline'
-            >
-              <Plus className='mr-2 h-4 w-4' /> Thêm liên kết mới
+            <Button className='mt-1' onClick={handleAddSocial} size='sm' type='button' variant='outline'>
+              <Plus className='mr-1.5 h-4 w-4' />
+              Thêm liên kết
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tài khoản & Bảo mật</CardTitle>
-            <CardDescription>Liên kết tài khoản GitHub hoặc cập nhật mật khẩu đăng nhập của bạn.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-6'>
-            <div className='flex flex-col gap-4 sm:flex-row sm:items-end'>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='newPassword'>Mật khẩu mới (Tùy chọn)</Label>
-                <Input
-                  id='newPassword'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder='Nhập mật khẩu mới'
-                  type='password'
-                  value={password}
-                />
+        {/* Security */}
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <SectionHeader
+            desc='Mật khẩu và liên kết tài khoản.'
+            icon={<ShieldCheck className='h-5 w-5' />}
+            title='Tài khoản & Bảo mật'
+          />
+          <div className='space-y-6 p-6'>
+            {/* Password */}
+            <div>
+              <Label className='mb-3 flex items-center gap-2 font-medium text-sm'>
+                <Lock className='h-4 w-4 text-primary' />
+                Đổi mật khẩu
+              </Label>
+              <div className='flex flex-col gap-3 sm:flex-row sm:items-end'>
+                <div className='flex-1 space-y-2'>
+                  <Input
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder='Mật khẩu mới'
+                    type='password'
+                    value={password}
+                  />
+                </div>
+                <div className='flex-1 space-y-2'>
+                  <Input
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder='Xác nhận mật khẩu'
+                    type='password'
+                    value={confirmPassword}
+                  />
+                </div>
+                <Button
+                  className='shrink-0'
+                  disabled={!password || password !== confirmPassword || isUpdatingPassword}
+                  onClick={handleUpdatePassword}
+                  size='sm'
+                  type='button'
+                >
+                  {isUpdatingPassword ? (
+                    <>
+                      <Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' /> Đang cập nhật
+                    </>
+                  ) : (
+                    "Cập nhật"
+                  )}
+                </Button>
               </div>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='confirmPassword'>Xác nhận mật khẩu</Label>
-                <Input
-                  id='confirmPassword'
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder='Nhập lại mật khẩu'
-                  type='password'
-                  value={confirmPassword}
-                />
-              </div>
-              <Button
-                className='shrink-0'
-                disabled={!password || password !== confirmPassword || isUpdatingPassword}
-                onClick={handleUpdatePassword}
-                type='button'
-              >
-                {isUpdatingPassword ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
-              </Button>
             </div>
 
-            <Separator />
+            <div className='h-px bg-border/50' />
 
-            <div className='space-y-2'>
-              <Label>Liên kết & Xác thực</Label>
-              <div className='flex items-center gap-4'>
+            {/* GitHub Link */}
+            <div>
+              <Label className='mb-3 flex items-center gap-2 font-medium text-sm'>
+                <Github className='h-4 w-4 text-primary' />
+                Liên kết GitHub
+              </Label>
+              <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
                 <Button
                   disabled={isLinkingGithub}
-                  onClick={() => {
-                    if (linkedProviders.includes("github")) {
-                      handleUnlinkGithub();
-                    } else {
-                      handleLinkGithub();
-                    }
-                  }}
+                  onClick={() => (linkedProviders.includes("github") ? handleUnlinkGithub() : handleLinkGithub())}
+                  size='sm'
                   type='button'
                   variant={linkedProviders.includes("github") ? "destructive" : "default"}
                 >
-                  <img alt='GitHub' className='mr-2 h-5 w-5' src='/images/icons/github-icon.svg' />
-                  {isLinkingGithub
-                    ? t("linkingGithub")
-                    : linkedProviders.includes("github")
-                      ? t("linkedGithub")
-                      : t("linkGithub")}
+                  {isLinkingGithub ? (
+                    <>
+                      <Loader2 className='mr-1.5 h-4 w-4 animate-spin' /> Đang xử lý
+                    </>
+                  ) : linkedProviders.includes("github") ? (
+                    <>
+                      <Github className='mr-1.5 h-4 w-4' /> Hủy liên kết
+                    </>
+                  ) : (
+                    <>
+                      <Github className='mr-1.5 h-4 w-4' /> Liên kết GitHub
+                    </>
+                  )}
                 </Button>
-                <p className='text-muted-foreground text-xs'>
-                  {linkedProviders.includes("github") ? t("linkedGithubDesc") : t("linkGithubDesc")}
+                <p className='text-muted-foreground text-sm'>
+                  {linkedProviders.includes("github")
+                    ? "Đã liên kết GitHub. Nhấn để hủy."
+                    : "Liên kết GitHub để đăng nhập nhanh và xác thực danh tính."}
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <div className='flex justify-end'>
-          <Button size='lg' type='submit'>
-            {t("submit")}
+        {/* Submit */}
+        <motion.div
+          animate={{ opacity: 1 }}
+          className='flex items-center justify-end gap-3'
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <Button disabled={isSubmitting} onClick={() => router.refresh()} type='button' variant='ghost'>
+            Hủy
           </Button>
-        </div>
+          <Button disabled={isSubmitting} size='lg' type='submit'>
+            {isSubmitting ? (
+              <>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Đang lưu...
+              </>
+            ) : (
+              <>
+                <Save className='mr-2 h-4 w-4' /> Lưu thay đổi
+              </>
+            )}
+          </Button>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 
 export { FormClient };
+export { FormSkeleton };

@@ -1,17 +1,66 @@
-import { adminGetDepartments, adminGetMembers } from "../actions";
+import { Users } from "lucide-react";
+import { adminGetDepartments, adminGetMembersPaginated } from "@/app/_actions/admin";
+import { AdminPageHeader } from "../_components/admin-page-header";
 import type { MemberRow } from "./columns";
 import { MembersDataTable } from "./table";
 import type { Department } from "./types";
 
-export default async function AdminMembersPage(): Promise<React.ReactNode> {
-  const [membersRes, depsRes] = await Promise.all([adminGetMembers(), adminGetDepartments()]);
-  const members = (membersRes.data?.payload ?? []) as MemberRow[];
+export default async function AdminMembersPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{
+    q?: string;
+    role?: string;
+    dept?: string;
+    year?: string;
+    page?: string;
+    limit?: string;
+  }>;
+}): Promise<React.ReactNode> {
+  const { locale } = await params;
+  const sp = await searchParams;
+  const q = sp.q || "";
+  const role = sp.role || "ALL";
+  const dept = sp.dept || "ALL";
+  const year = sp.year || "ALL";
+  const pageNum = Number.parseInt(sp.page || "1", 10) || 1;
+  const limitNum = Number.parseInt(sp.limit || "10", 10) || 10;
+
+  const [membersRes, depsRes] = await Promise.all([
+    adminGetMembersPaginated({
+      search: q,
+      role,
+      dept,
+      year,
+      page: pageNum,
+      limit: limitNum
+    }),
+    adminGetDepartments()
+  ]);
+
+  // biome-ignore lint/suspicious/noExplicitAny: response payload structure is dynamic
+  const membersPayload = membersRes.data?.payload as any;
+  const { payload = [], totalPages = 0, totalCount = 0, stats } = membersPayload ?? {};
+  const members = payload as MemberRow[];
   const departments = (depsRes.data?.payload ?? []) as Department[];
 
   return (
     <div className='flex flex-col gap-6'>
-      <h1 className='font-bold text-2xl text-foreground'>👥 Quản lý Thành viên</h1>
-      <MembersDataTable data={members} departments={departments} />
+      <AdminPageHeader
+        description='Danh sách và thông tin thành viên câu lạc bộ'
+        icon={Users}
+        title='Quản lý Thành viên'
+      />
+      <MembersDataTable
+        data={members}
+        departments={departments}
+        locale={locale}
+        stats={stats}
+        totalCount={totalCount}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

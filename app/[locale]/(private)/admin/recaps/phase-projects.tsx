@@ -1,9 +1,11 @@
 "use client";
 
 import { CalendarDays, CheckSquare, FolderGit2, Square } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatLocalDate } from "@/utils/handle-datetime";
 
 type ProjectCandidate = {
   id: string;
@@ -22,6 +24,7 @@ type Props = {
 };
 
 export function PhaseProjects({ projects, selectedIds, onChange }: Props) {
+  const locale = useLocale();
   const allSelected = projects.length > 0 && selectedIds.length === projects.length;
 
   const toggle = (id: string) => {
@@ -83,7 +86,7 @@ export function PhaseProjects({ projects, selectedIds, onChange }: Props) {
                     {proj.startDate && (
                       <span className='flex items-center gap-1'>
                         <CalendarDays className='h-3 w-3' />
-                        {new Date(proj.startDate).toLocaleDateString("vi-VN")}
+                        {formatLocalDate(proj.startDate, locale)}
                       </span>
                     )}
                     {(proj.technologies as string[])?.slice(0, 4).map((t) => (

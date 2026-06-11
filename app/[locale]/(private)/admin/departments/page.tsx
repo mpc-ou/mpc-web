@@ -1,4 +1,6 @@
-import { adminGetDepartments } from "../actions";
+import { Building2 } from "lucide-react";
+import { adminGetDepartments } from "@/app/_actions/admin";
+import { AdminPageHeader } from "../_components/admin-page-header";
 import type { DeptRow } from "./columns";
 import { DepartmentsDataTable } from "./manager";
 
@@ -8,10 +10,11 @@ export default async function AdminDepartmentsPage(): Promise<React.ReactNode> {
 
   return (
     <div className='flex flex-col gap-6'>
-      <div>
-        <h1 className='font-bold text-2xl text-foreground'>🏢 Quản lý Các ban</h1>
-        <p className='text-muted-foreground text-sm'>{departments.length} ban</p>
-      </div>
+      <AdminPageHeader
+        description='Cấu trúc tổ chức và các ban trực thuộc câu lạc bộ'
+        icon={Building2}
+        title='Quản lý Các ban'
+      />
       <DepartmentsDataTable data={departments} />
     </div>
   );

@@ -1,0 +1,539 @@
+{
+  "home": {
+    "title": "Home – MPC Club",
+    "hero": {
+      "title": "Mobile Programming Club",
+      "subtitle": "Where there's a bug, there's MPC!",
+      "cta": "Learn More",
+      "ctaJoin": "Join Now",
+      "terminal": {
+        "whoamiResponse": "Mobile Programming Club",
+        "missionResponse": "\"Where there's a bug, there's MPC!\"",
+        "activitiesResponse": "Workshop  |  Web Design  |  Robocode  |  Teambuilding  |  Seminar",
+        "membersResponse": "50+",
+        "achievementsResponse1": "[INFO] 10+ years active",
+        "achievementsResponse2": "[INFO] 30+ events organized",
+        "achievementsResponse3": "[INFO] 10+ projects completed",
+        "departmentsResponse": "Programming/  Events/  Communications/",
+        "joinResponse": "Now recruiting... visit MPC fanpage"
+      }
+    },
+    "intro": {
+      "title": "About Us",
+      "description": "Mobile Programming Club (MPC) is one of the most dynamic and creative clubs at the Faculty of Information Technology – Ho Chi Minh City Open University. MPC was established to create an environment for learning, researching and developing IT skills across web, mobile, and more.",
+      "learnMore": "Learn More",
+      "viewMembers": "View Members"
+    },
+    "stats": {
+      "title": "MPC in Numbers",
+      "members": "Members",
+      "events": "Events Organized",
+      "years": "Years Active",
+      "projects": "Projects Completed"
+    },
+    "benefits": {
+      "title": "Benefits of Joining",
+      "subtitle": "More than a club — real projects, dedicated mentors, and a portfolio that speaks louder than your GPA.",
+      "skills": {
+        "title": "Skill Development",
+        "desc": "Learn and practice the latest technologies in Web, App, and AI through workshops and real projects."
+      },
+      "network": {
+        "title": "Network Building",
+        "desc": "Meet and work with like-minded people. Build lasting relationships in the tech community."
+      },
+      "opportunity": {
+        "title": "Opportunities",
+        "desc": "Participate in real projects, programming contests, and tech events. Gain experience for your career."
+      },
+      "community": {
+        "title": "Friendly Community",
+        "desc": "A positive learning environment that supports and is always ready to help new members."
+      }
+    },
+    "team": {
+      "title": "Club Organization",
+      "subtitle": "Our passionate and dedicated leadership team",
+      "president": "Executive Board",
+      "staff": "Department Leaders",
+      "viewAll": "View All Members",
+      "noLeadership": "No leadership information available."
+    },
+    "activities": {
+      "title": "Featured Activities",
+      "subtitle": "Signature events and projects from MPC Club"
+    },
+    "gallery": {
+      "title": "MPC Moments",
+      "subtitle": "Memorable moments with MPC"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Common questions about MPC Club",
+      "items": [
+        {
+          "q": "What is MPC?",
+          "a": "MPC (Mobile Programming Club) is the Mobile Programming Club at the Faculty of Information Technology – Ho Chi Minh City Open University, established to create a tech learning environment for students."
+        },
+        {
+          "q": "Do I need programming skills to join?",
+          "a": "Not required! The club welcomes all students passionate about technology, from beginners to experienced. The most important thing is a willingness to learn and enthusiasm."
+        },
+        {
+          "q": "How does the club operate?",
+          "a": "The club organizes programming skill workshops, tech seminars, competitions like Web Design and Robocode, and monthly teambuilding activities, plus real projects for members to practice."
+        },
+        {
+          "q": "How can I join MPC?",
+          "a": "Follow MPC's Facebook fanpage for updates on membership recruitment each semester. When recruitment opens, you can register via online form and participate in an interview."
+        },
+        {
+          "q": "What departments does the club have?",
+          "a": "MPC Club has several functional departments: Programming, Events & Logistics, Communications, Academic... Each handles different activities and you can choose the one that fits your interests."
+        },
+        {
+          "q": "Can students from other faculties join?",
+          "a": "The club prioritizes IT Faculty students but warmly welcomes students from other faculties who are passionate about programming and technology."
+        }
+      ]
+    },
+    "members": {
+      "title": "Club Members",
+      "description": "List of all active club members. To update your profile, please visit"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Your current information.",
+    "loginWith": "Login with",
+    "form": {
+      "submit": "Save",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "bio": "Bio",
+      "spotifyUri": "Spotify Link / URI (Favorite Music)",
+      "spotifyPlaceholder": "Example: https://open.spotify.com/track/...",
+      "linkGithub": "Link GitHub",
+      "linkedGithub": "Unlink GitHub",
+      "linkingGithub": "Processing...",
+      "linkGithubDesc": "Link your GitHub account for faster login.",
+      "linkedGithubDesc": "Your GitHub account is successfully linked for login."
+    },
+    "memberCard": {
+      "title": "My Card",
+      "downloadFront": "Download Front",
+      "downloadBack": "Download Back",
+      "front": "Front",
+      "back": "Back",
+      "orientation": "Vertical",
+      "clubName": "Mobile Programing Club",
+      "cardTitle": "Member Card",
+      "faculty": "Faculty",
+      "IT": "Information Technology",
+      "unknownRole": "Member",
+      "studentId": "Student ID",
+      "joinedYear": "Joined Year",
+      "notAuthorized": "You must be a club member to view this card."
+    }
+  },
+  "clubUniform": {
+    "badge": "Uniform",
+    "title": "Club Shirt",
+    "description": "The official club uniform design. Inspired by the dynamism and enthusiasm of youth. Interact in 3D to zoom and rotate the design."
+  },
+  "achievements": {
+    "title": "Achievements",
+    "description": "The proud achievements, awards, and milestones during the club's journey of development.",
+    "hallOfFame": "Achievements Hall of Fame",
+    "hallOfFameTitle": "Hall of Fame",
+    "hallOfFameDesc": "Achievements Hall of Fame — ranked by achievement count",
+    "articlesTitle": "Achievement Articles",
+    "highlight": "⭐ Highlight",
+    "individual": "Individual",
+    "team": "Team",
+    "collective": "Collective",
+    "emptyData": "No achievements have been updated yet.",
+    "backToList": "Back to Hall of Fame",
+    "infoTitle": "Achievement Information",
+    "recognizedDate": "Date Recognized",
+    "typeLabel": "Category",
+    "evidenceLink": "Evidence Link",
+    "otherAchievements": "Other Achievements",
+    "club": "Club-wide",
+    "badgeLabel": "Achievement",
+    "leadership": {
+      "emptyData": "No executive board member data available.",
+      "leader": "Leader",
+      "termHistory": "> TERM HISTORY",
+      "present": "Present",
+      "viewProfile": "VIEW PROFILE",
+      "achievementsCount": "Achievements",
+      "projectsCount": "Projects",
+      "positions": {
+        "PRESIDENT": "Club President",
+        "VICE_PRESIDENT": "Vice President",
+        "DEPARTMENT_LEADER": "Head of Department",
+        "DEPARTMENT_VICE_LEADER": "Deputy Head",
+        "ADVISOR": "Advisor"
+      }
+    }
+  },
+  "trainingPage": {
+    "hero": {
+      "badge": "EDUCATION & DEVELOPMENT",
+      "title": "TRAINING",
+      "description": "A structured internal training model, combining academic learning with hands-on practice, helping students master technology and confidently build products."
+    },
+    "featuredProjects": {
+      "title": "Featured Projects",
+      "description": "Real products researched and developed by Club members",
+      "viewAll": "View All Projects",
+      "noDescription": "No description available."
+    },
+    "roadmapTitle": "Detailed Training Roadmap",
+    "roadmapDesc": "Optimized roadmap semester by semester, aligned with the Faculty curriculum and industry requirements.",
+    "phases": {
+      "phase1": {
+        "title": "PROGRAMMING TECHNIQUES",
+        "subtitle": "Semester 1 - 2",
+        "description": "Consolidate fundamental knowledge, logical thinking, basic data structures and algorithms."
+      },
+      "phase2": {
+        "title": "WEB DEVELOPMENT",
+        "subtitle": "Semester 3",
+        "description": "Training on modern frontend technologies and web responsive design."
+      },
+      "phase3": {
+        "title": "OBJECT-ORIENTED PROGRAMMING",
+        "subtitle": "Semester 4",
+        "description": "Understand and apply object-oriented design principles and patterns."
+      },
+      "phase4": {
+        "title": "APPLICATION & PROJECTS",
+        "subtitle": "Semester 5",
+        "description": "Turn ideas into reality with production-ready products and team collaboration."
+      }
+    },
+    "methodologyTitle": "Main Methodologies",
+    "methodologyDesc": "Active, practical, and continuously updated learning environment tailored for the industry.",
+    "pillars": {
+      "peer": {
+        "title": "Student peer Student",
+        "description": "1-1 Mentorship model. Experienced senior members guide juniors to master academic and coding skills."
+      },
+      "project": {
+        "title": "Project-based Learning",
+        "description": "Apply knowledge to build real projects, mastering system design, task management, and Git/GitHub."
+      },
+      "seminar": {
+        "title": "Academic Seminars",
+        "description": "Regular seminars to share knowledge, review subjects, introduce new tech, and practice presentation."
+      }
+    },
+    "mentorsTitle": "Mentors & Advisors",
+    "mentorsDesc": "Guides, mentors, and academic advisors driving student success at MPC.",
+    "mentorsPlaceholderTitle": "Mentor List Updating",
+    "mentorsPlaceholderDesc": "The Academic Board is preparing the mentor team, advisors, and alumni for the upcoming term. The list will be published soon!",
+    "resourcesTitle": "Learning Resources",
+    "resourcesSub": "Internal Document Portal",
+    "resourcesCardTitle": "Online Knowledge Base",
+    "resourcesCardDesc": "Access lecture slides, exercises, exam reviews, and developer resources curated by the MPC Academic Board.",
+    "resourcesBtn": "Go to Knowledge Base",
+    "ctaTitle": "Partner with MPC",
+    "ctaHeading": "Become a Mentor or Host a Seminar",
+    "ctaDesc": "If you want to contribute to the developer community, share your knowledge, or host an academic seminar, connect with us.",
+    "ctaRegNow": "Register Now",
+    "ctaContactEmail": "Contact via Email",
+    "ctaContactEmailBtn": "Send Email",
+    "ctaClosedMsg": "* The online registration form is currently closed. Please contact us directly via email."
+  },
+  "aboutPage": {
+    "hero": {
+      "badge": "about_mpc",
+      "title": "Mobile Programming Club",
+      "subtitle": "OU Mobile Programming Club (MPC) under",
+      "facultyName": "Faculty of Information Technology - Ho Chi Minh City Open University"
+    },
+    "mission": {
+      "title": "Mission & Purpose",
+      "description": "We aim to build a dynamic, practical, and connected academic community where students can share knowledge, hone skills, and prepare confidently for their careers.",
+      "cards": [
+        {
+          "title": "Academic Seminars",
+          "desc": "Organize knowledge-sharing workshops to review foundational programming subjects for students."
+        },
+        {
+          "title": "Mentorship Model",
+          "desc": "Establish study groups under the \"Student as Academic Mentor\" model, regularly holding group sessions to help struggling students keep up with basic programming courses."
+        },
+        {
+          "title": "Mobile & Web Training",
+          "desc": "Organize training sessions for members on mobile programming, including web development, web apps, and Android programming."
+        },
+        {
+          "title": "Competitions & Extracurriculars",
+          "desc": "Organize academic competitions applying specialized knowledge, combined with extracurricular activities to motivate students in programming such as Web Design, ROBOCODE, etc."
+        }
+      ],
+      "fanpage": "Fanpage",
+      "email": "Email",
+      "github": "GitHub"
+    },
+    "fields": {
+      "badge": "training",
+      "title": "Fields of Activity",
+      "description": "The club regularly organizes in-depth training sessions on modern technologies and fundamental algorithms.",
+      "web": {
+        "title": "Web / WebApp",
+        "desc": "Modern Web development, UI/UX optimization, and complete Frontend/Backend experience with React, Next.js, Node.js."
+      },
+      "dsa": {
+        "title": "DSA Algorithms",
+        "desc": "Deepen algorithmic thinking skills, optimize data structures, competitive programming algorithms, and object-oriented programming."
+      },
+      "ai": {
+        "title": "AI Applications",
+        "desc": "Explore and apply Artificial Intelligence, Machine Learning, and data processing in real-world projects."
+      },
+      "android": {
+        "title": "Android Programming",
+        "desc": "Build native Android mobile applications and cross-platform solutions, optimizing hardware and user experience."
+      }
+    },
+    "topMembers": {
+      "badge": "top_members",
+      "title": "Top Achieving Members",
+      "viewDetail": "View Details",
+      "member": "Member"
+    },
+    "recentEvents": {
+      "badge": "recent_events",
+      "title": "Latest Events",
+      "description": "Stay updated with the club's featured activities.",
+      "viewAll": "View All Events",
+      "viewDetail": "View Details",
+      "noDescription": "No description available for this event.",
+      "status": {
+        "UPCOMING": "Upcoming",
+        "ONGOING": "Ongoing",
+        "COMPLETED": "Completed"
+      }
+    },
+    "leadership": {
+      "button": "Open Leadership Timeline",
+      "dialogTitle": "Leadership History",
+      "term": "Term {year}",
+      "empty": "No historical data available."
+    },
+    "departments": {
+      "badge": "Department",
+      "missionsLabel": "Key Missions"
+    }
+  },
+  "membersPage": {
+    "hero": {
+      "badge": "MPC ACTIVE NETWORK",
+      "title": "Members",
+      "description": "List of members who have been and are accompanying the club's development through the years."
+    },
+    "membersCount": "{count} members",
+    "empty": "No member data available.",
+    "viewDetail": "View Details"
+  },
+  "userMenu": {
+    "myBlogs": "My Blog Posts",
+    "logoutDialog": {
+      "title": "Confirm Logout",
+      "description": "Are you sure you want to sign out of your account?",
+      "cancel": "Cancel",
+      "confirm": "Sign Out"
+    },
+    "roles": {
+      "ADMIN": "Administrator",
+      "COLLABORATOR": "Collaborator",
+      "MEMBER": "Member",
+      "GUEST": "Guest"
+    },
+    "positions": {
+      "PRESIDENT": "Club President",
+      "VICE_PRESIDENT": "Vice President",
+      "DEPARTMENT_LEADER": "Department Head",
+      "DEPARTMENT_VICE_LEADER": "Deputy Head",
+      "DEPARTMENT_MEMBER": "Department Member",
+      "COLLABORATOR": "Collaborator",
+      "ADVISOR": "Advisor"
+    }
+  },
+  "projects": {
+    "badge": "PORTFOLIO & PRODUCTS",
+    "title": "Our Projects",
+    "description": "A showcase of real-world products and applications researched and developed by Club members.",
+    "footerTitle": "Want to join our projects?",
+    "footerDesc": "We always welcome members who are passionate about programming, design, and innovation. Let's connect to build awesome products together!",
+    "contactFacebook": "Contact via Facebook",
+    "exploreGithub": "Explore on GitHub",
+    "emptyData": "No projects have been published yet.",
+    "noDescription": "No description available.",
+    "backToList": "Back to projects list",
+    "sourceCode": "Source Code",
+    "viewWebsite": "Visit Website",
+    "viewVideo": "Watch Video",
+    "noDetail": "No detailed information available for this project.",
+    "teamTitle": "Development Team",
+    "present": "Present",
+    "otherProjects": {
+      "badge": "other_projects",
+      "title": "Other Projects",
+      "subtitle": "Discover more projects from the club"
+    },
+    "goldBoard": {
+      "badge": "hall_of_fame",
+      "title": "Achievements Hall of Fame",
+      "subtitle": "Outstanding members with the most achievements",
+      "achievements": "achievements",
+      "projects": "projects",
+      "viewProfile": "View Profile",
+      "modalTitle": "Achievements of",
+      "noAchievements": "No achievements yet."
+    }
+  },
+  "blogs": {
+    "badge": "MPC BLOG & KNOWLEDGE",
+    "title": "Blog & Insights",
+    "description": "Sharing programming knowledge, practical experience, and technology news from MPC members.",
+    "emptyData": "No blog posts have been published yet.",
+    "noDescription": "No short description available for this post.",
+    "readMore": "Read more",
+    "backToBlogs": "Back to Blog",
+    "backToEvents": "Back to Events",
+    "backToAchievements": "Back to Achievements",
+    "noThumbnail": "No thumbnail",
+    "relatedBlogsTitle": "Related Articles",
+    "eventInfo": "Event Information",
+    "achievementInfo": "Achievement Information",
+    "dateRecorded": "Date Recorded",
+    "typeLabel": "Type",
+    "relatedLink": "References",
+    "honoredMembers": "Honored Members",
+    "badgeBlog": "Article",
+    "badgeEvent": "Event",
+    "badgeAchievement": "Achievement",
+    "highlighted": "Highlighted",
+    "eventStatus": {
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "eventType": {
+      "academic": "Academic Competition",
+      "member_activity": "Member Activity",
+      "volunteer": "Volunteer Activity",
+      "seminar": "Seminar / Workshop",
+      "other": "Other"
+    },
+    "achievementType": {
+      "individual": "Individual",
+      "team": "Team",
+      "club": "All Club"
+    }
+  },
+  "seo": {
+    "home": {
+      "title": "Home – MPC Club",
+      "description": "Mobile Programming Club — Faculty of Information Technology, Ho Chi Minh City Open University"
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Learn about Mobile Programming Club (MPC) — Mission, fields of activity and team"
+    },
+    "events": {
+      "title": "Events",
+      "description": "Upcoming and past events of MPClub"
+    },
+    "eventDetail": {
+      "title": "Event",
+      "description": "An event by MPC Club"
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Real-world projects built by MPClub students"
+    },
+    "projectDetail": {
+      "title": "Project",
+      "description": "A project by MPC Club"
+    },
+    "members": {
+      "title": "Members",
+      "description": "MPClub members who have been building the community together"
+    },
+    "memberDetail": {
+      "title": "Member",
+      "description": "MPClub member profile"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Achievements, awards and proud milestones of MPClub"
+    },
+    "sponsors": {
+      "title": "Sponsors",
+      "description": "Partners and sponsors supporting MPClub's growth"
+    },
+    "training": {
+      "title": "Training",
+      "description": "Basic tutorials, programming fundamentals, and academic knowledge review throughout your studies"
+    },
+    "activities": {
+      "title": "Activities",
+      "description": "Internal and external activities of MPClub"
+    },
+    "blogs": {
+      "title": "Blog",
+      "description": "Tech news, programming experience from MPC members"
+    },
+    "blogDetail": {
+      "title": "Blog Post",
+      "description": "Blog post details"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search posts, events, projects and members of MPClub"
+    },
+    "departments-new": {
+      "title": "New Department",
+      "description": "Create a new department in MPC Club"
+    },
+    "departments-edit": {
+      "title": "Edit Department",
+      "description": "Update department information"
+    },
+    "activities-admin": {
+      "title": "Manage Activities",
+      "description": "Manage MPC Club activities"
+    },
+    "activities-new": {
+      "title": "New Activity",
+      "description": "Create a new activity for MPC Club"
+    },
+    "activities-edit": {
+      "title": "Edit Activity",
+      "description": "Update activity information"
+    },
+    "sponsors-edit": {
+      "title": "Edit Sponsor",
+      "description": "Update sponsor information"
+    },
+    "sponsors-new": {
+      "title": "New Sponsor",
+      "description": "Add a new sponsor for MPC Club"
+    },
+    "notFound": {
+      "event": "Event not found",
+      "project": "Project not found",
+      "member": "Not found",
+      "profile": "Profile",
+      "blog": "Blog post not found",
+      "achievement": "Achievement not found"
+    }
+  }
+}

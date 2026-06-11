@@ -8,11 +8,20 @@ export function cn(...inputs: ClassValue[]) {
 export function getFullName(firstName?: string | null, lastName?: string | null, locale?: string | null) {
   const f = firstName?.trim() || "";
   const l = lastName?.trim() || "";
-  
-  if (!f && !l) return "—";
+
+  if (!(f || l)) {
+    return "—";
+  }
 
   if (locale === "vi") {
     return `${l} ${f}`.trim();
   }
   return `${f} ${l}`.trim();
+}
+
+export function pickLang<T>(lang: "vi" | "en", vi: T, en: T): T {
+  if (lang === "vi") {
+    return vi || en;
+  }
+  return en || vi;
 }

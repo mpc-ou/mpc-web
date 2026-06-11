@@ -52,7 +52,7 @@ export function EventContentClient({ gallery }: { gallery: any[] }) {
       </div>
 
       <Dialog onOpenChange={(open) => !open && setSelectedImage(null)} open={selectedImage !== null}>
-        <DialogContent className='h-[90vh] max-w-5xl overflow-hidden border-none bg-black/95 p-0'>
+        <DialogContent className='h-[90vh] max-w-7xl overflow-hidden border-none bg-black/95 p-0'>
           <DialogTitle className='sr-only'>Hình ảnh sự kiện</DialogTitle>
           {selectedImage !== null && (
             <div className='relative flex h-full flex-col'>

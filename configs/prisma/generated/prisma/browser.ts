@@ -20,13 +20,11 @@ export * from './enums';
 /**
  * Model SiteSetting
  * Cài đặt trang web - Lưu cấu hình chung dạng key-value
- * VD: site_title, site_description, site_short_description, site_logo, ...
  */
 export type SiteSetting = Prisma.SiteSettingModel
 /**
  * Model Announcement
  * Thông báo hiển thị trên AnnouncementBar
- * Hỗ trợ thời hạn (startAt/endAt), nút CTA tuỳ chỉnh, màu nền tuỳ chỉnh
  */
 export type Announcement = Prisma.AnnouncementModel
 /**
@@ -41,7 +39,7 @@ export type HomepageSection = Prisma.HomepageSectionModel
 export type FaqItem = Prisma.FaqItemModel
 /**
  * Model GalleryImage
- * Ảnh gallery trang chủ - quản lý từ admin
+ * Ảnh gallery - quản lý từ admin
  */
 export type GalleryImage = Prisma.GalleryImageModel
 /**
@@ -52,49 +50,47 @@ export type ExternalLink = Prisma.ExternalLinkModel
 /**
  * Model Member
  * Thành viên CLB - liên kết với Supabase Auth qua authId
- * Mỗi thành viên tương ứng 1 email Google, đăng nhập qua Supabase Auth
+ * Hỗ trợ đăng nhập: Google, GitHub, Discord, Email/Password
+ * GitHub và Discord có field riêng để xác thực, socials JSON chỉ chứa mạng xã hội khác
  */
 export type Member = Prisma.MemberModel
 /**
  * Model Department
  * Ban / Phòng trong CLB
- * VD: Ban Lập trình, Ban Sự kiện & Hậu cần, Ban Truyền thông
  */
 export type Department = Prisma.DepartmentModel
 /**
  * Model ClubRole
- * Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ theo thời gian)
- * Mỗi record = 1 giai đoạn giữ chức vụ. endAt = null nghĩa là đang đảm nhiệm.
- * 
- * VD: Nguyễn Triều từng là:
- * - Thành viên ban Lập trình (2022-2023)
- * - Trưởng ban Lập trình (2023-2024)  
- * - Chủ nhiệm CLB nhiệm kỳ 2024 (2024-now)
+ * Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ)
  */
 export type ClubRole = Prisma.ClubRoleModel
 /**
  * Model Category
- * Danh mục bài viết
- * VD: "Tin tức", "Hướng dẫn", "Chia sẻ kinh nghiệm", "Thông báo"
+ * Danh mục bài viết - chỉ áp dụng cho Post type=BLOG
  */
 export type Category = Prisma.CategoryModel
 /**
  * Model Tag
- * Thẻ tag - dùng chung cho bài viết và sự kiện
+ * Thẻ tag - dùng chung cho tất cả loại bài viết
  */
 export type Tag = Prisma.TagModel
 /**
  * Model Post
- * Bài viết / Blog post
- * Workflow: DRAFT -> PENDING_REVIEW -> PUBLISHED (hoặc REJECTED)
- * Member chỉ được tạo DRAFT và gửi PENDING_REVIEW
- * Collaborator/Admin được PUBLISHED trực tiếp
+ * Bài viết thống nhất - gộp Post, Event, Achievement cũ
+ * 
+ * Workflow theo type:
+ * BLOG: Member tạo -> PENDING_REVIEW -> Admin duyệt -> PUBLISHED
+ * Admin/COLLABORATOR tạo -> PUBLISHED (tự động)
+ * EVENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+ * ACHIEVEMENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+ * 
+ * Song ngữ: Khi soạn thảo chọn sourceLanguage, sau đó dùng tool dịch
+ * tự động để điền bản còn lại. Cả 2 bản cùng lưu trong 1 record.
  */
 export type Post = Prisma.PostModel
 /**
  * Model PostRevision
  * Lịch sử chỉnh sửa bài viết - mỗi lần sửa lưu 1 bản snapshot
- * Giúp theo dõi ai sửa gì, khi nào, và có thể rollback
  */
 export type PostRevision = Prisma.PostRevisionModel
 /**
@@ -103,60 +99,44 @@ export type PostRevision = Prisma.PostRevisionModel
  */
 export type PostTag = Prisma.PostTagModel
 /**
- * Model Event
- * Sự kiện CLB
- * Lưu thông tin các hoạt động, workshop, seminar, cuộc thi,...
+ * Model PostActivity
+ * Bảng trung gian: Post (type=EVENT) <-> Activity
  */
-export type Event = Prisma.EventModel
+export type PostActivity = Prisma.PostActivityModel
 /**
- * Model EventOrganizer
- * Thành viên ban tổ chức sự kiện
- * Ghi nhận ai tham gia tổ chức sự kiện với vai trò gì
+ * Model PostOrganizer
+ * Ban tổ chức sự kiện (chỉ dùng cho Post type=EVENT)
  */
-export type EventOrganizer = Prisma.EventOrganizerModel
+export type PostOrganizer = Prisma.PostOrganizerModel
 /**
- * Model EventTag
- * Bảng trung gian: Event <-> Tag (many-to-many)
+ * Model Image
+ * 
  */
-export type EventTag = Prisma.EventTagModel
+export type Image = Prisma.ImageModel
 /**
- * Model EventGallery
- * Thư viện ảnh sự kiện
- * Lưu các ảnh recap, highlight của sự kiện
+ * Model PostAchievementMember
+ * Thành viên được tuyên dương trong bài ACHIEVEMENT
+ * Dùng để đếm số thành tựu trên profile (COUNT theo memberId)
  */
-export type EventGallery = Prisma.EventGalleryModel
+export type PostAchievementMember = Prisma.PostAchievementMemberModel
 /**
  * Model Activity
- * Hoạt động CLB (Thay thế cho events.json data)
- * Gồm các loại hoạt động/chương trình của CLB
+ * Hoạt động CLB - các chương trình/hoạt động định kỳ
  */
 export type Activity = Prisma.ActivityModel
 /**
  * Model Sponsor
- * Nhà tài trợ / Đối tác / Nhà đồng hành
- * Lưu thông tin cơ bản của đơn vị tài trợ
+ * Nhà tài trợ / Đối tác
  */
 export type Sponsor = Prisma.SponsorModel
 /**
- * Model EventSponsorship
- * Chi tiết tài trợ - liên kết Sponsor với Event hoặc CLB
- * eventId = null: Tài trợ chung cho CLB
- * eventId != null: Tài trợ cho sự kiện cụ thể
+ * Model PostSponsorship
+ * Chi tiết tài trợ - liên kết Sponsor với Post (type=EVENT) hoặc CLB
  */
-export type EventSponsorship = Prisma.EventSponsorshipModel
-/**
- * Model Achievement
- * Thành tựu CLB - giải thưởng, thành tích cá nhân/nhóm/CLB
- */
-export type Achievement = Prisma.AchievementModel
-/**
- * Model AchievementMember
- * Thành viên liên quan đến thành tựu (cá nhân thi, mentor, trưởng nhóm...)
- */
-export type AchievementMember = Prisma.AchievementMemberModel
+export type PostSponsorship = Prisma.PostSponsorshipModel
 /**
  * Model Project
- * Dự án CLB - showcase các sản phẩm của thành viên
+ * Dự án CLB
  */
 export type Project = Prisma.ProjectModel
 /**
@@ -165,8 +145,13 @@ export type Project = Prisma.ProjectModel
  */
 export type ProjectMember = Prisma.ProjectMemberModel
 /**
+ * Model Notification
+ * Hệ thống thông báo cá nhân
+ * Hỗ trợ real-time qua Supabase Realtime (subscription vào bảng này)
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model YearRecap
  * Tổng kết hoạt động CLB theo năm
- * Dữ liệu recap được lưu dạng JSON tổng hợp từ Events, Achievements, Projects
  */
 export type YearRecap = Prisma.YearRecapModel

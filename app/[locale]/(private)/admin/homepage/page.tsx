@@ -1,4 +1,6 @@
-import { adminGetHomepageSections } from "../actions";
+import { LayoutDashboard } from "lucide-react";
+import { adminGetHomepageSections } from "@/app/_actions/admin";
+import { AdminPageHeader } from "../_components/admin-page-header";
 import type { SectionRow } from "./columns";
 import { HomepageDataTable } from "./manager";
 
@@ -8,10 +10,11 @@ export default async function AdminHomepagePage(): Promise<React.ReactNode> {
 
   return (
     <div className='flex flex-col gap-6'>
-      <div>
-        <h1 className='font-bold text-2xl text-foreground'>🏠 Quản lý Trang chủ</h1>
-        <p className='text-muted-foreground text-sm'>Cấu hình nội dung các section trang chủ</p>
-      </div>
+      <AdminPageHeader
+        description='Cấu hình nội dung các section trang chủ'
+        icon={LayoutDashboard}
+        title='Quản lý Trang chủ'
+      />
       <HomepageDataTable data={sections} />
     </div>
   );

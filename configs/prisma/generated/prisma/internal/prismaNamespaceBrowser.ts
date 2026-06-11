@@ -65,17 +65,16 @@ export const ModelName = {
   Post: 'Post',
   PostRevision: 'PostRevision',
   PostTag: 'PostTag',
-  Event: 'Event',
-  EventOrganizer: 'EventOrganizer',
-  EventTag: 'EventTag',
-  EventGallery: 'EventGallery',
+  PostActivity: 'PostActivity',
+  PostOrganizer: 'PostOrganizer',
+  Image: 'Image',
+  PostAchievementMember: 'PostAchievementMember',
   Activity: 'Activity',
   Sponsor: 'Sponsor',
-  EventSponsorship: 'EventSponsorship',
-  Achievement: 'Achievement',
-  AchievementMember: 'AchievementMember',
+  PostSponsorship: 'PostSponsorship',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
+  Notification: 'Notification',
   YearRecap: 'YearRecap'
 } as const
 
@@ -109,9 +108,11 @@ export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[key
 
 export const AnnouncementScalarFieldEnum = {
   id: 'id',
-  content: 'content',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
   linkUrl: 'linkUrl',
-  linkLabel: 'linkLabel',
+  linkLabelVi: 'linkLabelVi',
+  linkLabelEn: 'linkLabelEn',
   bgColor: 'bgColor',
   isActive: 'isActive',
   startAt: 'startAt',
@@ -143,6 +144,7 @@ export const FaqItemScalarFieldEnum = {
   answerVi: 'answerVi',
   questionEn: 'questionEn',
   answerEn: 'answerEn',
+  target: 'target',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -156,6 +158,7 @@ export const GalleryImageScalarFieldEnum = {
   id: 'id',
   url: 'url',
   caption: 'caption',
+  type: 'type',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt'
@@ -184,6 +187,7 @@ export const MemberScalarFieldEnum = {
   password: 'password',
   githubId: 'githubId',
   githubEmail: 'githubEmail',
+  discordId: 'discordId',
   firstName: 'firstName',
   lastName: 'lastName',
   avatar: 'avatar',
@@ -200,6 +204,7 @@ export const MemberScalarFieldEnum = {
   webRole: 'webRole',
   isActive: 'isActive',
   createdBy: 'createdBy',
+  spotifyUri: 'spotifyUri',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -218,6 +223,7 @@ export const DepartmentScalarFieldEnum = {
   descriptionEn: 'descriptionEn',
   missionsEn: 'missionsEn',
   linkLabelEn: 'linkLabelEn',
+  hyperlink: 'hyperlink',
   icon: 'icon',
   bgImage: 'bgImage',
   order: 'order',
@@ -271,17 +277,37 @@ export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagSca
 
 export const PostScalarFieldEnum = {
   id: 'id',
-  title: 'title',
+  type: 'type',
+  titleVi: 'titleVi',
+  titleEn: 'titleEn',
   slug: 'slug',
-  summary: 'summary',
-  content: 'content',
+  summaryVi: 'summaryVi',
+  summaryEn: 'summaryEn',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
+  sourceLanguage: 'sourceLanguage',
   thumbnail: 'thumbnail',
+  images: 'images',
   status: 'status',
   isPinned: 'isPinned',
   viewCount: 'viewCount',
   authorId: 'authorId',
   reviewerId: 'reviewerId',
   categoryId: 'categoryId',
+  activityId: 'activityId',
+  eventStatus: 'eventStatus',
+  eventType: 'eventType',
+  locationVi: 'locationVi',
+  locationEn: 'locationEn',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  maxAttendees: 'maxAttendees',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  achievementType: 'achievementType',
+  achievementDate: 'achievementDate',
+  isHighlight: 'isHighlight',
+  relatedUrl: 'relatedUrl',
   publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -294,9 +320,12 @@ export const PostRevisionScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
   editorId: 'editorId',
-  title: 'title',
-  summary: 'summary',
-  content: 'content',
+  titleVi: 'titleVi',
+  titleEn: 'titleEn',
+  summaryVi: 'summaryVi',
+  summaryEn: 'summaryEn',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
   editNote: 'editNote',
   createdAt: 'createdAt'
 } as const
@@ -312,66 +341,63 @@ export const PostTagScalarFieldEnum = {
 export type PostTagScalarFieldEnum = (typeof PostTagScalarFieldEnum)[keyof typeof PostTagScalarFieldEnum]
 
 
-export const EventScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  slug: 'slug',
-  description: 'description',
-  content: 'content',
-  thumbnail: 'thumbnail',
-  images: 'images',
-  location: 'location',
-  maxAttendees: 'maxAttendees',
-  status: 'status',
-  type: 'type',
-  startAt: 'startAt',
-  endAt: 'endAt',
-  creatorId: 'creatorId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+export const PostActivityScalarFieldEnum = {
+  postId: 'postId',
+  activityId: 'activityId'
 } as const
 
-export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+export type PostActivityScalarFieldEnum = (typeof PostActivityScalarFieldEnum)[keyof typeof PostActivityScalarFieldEnum]
 
 
-export const EventOrganizerScalarFieldEnum = {
+export const PostOrganizerScalarFieldEnum = {
   id: 'id',
-  eventId: 'eventId',
+  postId: 'postId',
   memberId: 'memberId',
   role: 'role',
   createdAt: 'createdAt'
 } as const
 
-export type EventOrganizerScalarFieldEnum = (typeof EventOrganizerScalarFieldEnum)[keyof typeof EventOrganizerScalarFieldEnum]
+export type PostOrganizerScalarFieldEnum = (typeof PostOrganizerScalarFieldEnum)[keyof typeof PostOrganizerScalarFieldEnum]
 
 
-export const EventTagScalarFieldEnum = {
-  eventId: 'eventId',
-  tagId: 'tagId'
+export const ImageScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  url: 'url',
+  title: 'title',
+  caption: 'caption',
+  isTemp: 'isTemp',
+  type: 'type',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type EventTagScalarFieldEnum = (typeof EventTagScalarFieldEnum)[keyof typeof EventTagScalarFieldEnum]
+export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
 
 
-export const EventGalleryScalarFieldEnum = {
+export const PostAchievementMemberScalarFieldEnum = {
   id: 'id',
-  eventId: 'eventId',
-  url: 'url',
-  caption: 'caption',
-  order: 'order',
+  postId: 'postId',
+  memberId: 'memberId',
+  role: 'role',
+  prize: 'prize',
+  imageUrl: 'imageUrl',
   createdAt: 'createdAt'
 } as const
 
-export type EventGalleryScalarFieldEnum = (typeof EventGalleryScalarFieldEnum)[keyof typeof EventGalleryScalarFieldEnum]
+export type PostAchievementMemberScalarFieldEnum = (typeof PostAchievementMemberScalarFieldEnum)[keyof typeof PostAchievementMemberScalarFieldEnum]
 
 
 export const ActivityScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   titleVi: 'titleVi',
-  descriptionVi: 'descriptionVi',
   titleEn: 'titleEn',
+  descriptionVi: 'descriptionVi',
   descriptionEn: 'descriptionEn',
+  frequencyVi: 'frequencyVi',
+  frequencyEn: 'frequencyEn',
   hyperlink: 'hyperlink',
   thumbnail: 'thumbnail',
   images: 'images',
@@ -388,12 +414,18 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 export const SponsorScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  nameEn: 'nameEn',
   slug: 'slug',
+  descriptionVi: 'descriptionVi',
+  descriptionEn: 'descriptionEn',
   logo: 'logo',
   email: 'email',
   phone: 'phone',
   website: 'website',
-  description: 'description',
+  activityId: 'activityId',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  images: 'images',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -402,10 +434,10 @@ export const SponsorScalarFieldEnum = {
 export type SponsorScalarFieldEnum = (typeof SponsorScalarFieldEnum)[keyof typeof SponsorScalarFieldEnum]
 
 
-export const EventSponsorshipScalarFieldEnum = {
+export const PostSponsorshipScalarFieldEnum = {
   id: 'id',
   sponsorId: 'sponsorId',
-  eventId: 'eventId',
+  postId: 'postId',
   title: 'title',
   content: 'content',
   tier: 'tier',
@@ -416,44 +448,18 @@ export const EventSponsorshipScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type EventSponsorshipScalarFieldEnum = (typeof EventSponsorshipScalarFieldEnum)[keyof typeof EventSponsorshipScalarFieldEnum]
-
-
-export const AchievementScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  slug: 'slug',
-  summary: 'summary',
-  content: 'content',
-  thumbnail: 'thumbnail',
-  images: 'images',
-  date: 'date',
-  type: 'type',
-  isHighlight: 'isHighlight',
-  relatedUrl: 'relatedUrl',
-  relatedPostId: 'relatedPostId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AchievementScalarFieldEnum = (typeof AchievementScalarFieldEnum)[keyof typeof AchievementScalarFieldEnum]
-
-
-export const AchievementMemberScalarFieldEnum = {
-  achievementId: 'achievementId',
-  memberId: 'memberId',
-  role: 'role'
-} as const
-
-export type AchievementMemberScalarFieldEnum = (typeof AchievementMemberScalarFieldEnum)[keyof typeof AchievementMemberScalarFieldEnum]
+export type PostSponsorshipScalarFieldEnum = (typeof PostSponsorshipScalarFieldEnum)[keyof typeof PostSponsorshipScalarFieldEnum]
 
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  titleEn: 'titleEn',
   slug: 'slug',
   description: 'description',
+  descriptionEn: 'descriptionEn',
   content: 'content',
+  contentEn: 'contentEn',
   thumbnail: 'thumbnail',
   images: 'images',
   githubUrl: 'githubUrl',
@@ -477,6 +483,21 @@ export const ProjectMemberScalarFieldEnum = {
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  type: 'type',
+  title: 'title',
+  content: 'content',
+  linkUrl: 'linkUrl',
+  isRead: 'isRead',
+  postId: 'postId',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const YearRecapScalarFieldEnum = {

@@ -1,24 +1,19 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ExternalLink, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 export type ProjectRow = {
   id: string;
   title: string;
+  titleEn: string;
   slug: string;
   description: string | null;
+  descriptionEn: string | null;
   content: string | null;
+  contentEn: string;
   thumbnail: string | null;
   githubUrl: string | null;
   websiteUrl: string | null;
@@ -33,6 +28,17 @@ export type ProjectRow = {
   }>;
 };
 
+const SortHeader = ({ label, column }: { label: string; column: any }) => (
+  <Button
+    className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
+    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    variant='ghost'
+  >
+    {label}
+    <ArrowUpDown className='ml-1 h-3 w-3' />
+  </Button>
+);
+
 export const createColumns = (
   onEdit: (p: ProjectRow) => void,
   onDelete: (id: string) => void,
@@ -40,11 +46,7 @@ export const createColumns = (
 ): ColumnDef<ProjectRow>[] => [
   {
     accessorKey: "title",
-    header: ({ column }) => (
-      <Button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} variant='ghost'>
-        Dự án <ArrowUpDown className='ml-2 h-4 w-4' />
-      </Button>
-    ),
+    header: ({ column }) => <SortHeader column={column} label='Dự án' />,
     cell: ({ row }) => (
       <div
         className='-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50'
@@ -55,9 +57,9 @@ export const createColumns = (
           <img alt='' className='h-12 w-12 rounded border object-cover' src={row.original.thumbnail} />
         )}
         <div>
-          <div className='max-w-50 truncate font-medium text-primary hover:underline'>{row.original.title}</div>
+          <div className='max-w-50 truncate font-medium text-primary text-xs hover:underline'>{row.original.title}</div>
           {row.original.description && (
-            <div className='max-w-50 truncate text-muted-foreground text-xs'>{row.original.description}</div>
+            <div className='max-w-50 truncate text-[10px] text-muted-foreground'>{row.original.description}</div>
           )}
         </div>
       </div>
@@ -69,7 +71,7 @@ export const createColumns = (
     cell: ({ row }) => {
       const techs = row.original.technologies ?? [];
       if (!techs.length) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className='text-muted-foreground text-xs'>—</span>;
       }
       return (
         <div className='flex flex-wrap gap-1'>
@@ -97,7 +99,7 @@ export const createColumns = (
         p.websiteUrl && { label: "Web", url: p.websiteUrl }
       ].filter(Boolean) as { label: string; url: string }[];
       if (!links.length) {
-        return <span className='text-muted-foreground'>—</span>;
+        return <span className='text-muted-foreground text-xs'>—</span>;
       }
       return (
         <div className='flex gap-2'>
@@ -120,7 +122,7 @@ export const createColumns = (
   {
     id: "memberCount",
     header: "Thành viên",
-    cell: ({ row }) => <span className='text-sm'>{row.original.members.length || "—"}</span>
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.members.length || "—"}</span>
   },
   {
     accessorKey: "isActive",
@@ -136,22 +138,25 @@ export const createColumns = (
     cell: ({ row }) => {
       const p = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className='h-8 w-8 p-0' variant='ghost'>
-              <MoreHorizontal className='h-4 w-4' />
+        <div className='flex items-center gap-0.5'>
+          {onView && (
+            <Button className='h-7 w-7' onClick={() => onView(p)} size='icon' title='Xem chi tiết' variant='ghost'>
+              <Eye className='h-3.5 w-3.5' />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            {onView && <DropdownMenuItem onClick={() => onView(p)}>Xem chi tiết</DropdownMenuItem>}
-            <DropdownMenuItem onClick={() => onEdit(p)}>Chỉnh sửa</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive' onClick={() => onDelete(p.id)}>
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+          <Button className='h-7 w-7' onClick={() => onEdit(p)} size='icon' title='Chỉnh sửa' variant='ghost'>
+            <Pencil className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            className='h-7 w-7 text-destructive hover:text-destructive'
+            onClick={() => onDelete(p.id)}
+            size='icon'
+            title='Xóa'
+            variant='ghost'
+          >
+            <Trash2 className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       );
     }
   }

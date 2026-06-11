@@ -15,7 +15,6 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model PostRevision
  * Lịch sử chỉnh sửa bài viết - mỗi lần sửa lưu 1 bản snapshot
- * Giúp theo dõi ai sửa gì, khi nào, và có thể rollback
  */
 export type PostRevisionModel = runtime.Types.Result.DefaultSelection<Prisma.$PostRevisionPayload>
 
@@ -29,9 +28,12 @@ export type PostRevisionMinAggregateOutputType = {
   id: string | null
   postId: string | null
   editorId: string | null
-  title: string | null
-  summary: string | null
-  content: string | null
+  titleVi: string | null
+  titleEn: string | null
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string | null
+  contentEn: string | null
   editNote: string | null
   createdAt: Date | null
 }
@@ -40,9 +42,12 @@ export type PostRevisionMaxAggregateOutputType = {
   id: string | null
   postId: string | null
   editorId: string | null
-  title: string | null
-  summary: string | null
-  content: string | null
+  titleVi: string | null
+  titleEn: string | null
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string | null
+  contentEn: string | null
   editNote: string | null
   createdAt: Date | null
 }
@@ -51,9 +56,12 @@ export type PostRevisionCountAggregateOutputType = {
   id: number
   postId: number
   editorId: number
-  title: number
-  summary: number
-  content: number
+  titleVi: number
+  titleEn: number
+  summaryVi: number
+  summaryEn: number
+  contentVi: number
+  contentEn: number
   editNote: number
   createdAt: number
   _all: number
@@ -64,9 +72,12 @@ export type PostRevisionMinAggregateInputType = {
   id?: true
   postId?: true
   editorId?: true
-  title?: true
-  summary?: true
-  content?: true
+  titleVi?: true
+  titleEn?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
   editNote?: true
   createdAt?: true
 }
@@ -75,9 +86,12 @@ export type PostRevisionMaxAggregateInputType = {
   id?: true
   postId?: true
   editorId?: true
-  title?: true
-  summary?: true
-  content?: true
+  titleVi?: true
+  titleEn?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
   editNote?: true
   createdAt?: true
 }
@@ -86,9 +100,12 @@ export type PostRevisionCountAggregateInputType = {
   id?: true
   postId?: true
   editorId?: true
-  title?: true
-  summary?: true
-  content?: true
+  titleVi?: true
+  titleEn?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
   editNote?: true
   createdAt?: true
   _all?: true
@@ -170,9 +187,12 @@ export type PostRevisionGroupByOutputType = {
   id: string
   postId: string
   editorId: string
-  title: string
-  summary: string | null
-  content: string
+  titleVi: string
+  titleEn: string
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string
+  contentEn: string
   editNote: string | null
   createdAt: Date
   _count: PostRevisionCountAggregateOutputType | null
@@ -202,9 +222,12 @@ export type PostRevisionWhereInput = {
   id?: Prisma.StringFilter<"PostRevision"> | string
   postId?: Prisma.StringFilter<"PostRevision"> | string
   editorId?: Prisma.StringFilter<"PostRevision"> | string
-  title?: Prisma.StringFilter<"PostRevision"> | string
-  summary?: Prisma.StringNullableFilter<"PostRevision"> | string | null
-  content?: Prisma.StringFilter<"PostRevision"> | string
+  titleVi?: Prisma.StringFilter<"PostRevision"> | string
+  titleEn?: Prisma.StringFilter<"PostRevision"> | string
+  summaryVi?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  contentVi?: Prisma.StringFilter<"PostRevision"> | string
+  contentEn?: Prisma.StringFilter<"PostRevision"> | string
   editNote?: Prisma.StringNullableFilter<"PostRevision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PostRevision"> | Date | string
   post?: Prisma.XOR<Prisma.PostScalarRelationFilter, Prisma.PostWhereInput>
@@ -215,9 +238,12 @@ export type PostRevisionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   editorId?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
-  content?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  summaryEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   editNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   post?: Prisma.PostOrderByWithRelationInput
@@ -231,9 +257,12 @@ export type PostRevisionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PostRevisionWhereInput | Prisma.PostRevisionWhereInput[]
   postId?: Prisma.StringFilter<"PostRevision"> | string
   editorId?: Prisma.StringFilter<"PostRevision"> | string
-  title?: Prisma.StringFilter<"PostRevision"> | string
-  summary?: Prisma.StringNullableFilter<"PostRevision"> | string | null
-  content?: Prisma.StringFilter<"PostRevision"> | string
+  titleVi?: Prisma.StringFilter<"PostRevision"> | string
+  titleEn?: Prisma.StringFilter<"PostRevision"> | string
+  summaryVi?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  contentVi?: Prisma.StringFilter<"PostRevision"> | string
+  contentEn?: Prisma.StringFilter<"PostRevision"> | string
   editNote?: Prisma.StringNullableFilter<"PostRevision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PostRevision"> | Date | string
   post?: Prisma.XOR<Prisma.PostScalarRelationFilter, Prisma.PostWhereInput>
@@ -244,9 +273,12 @@ export type PostRevisionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   editorId?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
-  content?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  summaryEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   editNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PostRevisionCountOrderByAggregateInput
@@ -261,18 +293,24 @@ export type PostRevisionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
   postId?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
   editorId?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
-  title?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
-  summary?: Prisma.StringNullableWithAggregatesFilter<"PostRevision"> | string | null
-  content?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
+  titleVi?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
+  titleEn?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
+  summaryVi?: Prisma.StringNullableWithAggregatesFilter<"PostRevision"> | string | null
+  summaryEn?: Prisma.StringNullableWithAggregatesFilter<"PostRevision"> | string | null
+  contentVi?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
+  contentEn?: Prisma.StringWithAggregatesFilter<"PostRevision"> | string
   editNote?: Prisma.StringNullableWithAggregatesFilter<"PostRevision"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PostRevision"> | Date | string
 }
 
 export type PostRevisionCreateInput = {
   id?: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
   post: Prisma.PostCreateNestedOneWithoutRevisionsInput
@@ -283,18 +321,24 @@ export type PostRevisionUncheckedCreateInput = {
   id?: string
   postId: string
   editorId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
 
 export type PostRevisionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.PostUpdateOneRequiredWithoutRevisionsNestedInput
@@ -305,9 +349,12 @@ export type PostRevisionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   editorId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -316,18 +363,24 @@ export type PostRevisionCreateManyInput = {
   id?: string
   postId: string
   editorId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
 
 export type PostRevisionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,9 +389,12 @@ export type PostRevisionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
   editorId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,9 +413,12 @@ export type PostRevisionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   editorId?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   editNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -368,9 +427,12 @@ export type PostRevisionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   editorId?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   editNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -379,9 +441,12 @@ export type PostRevisionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   editorId?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   editNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -472,9 +537,12 @@ export type PostRevisionUncheckedUpdateManyWithoutPostNestedInput = {
 
 export type PostRevisionCreateWithoutEditorInput = {
   id?: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
   post: Prisma.PostCreateNestedOneWithoutRevisionsInput
@@ -483,9 +551,12 @@ export type PostRevisionCreateWithoutEditorInput = {
 export type PostRevisionUncheckedCreateWithoutEditorInput = {
   id?: string
   postId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
@@ -523,18 +594,24 @@ export type PostRevisionScalarWhereInput = {
   id?: Prisma.StringFilter<"PostRevision"> | string
   postId?: Prisma.StringFilter<"PostRevision"> | string
   editorId?: Prisma.StringFilter<"PostRevision"> | string
-  title?: Prisma.StringFilter<"PostRevision"> | string
-  summary?: Prisma.StringNullableFilter<"PostRevision"> | string | null
-  content?: Prisma.StringFilter<"PostRevision"> | string
+  titleVi?: Prisma.StringFilter<"PostRevision"> | string
+  titleEn?: Prisma.StringFilter<"PostRevision"> | string
+  summaryVi?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"PostRevision"> | string | null
+  contentVi?: Prisma.StringFilter<"PostRevision"> | string
+  contentEn?: Prisma.StringFilter<"PostRevision"> | string
   editNote?: Prisma.StringNullableFilter<"PostRevision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PostRevision"> | Date | string
 }
 
 export type PostRevisionCreateWithoutPostInput = {
   id?: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
   editor: Prisma.MemberCreateNestedOneWithoutPostRevisionsInput
@@ -543,9 +620,12 @@ export type PostRevisionCreateWithoutPostInput = {
 export type PostRevisionUncheckedCreateWithoutPostInput = {
   id?: string
   editorId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
@@ -579,18 +659,24 @@ export type PostRevisionUpdateManyWithWhereWithoutPostInput = {
 export type PostRevisionCreateManyEditorInput = {
   id?: string
   postId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
 
 export type PostRevisionUpdateWithoutEditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   post?: Prisma.PostUpdateOneRequiredWithoutRevisionsNestedInput
@@ -599,9 +685,12 @@ export type PostRevisionUpdateWithoutEditorInput = {
 export type PostRevisionUncheckedUpdateWithoutEditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -609,9 +698,12 @@ export type PostRevisionUncheckedUpdateWithoutEditorInput = {
 export type PostRevisionUncheckedUpdateManyWithoutEditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   postId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -619,18 +711,24 @@ export type PostRevisionUncheckedUpdateManyWithoutEditorInput = {
 export type PostRevisionCreateManyPostInput = {
   id?: string
   editorId: string
-  title: string
-  summary?: string | null
-  content: string
+  titleVi: string
+  titleEn?: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
   editNote?: string | null
   createdAt?: Date | string
 }
 
 export type PostRevisionUpdateWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editor?: Prisma.MemberUpdateOneRequiredWithoutPostRevisionsNestedInput
@@ -639,9 +737,12 @@ export type PostRevisionUpdateWithoutPostInput = {
 export type PostRevisionUncheckedUpdateWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   editorId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -649,9 +750,12 @@ export type PostRevisionUncheckedUpdateWithoutPostInput = {
 export type PostRevisionUncheckedUpdateManyWithoutPostInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   editorId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   editNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -662,9 +766,12 @@ export type PostRevisionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   postId?: boolean
   editorId?: boolean
-  title?: boolean
-  summary?: boolean
-  content?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   editNote?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
@@ -675,9 +782,12 @@ export type PostRevisionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   postId?: boolean
   editorId?: boolean
-  title?: boolean
-  summary?: boolean
-  content?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   editNote?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
@@ -688,9 +798,12 @@ export type PostRevisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   postId?: boolean
   editorId?: boolean
-  title?: boolean
-  summary?: boolean
-  content?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   editNote?: boolean
   createdAt?: boolean
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
@@ -701,14 +814,17 @@ export type PostRevisionSelectScalar = {
   id?: boolean
   postId?: boolean
   editorId?: boolean
-  title?: boolean
-  summary?: boolean
-  content?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   editNote?: boolean
   createdAt?: boolean
 }
 
-export type PostRevisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "editorId" | "title" | "summary" | "content" | "editNote" | "createdAt", ExtArgs["result"]["postRevision"]>
+export type PostRevisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "editorId" | "titleVi" | "titleEn" | "summaryVi" | "summaryEn" | "contentVi" | "contentEn" | "editNote" | "createdAt", ExtArgs["result"]["postRevision"]>
 export type PostRevisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
   editor?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
@@ -732,9 +848,12 @@ export type $PostRevisionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     postId: string
     editorId: string
-    title: string
-    summary: string | null
-    content: string
+    titleVi: string
+    titleEn: string
+    summaryVi: string | null
+    summaryEn: string | null
+    contentVi: string
+    contentEn: string
     editNote: string | null
     createdAt: Date
   }, ExtArgs["result"]["postRevision"]>
@@ -1165,9 +1284,12 @@ export interface PostRevisionFieldRefs {
   readonly id: Prisma.FieldRef<"PostRevision", 'String'>
   readonly postId: Prisma.FieldRef<"PostRevision", 'String'>
   readonly editorId: Prisma.FieldRef<"PostRevision", 'String'>
-  readonly title: Prisma.FieldRef<"PostRevision", 'String'>
-  readonly summary: Prisma.FieldRef<"PostRevision", 'String'>
-  readonly content: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly titleVi: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly titleEn: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly summaryVi: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly summaryEn: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly contentVi: Prisma.FieldRef<"PostRevision", 'String'>
+  readonly contentEn: Prisma.FieldRef<"PostRevision", 'String'>
   readonly editNote: Prisma.FieldRef<"PostRevision", 'String'>
   readonly createdAt: Prisma.FieldRef<"PostRevision", 'DateTime'>
 }

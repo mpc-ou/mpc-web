@@ -27,10 +27,12 @@ ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
   [
-    "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-xl border p-4 shadow-lg",
+    "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-xl p-4 shadow-lg",
     "transition-all duration-300 ease-in-out",
-    "data-[state=open]:animate-in data-[state=open]:slide-in-from-top-full sm:data-[state=open]:slide-in-from-bottom-full data-[state=open]:fade-in-0",
-    "data-[state=closed]:animate-out data-[state=closed]:slide-out-to-top-full sm:data-[state=closed]:slide-out-to-right-full data-[state=closed]:fade-out-80",
+    "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+    "data-[state=open]:slide-in-from-top-2 sm:data-[state=open]:slide-in-from-bottom-2 sm:data-[state=open]:slide-in-from-right-2",
+    "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+    "data-[state=closed]:slide-out-to-top-2 sm:data-[state=closed]:slide-out-to-right-2",
     "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]",
     "data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
   ].join(" "),
@@ -38,14 +40,15 @@ const toastVariants = cva(
     variants: {
       variant: {
         default:
-          "border-border/50 bg-background/95 text-foreground backdrop-blur-sm",
+          "border border-l-4 border-border/40 border-l-primary bg-background/80 backdrop-blur-md text-foreground shadow-[0_8px_30px_hsl(var(--primary)/0.08)]",
         destructive:
-          "destructive border-red-500/30 bg-red-950/90 text-red-50 backdrop-blur-sm",
+          "border border-l-4 border-red-500/20 border-l-red-500 bg-red-50/70 dark:bg-red-950/20 text-foreground dark:text-foreground shadow-[0_8px_30px_rgba(239,68,68,0.08)] backdrop-blur-md",
         success:
-          "border-emerald-500/30 bg-emerald-950/90 text-emerald-50 backdrop-blur-sm",
+          "border border-l-4 border-emerald-500/20 border-l-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/20 text-foreground dark:text-foreground shadow-[0_8px_30px_rgba(16,185,129,0.08)] backdrop-blur-md",
         warning:
-          "border-amber-500/30 bg-amber-950/90 text-amber-50 backdrop-blur-sm",
-        info: "border-blue-500/30 bg-blue-950/90 text-blue-50 backdrop-blur-sm",
+          "border border-l-4 border-amber-500/20 border-l-amber-500 bg-amber-50/70 dark:bg-amber-950/20 text-foreground dark:text-foreground shadow-[0_8px_30px_rgba(245,158,11,0.08)] backdrop-blur-md",
+        info:
+          "border border-l-4 border-blue-500/20 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20 text-foreground dark:text-foreground shadow-[0_8px_30px_rgba(59,130,246,0.08)] backdrop-blur-md",
       },
     },
     defaultVariants: {
@@ -56,20 +59,20 @@ const toastVariants = cva(
 
 const toastIconMap = {
   default: null,
-  destructive: <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />,
+  destructive: <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />,
   success: (
-    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
+    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
   ),
-  warning: <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />,
-  info: <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-400" />,
+  warning: <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />,
+  info: <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-500" />,
 } as const;
 
 const progressBarColors = {
-  default: "bg-foreground/30",
-  destructive: "bg-red-400/60",
-  success: "bg-emerald-400/60",
-  warning: "bg-amber-400/60",
-  info: "bg-blue-400/60",
+  default: "bg-primary",
+  destructive: "bg-red-500",
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  info: "bg-blue-500",
 } as const;
 
 /** Progress bar đếm ngược 5s */
@@ -125,8 +128,15 @@ const Toast = React.forwardRef<
       ref={ref}
       {...props}
     >
-      {icon && <span className="shrink-0">{icon}</span>}
-      <div className="flex flex-1 flex-col gap-0.5">{children}</div>
+      <div
+        className="pointer-events-none absolute inset-0 animate-grid-move opacity-[0.05] dark:opacity-[0.08]"
+        style={{
+          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+      {icon && <span className="relative z-10 shrink-0">{icon}</span>}
+      <div className="relative z-10 flex flex-1 flex-col gap-0.5 pr-6">{children}</div>
       <ToastProgress variant={v} />
     </ToastPrimitives.Root>
   );
@@ -156,7 +166,7 @@ const ToastClose = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Close
     className={cn(
-      "shrink-0 rounded-md p-1 opacity-0 transition-opacity",
+      "absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity",
       "hover:opacity-100 focus:opacity-100 focus:outline-none",
       "group-hover:opacity-60 hover:!opacity-100",
       "text-foreground/50 hover:text-foreground",

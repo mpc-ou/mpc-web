@@ -89,7 +89,37 @@
       "noPosts": "No posts yet",
       "noProjects": "No projects yet",
       "roleHistory": "Role History",
-      "noRoles": "No roles recorded."
+      "noRoles": "No roles recorded.",
+      "leftClub": "Left the Club",
+      "noAchievements": "No achievements recorded.",
+      "highlight": "⭐ Highlight",
+      "role": "Role:",
+      "activeMember": "Active Club Member",
+      "leftClubNotice": "This member has left the club.",
+      "guestNotice": "This is a guest account — not a club member."
+    }
+  },
+  "badges": {
+    "member": "Club Member",
+    "alumni": "Alumni",
+    "left": "Left Club",
+    "admin": "Administrator",
+    "mod": "Collaborator",
+    "writer": "Active Contributor",
+    "talented": "Achiever",
+    "builder": "Builder",
+    "cadre": "Club Officer",
+    "tier": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "diamond": "Diamond"
+    },
+    "suffix": {
+      "years": "years",
+      "posts": "posts",
+      "achievements": "achievements",
+      "projects": "projects"
     }
   },
   "footer": {

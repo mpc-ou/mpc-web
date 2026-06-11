@@ -1,9 +1,14 @@
 "use client";
 
 import {
+  AlertTriangle,
+  BadgeCheck,
   Calendar,
+  DoorOpen,
   ExternalLink,
   Globe,
+  Hash,
+  LogOut,
   Mail,
   Phone,
   Trophy,
@@ -24,22 +29,11 @@ import type { BadgeData } from "@/configs/badges";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { formatLocalDate } from "@/utils/handle-datetime";
 
-const POSITION_LABELS: Record<string, string> = {
-  PRESIDENT: "Chủ nhiệm CLB",
-  VICE_PRESIDENT: "Phó chủ nhiệm",
-  DEPARTMENT_LEADER: "Trưởng ban",
-  DEPARTMENT_VICE_LEADER: "Phó ban",
-  DEPARTMENT_MEMBER: "Thành viên ban",
-  COLLABORATOR: "Cộng tác viên",
-  ADVISOR: "Cố vấn",
-};
-
 import { SOCIAL_COLLECTION } from "@/constants/common";
 import { getFullName } from "@/lib/utils";
 
 const getSocialMeta = (platform: string) => {
   const p = platform.toLowerCase();
-
   if (p.includes("facebook") || p === "fb") {
     return SOCIAL_COLLECTION.FACEBOOK;
   }
@@ -67,7 +61,6 @@ const getSocialMeta = (platform: string) => {
   if (p.includes("email") || p.includes("mail")) {
     return SOCIAL_COLLECTION.EMAIL;
   }
-
   return SOCIAL_COLLECTION.WEBSITE;
 };
 
@@ -143,15 +136,15 @@ export function ProfilePageClient({ member }: { member: Member }) {
   const [activeTab, setActiveTab] = useState("about");
   const locale = useLocale();
   const t = useTranslations("header");
+  const tm = useTranslations("header.member");
   const te = useTranslations("events");
+  const tPos = useTranslations("userMenu.positions");
   // useTransparentHeader();
   const fullName = getFullName(member.firstName, member.lastName, locale);
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
 
-  // Active role
   const activeRole = member.clubRoles.find((r) => !r.endAt);
-
   const isGuest = member.webRole === "GUEST";
   const hasLeftClub = member.clubRoles.length > 0 && !activeRole;
   const hasBeenLeader = member.clubRoles.some((r) =>
@@ -204,7 +197,6 @@ export function ProfilePageClient({ member }: { member: Member }) {
       {/* === PROFILE HEADER === */}
       <div className="mx-auto max-w-6xl px-4">
         <div className="relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end">
-          {/* Avatar — overlaps cover */}
           <div className="shrink-0">
             <Avatar className="h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40">
               <AvatarImage src={member.avatar ?? undefined} />
@@ -220,28 +212,38 @@ export function ProfilePageClient({ member }: { member: Member }) {
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-bold text-3xl text-foreground">
                   {fullName}
+                  {isGuest && (
+                    <span title={tm("guestNotice")}>
+                      <AlertTriangle className="ml-1.5 inline-block h-5 w-5 text-amber-500" />
+                    </span>
+                  )}
                   {!(isGuest || hasLeftClub) && (
-                    <span
-                      className="ml-1.5 inline-flex items-center"
-                      title="Thành viên đang hoạt động"
-                    >
-                      <svg
-                        className="h-5 w-5 text-green-500"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                      </svg>
+                    <span title={tm("activeMember")}>
+                      <BadgeCheck className="ml-1.5 inline-block h-5 w-5 text-green-500" />
+                    </span>
+                  )}
+                  {hasLeftClub && (
+                    <span title={tm("leftClub")}>
+                      <DoorOpen className="ml-1.5 inline-block h-5 w-5 text-muted-foreground" />
                     </span>
                   )}
                 </h1>
                 {activeRole && (
                   <Badge className="text-sm" variant="default">
-                    {POSITION_LABELS[activeRole.position] ??
-                      activeRole.position}
+                    {tPos(activeRole.position as any) || activeRole.position}
                     {activeRole.department
                       ? ` · ${activeRole.department.nameVi}`
                       : ""}
+                  </Badge>
+                )}
+                {hasLeftClub && (
+                  <Badge className="text-sm" variant="outline">
+                    {tm("leftClub")}
+                  </Badge>
+                )}
+                {isGuest && (
+                  <Badge className="text-sm" variant="outline">
+                    Guest
                   </Badge>
                 )}
               </div>
@@ -252,6 +254,20 @@ export function ProfilePageClient({ member }: { member: Member }) {
                   {activeBadges.map(({ def, result }) => (
                     <BadgeIcon def={def} key={def.id} result={result} />
                   ))}
+                </div>
+              )}
+
+              {/* Alert notices */}
+              {isGuest && (
+                <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-amber-600 text-xs">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{tm("guestNotice")}</span>
+                </div>
+              )}
+              {hasLeftClub && (
+                <div className="flex items-center gap-2 rounded-lg border border-muted-foreground/20 bg-muted/30 px-3 py-2 text-muted-foreground text-xs">
+                  <DoorOpen className="h-4 w-4 shrink-0" />
+                  <span>{tm("leftClubNotice")}</span>
                 </div>
               )}
             </div>
@@ -295,7 +311,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
             <div className="flex flex-col gap-8 lg:flex-row">
               {/* Left Column */}
               <div className="w-full space-y-8 lg:w-3/4">
-                {/* Basic Info — Compact grid with icons */}
+                {/* Basic Info */}
                 <div className="rounded-xl border bg-card p-5 shadow-sm">
                   <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
                     <div className="flex items-center gap-3">
@@ -304,17 +320,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     </div>
                     {member.studentId && (
                       <div className="flex items-center gap-3">
-                        <svg
-                          className="h-4 w-4 shrink-0 text-muted-foreground"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M4 7V4h16v3" />
-                          <path d="M9 20h6" />
-                          <path d="M12 4v16" />
-                        </svg>
+                        <Hash className="h-4 w-4 shrink-0 text-muted-foreground" />
                         <span className="font-mono font-semibold text-sm">
                           {member.studentId}
                         </span>
@@ -361,7 +367,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     </p>
                   )}
 
-                  {/* Social links — inline icons */}
+                  {/* Social links */}
                   {socials.filter((s) => s.url).length > 0 && (
                     <div className="mt-4 flex flex-wrap items-center gap-2 border-border border-t pt-4">
                       <Globe className="h-4 w-4 text-muted-foreground" />
@@ -408,7 +414,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                   </h3>
                   {member.achievements.length === 0 ? (
                     <p className="text-muted-foreground text-sm italic">
-                      Chưa có thành tựu nào được ghi nhận.
+                      {tm("noAchievements")}
                     </p>
                   ) : (
                     <div className="relative ml-3 space-y-8 border-border border-l pl-6 lg:pl-8">
@@ -454,7 +460,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                     </Badge>
                                     {achievement.isHighlight && (
                                       <Badge className="bg-yellow-500 text-[10px] text-black shadow hover:bg-yellow-400">
-                                        ⭐ Nổi bật
+                                        {tm("highlight")}
                                       </Badge>
                                     )}
                                   </div>
@@ -468,7 +474,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                 {role && (
                                   <div className="mt-auto pt-2">
                                     <span className="rounded bg-primary/10 px-2 py-1 font-semibold text-[11px] text-primary uppercase">
-                                      Vai trò: {role}
+                                      {tm("role")} {role}
                                     </span>
                                   </div>
                                 )}
@@ -505,7 +511,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                           />
                           <div className="flex-1">
                             <p className="font-bold text-sm">
-                              {POSITION_LABELS[role.position] ?? role.position}
+                              {tPos(role.position as any) || role.position}
                             </p>
                             {role.department && (
                               <p className="mt-0.5 font-semibold text-primary text-xs">

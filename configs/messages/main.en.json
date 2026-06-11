@@ -57,7 +57,10 @@
       "president": "Executive Board",
       "staff": "Department Leaders",
       "viewAll": "View All Members",
-      "noLeadership": "No leadership information available."
+      "noLeadership": "No leadership information available.",
+      "executiveDept": "Executive Department",
+      "viewProfile": "View Profile",
+      "departmentMember": "Department Member"
     },
     "activities": {
       "title": "Featured Activities",

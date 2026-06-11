@@ -2,7 +2,12 @@
 
 import { revalidateTag } from "next/cache";
 import { _CACHE_POSTS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import {
+  generateSlug,
+  handleErrorServerWithAuth,
+  prisma,
+  requireAdmin,
+} from "./helpers";
 
 const _CACHE_ACTIVITIES = "activities";
 
@@ -11,7 +16,7 @@ export const adminGetActivities = async () =>
     cb: async ({ user }) => {
       await requireAdmin(user);
       return prisma.activity.findMany({ orderBy: { order: "asc" } });
-    }
+    },
   });
 
 export const adminCreateActivity = async (data: {
@@ -45,12 +50,12 @@ export const adminCreateActivity = async (data: {
           thumbnail: data.thumbnail ?? null,
           images: data.images ?? [],
           isActive: data.isActive ?? true,
-          order: data.order ?? 0
-        }
+          order: data.order ?? 0,
+        },
       });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return created;
-    }
+    },
   });
 
 export const adminUpdateActivity = async (
@@ -67,7 +72,7 @@ export const adminUpdateActivity = async (
     images?: string[];
     isActive?: boolean;
     order?: number;
-  }
+  },
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -75,7 +80,7 @@ export const adminUpdateActivity = async (
       const updated = await prisma.activity.update({ where: { id }, data });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return updated;
-    }
+    },
   });
 
 export const adminDeleteActivity = async (id: string) =>
@@ -85,7 +90,7 @@ export const adminDeleteActivity = async (id: string) =>
       await prisma.activity.delete({ where: { id } });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return { success: true };
-    }
+    },
   });
 
 export const adminSeedActivities = async () =>
@@ -112,31 +117,56 @@ export const adminSeedActivities = async () =>
       let count = 0;
       const all = [...data.internalEvents, ...data.externalEvents];
 
-      // Đọc ảnh từ folder public tương ứng
+      // Read images from public folder
       const fsModule = await import("node:fs");
       const pathModule = await import("node:path");
-      const publicDir = pathModule.join(process.cwd(), "public");
+
+      // In standalone mode, public/ is next to server.js
+      // Try multiple possible locations for robustness
+      const candidateDirs = [
+        pathModule.join(process.cwd(), "public"),
+        pathModule.join(process.cwd(), ".next", "standalone", "public"),
+        pathModule.join(process.cwd(), "..", "public"),
+      ];
+      let publicDir = candidateDirs.find((d) => fsModule.existsSync(d));
+      if (!publicDir) {
+        console.warn(
+          "[adminSeedActivities] Could not find public directory, tried:",
+          candidateDirs,
+        );
+        // Fallback: use process.cwd() + public
+        publicDir = pathModule.join(process.cwd(), "public");
+      }
+      console.log(`[adminSeedActivities] Using public dir: ${publicDir}`);
 
       for (let i = 0; i < all.length; i++) {
         const item = all[i];
         let images: string[] = [];
 
-        // Quét folder ảnh nếu có
         if (item.imageFolder) {
-          const folderPath = pathModule.join(publicDir, item.imageFolder.replace(/^\//, ""));
+          const relFolder = item.imageFolder.replace(/^\//, "");
+          const folderPath = pathModule.join(publicDir, relFolder);
+          console.log(`[adminSeedActivities] Scanning: ${folderPath}`);
           if (fsModule.existsSync(folderPath)) {
             images = fsModule
               .readdirSync(folderPath)
               .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
               .sort((a, b) => b.localeCompare(a))
               .map((f) => `${item.imageFolder}/${f}`);
+            console.log(
+              `[adminSeedActivities] Found ${images.length} images for "${item.id}"`,
+            );
+          } else {
+            console.warn(
+              `[adminSeedActivities] Image folder not found: ${folderPath}`,
+            );
           }
         }
 
         const thumbnail = images.length > 0 ? images[0] : null;
 
         const existing = await prisma.activity.findUnique({
-          where: { slug: item.id }
+          where: { slug: item.id },
         });
 
         const payload = {
@@ -150,13 +180,13 @@ export const adminSeedActivities = async () =>
           isInternal: data.internalEvents.some((e) => e.id === item.id),
           thumbnail: thumbnail ?? undefined,
           images,
-          order: i
+          order: i,
         };
 
         if (existing) {
           await prisma.activity.update({
             where: { id: existing.id },
-            data: payload
+            data: payload,
           });
         } else {
           await prisma.activity.create({ data: payload });
@@ -166,5 +196,5 @@ export const adminSeedActivities = async () =>
 
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return { success: true, count };
-    }
+    },
   });

@@ -7,9 +7,15 @@ import {
   Shield,
   ShieldHalf,
   Trophy,
-  UserCheck
+  UserCheck,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { BadgeData, BadgeDef } from "@/configs/badges";
 import { BADGE_DEFINITIONS, BADGE_TIERS } from "@/configs/badges";
 
@@ -22,7 +28,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "pen-line": PenLine,
   trophy: Trophy,
   "building-2": Building2,
-  "badge-check": BadgeCheck
+  "badge-check": BadgeCheck,
 };
 
 function getTierColor(tierKey: string): string {
@@ -47,8 +53,6 @@ function getTierColor(tierKey: string): string {
       return "text-blue-500";
     case "cadre":
       return "text-green-500";
-    case "cadre":
-      return "text-green-500";
     default:
       return "text-muted-foreground";
   }
@@ -70,27 +74,49 @@ function getTierBg(tierKey: string): string {
 }
 
 export function getActiveBadges(data: BadgeData) {
-  return BADGE_DEFINITIONS.filter((def) => def.condition(data) !== null).map((def) => ({
-    def,
-    result: def.condition(data)!
-  }));
+  return BADGE_DEFINITIONS.filter((def) => def.condition(data) !== null).map(
+    (def) => ({
+      def,
+      result: def.condition(data)!,
+    }),
+  );
 }
 
 export function BadgeIcon({
   def,
-  result
+  result,
 }: {
   def: BadgeDef;
   result: { tier: string; value?: number; suffix?: string };
 }) {
+  const t = useTranslations("badges");
   const Icon = ICON_MAP[def.icon];
   const tierColor = getTierColor(result.tier);
   const bgColor = getTierBg(result.tier);
-  const tierInfo = BADGE_TIERS.find((t) => t.key === result.tier);
+  const tierInfo = BADGE_TIERS.find((tier) => tier.key === result.tier);
+
+  const label = t(def.id as any) || def.label;
+  const tierLabel = tierInfo?.label
+    ? t(`tier.${tierInfo.key}` as any) || tierInfo.label
+    : "";
+
+  // Map raw badge-config suffixes to i18n keys
+  const SUFFIX_KEY_MAP: Record<string, string> = {
+    năm: "years",
+    "bài viết": "posts",
+    "thành tựu": "achievements",
+    "dự án": "projects",
+  };
+  const suffixKey = result.suffix
+    ? (SUFFIX_KEY_MAP[result.suffix] ?? result.suffix)
+    : null;
+  const suffixLabel = suffixKey
+    ? t(`suffix.${suffixKey}` as any) || result.suffix
+    : "";
 
   const tooltipText = result.value
-    ? `${def.label} • ${result.value} ${result.suffix ?? ""}${tierInfo?.label ? ` (${tierInfo.label})` : ""}`
-    : def.label;
+    ? `${label} • ${result.value} ${suffixLabel}${tierLabel ? ` (${tierLabel})` : ""}`
+    : label;
 
   return (
     <TooltipProvider>
@@ -102,8 +128,8 @@ export function BadgeIcon({
             {Icon && <Icon className={`h-3.5 w-3.5 ${tierColor}`} />}
           </div>
         </TooltipTrigger>
-        <TooltipContent side='top'>
-          <p className='text-xs'>{tooltipText}</p>
+        <TooltipContent side="top">
+          <p className="text-xs">{tooltipText}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

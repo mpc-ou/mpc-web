@@ -57,7 +57,10 @@
       "president": "Ban Chủ nhiệm",
       "staff": "Ban Cán sự",
       "viewAll": "Xem tất cả thành viên",
-      "noLeadership": "Chưa có thông tin."
+      "noLeadership": "Chưa có thông tin.",
+      "executiveDept": "Phân ban điều hành",
+      "viewProfile": "Xem hồ sơ",
+      "departmentMember": "Thành viên ban"
     },
     "activities": {
       "title": "Hoạt động nổi bật",

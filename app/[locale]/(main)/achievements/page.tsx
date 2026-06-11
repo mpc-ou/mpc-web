@@ -7,31 +7,25 @@ import { GoldBoard } from "./_components/gold-board.client";
 import { LeadershipCarouselClient } from "./_components/leadership-carousel.client";
 import { AchievementsClient } from "./client";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   return generatePageSeo({
     page: "achievements",
     locale,
-    pathname: "/achievements"
+    pathname: "/achievements",
   });
 }
 
 import { getTranslations } from "next-intl/server";
 import { PageHero } from "@/components/custom/page-hero.client";
 
-const achievementsCode = `// MPC Hall of Fame
-const achievements = {
-  nationalCodingContest: "1st & 2nd Prize",
-  scientificResearch: "Excellent Grade",
-  openSourceContributions: "50+ Repositories",
-  memberEmploymentRate: "98% at top tech firms"
-};
-
-export const awardsCount = Object.keys(achievements).length;`;
-
 export default async function AchievementsPage({
   params,
-  searchParams
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -45,42 +39,49 @@ export default async function AchievementsPage({
   const t = await getTranslations("achievements");
 
   const { data } = await getAchievementsPageData(validPage, take, locale);
-  const payload = data?.payload as { achievements: any[]; totalPages: number; leaders: any[] } | undefined;
+  const payload = data?.payload as
+    | { achievements: any[]; totalPages: number; leaders: any[] }
+    | undefined;
 
   const achievements = payload?.achievements ?? [];
   const totalPages = payload?.totalPages ?? 0;
   const leaders = payload?.leaders ?? [];
 
   return (
-    <div className='min-h-screen bg-background pb-20'>
+    <div className="min-h-screen bg-background pb-20">
       <PageHero
-        badge='HONORS & AWARDS'
-        codeSnippet={achievementsCode}
+        badge="HONORS & AWARDS"
         description={t("description")}
-        imageUrl='/images/bg/achievements.jpg'
+        imageUrl="/images/bg/achievements.jpg"
         title={t("title")}
       />
 
-      <div className='container mx-auto mt-16 px-4'>
+      <div className="container mx-auto mt-16 px-4">
         {leaders.length > 0 && (
-          <div className='mb-16'>
-            <div className='mb-6 text-center'>
-              <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("hallOfFameTitle")}</h2>
-              <p className='mt-2 text-muted-foreground'>{t("hallOfFameDesc")}</p>
+          <div className="mb-16">
+            <div className="mb-6 text-center">
+              <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
+                {t("hallOfFameTitle")}
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                {t("hallOfFameDesc")}
+              </p>
             </div>
             <GoldBoard locale={locale} members={leaders} />
           </div>
         )}
       </div>
 
-      <div className='w-full'>
+      <div className="w-full">
         <LeadershipCarouselClient leaders={leaders} />
       </div>
 
-      <div className='container mx-auto mt-20 max-w-6xl px-4'>
+      <div className="container mx-auto mt-20 max-w-6xl px-4">
         {/* 2. Bài viết thành tích */}
-        <div className='mb-8 text-center'>
-          <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("articlesTitle")}</h2>
+        <div className="mb-8 text-center">
+          <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
+            {t("articlesTitle")}
+          </h2>
         </div>
 
         <AchievementsClient

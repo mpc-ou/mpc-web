@@ -89,7 +89,37 @@
       "noPosts": "Chưa có bài viết nào",
       "noProjects": "Chưa có dự án nào",
       "roleHistory": "Lịch sử chức vụ",
-      "noRoles": "Chưa ghi nhận chức vụ."
+      "noRoles": "Chưa ghi nhận chức vụ.",
+      "leftClub": "Đã rời CLB",
+      "noAchievements": "Chưa có thành tựu nào được ghi nhận.",
+      "highlight": "⭐ Nổi bật",
+      "role": "Vai trò:",
+      "activeMember": "Thành viên đang hoạt động",
+      "leftClubNotice": "Thành viên này đã rời CLB.",
+      "guestNotice": "Đây là tài khoản khách — không phải thành viên CLB."
+    }
+  },
+  "badges": {
+    "member": "Thành viên CLB",
+    "alumni": "Cựu thành viên",
+    "left": "Đã rời CLB",
+    "admin": "Quản trị viên",
+    "mod": "Cộng tác viên",
+    "writer": "Người sôi nổi",
+    "talented": "Người tài ba",
+    "builder": "Người xây dựng",
+    "cadre": "Cán bộ CLB",
+    "tier": {
+      "bronze": "Đồng",
+      "silver": "Bạc",
+      "gold": "Vàng",
+      "diamond": "Kim cương"
+    },
+    "suffix": {
+      "years": "năm",
+      "posts": "bài viết",
+      "achievements": "thành tựu",
+      "projects": "dự án"
     }
   },
   "footer": {

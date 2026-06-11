@@ -19,7 +19,7 @@ const CARD_SIZES = [
   { w: 640, h: 800 },
   { w: 640, h: 640 },
   { w: 640, h: 360 },
-  { w: 480, h: 640 }
+  { w: 480, h: 640 },
 ];
 
 const getColCount = (): number => {
@@ -36,7 +36,8 @@ const getColCount = (): number => {
 };
 
 const hashHeight = (id: string, colW: number): number => {
-  const idx = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_SIZES.length;
+  const idx =
+    id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_SIZES.length;
   const size = CARD_SIZES[idx]!;
   return Math.round((colW * size.h) / size.w);
 };
@@ -44,7 +45,13 @@ const hashHeight = (id: string, colW: number): number => {
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
 const lcm = (a: number, b: number): number => (a * b) / gcd(a, b);
 
-const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; className?: string }) => {
+const GalleryMasonry = ({
+  images,
+  className,
+}: {
+  images: GalleryImage[];
+  className?: string;
+}) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const outerRef = useRef<HTMLDivElement>(null);
@@ -81,8 +88,13 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
 
     const cycleRows = lcm(N, cols) / cols;
 
-    const colSequences: GalleryImage[][] = Array.from({ length: cols }, (_, c) =>
-      Array.from({ length: cycleRows }, (__, r) => images[(r * cols + c) % N]!)
+    const colSequences: GalleryImage[][] = Array.from(
+      { length: cols },
+      (_, c) =>
+        Array.from(
+          { length: cycleRows },
+          (__, r) => images[(r * cols + c) % N]!,
+        ),
     );
 
     const heightCache = new Map<string, number>();
@@ -97,7 +109,10 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
       const seq = colSequences[c]!;
       const cycleH = seq.reduce((s, img) => s + getH(img) + GAP, 0);
 
-      const copies = Math.max(5, Math.ceil((containerH * 3 + 400) / cycleH) + 2);
+      const copies = Math.max(
+        5,
+        Math.ceil((containerH * 3 + 400) / cycleH) + 2,
+      );
 
       const wrapper = document.createElement("div");
       wrapper.style.cssText = `
@@ -190,7 +205,12 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
           col.offset += (COL_SPEEDS[c] ?? 0.5) * (dt / 16);
         }
 
-        const copies = Math.max(5, Math.ceil((containerRef.current?.offsetHeight * 3 + 400) / col.cycleH) + 2);
+        const copies = Math.max(
+          5,
+          Math.ceil(
+            ((containerRef.current?.offsetHeight ?? 0) * 3 + 400) / col.cycleH,
+          ) + 2,
+        );
         const minOffset = col.cycleH;
         const maxOffset = col.cycleH * (copies - 1);
 
@@ -247,7 +267,7 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
   return (
     <>
       <div
-        className='group/gallery relative mx-auto max-w-6xl overflow-hidden'
+        className="group/gallery relative mx-auto max-w-6xl overflow-hidden"
         onMouseEnter={() => {
           isPausedRef.current = true;
         }}
@@ -256,10 +276,13 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
         }}
         ref={outerRef}
       >
-        <div className='pointer-events-none absolute inset-x-0 top-0 z-20 h-14 bg-linear-to-b from-background to-transparent' />
-        <div className='pointer-events-none absolute inset-x-0 bottom-0 z-20 h-14 bg-linear-to-t from-background to-transparent' />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-14 bg-linear-to-b from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-14 bg-linear-to-t from-background to-transparent" />
         <div
-          className={cn("relative h-125 w-full overflow-hidden px-3", className)}
+          className={cn(
+            "relative h-125 w-full overflow-hidden px-3",
+            className,
+          )}
           ref={containerRef}
           style={{ cursor: "grab" }}
         />

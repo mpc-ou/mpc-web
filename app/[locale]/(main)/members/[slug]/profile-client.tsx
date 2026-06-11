@@ -1,6 +1,14 @@
 "use client";
 
-import { Calendar, ExternalLink, Globe, Mail, Phone, Trophy, User } from "lucide-react";
+import {
+  Calendar,
+  ExternalLink,
+  Globe,
+  Mail,
+  Phone,
+  Trophy,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -23,7 +31,7 @@ const POSITION_LABELS: Record<string, string> = {
   DEPARTMENT_VICE_LEADER: "Phó ban",
   DEPARTMENT_MEMBER: "Thành viên ban",
   COLLABORATOR: "Cộng tác viên",
-  ADVISOR: "Cố vấn"
+  ADVISOR: "Cố vấn",
 };
 
 import { SOCIAL_COLLECTION } from "@/constants/common";
@@ -147,7 +155,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
   const isGuest = member.webRole === "GUEST";
   const hasLeftClub = member.clubRoles.length > 0 && !activeRole;
   const hasBeenLeader = member.clubRoles.some((r) =>
-    ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER"].includes(r.position)
+    ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER"].includes(r.position),
   );
 
   const achievementsCount = member.achievements.length;
@@ -159,24 +167,33 @@ export function ProfilePageClient({ member }: { member: Member }) {
       webRole: member.webRole,
       hasLeftClub,
       joinedClubAt: member.joinedClubAt,
-      clubRoleStartYears: member.clubRoles.map((r) => new Date(r.startAt).getFullYear()),
+      clubRoleStartYears: member.clubRoles.map((r) =>
+        new Date(r.startAt).getFullYear(),
+      ),
       blogPostCount: postsCount,
       achievementCount: achievementsCount,
       projectCount: projectsCount,
-      hasBeenLeader
+      hasBeenLeader,
     }),
-    [member, hasLeftClub, achievementsCount, projectsCount, postsCount, hasBeenLeader]
+    [
+      member,
+      hasLeftClub,
+      achievementsCount,
+      projectsCount,
+      postsCount,
+      hasBeenLeader,
+    ],
   );
   const activeBadges = useMemo(() => getActiveBadges(badgeData), [badgeData]);
 
   return (
-    <div className='min-h-screen bg-muted/30'>
+    <div className="min-h-screen bg-muted/30">
       {/* === COVER PHOTO (3D Parallax) === */}
       <CoverParallax coverImage={member.coverImage} initials={initials}>
         {member.spotifyUri && (
-          <div className='pointer-events-none absolute inset-0 z-20'>
-            <div className='relative mx-auto h-full w-full max-w-6xl px-4'>
-              <div className='pointer-events-auto absolute top-4 right-4'>
+          <div className="pointer-events-none absolute inset-0 z-20">
+            <div className="relative mx-auto h-full w-full max-w-6xl px-4">
+              <div className="pointer-events-auto absolute top-4 right-4">
                 <SpotifyPlayer uri={member.spotifyUri} />
               </div>
             </div>
@@ -185,70 +202,86 @@ export function ProfilePageClient({ member }: { member: Member }) {
       </CoverParallax>
 
       {/* === PROFILE HEADER === */}
-      <div className='mx-auto max-w-6xl px-4'>
-        <div className='relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end'>
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end">
           {/* Avatar — overlaps cover */}
-          <div className='shrink-0'>
-            <Avatar className='h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40'>
+          <div className="shrink-0">
+            <Avatar className="h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40">
               <AvatarImage src={member.avatar ?? undefined} />
-              <AvatarFallback className='bg-primary/10 font-bold text-4xl text-primary'>{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 font-bold text-4xl text-primary">
+                {initials}
+              </AvatarFallback>
             </Avatar>
           </div>
 
           {/* Name + role + socials */}
-          <div className='flex flex-1 flex-col gap-2 pb-4'>
-            <div className='flex flex-col gap-2'>
-              <div className='flex flex-wrap items-center gap-2'>
-                <h1 className='font-bold text-3xl text-foreground'>
+          <div className="flex flex-1 flex-col gap-2 pb-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="font-bold text-3xl text-foreground">
                   {fullName}
                   {!(isGuest || hasLeftClub) && (
-                    <span className='ml-1.5 inline-flex items-center' title='Thành viên đang hoạt động'>
-                      <svg className='h-5 w-5 text-green-500' fill='currentColor' viewBox='0 0 24 24'>
-                        <path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' />
+                    <span
+                      className="ml-1.5 inline-flex items-center"
+                      title="Thành viên đang hoạt động"
+                    >
+                      <svg
+                        className="h-5 w-5 text-green-500"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                       </svg>
                     </span>
                   )}
                 </h1>
                 {activeRole && (
-                  <Badge className='text-sm' variant='default'>
-                    {POSITION_LABELS[activeRole.position] ?? activeRole.position}
-                    {activeRole.department ? ` · ${activeRole.department.nameVi}` : ""}
+                  <Badge className="text-sm" variant="default">
+                    {POSITION_LABELS[activeRole.position] ??
+                      activeRole.position}
+                    {activeRole.department
+                      ? ` · ${activeRole.department.nameVi}`
+                      : ""}
                   </Badge>
                 )}
               </div>
 
               {/* Activity Badges */}
               {!isGuest && (
-                <div className='flex flex-wrap items-center gap-2'>
+                <div className="flex flex-wrap items-center gap-2">
                   {activeBadges.map(({ def, result }) => (
                     <BadgeIcon def={def} key={def.id} result={result} />
                   ))}
                 </div>
               )}
             </div>
-            {member.bio && <p className='max-w-2xl text-muted-foreground text-sm'>{member.bio}</p>}
+            {member.bio && (
+              <p className="max-w-2xl text-muted-foreground text-sm">
+                {member.bio}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Divider */}
-        <div className='mt-2 border-border border-t' />
+        <div className="mt-2 border-border border-t" />
 
         {/* === TABS === */}
-        <Tabs className='mt-4' onValueChange={setActiveTab} value={activeTab}>
-          <TabsList className='h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0'>
+        <Tabs className="mt-4" onValueChange={setActiveTab} value={activeTab}>
+          <TabsList className="h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0">
             {[
               { value: "about", label: t("member.tabs.about") },
               {
                 value: "posts",
-                label: `${t("member.tabs.posts")} (${member.authoredPosts.length})`
+                label: `${t("member.tabs.posts")} (${member.authoredPosts.length})`,
               },
               {
                 value: "projects",
-                label: `${t("member.tabs.projects")} (${member.projects.length})`
-              }
+                label: `${t("member.tabs.projects")} (${member.projects.length})`,
+              },
             ].map((tab) => (
               <TabsTrigger
-                className='rounded-none border-transparent border-b-2 px-6 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary'
+                className="rounded-none border-transparent border-b-2 px-6 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary"
                 key={tab.value}
                 value={tab.value}
               >
@@ -258,53 +291,64 @@ export function ProfilePageClient({ member }: { member: Member }) {
           </TabsList>
 
           {/* ABOUT */}
-          <TabsContent className='py-8' value='about'>
-            <div className='flex flex-col gap-8 lg:flex-row'>
+          <TabsContent className="py-8" value="about">
+            <div className="flex flex-col gap-8 lg:flex-row">
               {/* Left Column */}
-              <div className='w-full space-y-8 lg:w-3/4'>
+              <div className="w-full space-y-8 lg:w-3/4">
                 {/* Basic Info — Compact grid with icons */}
-                <div className='rounded-xl border bg-card p-5 shadow-sm'>
-                  <div className='grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2'>
-                    <div className='flex items-center gap-3'>
-                      <User className='h-4 w-4 shrink-0 text-muted-foreground' />
-                      <span className='font-semibold text-sm'>{fullName}</span>
+                <div className="rounded-xl border bg-card p-5 shadow-sm">
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+                    <div className="flex items-center gap-3">
+                      <User className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="font-semibold text-sm">{fullName}</span>
                     </div>
                     {member.studentId && (
-                      <div className='flex items-center gap-3'>
+                      <div className="flex items-center gap-3">
                         <svg
-                          className='h-4 w-4 shrink-0 text-muted-foreground'
-                          fill='none'
-                          stroke='currentColor'
+                          className="h-4 w-4 shrink-0 text-muted-foreground"
+                          fill="none"
+                          stroke="currentColor"
                           strokeWidth={2}
-                          viewBox='0 0 24 24'
+                          viewBox="0 0 24 24"
                         >
-                          <path d='M4 7V4h16v3' />
-                          <path d='M9 20h6' />
-                          <path d='M12 4v16' />
+                          <path d="M4 7V4h16v3" />
+                          <path d="M9 20h6" />
+                          <path d="M12 4v16" />
                         </svg>
-                        <span className='font-mono font-semibold text-sm'>{member.studentId}</span>
+                        <span className="font-mono font-semibold text-sm">
+                          {member.studentId}
+                        </span>
                       </div>
                     )}
-                    <div className='flex items-center gap-3'>
-                      <Mail className='h-4 w-4 shrink-0 text-muted-foreground' />
-                      <span className='truncate text-primary text-sm'>
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate text-primary text-sm">
                         {member.email ||
-                          socials.find((s) => s.platform.toLowerCase().includes("mail"))?.url.replace("mailto:", "")}
+                          socials
+                            .find((s) =>
+                              s.platform.toLowerCase().includes("mail"),
+                            )
+                            ?.url.replace("mailto:", "")}
                       </span>
                     </div>
                     {member.phone && (
-                      <div className='flex items-center gap-3'>
-                        <Phone className='h-4 w-4 shrink-0 text-muted-foreground' />
-                        <span className='font-semibold text-sm'>{member.phone}</span>
+                      <div className="flex items-center gap-3">
+                        <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="font-semibold text-sm">
+                          {member.phone}
+                        </span>
                       </div>
                     )}
-                    <div className='flex items-center gap-3'>
-                      <Calendar className='h-4 w-4 shrink-0 text-muted-foreground' />
-                      <span className='font-semibold text-sm'>
+                    <div className="flex items-center gap-3">
+                      <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="font-semibold text-sm">
                         {member.joinedClubAt
                           ? formatLocalDate(member.joinedClubAt, locale)
                           : member.clubRoles.length > 0
-                            ? formatLocalDate(member.clubRoles.at(-1).startAt, locale)
+                            ? formatLocalDate(
+                                member.clubRoles.at(-1)?.startAt ?? "",
+                                locale,
+                              )
                             : ""}
                       </span>
                     </div>
@@ -312,36 +356,43 @@ export function ProfilePageClient({ member }: { member: Member }) {
 
                   {/* Bio */}
                   {member.bio && (
-                    <p className='mt-4 border-border border-t pt-4 text-muted-foreground text-sm leading-relaxed'>
+                    <p className="mt-4 border-border border-t pt-4 text-muted-foreground text-sm leading-relaxed">
                       {member.bio}
                     </p>
                   )}
 
                   {/* Social links — inline icons */}
                   {socials.filter((s) => s.url).length > 0 && (
-                    <div className='mt-4 flex flex-wrap items-center gap-2 border-border border-t pt-4'>
-                      <Globe className='h-4 w-4 text-muted-foreground' />
+                    <div className="mt-4 flex flex-wrap items-center gap-2 border-border border-t pt-4">
+                      <Globe className="h-4 w-4 text-muted-foreground" />
                       {socials.map((social, index) => {
                         if (!social.url) {
                           return null;
                         }
                         const meta = getSocialMeta(social.platform);
                         const href =
-                          social.url.startsWith("http") || social.url.startsWith("mailto:")
+                          social.url.startsWith("http") ||
+                          social.url.startsWith("mailto:")
                             ? social.url
                             : meta.prefix
                               ? `${meta.prefix}${social.url}`
                               : `https://${social.url}`;
                         return (
                           <a
-                            className='inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs transition-colors hover:border-primary/50 hover:text-primary'
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs transition-colors hover:border-primary/50 hover:text-primary"
                             href={href}
                             key={social.id || `${social.platform}-${index}`}
-                            rel='noopener noreferrer'
-                            target='_blank'
+                            rel="noopener noreferrer"
+                            target="_blank"
                           >
-                            <img alt={meta.platform} className='h-3.5 w-3.5 object-contain' src={meta.icon} />
-                            <span className='font-medium'>{social.platform}</span>
+                            <img
+                              alt={meta.platform}
+                              className="h-3.5 w-3.5 object-contain"
+                              src={meta.icon}
+                            />
+                            <span className="font-medium">
+                              {social.platform}
+                            </span>
                           </a>
                         );
                       })}
@@ -351,60 +402,72 @@ export function ProfilePageClient({ member }: { member: Member }) {
 
                 {/* Achievements Timeline */}
                 <div>
-                  <h3 className='mb-6 flex items-center gap-2 font-bold text-xl'>
-                    <Trophy className='h-5 w-5 text-amber-500' /> {te("recap.timeline.achievement")}
+                  <h3 className="mb-6 flex items-center gap-2 font-bold text-xl">
+                    <Trophy className="h-5 w-5 text-amber-500" />{" "}
+                    {te("recap.timeline.achievement")}
                   </h3>
                   {member.achievements.length === 0 ? (
-                    <p className='text-muted-foreground text-sm italic'>Chưa có thành tựu nào được ghi nhận.</p>
+                    <p className="text-muted-foreground text-sm italic">
+                      Chưa có thành tựu nào được ghi nhận.
+                    </p>
                   ) : (
-                    <div className='relative ml-3 space-y-8 border-border border-l pl-6 lg:pl-8'>
+                    <div className="relative ml-3 space-y-8 border-border border-l pl-6 lg:pl-8">
                       {member.achievements
                         .slice()
-                        .sort((a, b) => new Date(b.achievement.date).getTime() - new Date(a.achievement.date).getTime())
+                        .sort(
+                          (a, b) =>
+                            new Date(b.achievement.date).getTime() -
+                            new Date(a.achievement.date).getTime(),
+                        )
                         .map(({ achievement, role }) => (
-                          <div className='relative' key={achievement.id}>
-                            <div className='absolute top-3 -left-7.75 h-4 w-4 rounded-full border-2 border-background bg-primary shadow-sm lg:-left-9.75' />
+                          <div className="relative" key={achievement.id}>
+                            <div className="absolute top-3 -left-7.75 h-4 w-4 rounded-full border-2 border-background bg-primary shadow-sm lg:-left-9.75" />
 
                             <Link
-                              className='group flex flex-col overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md sm:flex-row'
+                              className="group flex flex-col overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/50 hover:shadow-md sm:flex-row"
                               href={`/${locale}/achievements/${achievement.slug}`}
                             >
-                              <div className='relative h-40 shrink-0 overflow-hidden bg-muted sm:h-auto sm:w-48'>
+                              <div className="relative h-40 shrink-0 overflow-hidden bg-muted sm:h-auto sm:w-48">
                                 {achievement.thumbnail ? (
                                   // eslint-disable-next-line @next/next/no-img-element
                                   <img
                                     alt={achievement.title}
-                                    className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     src={achievement.thumbnail}
                                   />
                                 ) : (
-                                  <div className='flex h-full w-full items-center justify-center bg-primary/5'>
-                                    <span className='text-4xl text-primary/20'>🏆</span>
+                                  <div className="flex h-full w-full items-center justify-center bg-primary/5">
+                                    <span className="text-4xl text-primary/20">
+                                      🏆
+                                    </span>
                                   </div>
                                 )}
                               </div>
-                              <div className='flex flex-1 flex-col p-4 sm:p-5'>
-                                <div className='mb-2 flex flex-wrap items-center justify-between gap-2'>
-                                  <div className='flex items-center gap-2'>
-                                    <Badge className='text-[10px]' variant='secondary'>
+                              <div className="flex flex-1 flex-col p-4 sm:p-5">
+                                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <Badge
+                                      className="text-[10px]"
+                                      variant="secondary"
+                                    >
                                       {achievement.type}
                                     </Badge>
                                     {achievement.isHighlight && (
-                                      <Badge className='bg-yellow-500 text-[10px] text-black shadow hover:bg-yellow-400'>
+                                      <Badge className="bg-yellow-500 text-[10px] text-black shadow hover:bg-yellow-400">
                                         ⭐ Nổi bật
                                       </Badge>
                                     )}
                                   </div>
-                                  <span className='whitespace-nowrap text-muted-foreground text-xs'>
+                                  <span className="whitespace-nowrap text-muted-foreground text-xs">
                                     {formatLocalDate(achievement.date, locale)}
                                   </span>
                                 </div>
-                                <h4 className='mb-2 font-bold text-base transition-colors group-hover:text-primary'>
+                                <h4 className="mb-2 font-bold text-base transition-colors group-hover:text-primary">
                                   {achievement.title}
                                 </h4>
                                 {role && (
-                                  <div className='mt-auto pt-2'>
-                                    <span className='rounded bg-primary/10 px-2 py-1 font-semibold text-[11px] text-primary uppercase'>
+                                  <div className="mt-auto pt-2">
+                                    <span className="rounded bg-primary/10 px-2 py-1 font-semibold text-[11px] text-primary uppercase">
                                       Vai trò: {role}
                                     </span>
                                   </div>
@@ -419,26 +482,37 @@ export function ProfilePageClient({ member }: { member: Member }) {
               </div>
 
               {/* Right Column: Roles History */}
-              <div className='w-full lg:w-1/4'>
-                <h3 className='mb-6 border-border border-b pb-2 font-bold text-lg'>{t("member.roleHistory")}</h3>
+              <div className="w-full lg:w-1/4">
+                <h3 className="mb-6 border-border border-b pb-2 font-bold text-lg">
+                  {t("member.roleHistory")}
+                </h3>
                 {member.clubRoles.length === 0 ? (
-                  <p className='text-muted-foreground text-sm italic'>{t("member.noRoles")}</p>
+                  <p className="text-muted-foreground text-sm italic">
+                    {t("member.noRoles")}
+                  </p>
                 ) : (
-                  <div className='relative space-y-0 pl-4'>
-                    <div className='absolute top-2 bottom-2 left-1.5 w-px bg-border' />
+                  <div className="relative space-y-0 pl-4">
+                    <div className="absolute top-2 bottom-2 left-1.5 w-px bg-border" />
                     {member.clubRoles.map((role) => {
                       const isActive = !role.endAt;
                       return (
-                        <div className='relative flex items-start gap-4 pb-8' key={role.id}>
+                        <div
+                          className="relative flex items-start gap-4 pb-8"
+                          key={role.id}
+                        >
                           <div
                             className={`relative z-10 mt-1.5 h-3 w-3 shrink-0 rounded-full border-2 ${isActive ? "border-primary bg-primary" : "border-muted-foreground/50 bg-background"}`}
                           />
-                          <div className='flex-1'>
-                            <p className='font-bold text-sm'>{POSITION_LABELS[role.position] ?? role.position}</p>
+                          <div className="flex-1">
+                            <p className="font-bold text-sm">
+                              {POSITION_LABELS[role.position] ?? role.position}
+                            </p>
                             {role.department && (
-                              <p className='mt-0.5 font-semibold text-primary text-xs'>{role.department.nameVi}</p>
+                              <p className="mt-0.5 font-semibold text-primary text-xs">
+                                {role.department.nameVi}
+                              </p>
                             )}
-                            <p className='mt-1 text-muted-foreground text-xs'>
+                            <p className="mt-1 text-muted-foreground text-xs">
                               {formatLocalDate(role.startAt, locale)} →{" "}
                               {role.endAt
                                 ? formatLocalDate(role.endAt, locale)
@@ -447,7 +521,10 @@ export function ProfilePageClient({ member }: { member: Member }) {
                                   : "Hiện tại"}
                             </p>
                             {role.term && (
-                              <Badge className='mt-2 text-[10px]' variant='outline'>
+                              <Badge
+                                className="mt-2 text-[10px]"
+                                variant="outline"
+                              >
                                 NK {role.term}
                               </Badge>
                             )}
@@ -462,11 +539,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
           </TabsContent>
 
           {/* POSTS */}
-          <TabsContent className='py-8' value='posts'>
+          <TabsContent className="py-8" value="posts">
             {member.authoredPosts.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>{t("member.noPosts")}</p>
+              <p className="py-8 text-center text-muted-foreground">
+                {t("member.noPosts")}
+              </p>
             ) : (
-              <div className='grid gap-6 sm:grid-cols-2'>
+              <div className="grid gap-6 sm:grid-cols-2">
                 {member.authoredPosts.map((post) => (
                   <PostCard
                     data={{
@@ -479,7 +558,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                       summaryEn: post.summaryEn,
                       thumbnail: post.thumbnail,
                       date: post.publishedAt,
-                      href: `/blogs/${post.slug}`
+                      href: `/blogs/${post.slug}`,
                     }}
                     key={post.id}
                   />
@@ -488,11 +567,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
             )}
           </TabsContent>
 
-          <TabsContent className='py-6' value='projects'>
+          <TabsContent className="py-6" value="projects">
             {member.projects.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>{t("member.noProjects")}</p>
+              <p className="py-8 text-center text-muted-foreground">
+                {t("member.noProjects")}
+              </p>
             ) : (
-              <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {member.projects.map(({ project, role }) => (
                   <PostCard
                     data={{
@@ -514,9 +595,9 @@ export function ProfilePageClient({ member }: { member: Member }) {
                           firstName: m.member.firstName,
                           lastName: m.member.lastName,
                           avatar: m.member.avatar,
-                          slug: m.member.slug
+                          slug: m.member.slug,
                         })) ?? [],
-                      href: `/projects/${project.slug}`
+                      href: `/projects/${project.slug}`,
                     }}
                     key={project.id}
                   />

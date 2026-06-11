@@ -17,13 +17,17 @@ export const adminGetRecaps = async () =>
           name: true,
           description: true,
           isPublished: true,
-          createdAt: true
-        }
+          createdAt: true,
+        },
       });
-    }
+    },
   });
 
-export const adminGetRecapsPaginated = async (params: { page: number; limit: number; search?: string }) =>
+export const adminGetRecapsPaginated = async (params: {
+  page: number;
+  limit: number;
+  search?: string;
+}) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
@@ -35,7 +39,7 @@ export const adminGetRecapsPaginated = async (params: { page: number; limit: num
       if (search) {
         where.OR = [
           { name: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } }
+          { description: { contains: search, mode: "insensitive" } },
         ];
       }
 
@@ -51,22 +55,22 @@ export const adminGetRecapsPaginated = async (params: { page: number; limit: num
             description: true,
             isPublished: true,
             coverImage: true,
-            createdAt: true
-          }
+            createdAt: true,
+          },
         }),
-        prisma.yearRecap.count({ where })
+        prisma.yearRecap.count({ where }),
       ]);
 
       const mappedRecaps = recaps.map((r) => ({
         ...r,
-        createdAt: new Date(r.createdAt).toISOString()
+        createdAt: new Date(r.createdAt).toISOString(),
       }));
 
       return {
         recaps: mappedRecaps,
-        total
+        total,
       };
-    }
+    },
   });
 
 // ── Get single recap ──
@@ -76,7 +80,7 @@ export const adminGetRecap = async (year: number) =>
       await requireAdmin(user);
       const recap = await prisma.yearRecap.findUnique({ where: { year } });
       return recap ?? { notFound: true };
-    }
+    },
   });
 
 // ── Create recap ──
@@ -102,12 +106,12 @@ export const adminCreateRecap = async (data: {
           coverImage2: data.coverImage2 ?? null,
           coverImage3: data.coverImage3 ?? null,
           endImage: data.endImage ?? null,
-          musicUrl: data.musicUrl ?? null
-        }
+          musicUrl: data.musicUrl ?? null,
+        },
       });
       revalidateTag(_CACHE_RECAPS, "default");
       return created;
-    }
+    },
   });
 
 // ── Update recap (partial) ──
@@ -123,7 +127,7 @@ export const adminUpdateRecap = async (
     musicUrl?: string | null;
     isPublished?: boolean;
     data?: any;
-  }
+  },
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -133,26 +137,26 @@ export const adminUpdateRecap = async (
         data: {
           ...(data.name !== undefined && { name: data.name }),
           ...(data.description !== undefined && {
-            description: data.description
+            description: data.description,
           }),
           ...(data.coverImage !== undefined && { coverImage: data.coverImage }),
           ...(data.coverImage2 !== undefined && {
-            coverImage2: data.coverImage2
+            coverImage2: data.coverImage2,
           }),
           ...(data.coverImage3 !== undefined && {
-            coverImage3: data.coverImage3
+            coverImage3: data.coverImage3,
           }),
           ...(data.endImage !== undefined && { endImage: data.endImage }),
           ...(data.musicUrl !== undefined && { musicUrl: data.musicUrl }),
           ...(data.isPublished !== undefined && {
-            isPublished: data.isPublished
+            isPublished: data.isPublished,
           }),
-          ...(data.data !== undefined && { data: data.data })
-        }
+          ...(data.data !== undefined && { data: data.data }),
+        },
       });
       revalidateTag(_CACHE_RECAPS, "default");
       return updated;
-    }
+    },
   });
 
 // ── Delete recap ──
@@ -163,7 +167,7 @@ export const adminDeleteRecap = async (year: number) =>
       await prisma.yearRecap.delete({ where: { year } });
       revalidateTag(_CACHE_RECAPS, "default");
       return { success: true };
-    }
+    },
   });
 
 // ── Get candidates for a year ──
@@ -180,7 +184,7 @@ export const adminGetRecapCandidates = async (year: number) =>
         prisma.post.findMany({
           where: {
             type: "EVENT",
-            startAt: { gte: startOfYear, lte: endOfYear }
+            startAt: { gte: startOfYear, lte: endOfYear },
           },
           orderBy: { startAt: "asc" },
           select: {
@@ -194,13 +198,13 @@ export const adminGetRecapCandidates = async (year: number) =>
             eventType: true,
             locationVi: true,
             locationEn: true,
-            images: true
-          }
+            images: true,
+          },
         }),
         prisma.post.findMany({
           where: {
             type: "ACHIEVEMENT",
-            achievementDate: { gte: startOfYear, lte: endOfYear }
+            achievementDate: { gte: startOfYear, lte: endOfYear },
           },
           orderBy: { achievementDate: "asc" },
           select: {
@@ -215,15 +219,18 @@ export const adminGetRecapCandidates = async (year: number) =>
             achievementMembers: {
               include: {
                 member: {
-                  select: { firstName: true, lastName: true, avatar: true }
-                }
-              }
-            }
-          }
+                  select: { firstName: true, lastName: true, avatar: true },
+                },
+              },
+            },
+          },
         }),
         prisma.project.findMany({
           where: {
-            OR: [{ startDate: { gte: startOfYear, lte: endOfYear } }, { endDate: { gte: startOfYear, lte: endOfYear } }]
+            OR: [
+              { startDate: { gte: startOfYear, lte: endOfYear } },
+              { endDate: { gte: startOfYear, lte: endOfYear } },
+            ],
           },
           orderBy: { startDate: "asc" },
           select: {
@@ -237,12 +244,12 @@ export const adminGetRecapCandidates = async (year: number) =>
             members: {
               include: {
                 member: {
-                  select: { firstName: true, lastName: true, avatar: true }
-                }
-              }
-            }
-          }
-        })
+                  select: { firstName: true, lastName: true, avatar: true },
+                },
+              },
+            },
+          },
+        }),
       ]);
 
       return {
@@ -256,7 +263,7 @@ export const adminGetRecapCandidates = async (year: number) =>
           status: e.eventStatus,
           type: e.eventType,
           location: e.locationVi || e.locationEn || null,
-          images: e.images
+          images: e.images,
         })),
         achievements: achievements.map((a) => ({
           id: a.id,
@@ -267,14 +274,14 @@ export const adminGetRecapCandidates = async (year: number) =>
           date: a.achievementDate?.toISOString(),
           type: a.achievementType,
           images: a.images,
-          members: a.achievementMembers
+          members: a.achievementMembers,
         })),
         projects: projects.map((p) => ({
           ...p,
-          startDate: p.startDate?.toISOString() ?? null
-        }))
+          startDate: p.startDate?.toISOString() ?? null,
+        })),
       };
-    }
+    },
   });
 
 // ── Helper: resolve position label in both locales ──
@@ -282,7 +289,7 @@ const POSITION_LABELS: Record<string, { vi: string; en: string }> = {
   PRESIDENT: { vi: "Chủ nhiệm", en: "President" },
   VICE_PRESIDENT: { vi: "Phó Chủ nhiệm", en: "Vice President" },
   DEPARTMENT_LEADER: { vi: "Trưởng ban", en: "Department Lead" },
-  DEPARTMENT_VICE_LEADER: { vi: "Phó ban", en: "Vice Department Lead" }
+  DEPARTMENT_VICE_LEADER: { vi: "Phó ban", en: "Vice Department Lead" },
 };
 
 function resolvePositionLabel(position: string, locale: "vi" | "en"): string {
@@ -295,7 +302,7 @@ export const adminBuildRecapData = async (
   year: number,
   selectedEventIds: string[],
   selectedAchievementIds: string[],
-  selectedProjectIds: string[]
+  selectedProjectIds: string[],
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -308,7 +315,7 @@ export const adminBuildRecapData = async (
       const [events, achievements, projects] = await Promise.all([
         prisma.post.findMany({
           where: { id: { in: selectedEventIds }, type: "EVENT" },
-          include: { gallery: { orderBy: { order: "asc" } } }
+          include: { gallery: { orderBy: { order: "asc" } } },
         }),
         prisma.post.findMany({
           where: { id: { in: selectedAchievementIds }, type: "ACHIEVEMENT" },
@@ -316,11 +323,11 @@ export const adminBuildRecapData = async (
             achievementMembers: {
               include: {
                 member: {
-                  select: { firstName: true, lastName: true, avatar: true }
-                }
-              }
-            }
-          }
+                  select: { firstName: true, lastName: true, avatar: true },
+                },
+              },
+            },
+          },
         }),
         prisma.project.findMany({
           where: { id: { in: selectedProjectIds } },
@@ -328,12 +335,12 @@ export const adminBuildRecapData = async (
             members: {
               include: {
                 member: {
-                  select: { firstName: true, lastName: true, avatar: true }
-                }
-              }
-            }
-          }
-        })
+                  select: { firstName: true, lastName: true, avatar: true },
+                },
+              },
+            },
+          },
+        }),
       ]);
 
       // ── Stats ──
@@ -354,9 +361,9 @@ export const adminBuildRecapData = async (
           clubRoles: {
             orderBy: { startAt: "asc" },
             take: 1,
-            select: { startAt: true }
-          }
-        }
+            select: { startAt: true },
+          },
+        },
       });
 
       let totalMembersBefore = 0;
@@ -376,7 +383,7 @@ export const adminBuildRecapData = async (
             id: m.id,
             firstName: m.firstName,
             lastName: m.lastName,
-            avatar: m.avatar
+            avatar: m.avatar,
           });
         }
       }
@@ -385,22 +392,27 @@ export const adminBuildRecapData = async (
       const execRoles = await prisma.clubRole.findMany({
         where: {
           position: {
-            in: ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER"]
+            in: [
+              "PRESIDENT",
+              "VICE_PRESIDENT",
+              "DEPARTMENT_LEADER",
+              "DEPARTMENT_VICE_LEADER",
+            ],
           },
           OR: [
             { term: year },
             {
               startAt: { lte: endOfYear },
-              OR: [{ endAt: null }, { endAt: { gte: startOfYear } }]
-            }
-          ]
+              OR: [{ endAt: null }, { endAt: { gte: startOfYear } }],
+            },
+          ],
         },
         include: {
           member: {
-            select: { id: true, firstName: true, lastName: true, avatar: true }
+            select: { id: true, firstName: true, lastName: true, avatar: true },
           },
-          department: { select: { nameVi: true, nameEn: true } }
-        }
+          department: { select: { nameVi: true, nameEn: true } },
+        },
       });
 
       const execBoardMap = new Map();
@@ -408,7 +420,7 @@ export const adminBuildRecapData = async (
         PRESIDENT: 1,
         VICE_PRESIDENT: 2,
         DEPARTMENT_LEADER: 3,
-        DEPARTMENT_VICE_LEADER: 4
+        DEPARTMENT_VICE_LEADER: 4,
       };
 
       for (const role of execRoles) {
@@ -421,10 +433,12 @@ export const adminBuildRecapData = async (
           positionEn: resolvePositionLabel(role.position, "en"),
           department: role.department?.nameVi ?? null,
           departmentEn: role.department?.nameEn ?? null,
-          _order: posOrder[role.position] || 99
+          _order: posOrder[role.position] || 99,
         };
 
-        const existing = execBoardMap.get(role.member.id) as typeof mappedRole | undefined;
+        const existing = execBoardMap.get(role.member.id) as
+          | typeof mappedRole
+          | undefined;
         if (existing && mappedRole._order >= existing._order) {
           continue;
         }
@@ -444,14 +458,14 @@ export const adminBuildRecapData = async (
           id: e.id,
           title: e.titleVi,
           titleEn: e.titleEn || null,
-          date: e.startAt?.toISOString(),
+          date: e.startAt?.toISOString() ?? "",
           thumbnail: e.thumbnail,
           description: e.contentVi || e.summaryVi || null,
           descriptionEn: e.contentEn || e.summaryEn || null,
           eventType: e.eventType ?? undefined,
           images: [...e.images, ...(e.gallery?.map((g) => g.url) || [])],
           location: e.locationVi || e.locationEn || undefined,
-          locationEn: e.locationEn || null
+          locationEn: e.locationEn || null,
         });
       }
 
@@ -461,7 +475,7 @@ export const adminBuildRecapData = async (
           id: a.id,
           title: a.titleVi,
           titleEn: a.titleEn || null,
-          date: a.achievementDate?.toISOString(),
+          date: a.achievementDate?.toISOString() ?? "",
           thumbnail: a.thumbnail,
           description: a.contentVi || a.summaryVi || null,
           descriptionEn: a.contentEn || a.summaryEn || null,
@@ -471,8 +485,8 @@ export const adminBuildRecapData = async (
             firstName: am.member.firstName,
             lastName: am.member.lastName,
             avatar: am.member.avatar,
-            role: am.role
-          }))
+            role: am.role,
+          })),
         });
       }
 
@@ -490,14 +504,16 @@ export const adminBuildRecapData = async (
             firstName: pm.member.firstName,
             lastName: pm.member.lastName,
             avatar: pm.member.avatar,
-            role: pm.role
+            role: pm.role,
           })),
-          technologies: (p.technologies as string[]) ?? []
+          technologies: (p.technologies as string[]) ?? [],
         });
       }
 
       // Sort timeline by date ascending
-      timeline.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      timeline.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
 
       const recapData: RecapData = {
         stats: {
@@ -506,22 +522,22 @@ export const adminBuildRecapData = async (
           totalAchievements: achievements.length,
           totalProjects: projects.length,
           totalMembersBefore,
-          newMembersInYear
+          newMembersInYear,
         },
         executiveBoard: executiveBoardList as RecapData["executiveBoard"],
         newMembers: newMembersList,
-        timeline
+        timeline,
       };
 
       // Save to DB
       await prisma.yearRecap.update({
         where: { year },
-        data: { data: recapData as any }
+        data: { data: recapData as any },
       });
 
       revalidateTag(_CACHE_RECAPS, "default");
       return recapData;
-    }
+    },
   });
 
 export const adminGetRecapsStats = async () =>
@@ -531,8 +547,8 @@ export const adminGetRecapsStats = async () =>
       const [total, published, draft] = await Promise.all([
         prisma.yearRecap.count(),
         prisma.yearRecap.count({ where: { isPublished: true } }),
-        prisma.yearRecap.count({ where: { isPublished: false } })
+        prisma.yearRecap.count({ where: { isPublished: false } }),
       ]);
       return { total, published, draft };
-    }
+    },
   });

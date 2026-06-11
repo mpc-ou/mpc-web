@@ -266,8 +266,13 @@ export default async function ProjectDetailPage({
 
           {/* Sidebar: Gallery + Members */}
           {hasSidebar && (
-            <aside className="w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
-              {hasGallery && <PostGalleryPanel images={allImages} />}
+            <aside className="sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
+              {hasGallery && (
+                <PostGalleryPanel
+                  images={allImages}
+                  title={`${t("galleryTitle")} (${allImages.length})`}
+                />
+              )}
 
               {project.members && project.members.length > 0 && (
                 <section>

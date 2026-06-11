@@ -157,6 +157,8 @@
     "collective": "Collective",
     "emptyData": "No achievements have been updated yet.",
     "backToList": "Back to Hall of Fame",
+    "galleryTitle": "Gallery",
+    "galleryTitle": "Gallery",
     "infoTitle": "Achievement Information",
     "recognizedDate": "Date Recognized",
     "typeLabel": "Category",
@@ -179,7 +181,9 @@
         "DEPARTMENT_VICE_LEADER": "Deputy Head",
         "ADVISOR": "Advisor"
       }
-    }
+    },
+    "honoredMembers": "Honored Members",
+    "noHonorImage": "No honor image"
   },
   "trainingPage": {
     "hero": {
@@ -378,6 +382,8 @@
     "emptyData": "No projects have been published yet.",
     "noDescription": "No description available.",
     "backToList": "Back to projects list",
+    "galleryTitle": "Gallery",
+    "galleryTitle": "Gallery",
     "sourceCode": "Source Code",
     "viewWebsite": "Visit Website",
     "viewVideo": "Watch Video",

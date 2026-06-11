@@ -367,8 +367,13 @@ export default async function EventDetailPage({
           {/* Sidebar: Gallery + Organizers */}
           {(hasGallery ||
             (event.organizers && event.organizers.length > 0)) && (
-            <aside className="w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
-              {hasGallery && <PostGalleryPanel images={galleryData} />}
+            <aside className="sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
+              {hasGallery && (
+                <PostGalleryPanel
+                  images={galleryData}
+                  title={`${t("galleryTitle")} (${galleryData.length})`}
+                />
+              )}
 
               {event.organizers && event.organizers.length > 0 && (
                 <div className="rounded-xl border bg-muted/30 p-5">

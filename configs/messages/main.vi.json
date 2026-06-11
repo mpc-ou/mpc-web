@@ -157,6 +157,8 @@
     "collective": "Tập thể",
     "emptyData": "Chưa có thành tựu nào được cập nhật.",
     "backToList": "Trở lại bảng vàng",
+    "galleryTitle": "Hình ảnh",
+    "galleryTitle": "Hình ảnh",
     "infoTitle": "Thông tin thành tựu",
     "recognizedDate": "Ngày ghi nhận",
     "typeLabel": "Phân loại",
@@ -179,7 +181,9 @@
         "DEPARTMENT_VICE_LEADER": "Phó ban",
         "ADVISOR": "Cố vấn"
       }
-    }
+    },
+    "honoredMembers": "Thành viên vinh danh",
+    "noHonorImage": "Chưa có hình ảnh vinh danh"
   },
   "trainingPage": {
     "hero": {
@@ -378,6 +382,8 @@
     "emptyData": "Chưa có dự án nào được đăng tải.",
     "noDescription": "Chưa có mô tả.",
     "backToList": "Trở lại danh sách dự án",
+    "galleryTitle": "Hình ảnh",
+    "galleryTitle": "Hình ảnh",
     "sourceCode": "Mã nguồn",
     "viewWebsite": "Xem Website",
     "viewVideo": "Xem Video",

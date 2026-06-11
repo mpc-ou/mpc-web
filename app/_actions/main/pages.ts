@@ -29,26 +29,30 @@ const ACHIEVEMENT_SELECT = {
           firstName: true,
           lastName: true,
           avatar: true,
-          slug: true
-        }
-      }
-    }
+          slug: true,
+        },
+      },
+    },
   },
   author: {
-    select: { firstName: true, lastName: true, avatar: true, slug: true }
+    select: { firstName: true, lastName: true, avatar: true, slug: true },
   },
   tags: { include: { tag: { select: { id: true, name: true, slug: true } } } },
-  gallery: { orderBy: { order: "asc" } }
+  gallery: { orderBy: { order: "asc" } },
 } as const;
 
-export const getAchievementsPageData = async (validPage: number, take: number, locale = "vi") =>
+export const getAchievementsPageData = async (
+  validPage: number,
+  take: number,
+  locale = "vi",
+) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache";
       const skip = (validPage - 1) * take;
       const where = {
         type: "ACHIEVEMENT" as const,
-        status: "PUBLISHED" as const
+        status: "PUBLISHED" as const,
       };
 
       const [total, achievements] = await Promise.all([
@@ -58,8 +62,8 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
           skip,
           take,
           orderBy: { achievementDate: "desc" },
-          select: ACHIEVEMENT_SELECT
-        })
+          select: ACHIEVEMENT_SELECT,
+        }),
       ]);
 
       const totalPages = Math.ceil(total / take);
@@ -67,9 +71,15 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
       const historicalRoles = await prisma.clubRole.findMany({
         where: {
           position: {
-            in: ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER", "ADVISOR"]
+            in: [
+              "PRESIDENT",
+              "VICE_PRESIDENT",
+              "DEPARTMENT_LEADER",
+              "DEPARTMENT_VICE_LEADER",
+              "ADVISOR",
+            ],
           },
-          member: { isActive: true }
+          member: { isActive: true },
         },
         include: {
           member: {
@@ -81,12 +91,12 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
               slug: true,
               socials: true,
               coverImage: true,
-              _count: { select: { achievementEntries: true, projects: true } }
-            }
+              _count: { select: { achievementEntries: true, projects: true } },
+            },
           },
-          department: true
+          department: true,
         },
-        orderBy: { startAt: "asc" }
+        orderBy: { startAt: "asc" },
       });
 
       const leaderMap = new Map<string, unknown>();
@@ -94,24 +104,71 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
         if (!leaderMap.has(r.member.id)) {
           leaderMap.set(r.member.id, {
             member: r.member,
-            roles: [] as Record<string, unknown>[]
+            roles: [] as Record<string, unknown>[],
           });
         }
-        (leaderMap.get(r.member.id) as { roles: Record<string, unknown>[] }).roles.push({
+        (
+          leaderMap.get(r.member.id) as { roles: Record<string, unknown>[] }
+        ).roles.push({
           id: r.id,
           position: r.position,
           startAt: r.startAt.toISOString(),
           endAt: r.endAt?.toISOString() ?? null,
-          departmentName: locale === "en" && r.department?.nameEn ? r.department.nameEn : (r.department?.nameVi ?? null)
+          departmentName:
+            locale === "en" && r.department?.nameEn
+              ? r.department.nameEn
+              : (r.department?.nameVi ?? null),
         });
       }
 
       const leaders = Array.from(leaderMap.values()).map((l) => {
         (l as { roles: Record<string, unknown>[] }).roles.sort(
-          (a, b) => new Date(b.startAt as string).getTime() - new Date(a.startAt as string).getTime()
+          (a, b) =>
+            new Date(b.startAt as string).getTime() -
+            new Date(a.startAt as string).getTime(),
         );
         return l;
       });
+
+      // Gold board — all members with achievements, not just leadership
+      const goldBoardMembers = await prisma.member.findMany({
+        where: {
+          achievementEntries: { some: {} },
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+          slug: true,
+          _count: { select: { achievementEntries: true, projects: true } },
+          clubRoles: {
+            include: { department: true },
+            orderBy: { startAt: "desc" },
+            take: 1,
+          },
+        },
+        orderBy: { achievementEntries: { _count: "desc" } },
+        take: 12,
+      });
+
+      const goldBoard = goldBoardMembers.map((m) => ({
+        member: {
+          id: m.id,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          avatar: m.avatar,
+          slug: m.slug,
+          _count: m._count,
+        },
+        roles: m.clubRoles.map((r) => ({
+          position: r.position,
+          departmentName:
+            locale === "en" && r.department?.nameEn
+              ? r.department.nameEn
+              : (r.department?.nameVi ?? null),
+        })),
+      }));
 
       const isEn = locale === "en";
       return {
@@ -122,12 +179,13 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
           content: isEn && a.contentEn ? a.contentEn : a.contentVi,
           date: a.achievementDate?.toISOString() ?? null,
           type: a.achievementType,
-          members: a.achievementMembers
+          members: a.achievementMembers,
         })),
         totalPages,
-        leaders
+        leaders,
+        goldBoard,
       };
-    }
+    },
   });
 
 export const getAchievementBySlug = async (slug: string, locale = "vi") =>
@@ -137,9 +195,9 @@ export const getAchievementBySlug = async (slug: string, locale = "vi") =>
         where: {
           slug,
           type: "ACHIEVEMENT",
-          status: { in: ["PUBLISHED", "UNLISTED"] }
+          status: { in: ["PUBLISHED", "UNLISTED"] },
         },
-        select: ACHIEVEMENT_SELECT
+        select: ACHIEVEMENT_SELECT,
       });
 
       if (!post) {
@@ -157,10 +215,10 @@ export const getAchievementBySlug = async (slug: string, locale = "vi") =>
           type: post.achievementType,
           members: post.achievementMembers,
           creator: post.author,
-          tags: post.tags
-        }
+          tags: post.tags,
+        },
       };
-    }
+    },
   });
 
 export const getRecentAchievements = async (take = 4, locale = "vi") =>
@@ -181,8 +239,8 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
           thumbnail: true,
           achievementDate: true,
           achievementType: true,
-          isHighlight: true
-        }
+          isHighlight: true,
+        },
       });
       const isEn = locale === "en";
       return {
@@ -191,10 +249,10 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
           title: isEn && a.titleEn ? a.titleEn : a.titleVi,
           summary: isEn && a.summaryEn ? a.summaryEn : a.summaryVi,
           date: a.achievementDate?.toISOString() ?? null,
-          type: a.achievementType
-        }))
+          type: a.achievementType,
+        })),
       };
-    }
+    },
   });
 
 export const getSponsorsPageData = async () =>
@@ -205,10 +263,10 @@ export const getSponsorsPageData = async () =>
         sponsors: await prisma.sponsor.findMany({
           where: { isActive: true },
           include: { sponsorships: { orderBy: { startAt: "asc" } } },
-          orderBy: { createdAt: "desc" }
-        })
+          orderBy: { createdAt: "desc" },
+        }),
       };
-    }
+    },
   });
 
 export const getAboutPageData = async () =>
@@ -227,11 +285,11 @@ export const getAboutPageData = async () =>
           achievementEntries: true,
           clubRoles: {
             orderBy: { startAt: "desc" },
-            include: { department: true }
-          }
+            include: { department: true },
+          },
         },
         orderBy: { achievementEntries: { _count: "desc" } },
-        take: 20
+        take: 20,
       });
 
       return {
@@ -245,11 +303,11 @@ export const getAboutPageData = async () =>
             slug: member.slug,
             socials: member.socials,
             currentRole,
-            achievementCount: member.achievementEntries?.length ?? 0
+            achievementCount: member.achievementEntries?.length ?? 0,
           };
-        })
+        }),
       };
-    }
+    },
   });
 
 export const getActivitiesPageData = async () =>
@@ -258,10 +316,10 @@ export const getActivitiesPageData = async () =>
       "use cache";
       const activities = await prisma.activity.findMany({
         where: { isActive: true },
-        orderBy: { order: "asc" }
+        orderBy: { order: "asc" },
       });
       return { activities };
-    }
+    },
   });
 
 export const getDepartmentsPageData = async () =>
@@ -270,8 +328,8 @@ export const getDepartmentsPageData = async () =>
       "use cache";
       const departments = await prisma.department.findMany({
         where: { isActive: true },
-        orderBy: { order: "asc" }
+        orderBy: { order: "asc" },
       });
       return { departments };
-    }
+    },
   });

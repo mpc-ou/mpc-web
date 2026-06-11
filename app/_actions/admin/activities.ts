@@ -121,45 +121,39 @@ export const adminSeedActivities = async () =>
       const fsModule = await import("node:fs");
       const pathModule = await import("node:path");
 
-      // In standalone mode, public/ is next to server.js
-      // Try multiple possible locations for robustness
-      const candidateDirs = [
-        pathModule.join(process.cwd(), "public"),
-        pathModule.join(process.cwd(), ".next", "standalone", "public"),
-        pathModule.join(process.cwd(), "..", "public"),
-      ];
-      let publicDir = candidateDirs.find((d) => fsModule.existsSync(d));
-      if (!publicDir) {
-        console.warn(
-          "[adminSeedActivities] Could not find public directory, tried:",
-          candidateDirs,
-        );
-        // Fallback: use process.cwd() + public
-        publicDir = pathModule.join(process.cwd(), "public");
+      let publicDir = "";
+      try {
+        const candidateDirs = [
+          pathModule.join(process.cwd(), "public"),
+          pathModule.join(process.cwd(), ".next", "standalone", "public"),
+          pathModule.join(process.cwd(), "..", "public"),
+        ];
+        publicDir = candidateDirs.find((d) => fsModule.existsSync(d)) ?? "";
+      } catch {
+        // fs not available (e.g. Vercel serverless) — use pre-computed images from config
       }
-      console.log(`[adminSeedActivities] Using public dir: ${publicDir}`);
 
       for (let i = 0; i < all.length; i++) {
         const item = all[i];
         let images: string[] = [];
 
-        if (item.imageFolder) {
+        // Prefer pre-computed images array (works on all platforms)
+        if ((item as any).images && (item as any).images.length > 0) {
+          images = (item as any).images;
+        } else if (item.imageFolder && publicDir) {
+          // Fallback: scan filesystem (local dev only)
           const relFolder = item.imageFolder.replace(/^\//, "");
           const folderPath = pathModule.join(publicDir, relFolder);
-          console.log(`[adminSeedActivities] Scanning: ${folderPath}`);
-          if (fsModule.existsSync(folderPath)) {
-            images = fsModule
-              .readdirSync(folderPath)
-              .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
-              .sort((a, b) => b.localeCompare(a))
-              .map((f) => `${item.imageFolder}/${f}`);
-            console.log(
-              `[adminSeedActivities] Found ${images.length} images for "${item.id}"`,
-            );
-          } else {
-            console.warn(
-              `[adminSeedActivities] Image folder not found: ${folderPath}`,
-            );
+          try {
+            if (fsModule.existsSync(folderPath)) {
+              images = fsModule
+                .readdirSync(folderPath)
+                .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+                .sort((a, b) => b.localeCompare(a))
+                .map((f) => `${item.imageFolder}/${f}`);
+            }
+          } catch {
+            /* fs not available — use empty */
           }
         }
 

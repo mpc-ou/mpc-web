@@ -40,12 +40,18 @@ export default async function AchievementsPage({
 
   const { data } = await getAchievementsPageData(validPage, take, locale);
   const payload = data?.payload as
-    | { achievements: any[]; totalPages: number; leaders: any[] }
+    | {
+        achievements: any[];
+        totalPages: number;
+        leaders: any[];
+        goldBoard: any[];
+      }
     | undefined;
 
   const achievements = payload?.achievements ?? [];
   const totalPages = payload?.totalPages ?? 0;
   const leaders = payload?.leaders ?? [];
+  const goldBoard = payload?.goldBoard ?? [];
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -67,7 +73,7 @@ export default async function AchievementsPage({
                 {t("hallOfFameDesc")}
               </p>
             </div>
-            <GoldBoard locale={locale} members={leaders} />
+            <GoldBoard locale={locale} members={goldBoard} />
           </div>
         )}
       </div>

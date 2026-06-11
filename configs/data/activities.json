@@ -12,7 +12,13 @@
         "description": "A gathering for club members at a specific location to meet, talk, socialize, share knowledge and experiences, and build relationships with each other.",
         "frequency": "Monthly"
       },
-      "imageFolder": "/images/offline"
+      "imageFolder": "/images/offline",
+      "images": [
+        "/images/offline/2025_2.jpg",
+        "/images/offline/2025_1.jpg",
+        "/images/offline/2025_0.jpg",
+        "/images/offline/2023_0.jpg"
+      ]
     },
     {
       "id": "birthday",
@@ -26,7 +32,16 @@
         "description": "The club annually celebrates its birthday, an occasion for everyone to meet, congratulate, and share joy together.",
         "frequency": "Annually"
       },
-      "imageFolder": "/images/birthday"
+      "imageFolder": "/images/birthday",
+      "images": [
+        "/images/birthday/2025_2.jpg",
+        "/images/birthday/2025_1.jpg",
+        "/images/birthday/2025_0.jpg",
+        "/images/birthday/2024_2.jpg",
+        "/images/birthday/2024_1.jpg",
+        "/images/birthday/2024_0.jpg",
+        "/images/birthday/2022_0.jpg"
+      ]
     },
     {
       "id": "volunteering",
@@ -40,7 +55,12 @@
         "description": "The club frequently organizes volunteering activities to help the community, as well as create opportunities for members to get closer.",
         "frequency": "Every Semester"
       },
-      "imageFolder": "/images/volunteering"
+      "imageFolder": "/images/volunteering",
+      "images": [
+        "/images/volunteering/2025_2.jpg",
+        "/images/volunteering/2025_1.jpg",
+        "/images/volunteering/2025_0.jpg"
+      ]
     },
     {
       "id": "training",
@@ -54,7 +74,12 @@
         "description": "The club frequently organizes training sessions to teach soft skills to members.",
         "frequency": "Weekly"
       },
-      "imageFolder": "/images/training"
+      "imageFolder": "/images/training",
+      "images": [
+        "/images/training/methodology-seminar.jpg",
+        "/images/training/methodology-project.jpg",
+        "/images/training/methodology-peer.jpg"
+      ]
     }
   ],
   "externalEvents": [
@@ -71,7 +96,25 @@
         "frequency": "Annually"
       },
       "href": "/activities/webdesign",
-      "imageFolder": "/images/web-design"
+      "imageFolder": "/images/web-design",
+      "images": [
+        "/images/web-design/2025_7.jpg",
+        "/images/web-design/2025_6.jpg",
+        "/images/web-design/2025_5.jpg",
+        "/images/web-design/2025_4.jpg",
+        "/images/web-design/2025_3.jpg",
+        "/images/web-design/2025_2.jpg",
+        "/images/web-design/2025_1.jpg",
+        "/images/web-design/2025_0.jpg",
+        "/images/web-design/2023_4.jpg",
+        "/images/web-design/2023_3.jpg",
+        "/images/web-design/2023_2.jpg",
+        "/images/web-design/2023_1.jpg",
+        "/images/web-design/2023_0.png",
+        "/images/web-design/2022_2.jpg",
+        "/images/web-design/2022_1.jpg",
+        "/images/web-design/2022_0.jpg"
+      ]
     },
     {
       "id": "robocode",
@@ -86,7 +129,8 @@
         "frequency": "Annually"
       },
       "href": "#",
-      "imageFolder": "/images/robocode"
+      "imageFolder": "/images/robocode",
+      "images": []
     },
     {
       "id": "freshman",
@@ -101,7 +145,14 @@
         "frequency": "Annually"
       },
       "href": "#",
-      "imageFolder": "/images/freshman"
+      "imageFolder": "/images/freshman",
+      "images": [
+        "/images/freshman/2025_3.jpg",
+        "/images/freshman/2025_2.jpg",
+        "/images/freshman/2025_1.jpg",
+        "/images/freshman/2025_0.jpg",
+        "/images/freshman/2024_0.jpg"
+      ]
     },
     {
       "id": "recruitment",
@@ -116,7 +167,18 @@
         "frequency": "Annually"
       },
       "href": "#",
-      "imageFolder": "/images/recruitment"
+      "imageFolder": "/images/recruitment",
+      "images": [
+        "/images/recruitment/2025_4.jpg",
+        "/images/recruitment/2025_3.jpg",
+        "/images/recruitment/2025_2.jpg",
+        "/images/recruitment/2025_1.jpg",
+        "/images/recruitment/2025_0.jpg",
+        "/images/recruitment/2023_0.jpg",
+        "/images/recruitment/2022_2.jpg",
+        "/images/recruitment/2022_1.jpg",
+        "/images/recruitment/2022_0.jpg"
+      ]
     },
     {
       "id": "sharing",
@@ -130,7 +192,13 @@
         "description": "Organizing sessions to share knowledge and experiences from club members, as well as industry experts.",
         "frequency": "Regularly"
       },
-      "imageFolder": "/images/sharing"
+      "imageFolder": "/images/sharing",
+      "images": [
+        "/images/sharing/2025_3.jpg",
+        "/images/sharing/2025_2.jpg",
+        "/images/sharing/2025_1.jpg",
+        "/images/sharing/2025_0.jpg"
+      ]
     },
     {
       "id": "open-clubs",
@@ -145,7 +213,20 @@
         "frequency": "Annually"
       },
       "href": "#",
-      "imageFolder": "/images/toc"
+      "imageFolder": "/images/toc",
+      "images": [
+        "/images/toc/2025_4.jpg",
+        "/images/toc/2025_3.jpg",
+        "/images/toc/2025_2.jpg",
+        "/images/toc/2025_1.jpg",
+        "/images/toc/2025_0.jpg",
+        "/images/toc/2024_3.jpg",
+        "/images/toc/2024_2.jpg",
+        "/images/toc/2024_1.jpg",
+        "/images/toc/2024_0.jpg",
+        "/images/toc/2023_1.jpg",
+        "/images/toc/2022_0.jpg"
+      ]
     }
   ]
 }

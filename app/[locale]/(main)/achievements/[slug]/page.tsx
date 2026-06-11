@@ -335,8 +335,13 @@ export default async function AchievementDetailPage({
           {/* Sidebar: Gallery + Honored Members */}
           {(hasGallery ||
             (achievement.members && achievement.members.length > 0)) && (
-            <aside className="w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
-              {hasGallery && <PostGalleryPanel images={galleryData} />}
+            <aside className="sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72">
+              {hasGallery && (
+                <PostGalleryPanel
+                  images={galleryData}
+                  title={`${t("galleryTitle")} (${galleryData.length})`}
+                />
+              )}
 
               {achievement.members && achievement.members.length > 0 && (
                 <HonoredMembers locale={locale} members={achievement.members} />

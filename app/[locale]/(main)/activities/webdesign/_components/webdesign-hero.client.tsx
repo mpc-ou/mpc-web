@@ -20,7 +20,7 @@ export function WebDesignHeroClient({
     <PageHero
       badge="FRONTEND CHALLENGE"
       description={subtitle}
-      imageUrl="/images/bg/about.png"
+      imageUrl="/images/bg/about.jpg"
       title={title}
     />
   );

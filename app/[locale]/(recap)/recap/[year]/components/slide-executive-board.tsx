@@ -55,7 +55,7 @@ export function SlideExecutiveBoard({ members }: { members: RecapData["executive
             }}
           >
             {sorted.map((m) => {
-              const fullName = getFullName(m.firstName, m.lastName, "vi");
+              const fullName = getFullName(m.firstName, m.middleName, m.lastName, "vi");
               const borderColor = colorFromString(fullName);
               const bgColor = dimColorFromString(fullName);
               const displayPos = locale === "en" && m.positionEn ? m.positionEn : m.position;

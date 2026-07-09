@@ -75,6 +75,7 @@ export const getEventBySlug = async (slug: string, locale = "vi") =>
             select: {
               firstName: true,
               lastName: true,
+              middleName: true,
               avatar: true,
               slug: true
             }
@@ -86,6 +87,7 @@ export const getEventBySlug = async (slug: string, locale = "vi") =>
                 select: {
                   firstName: true,
                   lastName: true,
+                  middleName: true,
                   avatar: true,
                   slug: true,
                   clubRoles: {

@@ -225,20 +225,18 @@ model ExternalLink {
 /// Hỗ trợ đăng nhập: Google, GitHub, Discord, Email/Password
 /// GitHub và Discord có field riêng để xác thực, socials JSON chỉ chứa mạng xã hội khác
 model Member {
-  id           String    @id @default(cuid())
-  authId       String    @unique
+  id           String    @id
   email        String    @unique
-  password     String?
-  githubId     String?   @unique
-  githubEmail  String?   @unique
-  discordId    String?   @unique
   firstName    String
+  middleName   String?
   lastName     String
   avatar       String?
   coverImage   String?
   slug         String?   @unique
   dob          DateTime?
   showDob      Boolean   @default(true)
+  showPhone    Boolean   @default(true)
+  showStudentId Boolean   @default(true)
   bio          String?
   phone        String?
   studentId    String?
@@ -247,7 +245,6 @@ model Member {
   leftClubAt   DateTime?
   webRole      WebRole   @default(GUEST)
   isActive     Boolean   @default(true)
-  createdBy    String?
   spotifyUri   String?
 
   createdAt DateTime @default(now())
@@ -397,7 +394,7 @@ model Post {
   status     PostStatus @default(DRAFT)
   isPinned   Boolean    @default(false)
   viewCount  Int        @default(0)
-  authorId   String
+  authorId   String?
   reviewerId String?
   categoryId String?
   activityId String?
@@ -425,7 +422,7 @@ model Post {
   updatedAt   DateTime  @updatedAt
 
   // -- Relations --
-  author             Member                  @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  author             Member?                 @relation("PostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
   reviewer           Member?                 @relation("PostReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
   category           Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   activity           Activity?               @relation(fields: [activityId], references: [id], onDelete: SetNull)
@@ -451,7 +448,7 @@ model Post {
 model PostRevision {
   id       String @id @default(cuid())
   postId   String
-  editorId String
+  editorId String?
 
   titleVi   String
   titleEn   String  @default("")
@@ -464,8 +461,8 @@ model PostRevision {
   createdAt DateTime @default(now())
 
   // --- Relations ---
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  editor Member @relation(fields: [editorId], references: [id], onDelete: Cascade)
+  post   Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  editor Member? @relation(fields: [editorId], references: [id], onDelete: SetNull)
 
   @@index([postId])
   @@index([editorId])

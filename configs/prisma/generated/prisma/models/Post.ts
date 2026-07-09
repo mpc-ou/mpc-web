@@ -392,7 +392,7 @@ export type PostGroupByOutputType = {
   status: $Enums.PostStatus
   isPinned: boolean
   viewCount: number
-  authorId: string
+  authorId: string | null
   reviewerId: string | null
   categoryId: string | null
   activityId: string | null
@@ -453,7 +453,7 @@ export type PostWhereInput = {
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
   activityId?: Prisma.StringNullableFilter<"Post"> | string | null
@@ -473,7 +473,7 @@ export type PostWhereInput = {
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
-  author?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
+  author?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   reviewer?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
   activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
@@ -503,7 +503,7 @@ export type PostOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   activityId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -556,7 +556,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
   activityId?: Prisma.StringNullableFilter<"Post"> | string | null
@@ -576,7 +576,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
-  author?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
+  author?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   reviewer?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
   activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
@@ -606,7 +606,7 @@ export type PostOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   activityId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -652,7 +652,7 @@ export type PostScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumPostStatusWithAggregatesFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
   viewCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
-  authorId?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  authorId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   activityId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
@@ -706,7 +706,7 @@ export type PostCreateInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -736,7 +736,7 @@ export type PostUncheckedCreateInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -798,7 +798,7 @@ export type PostUpdateInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -828,7 +828,7 @@ export type PostUncheckedUpdateInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -874,7 +874,7 @@ export type PostCreateManyInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -946,7 +946,7 @@ export type PostUncheckedUpdateManyInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1581,7 +1581,7 @@ export type PostCreateWithoutReviewerInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
@@ -1610,7 +1610,7 @@ export type PostUncheckedCreateWithoutReviewerInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   categoryId?: string | null
   activityId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -1684,7 +1684,7 @@ export type PostScalarWhereInput = {
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
   activityId?: Prisma.StringNullableFilter<"Post"> | string | null
@@ -1754,7 +1754,7 @@ export type PostCreateWithoutCategoryInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
@@ -1783,7 +1783,7 @@ export type PostUncheckedCreateWithoutCategoryInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   activityId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -1870,7 +1870,7 @@ export type PostCreateWithoutRevisionsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -1899,7 +1899,7 @@ export type PostUncheckedCreateWithoutRevisionsInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -1976,7 +1976,7 @@ export type PostUpdateWithoutRevisionsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2005,7 +2005,7 @@ export type PostUncheckedUpdateWithoutRevisionsInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2066,7 +2066,7 @@ export type PostCreateWithoutTagsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -2095,7 +2095,7 @@ export type PostUncheckedCreateWithoutTagsInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -2172,7 +2172,7 @@ export type PostUpdateWithoutTagsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2201,7 +2201,7 @@ export type PostUncheckedUpdateWithoutTagsInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2262,7 +2262,7 @@ export type PostCreateWithoutActivitiesInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -2291,7 +2291,7 @@ export type PostUncheckedCreateWithoutActivitiesInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -2368,7 +2368,7 @@ export type PostUpdateWithoutActivitiesInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2397,7 +2397,7 @@ export type PostUncheckedUpdateWithoutActivitiesInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2458,7 +2458,7 @@ export type PostCreateWithoutOrganizersInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -2487,7 +2487,7 @@ export type PostUncheckedCreateWithoutOrganizersInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -2564,7 +2564,7 @@ export type PostUpdateWithoutOrganizersInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2593,7 +2593,7 @@ export type PostUncheckedUpdateWithoutOrganizersInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2654,7 +2654,7 @@ export type PostCreateWithoutGalleryInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -2683,7 +2683,7 @@ export type PostUncheckedCreateWithoutGalleryInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -2760,7 +2760,7 @@ export type PostUpdateWithoutGalleryInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2789,7 +2789,7 @@ export type PostUncheckedUpdateWithoutGalleryInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2850,7 +2850,7 @@ export type PostCreateWithoutAchievementMembersInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -2879,7 +2879,7 @@ export type PostUncheckedCreateWithoutAchievementMembersInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -2956,7 +2956,7 @@ export type PostUpdateWithoutAchievementMembersInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -2985,7 +2985,7 @@ export type PostUncheckedUpdateWithoutAchievementMembersInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3046,7 +3046,7 @@ export type PostCreateWithoutActivityInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
@@ -3075,7 +3075,7 @@ export type PostUncheckedCreateWithoutActivityInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -3162,7 +3162,7 @@ export type PostCreateWithoutSponsorshipsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -3191,7 +3191,7 @@ export type PostUncheckedCreateWithoutSponsorshipsInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -3268,7 +3268,7 @@ export type PostUpdateWithoutSponsorshipsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -3297,7 +3297,7 @@ export type PostUncheckedUpdateWithoutSponsorshipsInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3358,7 +3358,7 @@ export type PostCreateWithoutNotificationsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
   activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
@@ -3387,7 +3387,7 @@ export type PostUncheckedCreateWithoutNotificationsInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   activityId?: string | null
@@ -3464,7 +3464,7 @@ export type PostUpdateWithoutNotificationsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
@@ -3493,7 +3493,7 @@ export type PostUncheckedUpdateWithoutNotificationsInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3575,7 +3575,7 @@ export type PostCreateManyReviewerInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   categoryId?: string | null
   activityId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -3755,7 +3755,7 @@ export type PostUpdateWithoutReviewerInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
@@ -3784,7 +3784,7 @@ export type PostUncheckedUpdateWithoutReviewerInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -3829,7 +3829,7 @@ export type PostUncheckedUpdateManyWithoutReviewerInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -3866,7 +3866,7 @@ export type PostCreateManyCategoryInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   activityId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -3919,7 +3919,7 @@ export type PostUpdateWithoutCategoryInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
@@ -3948,7 +3948,7 @@ export type PostUncheckedUpdateWithoutCategoryInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -3993,7 +3993,7 @@ export type PostUncheckedUpdateManyWithoutCategoryInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -4030,7 +4030,7 @@ export type PostCreateManyActivityInput = {
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
   eventStatus?: $Enums.EventStatus | null
@@ -4083,7 +4083,7 @@ export type PostUpdateWithoutActivityInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
@@ -4112,7 +4112,7 @@ export type PostUncheckedUpdateWithoutActivityInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -4157,7 +4157,7 @@ export type PostUncheckedUpdateManyWithoutActivityInput = {
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
@@ -4308,7 +4308,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
@@ -4359,7 +4359,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
@@ -4401,7 +4401,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
@@ -4447,7 +4447,7 @@ export type PostSelectScalar = {
 
 export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "titleVi" | "titleEn" | "slug" | "summaryVi" | "summaryEn" | "contentVi" | "contentEn" | "sourceLanguage" | "thumbnail" | "images" | "status" | "isPinned" | "viewCount" | "authorId" | "reviewerId" | "categoryId" | "activityId" | "eventStatus" | "eventType" | "locationVi" | "locationEn" | "latitude" | "longitude" | "maxAttendees" | "startAt" | "endAt" | "achievementType" | "achievementDate" | "isHighlight" | "relatedUrl" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
@@ -4462,13 +4462,13 @@ export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
 }
 export type PostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
   activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
@@ -4477,7 +4477,7 @@ export type PostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Post"
   objects: {
-    author: Prisma.$MemberPayload<ExtArgs>
+    author: Prisma.$MemberPayload<ExtArgs> | null
     reviewer: Prisma.$MemberPayload<ExtArgs> | null
     category: Prisma.$CategoryPayload<ExtArgs> | null
     activity: Prisma.$ActivityPayload<ExtArgs> | null
@@ -4506,7 +4506,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     status: $Enums.PostStatus
     isPinned: boolean
     viewCount: number
-    authorId: string
+    authorId: string | null
     reviewerId: string | null
     categoryId: string | null
     activityId: string | null
@@ -4920,7 +4920,7 @@ readonly fields: PostFieldRefs;
  */
 export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  author<T extends Prisma.MemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberDefaultArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  author<T extends Prisma.Post$authorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$authorArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reviewer<T extends Prisma.Post$reviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$reviewerArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.Post$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$categoryArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   activity<T extends Prisma.Post$activityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$activityArgs<ExtArgs>>): Prisma.Prisma__ActivityClient<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -5389,6 +5389,25 @@ export type PostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Posts to delete.
    */
   limit?: number
+}
+
+/**
+ * Post.author
+ */
+export type Post$authorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Member
+   */
+  select?: Prisma.MemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Member
+   */
+  omit?: Prisma.MemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberInclude<ExtArgs> | null
+  where?: Prisma.MemberWhereInput
 }
 
 /**

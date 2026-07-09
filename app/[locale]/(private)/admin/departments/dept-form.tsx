@@ -178,6 +178,7 @@ export default function DeptForm({ dept }: Props) {
               <div className='grid gap-1.5'>
                 <Label>Tên ban *</Label>
                 <Input
+                  disabled={isEdit}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder='Tên ban...'
                   required
@@ -187,7 +188,13 @@ export default function DeptForm({ dept }: Props) {
               <div className='grid grid-cols-2 gap-3'>
                 <div className='grid gap-1.5'>
                   <Label>Slug *</Label>
-                  <Input onChange={(e) => setSlug(e.target.value)} placeholder='programming' required value={slug} />
+                  <Input
+                    disabled={isEdit}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder='programming'
+                    required
+                    value={slug}
+                  />
                 </div>
                 <div className='grid gap-1.5'>
                   <Label>Thứ tự</Label>

@@ -2,11 +2,11 @@ import type { User } from "@supabase/supabase-js";
 import { prisma } from "@/configs/prisma/db";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
-export async function requireAdmin(user?: User) {
+export async function requireAdmin(user?: any) {
   if (!user) {
     throw new Error("Unauthorized");
   }
-  const member = await prisma.member.findUnique({ where: { authId: user.id } });
+  const member = await prisma.member.findUnique({ where: { id: user.id } });
   if (!member || member.webRole !== "ADMIN") {
     throw new Error("Forbidden");
   }

@@ -59,7 +59,7 @@ export function MemberViewDialog({ locale = "vi", open, onOpenChange, member, on
           </Avatar>
           <div className='flex flex-col gap-1'>
             <DialogTitle className='text-left text-2xl'>
-              {getFullName(member.firstName, member.lastName, "vi")}
+              {getFullName(member.firstName, member.middleName, member.lastName, "vi")}
             </DialogTitle>
             <div className='flex items-center gap-2 text-muted-foreground'>
               <span className='flex items-center gap-1 text-sm'>

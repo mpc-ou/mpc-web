@@ -23,7 +23,7 @@ export const userCreateBlog = async (data: {
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: { id: true, webRole: true }
       });
       if (!member) {
@@ -84,7 +84,7 @@ export const userUpdateBlog = async (
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: { id: true, webRole: true }
       });
       if (!member) {
@@ -130,7 +130,7 @@ export const getUserPostById = async (postId: string) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: { id: true, webRole: true }
       });
       if (!member) {

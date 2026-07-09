@@ -7,16 +7,12 @@ import { GoldBoard } from "./_components/gold-board.client";
 import { LeadershipCarouselClient } from "./_components/leadership-carousel.client";
 import { AchievementsClient } from "./client";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return generatePageSeo({
     page: "achievements",
     locale,
-    pathname: "/achievements",
+    pathname: "/achievements"
   });
 }
 
@@ -25,7 +21,7 @@ import { PageHero } from "@/components/custom/page-hero.client";
 
 export default async function AchievementsPage({
   params,
-  searchParams,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -54,40 +50,34 @@ export default async function AchievementsPage({
   const goldBoard = payload?.goldBoard ?? [];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className='min-h-screen bg-background pb-20'>
       <PageHero
-        badge="HONORS & AWARDS"
+        badge='HONORS & AWARDS'
         description={t("description")}
-        imageUrl="/images/bg/achievements.jpg"
+        imageUrl='/images/bg/achievements.jpg'
         title={t("title")}
       />
 
-      <div className="container mx-auto mt-16 px-4">
+      <div className='container mx-auto mt-16 px-4'>
         {leaders.length > 0 && (
-          <div className="mb-16">
-            <div className="mb-6 text-center">
-              <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
-                {t("hallOfFameTitle")}
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                {t("hallOfFameDesc")}
-              </p>
+          <div className='mb-16'>
+            <div className='mb-6 text-center'>
+              <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("hallOfFameTitle")}</h2>
+              <p className='mt-2 text-muted-foreground'>{t("hallOfFameDesc")}</p>
             </div>
             <GoldBoard locale={locale} members={goldBoard} />
           </div>
         )}
       </div>
 
-      <div className="w-full">
+      <div className='w-full'>
         <LeadershipCarouselClient leaders={leaders} />
       </div>
 
-      <div className="container mx-auto mt-20 max-w-6xl px-4">
+      <div className='container mx-auto mt-20 max-w-6xl px-4'>
         {/* 2. Bài viết thành tích */}
-        <div className="mb-8 text-center">
-          <h2 className="font-bold text-3xl tracking-tight sm:text-4xl">
-            {t("articlesTitle")}
-          </h2>
+        <div className='mb-8 text-center'>
+          <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("articlesTitle")}</h2>
         </div>
 
         <AchievementsClient

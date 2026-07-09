@@ -17,6 +17,7 @@ import { uploadToStorage } from "@/utils/supabase-upload";
 export type MemberOption = {
   id: string;
   firstName: string;
+  middleName?: string | null;
   lastName: string;
   avatar: string | null;
   studentId: string | null;

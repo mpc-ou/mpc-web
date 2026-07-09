@@ -3,6 +3,14 @@
     "title": "Đăng nhập",
     "title2": "Bạn là ai đó?",
     "description": "Đăng nhập vào tài khoản của bạn để tụi mình biết bạn là ai nè! ^^",
+    "ssoTitle": "XÁC THỰC SSO",
+    "ssoButton": "Đăng nhập qua SSO",
+    "clubManagementSystem": "Trang quản trị câu lạc bộ",
+    "adminPlatform": "Nền tảng Quản trị",
+    "membersActivities": "Thành viên & Hoạt động",
+    "descriptionLeft": "Hệ thống quản lý nội bộ dành cho các thành viên Câu lạc bộ Lập trình Di động (MPC), tích hợp cổng xác thực SSO đồng bộ.",
+    "copyright": "Câu lạc bộ Lập trình Di động",
+    "version": "Phiên bản 2.0.0",
     "errorPageTitle": "Lỗi xác thực",
     "error": {
       "title": "Đăng nhập thất bại"

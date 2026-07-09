@@ -22,7 +22,6 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Link, useRouter } from "@/configs/i18n/routing";
-import { createClient } from "@/configs/supabase/client";
 import { _ROUTE_ADMIN, _ROUTE_AUTH, _ROUTE_MEMBER_CARD, _ROUTE_MEMBERS, _ROUTE_PROFILE } from "@/constants/route";
 import { type UserProfileData } from "@/types/common";
 
@@ -37,11 +36,8 @@ const UserProfile = ({ profile }: Props) => {
   const router = useRouter();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.replace(_ROUTE_AUTH);
-    router.refresh();
+  const handleLogout = () => {
+    window.location.href = "/api/auth/logout";
   };
 
   const profileHref = profile?.slug ? `${_ROUTE_MEMBERS}/${profile.slug}` : _ROUTE_PROFILE;

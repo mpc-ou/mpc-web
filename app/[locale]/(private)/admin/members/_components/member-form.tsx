@@ -23,6 +23,7 @@ import { ImageCropperModal, readFileAsDataURL } from "@/components/image-cropper
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -100,16 +101,17 @@ export function MemberForm({ member, departments }: Props) {
 
   const [saving, setSaving] = useState(false);
 
-  // 1. Profile State
   const [email, setEmail] = useState(member?.email ?? "");
-  const [password, setPassword] = useState("");
-  const [githubEmail, setGithubEmail] = useState(member?.githubEmail ?? "");
   const [firstName, setFirstName] = useState(member?.firstName ?? "");
+  const [middleName, setMiddleName] = useState(member?.middleName ?? "");
   const [lastName, setLastName] = useState(member?.lastName ?? "");
   const [phone, setPhone] = useState(member?.phone ?? "");
   const [studentId, setStudentId] = useState(member?.studentId ?? "");
   const [slugValue, setSlugValue] = useState(member?.slug ?? "");
   const [dob, setDob] = useState(member?.dob ? new Date(member.dob).toISOString().split("T")[0] : "");
+  const [showDob, setShowDob] = useState((member as any)?.showDob ?? true);
+  const [showPhone, setShowPhone] = useState((member as any)?.showPhone ?? true);
+  const [showStudentId, setShowStudentId] = useState((member as any)?.showStudentId ?? true);
   const [bio, setBio] = useState(member?.bio ?? "");
   const [webRole, setWebRole] = useState(member?.webRole ?? "MEMBER");
   const [spotifyUri, setSpotifyUri] = useState((member as any)?.spotifyUri ?? "");
@@ -381,6 +383,7 @@ export function MemberForm({ member, departments }: Props) {
       profile: {
         email: email.trim(),
         firstName: firstName.trim(),
+        middleName: middleName.trim() || undefined,
         lastName: lastName.trim(),
         webRole: webRole as any,
         phone: phone.trim() || undefined,
@@ -390,8 +393,9 @@ export function MemberForm({ member, departments }: Props) {
         avatar: avatarUrl,
         coverImage: coverUrl,
         slug: slugValue.trim() || undefined,
-        githubEmail: githubEmail.trim() || undefined,
-        password: password.trim() || undefined,
+        showDob,
+        showPhone,
+        showStudentId,
         spotifyUri: spotifyUri ? parseSpotifyUri(spotifyUri) : null
       },
       socials: cleanSocials,
@@ -423,7 +427,7 @@ export function MemberForm({ member, departments }: Props) {
             <Button className='h-8 w-8' onClick={() => router.push("/admin/members")} size='icon' variant='outline'>
               <ArrowLeft className='h-4 w-4' />
             </Button>
-            {member ? `Chỉnh sửa: ${getFullName(firstName, lastName, "vi")}` : "Thêm thành viên mới"}
+            {member ? `Chỉnh sửa: ${getFullName(firstName, middleName, lastName, "vi")}` : "Thêm thành viên mới"}
           </h1>
           <p className='mt-1 text-muted-foreground text-sm'>
             Thiết lập thông tin cá nhân, mạng xã hội, vai trò ban bộ và lưu tất cả cùng một lúc.
@@ -602,11 +606,17 @@ export function MemberForm({ member, departments }: Props) {
           <Separator />
 
           <div className='grid gap-4'>
-            {/* If creating new, show Email input. Else, read-only/disabled email */}
+            <div className='flex flex-col justify-between gap-4 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3.5 text-blue-600 text-xs sm:flex-row sm:items-center dark:text-blue-400'>
+              <span>
+                <strong>Lưu ý:</strong> Các thông tin cá nhân (Họ tên, SĐT, MSSV, Ngày sinh) sẽ được đồng bộ tự động lên
+                SSO khi bạn lưu.
+              </span>
+            </div>
+
             <div className='grid gap-1.5'>
               <Label htmlFor='email'>Email đăng nhập *</Label>
               <Input
-                disabled={!!member}
+                disabled
                 id='email'
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder='email@example.com'
@@ -616,34 +626,19 @@ export function MemberForm({ member, departments }: Props) {
               />
             </div>
 
-            <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
+            <div className='grid grid-cols-3 gap-3'>
               <div className='grid gap-1.5'>
-                <Label htmlFor='password'>Mật khẩu</Label>
-                <Input
-                  id='password'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={member ? "Bỏ trống nếu không đổi" : "Mật khẩu ban đầu"}
-                  type='password'
-                  value={password}
-                />
-              </div>
-
-              <div className='grid gap-1.5'>
-                <Label htmlFor='githubEmail'>Email phụ / Email GitHub</Label>
-                <Input
-                  id='githubEmail'
-                  onChange={(e) => setGithubEmail(e.target.value)}
-                  placeholder='github@example.com'
-                  type='email'
-                  value={githubEmail}
-                />
-              </div>
-            </div>
-
-            <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-              <div className='grid gap-1.5'>
-                <Label htmlFor='lastName'>Họ và tên đệm *</Label>
+                <Label htmlFor='lastName'>Họ *</Label>
                 <Input id='lastName' onChange={(e) => setLastName(e.target.value)} required value={lastName} />
+              </div>
+              <div className='grid gap-1.5'>
+                <Label htmlFor='middleName'>Tên đệm</Label>
+                <Input
+                  id='middleName'
+                  onChange={(e) => setMiddleName(e.target.value)}
+                  placeholder='Văn'
+                  value={middleName}
+                />
               </div>
               <div className='grid gap-1.5'>
                 <Label htmlFor='firstName'>Tên *</Label>
@@ -652,13 +647,35 @@ export function MemberForm({ member, departments }: Props) {
             </div>
 
             <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-              <div className='grid gap-1.5'>
-                <Label htmlFor='phone'>Số điện thoại</Label>
-                <Input id='phone' onChange={(e) => setPhone(e.target.value)} value={phone} />
+              <div className='space-y-2'>
+                <div className='grid gap-1.5'>
+                  <Label htmlFor='phone'>Số điện thoại</Label>
+                  <Input id='phone' onChange={(e) => setPhone(e.target.value)} value={phone} />
+                </div>
+                <div className='flex items-center gap-2'>
+                  <Checkbox checked={showPhone} id='showPhone' onCheckedChange={(c) => setShowPhone(!!c)} />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showPhone'
+                  >
+                    Hiển thị số điện thoại
+                  </Label>
+                </div>
               </div>
-              <div className='grid gap-1.5'>
-                <Label htmlFor='studentId'>MSSV</Label>
-                <Input id='studentId' onChange={(e) => setStudentId(e.target.value)} value={studentId} />
+              <div className='space-y-2'>
+                <div className='grid gap-1.5'>
+                  <Label htmlFor='studentId'>MSSV</Label>
+                  <Input id='studentId' onChange={(e) => setStudentId(e.target.value)} value={studentId} />
+                </div>
+                <div className='flex items-center gap-2'>
+                  <Checkbox checked={showStudentId} id='showStudentId' onCheckedChange={(c) => setShowStudentId(!!c)} />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showStudentId'
+                  >
+                    Hiển thị MSSV
+                  </Label>
+                </div>
               </div>
             </div>
 
@@ -672,9 +689,20 @@ export function MemberForm({ member, departments }: Props) {
               />
             </div>
 
-            <div className='grid gap-1.5'>
-              <Label htmlFor='dob'>Ngày sinh</Label>
-              <Input id='dob' onChange={(e) => setDob(e.target.value)} type='date' value={dob} />
+            <div className='space-y-2'>
+              <div className='grid gap-1.5'>
+                <Label htmlFor='dob'>Ngày sinh</Label>
+                <Input id='dob' onChange={(e) => setDob(e.target.value)} type='date' value={dob} />
+              </div>
+              <div className='flex items-center gap-2'>
+                <Checkbox checked={showDob} id='showDob' onCheckedChange={(c) => setShowDob(!!c)} />
+                <Label
+                  className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                  htmlFor='showDob'
+                >
+                  Hiển thị ngày sinh
+                </Label>
+              </div>
             </div>
 
             <div className='grid gap-1.5'>
@@ -700,7 +728,7 @@ export function MemberForm({ member, departments }: Props) {
 
             <div className='grid gap-1.5'>
               <Label htmlFor='webRole'>Vai trò hệ thống</Label>
-              <Select onValueChange={setWebRole} value={webRole}>
+              <Select disabled onValueChange={setWebRole} value={webRole}>
                 <SelectTrigger id='webRole'>
                   <SelectValue />
                 </SelectTrigger>
@@ -783,124 +811,23 @@ export function MemberForm({ member, departments }: Props) {
               <h2 className='flex items-center gap-2 font-semibold text-base text-foreground'>
                 <span>🏅</span> Chức vụ CLB
               </h2>
-              <Button onClick={handleAddRoleClick} size='sm' variant='outline'>
-                <Plus className='mr-1.5 h-3.5 w-3.5' />
-                Thêm chức vụ
-              </Button>
             </div>
 
-            {/* Inline Sub-form for Adding/Editing a Role */}
-            {showRoleForm && (
-              <form className='space-y-3 rounded-lg border bg-muted/20 p-4' onSubmit={handleRoleSubmit}>
-                <div className='font-medium text-foreground text-xs'>
-                  {editingRole ? "Chỉnh sửa chức vụ" : "Thêm chức vụ mới"}
-                </div>
-
-                <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-                  <div className='grid gap-1'>
-                    <Label className='text-[10px]' htmlFor='rolePosition'>
-                      Chức vụ *
-                    </Label>
-                    <Select onValueChange={handlePositionChange} value={rolePosition}>
-                      <SelectTrigger className='h-8 text-xs'>
-                        <SelectValue placeholder='Chọn...' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(POSITION_LABELS).map(([k, v]) => (
-                          <SelectItem key={k} value={k}>
-                            {v}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className='grid gap-1'>
-                    <Label className='text-[10px]' htmlFor='roleDepartment'>
-                      Ban bộ
-                    </Label>
-                    <Select disabled={!isDeptRequired} onValueChange={setRoleDepartmentId} value={roleDepartmentId}>
-                      <SelectTrigger className='h-8 text-xs'>
-                        <SelectValue placeholder='Không có / Cấp CLB' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='none'>Không có / Cấp CLB</SelectItem>
-                        {departments.map((d) => (
-                          <SelectItem key={d.id} value={d.id}>
-                            {d.nameVi}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
-                  <div className='grid gap-1'>
-                    <Label className='text-[10px]' htmlFor='roleTerm'>
-                      Khóa (NK) {isTermRequired && " *"}
-                    </Label>
-                    <Input
-                      className='h-8 text-xs'
-                      id='roleTerm'
-                      onChange={(e) => setRoleTerm(e.target.value)}
-                      placeholder={isTermRequired ? "vd: 2023 (bắt buộc)" : "vd: 2023"}
-                      type='number'
-                      value={roleTerm}
-                    />
-                  </div>
-
-                  <div className='grid gap-1'>
-                    <Label className='text-[10px]' htmlFor='roleStartAt'>
-                      Bắt đầu *
-                    </Label>
-                    <Input
-                      className='h-8 text-xs'
-                      id='roleStartAt'
-                      onChange={(e) => setRoleStartAt(e.target.value)}
-                      required
-                      type='date'
-                      value={roleStartAt}
-                    />
-                  </div>
-
-                  <div className='grid gap-1'>
-                    <Label className='text-[10px]' htmlFor='roleEndAt'>
-                      Kết thúc
-                    </Label>
-                    <Input
-                      className='h-8 text-xs'
-                      id='roleEndAt'
-                      onChange={(e) => setRoleEndAt(e.target.value)}
-                      type='date'
-                      value={roleEndAt}
-                    />
-                  </div>
-                </div>
-
-                <div className='grid gap-1'>
-                  <Label className='text-[10px]' htmlFor='roleNote'>
-                    Ghi chú
-                  </Label>
-                  <Input
-                    className='h-8 text-xs'
-                    id='roleNote'
-                    onChange={(e) => setRoleNote(e.target.value)}
-                    placeholder='vd: Khen thưởng xuất sắc...'
-                    value={roleNote}
-                  />
-                </div>
-
-                <div className='flex justify-end gap-2 pt-1'>
-                  <Button onClick={() => setShowRoleForm(false)} size='sm' variant='ghost'>
-                    Hủy
-                  </Button>
-                  <Button size='sm' type='submit'>
-                    {editingRole ? "Cập nhật" : "Thêm vào danh sách"}
-                  </Button>
-                </div>
-              </form>
-            )}
+            <div className='flex flex-col justify-between gap-4 rounded-lg border border-orange-500/20 bg-orange-500/10 p-3.5 text-orange-600 text-xs sm:flex-row sm:items-center dark:text-orange-400'>
+              <span>
+                <strong>Lưu ý:</strong> Chức vụ và vai trò của thành viên hiện được đồng bộ tự động và quản lý tập trung
+                từ cổng SSO. Bạn không thể chỉnh sửa chức vụ tại đây.
+              </span>
+              <a
+                className='inline-flex shrink-0 items-center gap-1 font-bold text-orange-700 hover:underline dark:text-orange-300'
+                href='https://auth.mpclub.dev/admin/ui/users'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                Quản lý trên SSO
+                <ExternalLink className='h-3 w-3' />
+              </a>
+            </div>
 
             {/* List of currently accumulated Roles */}
             {clubRoles.length === 0 ? (
@@ -948,24 +875,7 @@ export function MemberForm({ member, departments }: Props) {
                           )}
                         </div>
 
-                        <div className='flex items-center gap-0.5'>
-                          <Button
-                            className='h-6 w-6'
-                            onClick={() => handleEditRoleClick(role)}
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Pencil className='h-3 w-3' />
-                          </Button>
-                          <Button
-                            className='h-6 w-6 text-destructive hover:bg-destructive/10 hover:text-destructive'
-                            onClick={() => handleRemoveRole(role.id)}
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Trash2 className='h-3 w-3' />
-                          </Button>
-                        </div>
+                        {null}
                       </div>
                     </div>
                   );

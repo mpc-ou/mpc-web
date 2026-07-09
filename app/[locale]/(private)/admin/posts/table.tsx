@@ -58,7 +58,7 @@ export function PostsDataTable({
   initialTotalPages: number;
 }) {
   const router = useRouter();
-  const { handleErrorClient } = useHandleError();
+  const { handleErrorClient, toast } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [isPending, startTransition] = useTransition();
 
@@ -233,7 +233,9 @@ export function PostsDataTable({
       },
       {
         label: "Tác giả",
-        value: viewPost.author ? getFullName(viewPost.author.firstName, viewPost.author.lastName, "vi") : "—"
+        value: viewPost.author
+          ? getFullName(viewPost.author.firstName, viewPost.author.middleName, viewPost.author.lastName, "vi")
+          : "—"
       },
       {
         label: "Ngày tạo",
@@ -390,7 +392,15 @@ export function PostsDataTable({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-44 rounded-md border border-border bg-popover shadow-md'>
-              <DropdownMenuItem className='cursor-pointer' onClick={() => alert("Chức năng đang được tích hợp")}>
+              <DropdownMenuItem
+                className='cursor-pointer'
+                onClick={() =>
+                  toast({
+                    title: "Chức năng đang được tích hợp",
+                    variant: "info"
+                  })
+                }
+              >
                 <Download className='mr-2 h-4 w-4' />
                 Xuất file Excel
               </DropdownMenuItem>

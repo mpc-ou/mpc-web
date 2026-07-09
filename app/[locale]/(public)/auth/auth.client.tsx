@@ -1,31 +1,21 @@
 "use client";
 
-import type { Provider } from "@supabase/supabase-js";
-import { Lock, Mail, Sparkles, Terminal } from "lucide-react";
+import { Lock, Sparkles, Terminal } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { signInWithOAuth, signInWithPassword } from "@/app/_actions/auth/auth";
 import { LocaleSelect } from "@/components/custom/header/locale-select.client";
 import { ModeToggle } from "@/components/custom/header/mode-toggle.client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { _ROUTE_AUTH_CALLBACK } from "@/constants/route";
 import { useHandleError } from "@/hooks/use-handle-error";
 
 const LoginClient = () => {
   const tAuth = useTranslations("auth");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
   const containerRef = useRef<HTMLDivElement>(null);
-  const { handleErrorClient, toast } = useHandleError();
+  const { toast } = useHandleError();
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -57,37 +47,8 @@ const LoginClient = () => {
     setMousePosition({ x: 0, y: 0 });
   }, []);
 
-  const handleLogin = async (provider: Provider) => {
-    const redirectTo = `${location.origin}${_ROUTE_AUTH_CALLBACK}`;
-
-    await handleErrorClient({
-      cb: async () => await signInWithOAuth(provider, redirectTo),
-      onSuccess: ({ data }: { data: any }) => {
-        if ((data as any)?.payload?.url) {
-          window.location.href = (data as any).payload.url;
-        }
-      },
-      withSuccessNotify: false
-    });
-  };
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!(email && password)) {
-      return;
-    }
-
-    setIsEmailLoading(true);
-
-    await handleErrorClient({
-      cb: async () => await signInWithPassword({ email, password }),
-      onSuccess: () => {
-        window.location.href = "/";
-      },
-      withSuccessNotify: false
-    });
-
-    setIsEmailLoading(false);
+  const handleSsoLogin = () => {
+    window.location.href = "/api/auth/login";
   };
 
   const leftLogoTransform = `translate(${mousePosition.x * 25}px, ${mousePosition.y * 25}px) rotate(${mousePosition.x * 5}deg)`;
@@ -148,55 +109,53 @@ const LoginClient = () => {
           }}
         >
           <Image
-            alt='MPClub Banner'
-            className='object-cover opacity-95 brightness-[0.85] saturate-[1.05] filter'
+            alt='Banner background'
+            className='object-cover object-center brightness-[0.45] dark:brightness-[0.35]'
             fill
             priority
-            src='/images/bg/about.jpg'
+            src='/images/bg/toc2025.jpg'
           />
+          <div className='absolute inset-0 bg-[#070b13]/55 dark:bg-[#070b13]/75' />
+          <div className='absolute inset-0 bg-gradient-to-r from-[#070b13]/70 via-transparent to-transparent' />
         </div>
-        <div className='absolute inset-0 z-1 bg-linear-to-tr from-slate-950/70 via-slate-950/70 to-transparent dark:from-slate-950/75 dark:via-slate-950/30' />
-        <div className='bottom right, rgba(148, 163, 184, 0.207), transparent 70%) absolute inset-0 z-1 bg-linear-gradient(to' />
 
-        <div
-          className='relative z-10 flex items-center gap-4 transition-all duration-300'
-          style={{ transform: leftLogoTransform }}
-        >
-          <div className='relative h-14 w-14 select-none drop-shadow-[0_4px_12px_rgba(249,115,22,0.3)] filter'>
-            <Image alt='MPClub Logo' className='object-contain' fill priority src='/images/logo.png' />
+        <div className='relative z-10 flex items-center gap-3'>
+          <div
+            className='relative h-10 w-10 select-none drop-shadow-[0_2px_8px_rgba(249,115,22,0.4)] filter transition-transform duration-500 ease-out'
+            style={{ transform: leftLogoTransform }}
+          >
+            <Image alt='MPClub Logo' className='object-contain' fill src='/images/logo.png' />
           </div>
-          <div>
-            <h2 className='font-black text-2xl text-white tracking-wider drop-shadow-md'>MPC</h2>
-            <p className='font-bold text-[10px] text-orange-400 uppercase tracking-widest'>Mobile Programing Club</p>
-          </div>
+          <span className='font-black text-white text-xl tracking-tight'>MPClub</span>
         </div>
 
         <div
-          className='relative z-10 mt-auto text-white transition-all duration-300 ease-out'
+          className='relative z-10 max-w-xl transition-transform duration-500 ease-out'
           style={{ transform: leftTextTransform }}
         >
-          <div className='mb-2 flex items-center gap-2'>
-            <Sparkles className='h-5 w-5 animate-pulse text-orange-400' />
-            <span className='font-mono font-semibold text-orange-400 text-xs uppercase tracking-widest'>Slogan</span>
+          <div className='inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/20 px-3 py-1 font-bold text-[11px] text-orange-400 uppercase tracking-wider'>
+            <Sparkles className='h-3 w-3 animate-pulse' />
+            {tAuth("clubManagementSystem")}
           </div>
-          <h1 className='mb-2 font-black text-4xl leading-tight tracking-tight drop-shadow-md xl:text-5xl'>
-            Where there&apos;s a bug,
+          <h1 className='mt-6 font-black text-4xl text-white leading-tight tracking-tight xl:text-5xl'>
+            {tAuth("adminPlatform")}
             <br />
-            there&apos;s{" "}
-            <span className='bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent'>MPC!</span>
+            <span className='bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent'>
+              {tAuth("membersActivities")}
+            </span>
           </h1>
-          <p className='text-sm text-white/60 tracking-wide'>Faculty of Information Technology — HCMOU</p>
+          <p className='mt-4 font-medium text-slate-300 text-sm leading-relaxed'>{tAuth("descriptionLeft")}</p>
+        </div>
+
+        <div className='relative z-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs'>
+          <span className='font-bold text-slate-300 uppercase tracking-wider'>&copy; {tAuth("copyright")}</span>
+          <div className='h-1 w-1 rounded-full bg-slate-500' />
+          <span className='font-semibold text-slate-300'>{tAuth("version")}</span>
         </div>
       </div>
 
-      <div className='relative flex w-full flex-col items-center justify-center overflow-hidden px-6 text-foreground lg:w-[40%] xl:px-12 dark:text-white'>
-        <div
-          className='pointer-events-none absolute inset-0 z-0 animate-grid-move opacity-[0.08] dark:opacity-[0.1]'
-          style={{
-            backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
-            backgroundSize: "32px 32px"
-          }}
-        />
+      <div className='relative flex flex-1 items-center justify-center p-6 sm:p-10 lg:w-[40%]'>
+        <div className='absolute inset-0 z-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] opacity-40 [background-size:16px_16px] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] dark:opacity-30' />
 
         <div className='pointer-events-none absolute inset-0 z-0 overflow-hidden'>
           <div className='absolute top-0 bottom-0 w-[180px] animate-laser bg-gradient-to-r from-transparent via-orange-500/10 to-transparent blur-2xl dark:via-orange-400/8' />
@@ -250,115 +209,23 @@ const LoginClient = () => {
             <CardHeader className='space-y-2 pb-6 text-center'>
               <CardTitle className='flex items-center justify-center gap-2 font-black text-2xl text-slate-900 uppercase tracking-tight dark:text-white'>
                 <Terminal className='h-5 w-5 text-orange-500' />
-                {tAuth("title2")}
+                {tAuth("ssoTitle")}
               </CardTitle>
               <CardDescription className='text-slate-500 text-sm dark:text-slate-400'>
                 {tAuth("description")}
               </CardDescription>
             </CardHeader>
-            <CardContent className='space-y-6'>
-              <form className='space-y-4' onSubmit={handleEmailLogin}>
-                <div className='space-y-2'>
-                  <Label
-                    className='font-bold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400'
-                    htmlFor='email'
-                  >
-                    Email
-                  </Label>
-                  <div className='relative'>
-                    <Mail className='absolute top-1/2 left-3 h-4.5 w-4.5 -translate-y-1/2 text-slate-400' />
-                    <Input
-                      className='h-11 border-slate-200 bg-white/50 pl-10 focus-visible:ring-orange-500 dark:border-white/10 dark:bg-slate-900/50'
-                      id='email'
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder='m.example@gmail.com'
-                      required
-                      type='email'
-                      value={email}
-                    />
-                  </div>
+            <CardContent className='space-y-6 pt-2 pb-8'>
+              <Button
+                className='flex h-12 w-full items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 font-semibold text-base transition-all duration-300 hover:from-orange-600 hover:to-amber-600 hover:shadow-lg hover:shadow-orange-500/20 active:scale-[0.98]'
+                onClick={handleSsoLogin}
+                type='button'
+              >
+                <div className='relative h-6.5 w-6.5 select-none drop-shadow-[0_2px_4px_rgba(255,255,255,0.25)] filter'>
+                  <Image alt='Logo' className='object-contain' fill src='/images/logo.png' />
                 </div>
-
-                <div className='space-y-2'>
-                  <Label
-                    className='font-bold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400'
-                    htmlFor='password'
-                  >
-                    Mật khẩu
-                  </Label>
-                  <div className='relative'>
-                    <Lock className='absolute top-1/2 left-3 h-4.5 w-4.5 -translate-y-1/2 text-slate-400' />
-                    <Input
-                      className='h-11 border-slate-200 bg-white/50 pl-10 focus-visible:ring-orange-500 dark:border-white/10 dark:bg-slate-900/50'
-                      id='password'
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      type='password'
-                      value={password}
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  className='h-11 w-full bg-gradient-to-r from-orange-500 to-amber-500 font-semibold text-sm transition-all duration-300 hover:from-orange-600 hover:to-amber-600 hover:shadow-lg hover:shadow-orange-500/20 active:scale-[0.98]'
-                  disabled={isEmailLoading || !email || !password}
-                  type='submit'
-                >
-                  {isEmailLoading ? (
-                    <div className='flex items-center gap-2'>
-                      <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
-                      Đăng nhập...
-                    </div>
-                  ) : (
-                    "Đăng nhập bằng Email"
-                  )}
-                </Button>
-              </form>
-
-              <div className='relative py-2'>
-                <div className='absolute inset-0 flex items-center'>
-                  <Separator className='w-full border-slate-200/60 dark:border-white/10' />
-                </div>
-                <div className='relative flex justify-center text-xs uppercase'>
-                  <span className='bg-white px-3 font-bold text-[10px] text-slate-400 tracking-wider dark:bg-[#0b1324]'>
-                    Hoặc tiếp tục với
-                  </span>
-                </div>
-              </div>
-
-              <div className='flex flex-col gap-3 sm:flex-row'>
-                <Button
-                  className='h-11 flex-1 border-slate-200 font-medium transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:border-white/10 dark:hover:bg-slate-900 dark:hover:text-white'
-                  onClick={() => handleLogin("google")}
-                  type='button'
-                  variant='outline'
-                >
-                  <Image
-                    alt='Google Icon'
-                    className='mr-2'
-                    height={18}
-                    src='/images/icons/google-icon.svg'
-                    width={18}
-                  />
-                  Google
-                </Button>
-
-                <Button
-                  className='h-11 flex-1 border-slate-200 font-medium transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:border-white/10 dark:hover:bg-slate-900 dark:hover:text-white'
-                  onClick={() => handleLogin("github")}
-                  type='button'
-                  variant='outline'
-                >
-                  <Image
-                    alt='GitHub Icon'
-                    className='mr-2'
-                    height={18}
-                    src='/images/icons/github-icon.svg'
-                    width={18}
-                  />
-                  GitHub
-                </Button>
-              </div>
+                <span>{tAuth("ssoButton")}</span>
+              </Button>
             </CardContent>
           </Card>
 

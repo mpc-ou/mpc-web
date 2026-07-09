@@ -1,10 +1,10 @@
 "use client";
 
-import { Database, Pencil, Plus, Search } from "lucide-react";
+import { Database, Loader2, Pencil, Plus, RefreshCw, Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { adminDeleteDepartment, adminSeedDepartments } from "@/app/_actions/admin";
+import { adminDeleteDepartment, adminSeedDepartments, adminSyncMembersFromSso } from "@/app/_actions/admin";
 import { DataTable } from "@/components/data-table";
 import { MarkdownContent } from "@/components/markdown-content";
 import { Badge } from "@/components/ui/badge";
@@ -14,12 +14,15 @@ import { Input } from "@/components/ui/input";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { createColumns, type DeptRow } from "./columns";
+import { DeptFormDialog } from "./form-dialog";
 
 export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
   const router = useRouter();
   const { handleErrorClient } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [seeding, setSeeding] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [viewDept, setViewDept] = useState<DeptRow | null>(null);
 
   const [searchVal, setSearchVal] = useState("");
@@ -71,6 +74,18 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
     setSeeding(false);
   };
 
+  const handleSyncSso = async () => {
+    setSyncing(true);
+    await handleErrorClient({
+      cb: () => adminSyncMembersFromSso(),
+      onSuccess: () => {
+        router.refresh();
+        setSyncing(false);
+      }
+    });
+    setSyncing(false);
+  };
+
   const columns = useMemo(
     () => createColumns(handleEdit, handleDelete, handleView),
     [handleDelete, handleEdit, handleView]
@@ -80,14 +95,9 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
     <div className='flex flex-col gap-4'>
       <ConfirmDialog />
 
-      <div className='flex items-center justify-end gap-2'>
-        <Button className='h-9' disabled={seeding} onClick={handleSeed} size='sm' variant='outline'>
-          <Database className='mr-2 h-4 w-4' />
-          {seeding ? "Đang nhập..." : "Ghi đè dữ liệu mẫu"}
-        </Button>
-        <Button className='h-9 font-medium' onClick={() => router.push("/admin/departments/new")}>
-          <Plus className='mr-2 h-4 w-4' /> Thêm ban
-        </Button>
+      <div className='flex items-center gap-2 rounded-lg border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-blue-700 text-xs dark:text-blue-400'>
+        Cấu hình các ban hiển thị trên Landing Page. Bạn có thể thêm, sửa, xóa thủ công hoặc nhấn "Đồng bộ SSO" để lấy
+        dữ liệu từ SSO.
       </div>
 
       <div className='flex flex-wrap items-center justify-between gap-2'>
@@ -100,9 +110,24 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
             value={searchVal}
           />
         </div>
+        <div className='flex items-center gap-2'>
+          <Button onClick={() => setIsCreateOpen(true)} size='sm'>
+            <Plus className='mr-1.5 h-4 w-4' /> Thêm ban
+          </Button>
+          <Button disabled={seeding} onClick={handleSeed} size='sm' variant='outline'>
+            {seeding ? <Loader2 className='mr-1.5 h-4 w-4 animate-spin' /> : <Database className='mr-1.5 h-4 w-4' />}
+            Khởi tạo mặc định
+          </Button>
+          <Button disabled={syncing} onClick={handleSyncSso} size='sm' variant='outline'>
+            {syncing ? <Loader2 className='mr-1.5 h-4 w-4 animate-spin' /> : <RefreshCw className='mr-1.5 h-4 w-4' />}
+            Đồng bộ SSO
+          </Button>
+        </div>
       </div>
 
       <DataTable columns={columns} data={filteredData} />
+
+      <DeptFormDialog onOpenChange={setIsCreateOpen} open={isCreateOpen} />
 
       {/* View Modal */}
       <Dialog onOpenChange={(open) => !open && setViewDept(null)} open={!!viewDept}>

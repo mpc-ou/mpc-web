@@ -46,7 +46,7 @@ export default async function BlogsPage({ params, searchParams }: Props): Promis
     } = await supabase.auth.getUser();
     if (user) {
       const member = await prisma.member.findUnique({
-        where: { authId: user.id },
+        where: { id: user.id },
         select: { webRole: true }
       });
       if (member) {

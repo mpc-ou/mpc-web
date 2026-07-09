@@ -120,7 +120,7 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
     }
   };
 
-  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       processThumbnailFile(file);
@@ -630,7 +630,7 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
                 <div className='mt-3 flex flex-wrap gap-2'>
                   {linked.map((l) => (
                     <Badge className='text-xs' key={l.member.id} variant='secondary'>
-                      {getFullName(l.member.firstName, l.member.lastName, "vi")}
+                      {getFullName(l.member.firstName, l.member.middleName, l.member.lastName, "vi")}
                       {l.role ? ` — ${l.role}` : ""}
                     </Badge>
                   ))}

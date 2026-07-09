@@ -22,7 +22,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
         titleVi: true,
         titleEn: true,
         thumbnail: true,
-        author: { select: { firstName: true, lastName: true } },
+        author: { select: { firstName: true, lastName: true, middleName: true } },
         tags: { select: { tag: { select: { name: true } } } }
       }
     }),
@@ -47,6 +47,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
         id: true,
         firstName: true,
         lastName: true,
+        middleName: true,
         avatar: true,
         slug: true,
         joinedClubAt: true,
@@ -72,7 +73,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
       slug: p.slug,
       section: p.type.toLowerCase() as SearchIndexItem["section"],
       thumbnail: p.thumbnail,
-      authorName: `${p.author.firstName} ${p.author.lastName}`,
+      authorName: p.author ? `${p.author.firstName} ${p.author.lastName}` : null,
       keywords: tagNames,
       extra: null,
       url: `/posts/${p.slug}`

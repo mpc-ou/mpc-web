@@ -14,6 +14,7 @@ export type MemberRow = {
   id: string;
   email: string;
   firstName: string;
+  middleName?: string | null;
   lastName: string;
   avatar: string | null;
   phone: string | null;
@@ -21,8 +22,6 @@ export type MemberRow = {
   studentId: string | null;
   bio: string | null;
   slug: string | null;
-  githubEmail: string | null;
-  password: string | null;
   webRole: string;
   isActive: boolean;
   leftClubAt: string | null;
@@ -147,7 +146,7 @@ export const createColumns = (
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className='font-medium text-xs'>{getFullName(m.firstName, m.lastName, "vi")}</div>
+            <div className='font-medium text-xs'>{getFullName(m.firstName, m.middleName, m.lastName, "vi")}</div>
             {m.studentId && <div className='text-[10px] text-muted-foreground'>{m.studentId}</div>}
           </div>
         </div>

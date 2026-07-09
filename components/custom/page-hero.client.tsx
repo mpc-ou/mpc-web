@@ -108,9 +108,9 @@ const PageHero = ({ title, description, badge, imageUrl, size = "large", childre
 
       {!isCompact && (
         <>
-          <div className='absolute inset-x-0 bottom-0 z-1 h-[80%] bg-gradient-to-t from-slate-50 via-slate-50/25 to-transparent dark:from-[#070b13] dark:via-[#070b13]/30 dark:to-transparent' />
+          <div className='absolute inset-x-0 bottom-0 z-0 h-[80%] bg-gradient-to-t from-slate-50 via-slate-50/25 to-transparent dark:from-[#070b13] dark:via-[#070b13]/30 dark:to-transparent' />
 
-          <div className='absolute inset-y-0 left-0 z-1 w-[50%] bg-gradient-to-r from-slate-50/25 to-transparent dark:from-[#070b13]/30 dark:to-transparent' />
+          <div className='absolute inset-y-0 left-0 z-0 w-[50%] bg-gradient-to-r from-slate-50/25 to-transparent dark:from-[#070b13]/30 dark:to-transparent' />
         </>
       )}
 
@@ -126,13 +126,13 @@ const PageHero = ({ title, description, badge, imageUrl, size = "large", childre
       />
 
       <div className='pointer-events-none absolute inset-0 z-2 overflow-hidden'>
-        <div className='absolute top-12 left-1/4 h-24 w-24 animate-float-up rounded-full bg-orange-500/5 blur-xl dark:bg-orange-500/8' />
+        <div className='absolute top-12 left-1/4 z-0 h-24 w-24 animate-float-up rounded-full bg-orange-500/5 blur-xl dark:bg-orange-500/8' />
 
-        <div className='absolute right-1/4 bottom-20 h-32 w-32 animate-float-down rounded-full bg-cyan-500/5 blur-xl dark:bg-cyan-500/6' />
+        <div className='absolute right-1/4 bottom-20 z-0 h-32 w-32 animate-float-down rounded-full bg-cyan-500/5 blur-xl dark:bg-cyan-500/6' />
 
-        <div className='absolute top-1/3 right-12 h-10 w-10 animate-float-up rounded-full border border-slate-350/20 bg-slate-350/5 dark:border-white/5 dark:bg-white/2' />
+        <div className='absolute top-1/3 right-12 z-0 h-10 w-10 animate-float-up rounded-full border border-slate-350/20 bg-slate-350/5 dark:border-white/5 dark:bg-white/2' />
 
-        <div className='absolute bottom-1/3 left-8 h-6 w-6 animate-float-down rounded-full border border-orange-500/10 bg-orange-500/2 dark:border-orange-500/15' />
+        <div className='absolute bottom-1/3 left-8 z-0 h-6 w-6 animate-float-down rounded-full border border-orange-500/10 bg-orange-500/2 dark:border-orange-500/15' />
       </div>
 
       {!isCompact && (

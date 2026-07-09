@@ -13,7 +13,7 @@ export const getMemberBySlug = async (slug: string) =>
 
       const member = await prisma.member.findFirst({
         where: {
-          OR: [{ slug }, { studentId: slug }, { authId: slug }]
+          OR: [{ slug }, { studentId: slug }, { id: slug }]
         },
         include: {
           clubRoles: {
@@ -36,6 +36,7 @@ export const getMemberBySlug = async (slug: string) =>
                           id: true,
                           firstName: true,
                           lastName: true,
+                          middleName: true,
                           avatar: true,
                           slug: true
                         }
@@ -82,7 +83,7 @@ export const getMemberSlugByAuthId = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: { slug: true }
       });
       return { slug: member?.slug ?? null };

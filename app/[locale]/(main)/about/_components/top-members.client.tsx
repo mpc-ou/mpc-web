@@ -57,7 +57,7 @@ export function TopMembersCarouselClient({ members, locale }: { members: any[]; 
     <div className='' ref={emblaRef}>
       <div className='flex touch-pan-y pt-4 pb-8'>
         {members.map((member) => {
-          const fullName = getFullName(member.firstName, member.lastName, locale);
+          const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
           const initials = `${member.firstName[0]}${member.lastName[0]}`;
           const role = member.currentRole;
           const positionLabel = role ? t(role.position as any) || role.position : tAbout("member");

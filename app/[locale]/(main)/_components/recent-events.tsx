@@ -10,10 +10,10 @@ import { formatLocalDate } from "@/utils/handle-datetime";
 
 export async function RecentEventsSection() {
   await connection();
-  const { data } = await getRecentEvents(3);
+  const locale = await getLocale();
+  const { data } = await getRecentEvents(3, locale);
   const t = await getTranslations();
   const ta = await getTranslations("aboutPage.recentEvents");
-  const locale = await getLocale();
   // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
   const events = (data?.payload as any)?.events || [];
 

@@ -22,6 +22,7 @@ type Leader = {
   member: {
     id: string;
     firstName: string;
+    middleName?: string | null;
     lastName: string;
     avatar: string | null;
     slug: string;
@@ -79,7 +80,7 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
 
   const title = (a: Achievement) => (locale === "en" && a.titleEn ? a.titleEn : a.titleVi);
   const summary = (a: Achievement) => (locale === "en" && a.summaryEn ? a.summaryEn : a.summaryVi);
-  const fullName = getFullName(leader.member.firstName, leader.member.lastName, locale);
+  const fullName = getFullName(leader.member.firstName, leader.member.middleName, leader.member.lastName, locale);
   const topRole = leader.roles[0];
   const achievementCount = leader.member._count?.achievements ?? leader.member._count?.achievementEntries ?? 0;
   const projectCount = leader.member._count?.projects ?? 0;

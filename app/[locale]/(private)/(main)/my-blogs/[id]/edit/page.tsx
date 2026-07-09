@@ -24,7 +24,7 @@ export default async function EditBlogPage({ params }: Props) {
   }
 
   const member = await prisma.member.findUnique({
-    where: { authId: user.id },
+    where: { id: user.id },
     select: { id: true, webRole: true }
   });
   if (!member) {

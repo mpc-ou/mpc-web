@@ -19,7 +19,7 @@ export type PostRow = {
   createdAt: string;
   publishedAt: string | null;
   thumbnail?: string | null;
-  author: { firstName: string; lastName: string } | null;
+  author: { firstName: string; middleName?: string | null; lastName: string } | null;
   category: { name: string } | null;
 
   // Bilingual fields
@@ -193,7 +193,7 @@ export const createColumns = (
     cell: ({ row }) => {
       const a = row.original.author;
       return a ? (
-        <span className='text-xs'>{getFullName(a.firstName, a.lastName, "vi")}</span>
+        <span className='text-xs'>{getFullName(a.firstName, a.middleName, a.lastName, "vi")}</span>
       ) : (
         <span className='text-muted-foreground'>—</span>
       );

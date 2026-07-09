@@ -45,7 +45,7 @@ export async function validateEmailAllowed(email: string): Promise<{ allowed: bo
   if (onlyExistingMembers || requireMemberRole) {
     const existing = await prisma.member.findFirst({
       where: {
-        OR: [{ email: emailLower }, { githubEmail: emailLower }]
+        email: emailLower
       },
       select: { id: true, webRole: true }
     });

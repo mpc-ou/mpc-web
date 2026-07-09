@@ -240,7 +240,7 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
                     <MemberChip
                       avatar={m.avatar}
                       key={i}
-                      name={getFullName(m.firstName, m.lastName, "vi")}
+                      name={getFullName(m.firstName, m.middleName, m.lastName, "vi")}
                       prize={m.prize ?? undefined}
                       role={m.role ?? undefined}
                     />

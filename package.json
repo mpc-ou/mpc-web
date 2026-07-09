@@ -64,6 +64,7 @@
     "fuse.js": "^7.4.2",
     "highlight.js": "^11.9.0",
     "html-to-image": "^1.11.13",
+    "jose": "^6.2.3",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
     "leaflet.fullscreen": "^5.3.1",

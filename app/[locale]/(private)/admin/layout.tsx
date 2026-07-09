@@ -21,6 +21,7 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
   let member: {
     webRole: string;
     firstName: string;
+    middleName: string | null;
     lastName: string;
     avatar: string | null;
     email: string;
@@ -28,10 +29,11 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
 
   try {
     member = await prisma.member.findUnique({
-      where: { authId: user.id },
+      where: { id: user.id },
       select: {
         webRole: true,
         firstName: true,
+        middleName: true,
         lastName: true,
         avatar: true,
         email: true
@@ -48,7 +50,7 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
 
   if (isRootAdmin(member.email) && member.webRole !== "ADMIN") {
     await prisma.member.update({
-      where: { authId: user.id },
+      where: { id: user.id },
       data: { webRole: "ADMIN" }
     });
     member = { ...member, webRole: "ADMIN" };
@@ -64,7 +66,7 @@ async function AdminLayoutInner({ children }: { children: ReactNode }) {
   });
   const logoUrl = siteLogoSetting?.value || "/images/logo.png";
 
-  const memberName = getFullName(member.firstName, member.lastName, "vi");
+  const memberName = getFullName(member.firstName, member.middleName, member.lastName, "vi");
 
   return (
     <AdminLayoutWrapper

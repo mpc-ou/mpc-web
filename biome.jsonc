@@ -13,7 +13,8 @@
       "**/*.js",
       "**/*.jsx",
       "!**/components/ui",
-      "!**/*.d.ts"
+      "!**/*.d.ts",
+      "!.claude"
     ]
   },
   "assist": {
@@ -60,6 +61,7 @@
         "noUnusedVariables": "off",
         "noUnusedImports": "off"
       },
+      "performance": { "noBarrelFile": "off" },
       "nursery": { "noShadow": "off", "useSortedClasses": "info" }
     }
   },

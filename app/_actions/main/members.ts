@@ -1,8 +1,10 @@
 "use server";
 
 import { cacheTag } from "next/cache";
+import { getLocale } from "next-intl/server";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_MEMBERS } from "@/constants/cache";
+import { getFullName } from "@/lib/utils";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
 export const getLeadership = async () =>
@@ -28,6 +30,7 @@ export const getLeadership = async () =>
           slug: true,
           firstName: true,
           lastName: true,
+          middleName: true,
           avatar: true,
           bio: true,
           socials: true,
@@ -103,6 +106,7 @@ export const getMembersGroupedByYear = async () =>
           acc[year].push({
             id: member.id,
             firstName: member.firstName,
+            middleName: member.middleName,
             lastName: member.lastName,
             avatar: member.avatar,
             slug: member.slug,
@@ -125,11 +129,13 @@ export const getMembersGroupedByYear = async () =>
 export const getHeaderProfile = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
+      const locale = await getLocale();
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: {
           firstName: true,
           lastName: true,
+          middleName: true,
           avatar: true,
           webRole: true,
           slug: true
@@ -137,8 +143,10 @@ export const getHeaderProfile = async () =>
       });
 
       return {
-        fullName: member ? `${member.firstName} ${member.lastName}` : (user?.user_metadata.full_name ?? null),
-        avatarUrl: member?.avatar ?? user?.user_metadata.avatar_url ?? null,
+        fullName: member
+          ? getFullName(member.firstName, member.middleName, member.lastName, locale)
+          : (user?.name ?? null),
+        avatarUrl: member?.avatar ?? null,
         isAdmin: member?.webRole === "ADMIN",
         webRole: member?.webRole ?? "GUEST",
         slug: member?.slug ?? null

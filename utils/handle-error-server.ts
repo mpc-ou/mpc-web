@@ -1,10 +1,9 @@
-import type { User } from "@supabase/supabase-js";
-import { createClientSsr } from "@/configs/supabase/server";
 import type { ResponseType } from "@/types/response";
 import { ErrorResponse, SuccessResponse } from "./response";
+import { getSession } from "./session";
 
 type HandleErrorServerType = {
-  cb: ({ user }: { user?: User }) => Promise<any>;
+  cb: ({ user }: { user?: any }) => Promise<any>;
 };
 
 function isInternalCancelError(error: unknown): boolean {
@@ -31,18 +30,13 @@ const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<R
 
 const handleErrorServerWithAuth = async ({ cb }: HandleErrorServerType): Promise<ResponseType> => {
   try {
-    const supabase = await createClientSsr();
-    const { data, error: authError } = await supabase.auth.getUser();
+    const session = await getSession();
 
-    if (authError) {
-      return ErrorResponse({ message: authError.message });
-    }
-
-    if (!data.user) {
+    if (!session) {
       return ErrorResponse({ message: "Unauthorized" });
     }
 
-    const res = await cb({ user: data.user });
+    const res = await cb({ user: session });
     return SuccessResponse({ payload: res });
   } catch (error) {
     if (isInternalCancelError(error)) {

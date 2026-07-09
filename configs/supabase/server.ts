@@ -1,29 +1,28 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { getSession } from "@/utils/session";
 
 export async function createClientSsr() {
-  const cookieStore = await cookies();
+  const session = await getSession();
 
-  if (!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
-    throw new Error("Missing Supabase environment variables");
-  }
-
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          for (const { name, value, options } of cookiesToSet) {
-            cookieStore.set(name, value, options);
-          }
-        } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
+  return {
+    auth: {
+      async getUser() {
+        if (!session) {
+          return { data: { user: null }, error: null };
         }
+
+        const user = {
+          id: session.id,
+          email: session.email,
+          user_metadata: {
+            full_name: session.name
+          }
+        };
+
+        return { data: { user }, error: null };
+      },
+      async signOut() {
+        return { error: null };
       }
     }
-  });
+  };
 }

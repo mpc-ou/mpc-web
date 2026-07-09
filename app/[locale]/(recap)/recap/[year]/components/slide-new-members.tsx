@@ -48,7 +48,7 @@ function GravityBubbleField({ members }: { members: RecapData["newMembers"] }) {
     const rect = container.getBoundingClientRect();
     const BUBBLE_R = 40;
     const init: Bubble[] = members.map((m) => {
-      const fullName = getFullName(m.firstName, m.lastName, "vi");
+      const fullName = getFullName(m.firstName, m.middleName, m.lastName, "vi");
       return {
         id: m.id,
         x: BUBBLE_R + Math.random() * (rect.width - BUBBLE_R * 2),

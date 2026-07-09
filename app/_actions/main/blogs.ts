@@ -41,6 +41,7 @@ export const getBlogsPageData = async (validPage: number, take: number, locale =
               select: {
                 firstName: true,
                 lastName: true,
+                middleName: true,
                 avatar: true,
                 slug: true
               }
@@ -86,6 +87,7 @@ export const getBlogBySlug = async (slug: string, locale = "vi") =>
             select: {
               firstName: true,
               lastName: true,
+              middleName: true,
               avatar: true,
               slug: true
             }
@@ -101,6 +103,7 @@ export const getBlogBySlug = async (slug: string, locale = "vi") =>
                   id: true,
                   firstName: true,
                   lastName: true,
+                  middleName: true,
                   avatar: true,
                   slug: true
                 }
@@ -141,7 +144,7 @@ export const getBlogBySlugForUser = async (slug: string, locale = "vi") =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       const member = await prisma.member.findUnique({
-        where: { authId: user?.id },
+        where: { id: user?.id },
         select: { id: true, webRole: true }
       });
       if (!member) {
@@ -155,6 +158,7 @@ export const getBlogBySlugForUser = async (slug: string, locale = "vi") =>
             select: {
               firstName: true,
               lastName: true,
+              middleName: true,
               avatar: true,
               slug: true
             }
@@ -170,6 +174,7 @@ export const getBlogBySlugForUser = async (slug: string, locale = "vi") =>
                   id: true,
                   firstName: true,
                   lastName: true,
+                  middleName: true,
                   avatar: true,
                   slug: true
                 }

@@ -2,12 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { _CACHE_POSTS } from "@/constants/cache";
-import {
-  generateSlug,
-  handleErrorServerWithAuth,
-  prisma,
-  requireAdmin,
-} from "./helpers";
+import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
 const _CACHE_ACTIVITIES = "activities";
 
@@ -16,7 +11,7 @@ export const adminGetActivities = async () =>
     cb: async ({ user }) => {
       await requireAdmin(user);
       return prisma.activity.findMany({ orderBy: { order: "asc" } });
-    },
+    }
   });
 
 export const adminCreateActivity = async (data: {
@@ -50,12 +45,12 @@ export const adminCreateActivity = async (data: {
           thumbnail: data.thumbnail ?? null,
           images: data.images ?? [],
           isActive: data.isActive ?? true,
-          order: data.order ?? 0,
-        },
+          order: data.order ?? 0
+        }
       });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return created;
-    },
+    }
   });
 
 export const adminUpdateActivity = async (
@@ -72,7 +67,7 @@ export const adminUpdateActivity = async (
     images?: string[];
     isActive?: boolean;
     order?: number;
-  },
+  }
 ) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -80,7 +75,7 @@ export const adminUpdateActivity = async (
       const updated = await prisma.activity.update({ where: { id }, data });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return updated;
-    },
+    }
   });
 
 export const adminDeleteActivity = async (id: string) =>
@@ -90,7 +85,7 @@ export const adminDeleteActivity = async (id: string) =>
       await prisma.activity.delete({ where: { id } });
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return { success: true };
-    },
+    }
   });
 
 export const adminSeedActivities = async () =>
@@ -126,7 +121,7 @@ export const adminSeedActivities = async () =>
         const candidateDirs = [
           pathModule.join(process.cwd(), "public"),
           pathModule.join(process.cwd(), ".next", "standalone", "public"),
-          pathModule.join(process.cwd(), "..", "public"),
+          pathModule.join(process.cwd(), "..", "public")
         ];
         publicDir = candidateDirs.find((d) => fsModule.existsSync(d)) ?? "";
       } catch {
@@ -160,7 +155,7 @@ export const adminSeedActivities = async () =>
         const thumbnail = images.length > 0 ? images[0] : null;
 
         const existing = await prisma.activity.findUnique({
-          where: { slug: item.id },
+          where: { slug: item.id }
         });
 
         const payload = {
@@ -174,13 +169,13 @@ export const adminSeedActivities = async () =>
           isInternal: data.internalEvents.some((e) => e.id === item.id),
           thumbnail: thumbnail ?? undefined,
           images,
-          order: i,
+          order: i
         };
 
         if (existing) {
           await prisma.activity.update({
             where: { id: existing.id },
-            data: payload,
+            data: payload
           });
         } else {
           await prisma.activity.create({ data: payload });
@@ -190,5 +185,5 @@ export const adminSeedActivities = async () =>
 
       revalidateTag(_CACHE_ACTIVITIES, "default");
       return { success: true, count };
-    },
+    }
   });

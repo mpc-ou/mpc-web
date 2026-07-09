@@ -13,7 +13,7 @@ const getProfile = async () =>
 
       const member = await prisma.member.findUnique({
         where: {
-          authId: user?.id
+          id: user?.id
         },
         include: {
           clubRoles: {
@@ -32,6 +32,7 @@ const getProfile = async () =>
 
 const updateProfile = async (data: {
   firstName?: string;
+  middleName?: string | null;
   lastName?: string;
   bio?: string;
   phone?: string;
@@ -42,6 +43,9 @@ const updateProfile = async (data: {
   coverImage?: string;
   slug?: string;
   spotifyUri?: string;
+  showDob?: boolean;
+  showPhone?: boolean;
+  showStudentId?: boolean;
 }) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
@@ -51,14 +55,13 @@ const updateProfile = async (data: {
 
       const existing = await prisma.member.findFirst({
         where: {
-          OR: [{ authId: user.id }, { email: user.email ?? "" }]
+          OR: [{ id: user.id }, { email: user.email ?? "" }]
         }
       });
 
       let updatedMember;
 
       if (existing) {
-        // Validate slug uniqueness (exclude current member)
         if (data.slug) {
           const slugTaken = await prisma.member.findFirst({
             where: { slug: data.slug, id: { not: existing.id } }
@@ -74,24 +77,25 @@ const updateProfile = async (data: {
         updatedMember = await prisma.member.update({
           where: { id: existing.id },
           data: {
-            ...data,
-            // Always bind the real authId if it was still a placeholder
-            ...(existing.authId.startsWith("pending-") ? { authId: user.id } : {})
+            ...data
           }
         });
       } else {
-        // Completely new self-registered user — create member
         updatedMember = await prisma.member.create({
           data: {
-            authId: user.id,
+            id: user.id,
             email: user.email ?? "",
             firstName: data.firstName ?? "",
+            middleName: data.middleName,
             lastName: data.lastName ?? "",
             bio: data.bio,
             phone: data.phone,
             studentId: data.studentId,
             socials: data.socials,
             dob: data.dob,
+            showDob: data.showDob,
+            showPhone: data.showPhone,
+            showStudentId: data.showStudentId,
             avatar: data.avatar,
             coverImage: data.coverImage,
             slug: data.slug,

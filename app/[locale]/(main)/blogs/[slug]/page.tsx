@@ -38,6 +38,7 @@ type AchievementMember = {
   member: {
     id: string;
     firstName: string;
+    middleName?: string | null;
     lastName: string;
     avatar: string | null;
     slug: string | null;
@@ -69,6 +70,7 @@ type PostPayload = {
     achievementMembers: AchievementMember[];
     creator: {
       firstName: string;
+      middleName?: string | null;
       lastName: string;
       avatar: string | null;
       slug: string | null;
@@ -169,13 +171,14 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
   const thumbnail = blog.thumbnail ? [blog.thumbnail] : [];
   const contentImages: string[] = [];
   const imgRegex = /!\[.*?\]\((.*?)\)/g;
-  let match;
   // Reset regex lastIndex just to be safe
   imgRegex.lastIndex = 0;
-  while ((match = imgRegex.exec(blog.content || "")) !== null) {
+  let match = imgRegex.exec(blog.content || "");
+  while (match !== null) {
     if (match[1]) {
       contentImages.push(match[1]);
     }
+    match = imgRegex.exec(blog.content || "");
   }
   const additionalImages =
     blog.gallery && blog.gallery.length > 0
@@ -189,7 +192,6 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
   const galleryData = blog.gallery && blog.gallery.length > 0 ? blog.gallery : galleryImages;
   const hasGallery = galleryData.length > 0;
 
-  // Admin can edit any post
   let canEdit = false;
   try {
     const supabase = await createClientSsr();
@@ -198,7 +200,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
     } = await supabase.auth.getUser();
     if (user) {
       const member = await prisma.member.findUnique({
-        where: { authId: user.id },
+        where: { id: user.id },
         select: { webRole: true }
       });
       if (member && member.webRole === "ADMIN") {
@@ -310,7 +312,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
               {blog.creator?.avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  alt={getFullName(blog.creator.firstName, blog.creator.lastName, locale)}
+                  alt={getFullName(blog.creator.firstName, blog.creator.middleName, blog.creator.lastName, locale)}
                   className='h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border'
                   src={blog.creator.avatar}
                 />
@@ -319,7 +321,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
               )}
               <div className='min-w-0'>
                 <span className='block font-semibold text-foreground text-sm leading-none'>
-                  {getFullName(blog.creator?.firstName, blog.creator?.lastName, locale)}
+                  {getFullName(blog.creator?.firstName, blog.creator?.middleName, blog.creator?.lastName, locale)}
                 </span>
                 <Link
                   className='mt-1 block text-muted-foreground text-xs hover:text-primary hover:underline'
@@ -451,7 +453,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
                             {am.member.avatar ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
-                                alt={getFullName(am.member.firstName, am.member.lastName, locale)}
+                                alt={getFullName(am.member.firstName, am.member.middleName, am.member.lastName, locale)}
                                 className='h-5 w-5 rounded-full object-cover'
                                 src={am.member.avatar}
                               />
@@ -459,7 +461,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
                               <UserCircle className='h-5 w-5 text-muted-foreground' />
                             )}
                             <span>
-                              {getFullName(am.member.firstName, am.member.lastName, locale)}
+                              {getFullName(am.member.firstName, am.member.middleName, am.member.lastName, locale)}
                               {am.role ? ` (${am.role})` : ""}
                             </span>
                           </Link>

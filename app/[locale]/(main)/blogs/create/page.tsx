@@ -21,7 +21,7 @@ export default async function CreateBlogPage() {
   }
 
   const member = await prisma.member.findUnique({
-    where: { authId: user.id },
+    where: { id: user.id },
     select: { webRole: true }
   });
 

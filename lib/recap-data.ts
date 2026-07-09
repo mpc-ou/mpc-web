@@ -3,6 +3,7 @@
 export type RecapMember = {
   id: string;
   firstName: string;
+  middleName?: string | null;
   lastName: string;
   avatar: string | null;
 };
@@ -16,23 +17,22 @@ export type RecapTimelineItem = {
   thumbnail: string | null;
   description: string | null;
   descriptionEn?: string | null;
-  // Event-specific
   eventType?: string;
   images?: string[];
   location?: string;
   locationEn?: string | null;
-  // Achievement-specific
   achievementType?: string;
   members?: Array<{
     firstName: string;
+    middleName?: string | null;
     lastName: string;
     avatar: string | null;
     role: string | null;
     prize?: string | null;
   }>;
-  // Project-specific
   projectMembers?: Array<{
     firstName: string;
+    middleName?: string | null;
     lastName: string;
     avatar: string | null;
     role: string | null;
@@ -53,6 +53,7 @@ export type RecapStats = {
 export type RecapExecutiveMember = {
   id: string;
   firstName: string;
+  middleName?: string | null;
   lastName: string;
   avatar: string | null;
   position: string;

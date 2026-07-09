@@ -6,6 +6,7 @@ import {
   Baby,
   Building2,
   Camera,
+  ExternalLink,
   Github,
   Globe,
   Hash,
@@ -30,15 +31,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
-import {
-  linkGithubIdentity,
-  unlinkGithubIdentity,
-  updatePassword as updatePasswordAction
-} from "@/app/_actions/auth/auth";
 import { updateProfile } from "@/app/_actions/profile/profile";
+import { updateSsoProfile } from "@/app/_actions/profile/update-sso-profile";
 import { ImageCropperModal, readFileAsDataURL } from "@/components/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -54,6 +52,7 @@ import { uploadToStorage } from "@/utils/supabase-upload";
 
 type FormClientType = {
   firstName: string;
+  middleName: string;
   lastName: string;
   bio: string;
   phone: string;
@@ -64,11 +63,13 @@ type FormClientType = {
   coverImage: string | null;
   socials: { id?: string; platform: string; url: string }[];
   spotifyUri?: string | null;
+  showDob: boolean;
+  showPhone: boolean;
+  showStudentId: boolean;
 };
 
 type Props = {
   initialData: FormClientType;
-  linkedProviders: string[];
 };
 
 // ── Skeleton Loader ──
@@ -144,7 +145,7 @@ function Field({
   );
 }
 
-const FormClient = ({ initialData, linkedProviders }: Props) => {
+const FormClient = ({ initialData }: Props) => {
   const router = useRouter();
   const t = useTranslations("profile.form");
   const { toast } = useToast();
@@ -159,11 +160,6 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }))
   });
   const [slugError, setSlugError] = useState<string | null>(null);
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-  const [isLinkingGithub, setIsLinkingGithub] = useState(false);
 
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
@@ -212,7 +208,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       processAvatarFile(file);
@@ -242,7 +238,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }
   };
 
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       processCoverFile(file);
@@ -268,51 +264,6 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       ...prev,
       socials: prev.socials.map((s) => (s.id === id ? { ...s, [field]: value } : s))
     }));
-  };
-
-  const handleUpdatePassword = async () => {
-    if (!password) {
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        description: "Mật khẩu xác nhận không khớp!"
-      });
-      return;
-    }
-    setIsUpdatingPassword(true);
-    await handleErrorClient({
-      cb: async () => await updatePasswordAction(password),
-      withSuccessNotify: true
-    });
-    setIsUpdatingPassword(false);
-    setPassword("");
-    setConfirmPassword("");
-  };
-
-  const handleLinkGithub = async () => {
-    setIsLinkingGithub(true);
-    await handleErrorClient({
-      cb: async () => await linkGithubIdentity(window.location.href),
-      onSuccess: ({ data }) => {
-        if ((data as any)?.payload?.url) {
-          window.location.href = (data as any).payload.url;
-        }
-      },
-      withSuccessNotify: false
-    });
-    setIsLinkingGithub(false);
-  };
-
-  const handleUnlinkGithub = async () => {
-    setIsLinkingGithub(true);
-    await handleErrorClient({
-      cb: async () => await unlinkGithubIdentity(),
-      onSuccess: () => router.refresh(),
-      withSuccessNotify: true
-    });
-    setIsLinkingGithub(false);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -378,8 +329,33 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     };
 
     setIsSubmitting(true);
+
+    const ssoResult = await updateSsoProfile({
+      firstName: formData.firstName,
+      middleName: formData.middleName || null,
+      lastName: formData.lastName,
+      dob: formData.dob || null,
+      mssv: formData.studentId || null,
+      phone: formData.phone || null
+    });
+
+    if (!ssoResult.success) {
+      toast({ description: ssoResult.error || "Không thể cập nhật thông tin lên SSO", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+
     await handleErrorClient({
-      cb: async () => updateProfile(payload as any),
+      cb: () =>
+        updateProfile({
+          slug,
+          bio: formData.bio,
+          spotifyUri: parsedSpotifyUri ?? undefined,
+          socials: formData.socials.map(({ id: _id, ...rest }) => rest),
+          showDob: formData.showDob,
+          showPhone: formData.showPhone,
+          showStudentId: formData.showStudentId
+        }),
       withSuccessNotify: true
     });
     setIsSubmitting(false);
@@ -394,17 +370,13 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     >
       {/* ── Images Card ── */}
       <div className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'>
-        <SectionHeader
-          desc='Hình ảnh cá nhân sẽ hiển thị trên trang profile của bạn.'
-          icon={<Camera className='h-5 w-5' />}
-          title='Ảnh đại diện & Ảnh bìa'
-        />
+        <SectionHeader desc={t("avatarDesc")} icon={<Camera className='h-5 w-5' />} title={t("avatarTitle")} />
         <div className='space-y-6 p-6'>
           {/* Cover */}
           <div>
             <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
               <ImagePlus className='h-4 w-4 text-primary' />
-              Ảnh bìa
+              {t("coverLabel")}
             </Label>
             {formData.coverImage ? (
               <div className='group relative aspect-3/1 w-full overflow-hidden rounded-xl border bg-muted'>
@@ -449,15 +421,15 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                 {coverUploading ? (
                   <>
                     <Loader2 className='h-7 w-7 animate-spin text-primary' />
-                    <span className='font-medium text-sm'>Đang upload...</span>
+                    <span className='font-medium text-sm'>{t("linkingGithub")}</span>
                   </>
                 ) : (
                   <>
                     <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10'>
                       <ImagePlus className='h-6 w-6 text-primary' />
                     </div>
-                    <span className='font-medium text-sm'>Thêm ảnh bìa</span>
-                    <span className='text-muted-foreground text-xs'>Kéo thả hoặc click để chọn · max 5MB</span>
+                    <span className='font-medium text-sm'>{t("addCover")}</span>
+                    <span className='text-muted-foreground text-xs'>{t("coverHint")}</span>
                   </>
                 )}
               </button>
@@ -469,7 +441,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
           <div>
             <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
               <UserCircle className='h-4 w-4 text-primary' />
-              Ảnh đại diện
+              {t("avatarLabel")}
             </Label>
             <div
               className={`flex flex-col items-center gap-5 rounded-xl border-2 border-dashed p-5 transition-colors sm:flex-row ${
@@ -518,7 +490,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                     variant='outline'
                   >
                     <Upload className='mr-1.5 h-3.5 w-3.5' />
-                    {avatarUploading ? "Đang upload..." : "Đổi ảnh"}
+                    {avatarUploading ? t("linkingGithub") : t("changeAvatar")}
                   </Button>
                   {formData.avatar && (
                     <Button
@@ -529,11 +501,11 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                       variant='ghost'
                     >
                       <Trash2 className='mr-1.5 h-3.5 w-3.5' />
-                      Xóa
+                      {t("removeAvatar")}
                     </Button>
                   )}
                 </div>
-                <span className='text-muted-foreground text-xs'>JPG, PNG, WebP · max 3MB · Khung hình vuông</span>
+                <span className='text-muted-foreground text-xs'>{t("avatarHint")}</span>
               </div>
               <input
                 accept='image/*'
@@ -565,27 +537,17 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
           transition={{ duration: 0.4, delay: 0.05 }}
         >
           <SectionHeader
-            desc='Họ tên, slug, và các thông tin cơ bản.'
+            desc={t("personalInfoDesc")}
             icon={<UserPen className='h-5 w-5' />}
-            title='Thông tin cá nhân'
+            title={t("personalInfoTitle")}
           />
           <div className='space-y-5 p-6'>
-            <div className='flex flex-col gap-4 sm:flex-row'>
-              <Field label='Họ' required>
-                <Input
-                  id='firstName'
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      firstName: e.target.value
-                    }))
-                  }
-                  placeholder='Nguyễn'
-                  required
-                  value={formData.firstName}
-                />
-              </Field>
-              <Field label='Tên' required>
+            <div className='rounded-lg border border-blue-500/20 bg-blue-500/10 p-3 text-blue-700 text-xs dark:text-blue-400'>
+              {t("ssoSyncNote")}
+            </div>
+
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+              <Field label={t("lastName")} required>
                 <Input
                   id='lastName'
                   onChange={(e) =>
@@ -594,20 +556,42 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                       lastName: e.target.value
                     }))
                   }
-                  placeholder='Văn A'
+                  placeholder='Nguyễn'
                   required
                   value={formData.lastName}
+                />
+              </Field>
+              <Field label={t("middleName")}>
+                <Input
+                  id='middleName'
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      middleName: e.target.value
+                    }))
+                  }
+                  placeholder={t("middleName")}
+                  value={formData.middleName}
+                />
+              </Field>
+              <Field label={t("firstName")} required>
+                <Input
+                  id='firstName'
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      firstName: e.target.value
+                    }))
+                  }
+                  placeholder='An'
+                  required
+                  value={formData.firstName}
                 />
               </Field>
             </div>
 
             <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
-              <Field
-                error={slugError}
-                hint='Chữ thường, số, -, _. Không dùng "me".'
-                label='Slug (URL cá nhân)'
-                required
-              >
+              <Field error={slugError} hint={t("slugHint")} label={t("slug")} required>
                 <div className='relative'>
                   <AtSign className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                   <Input
@@ -625,55 +609,108 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                   />
                 </div>
               </Field>
-              <Field label='Ngày sinh'>
-                <div className='relative'>
-                  <Baby className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                  <Input
-                    className='pl-9'
-                    id='dob'
-                    onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
-                    type='date'
-                    value={formData.dob ?? ""}
+
+              <div className='space-y-2'>
+                <Field label={t("dob")}>
+                  <div className='relative'>
+                    <Baby className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='dob'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          dob: e.target.value
+                        }))
+                      }
+                      type='date'
+                      value={formData.dob ?? ""}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showDob}
+                    id='showDob'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showDob: !!checked }))}
                   />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showDob'
+                  >
+                    {t("showDob")}
+                  </Label>
                 </div>
-              </Field>
-              <Field label='Số điện thoại'>
-                <div className='relative'>
-                  <Smartphone className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                  <Input
-                    className='pl-9'
-                    id='phone'
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        phone: e.target.value
-                      }))
-                    }
-                    placeholder='0901234567'
-                    value={formData.phone}
+              </div>
+
+              <div className='space-y-2'>
+                <Field label={t("phone")}>
+                  <div className='relative'>
+                    <Smartphone className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='phone'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          phone: e.target.value
+                        }))
+                      }
+                      placeholder={t("phonePlaceholder")}
+                      value={formData.phone}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showPhone}
+                    id='showPhone'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showPhone: !!checked }))}
                   />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showPhone'
+                  >
+                    {t("showPhone")}
+                  </Label>
                 </div>
-              </Field>
-              <Field label='Mã số sinh viên'>
-                <div className='relative'>
-                  <Hash className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                  <Input
-                    className='pl-9'
-                    id='studentId'
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        studentId: e.target.value
-                      }))
-                    }
-                    placeholder='22110xxx'
-                    value={formData.studentId}
+              </div>
+
+              <div className='space-y-2'>
+                <Field label={t("studentId")}>
+                  <div className='relative'>
+                    <Hash className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='studentId'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          studentId: e.target.value
+                        }))
+                      }
+                      placeholder={t("studentIdPlaceholder")}
+                      value={formData.studentId}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showStudentId}
+                    id='showStudentId'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showStudentId: !!checked }))}
                   />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showStudentId'
+                  >
+                    {t("showStudentId")}
+                  </Label>
                 </div>
-              </Field>
+              </div>
             </div>
 
-            <Field label='Spotify URI'>
+            <Field label={t("spotifyUri")}>
               <div className='relative'>
                 <Music2 className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                 <Input
@@ -691,14 +728,14 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
               </div>
             </Field>
 
-            <Field label='Giới thiệu'>
+            <Field label={t("bio")}>
               <div className='relative'>
                 <Quote className='absolute top-3 left-3 h-4 w-4 text-muted-foreground' />
                 <textarea
                   className='flex min-h-28 w-full rounded-xl border border-input bg-background px-3 py-2.5 pl-9 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
                   id='bio'
                   onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
-                  placeholder='Đôi nét về bản thân...'
+                  placeholder={t("bioPlaceholder")}
                   value={formData.bio}
                 />
               </div>
@@ -713,18 +750,14 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <SectionHeader
-            desc='Hiển thị trên trang cá nhân công khai của bạn.'
-            icon={<Link2 className='h-5 w-5' />}
-            title='Liên kết mạng xã hội'
-          />
+          <SectionHeader desc={t("socialsDesc")} icon={<Link2 className='h-5 w-5' />} title={t("socialsTitle")} />
           <div className='space-y-4 p-6'>
             {formData.socials.length === 0 && (
               <div className='flex flex-col items-center gap-3 py-6 text-center'>
                 <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-muted'>
                   <Globe className='h-6 w-6 text-muted-foreground/50' />
                 </div>
-                <p className='text-muted-foreground text-sm'>Chưa có liên kết nào. Thêm mạng xã hội bên dưới.</p>
+                <p className='text-muted-foreground text-sm'>{t("linkGithubDesc")}</p>
               </div>
             )}
             {formData.socials.map((social, idx) => (
@@ -741,7 +774,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                     value={social.platform || undefined}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Chọn nền tảng' />
+                      <SelectValue placeholder={t("platform")} />
                     </SelectTrigger>
                     <SelectContent>
                       {PLATFORMS.map((p) => (
@@ -758,7 +791,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                 <div className='flex w-full flex-1 items-center gap-2'>
                   <Input
                     onChange={(e) => handleUpdateSocial(social.id!, "url", e.target.value)}
-                    placeholder='Link hoặc Username'
+                    placeholder={t("urlPlaceholder")}
                     value={social.url}
                   />
                   <Button
@@ -775,102 +808,8 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
             ))}
             <Button className='mt-1' onClick={handleAddSocial} size='sm' type='button' variant='outline'>
               <Plus className='mr-1.5 h-4 w-4' />
-              Thêm liên kết
+              {t("addSocial")}
             </Button>
-          </div>
-        </motion.div>
-
-        {/* Security */}
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          <SectionHeader
-            desc='Mật khẩu và liên kết tài khoản.'
-            icon={<ShieldCheck className='h-5 w-5' />}
-            title='Tài khoản & Bảo mật'
-          />
-          <div className='space-y-6 p-6'>
-            {/* Password */}
-            <div>
-              <Label className='mb-3 flex items-center gap-2 font-medium text-sm'>
-                <Lock className='h-4 w-4 text-primary' />
-                Đổi mật khẩu
-              </Label>
-              <div className='flex flex-col gap-3 sm:flex-row sm:items-end'>
-                <div className='flex-1 space-y-2'>
-                  <Input
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder='Mật khẩu mới'
-                    type='password'
-                    value={password}
-                  />
-                </div>
-                <div className='flex-1 space-y-2'>
-                  <Input
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder='Xác nhận mật khẩu'
-                    type='password'
-                    value={confirmPassword}
-                  />
-                </div>
-                <Button
-                  className='shrink-0'
-                  disabled={!password || password !== confirmPassword || isUpdatingPassword}
-                  onClick={handleUpdatePassword}
-                  size='sm'
-                  type='button'
-                >
-                  {isUpdatingPassword ? (
-                    <>
-                      <Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' /> Đang cập nhật
-                    </>
-                  ) : (
-                    "Cập nhật"
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            <div className='h-px bg-border/50' />
-
-            {/* GitHub Link */}
-            <div>
-              <Label className='mb-3 flex items-center gap-2 font-medium text-sm'>
-                <Github className='h-4 w-4 text-primary' />
-                Liên kết GitHub
-              </Label>
-              <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
-                <Button
-                  disabled={isLinkingGithub}
-                  onClick={() => (linkedProviders.includes("github") ? handleUnlinkGithub() : handleLinkGithub())}
-                  size='sm'
-                  type='button'
-                  variant={linkedProviders.includes("github") ? "destructive" : "default"}
-                >
-                  {isLinkingGithub ? (
-                    <>
-                      <Loader2 className='mr-1.5 h-4 w-4 animate-spin' /> Đang xử lý
-                    </>
-                  ) : linkedProviders.includes("github") ? (
-                    <>
-                      <Github className='mr-1.5 h-4 w-4' /> Hủy liên kết
-                    </>
-                  ) : (
-                    <>
-                      <Github className='mr-1.5 h-4 w-4' /> Liên kết GitHub
-                    </>
-                  )}
-                </Button>
-                <p className='text-muted-foreground text-sm'>
-                  {linkedProviders.includes("github")
-                    ? "Đã liên kết GitHub. Nhấn để hủy."
-                    : "Liên kết GitHub để đăng nhập nhanh và xác thực danh tính."}
-                </p>
-              </div>
-            </div>
           </div>
         </motion.div>
 
@@ -882,16 +821,16 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
           transition={{ duration: 0.3, delay: 0.2 }}
         >
           <Button disabled={isSubmitting} onClick={() => router.refresh()} type='button' variant='ghost'>
-            Hủy
+            {t("cancel")}
           </Button>
           <Button disabled={isSubmitting} size='lg' type='submit'>
             {isSubmitting ? (
               <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Đang lưu...
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' /> {t("submitting")}
               </>
             ) : (
               <>
-                <Save className='mr-2 h-4 w-4' /> Lưu thay đổi
+                <Save className='mr-2 h-4 w-4' /> {t("submit")}
               </>
             )}
           </Button>

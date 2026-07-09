@@ -94,7 +94,7 @@ export const createColumns = (
             <Pencil className='h-3.5 w-3.5' />
           </Button>
           <Button
-            className='h-7 w-7 text-destructive hover:text-destructive'
+            className='h-7 w-7 text-muted-foreground hover:text-destructive'
             onClick={() => onDelete(d.id)}
             size='icon'
             title='Xóa'

@@ -24,6 +24,7 @@ type AchievementEntry = {
 type GoldMember = {
   id: string;
   firstName: string;
+  middleName?: string | null;
   lastName: string;
   avatar: string | null;
   slug: string;
@@ -116,7 +117,7 @@ function GoldCard({
   };
 }) {
   const [open, setOpen] = useState(false);
-  const fullName = getFullName(member.firstName, member.lastName, locale);
+  const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const achievementCount = member._count.achievementEntries;
   const projectCount = member._count.projects;

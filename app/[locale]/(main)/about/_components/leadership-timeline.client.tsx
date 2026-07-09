@@ -16,6 +16,7 @@ type HistoricalRole = {
   member: {
     id: string;
     firstName: string;
+    middleName?: string | null;
     lastName: string;
     avatar: string | null;
     slug: string | null;
@@ -88,7 +89,12 @@ export function LeadershipTimelineClient({ roles, locale }: { roles: HistoricalR
                   <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
                     {yearRoles.map((role) => {
                       const initials = `${role.member.firstName?.[0]}${role.member.lastName?.[0]}`;
-                      const fullName = getFullName(role.member.firstName, role.member.lastName, locale);
+                      const fullName = getFullName(
+                        role.member.firstName,
+                        role.member.middleName,
+                        role.member.lastName,
+                        locale
+                      );
                       const posLabel = tPos(role.position as any) || role.position;
 
                       return (

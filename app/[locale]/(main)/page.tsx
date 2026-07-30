@@ -33,7 +33,19 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
   setRequestLocale(locale as locale);
 
   const statsRes = await getTerminalStats();
-  const stats = (statsRes.data?.payload as any) ?? null;
+  const stats =
+    (statsRes.data?.payload as
+      | {
+          members: number;
+          posts: number;
+          projects: number;
+          events: number;
+          achievements: number;
+          currentYear: number;
+          github: string;
+          fanpage: string;
+        }
+      | undefined) ?? null;
 
   return (
     <div className='flex flex-col'>

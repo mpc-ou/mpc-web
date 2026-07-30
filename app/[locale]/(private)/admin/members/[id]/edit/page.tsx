@@ -39,7 +39,7 @@ export default async function EditMemberPage({ params }: { params: Params }) {
       startAt: cr.startAt.toISOString(),
       endAt: cr.endAt ? cr.endAt.toISOString() : null
     }))
-  } as any as MemberRow;
+  } as unknown as MemberRow;
 
   const departmentsData = await prisma.department.findMany({
     where: { isActive: true },

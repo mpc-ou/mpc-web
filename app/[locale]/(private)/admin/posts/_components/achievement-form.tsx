@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -31,7 +32,7 @@ import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
 import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
 import { getFullName, pickLang } from "@/lib/utils";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { PostRow } from "../columns";
 import { TagInput } from "./tag-input";
 
@@ -74,7 +75,9 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const [linked, setLinked] = useState<LinkedMember[]>([]);
   const initialAdditionalImages = post?.gallery
-    ? post.gallery.filter((g: any) => g.type === "ADDITIONAL")
+    ? post.gallery
+        .filter((g) => g.type === "ADDITIONAL")
+        .map((g) => ({ url: g.url, title: g.title ?? undefined, caption: g.caption ?? undefined }))
     : (post?.images ?? []).map((url: string) => ({
         url,
         title: "",
@@ -140,7 +143,7 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
             studentId: null,
             webRole: ""
           } as MemberOption,
-          role: m.role,
+          role: m.role ?? null,
           imageUrl: m.imageUrl ?? null
         }))
       );
@@ -149,7 +152,9 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
     }
     setThumbnailUrl(post?.thumbnail ?? null);
     const additional = post?.gallery
-      ? post.gallery.filter((g: any) => g.type === "ADDITIONAL")
+      ? post.gallery
+          .filter((g) => g.type === "ADDITIONAL")
+          .map((g) => ({ url: g.url, title: g.title ?? undefined, caption: g.caption ?? undefined }))
       : (post?.images ?? []).map((url: string) => ({
           url,
           title: "",
@@ -249,14 +254,14 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
     let entityId: string | null = post?.id ?? null;
 
     if (isEdit && post) {
-      const res = await adminUpdateAchievement(post.id, payload as any);
+      const res = await adminUpdateAchievement(post.id, payload);
       if (res.error) {
         toast({ variant: "destructive", description: res.error?.message });
         setLoading(false);
         return;
       }
     } else {
-      const res = await adminCreateAchievement(payload as any);
+      const res = await adminCreateAchievement(payload);
       if (res.error) {
         toast({ variant: "destructive", description: res.error?.message });
         setLoading(false);
@@ -365,8 +370,8 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
               <div className='grid gap-1.5'>
                 <Label>Ảnh đại diện thành tựu</Label>
                 {thumbnailUrl ? (
-                  <div className='relative flex aspect-video max-h-[200px] items-center justify-center overflow-hidden rounded-lg border bg-muted'>
-                    <img alt='Achievement' className='h-full w-full object-cover' src={thumbnailUrl} />
+                  <div className='relative aspect-video max-h-50 overflow-hidden rounded-lg border bg-muted'>
+                    <Image alt='Achievement' className='object-cover' fill sizes='400px' src={thumbnailUrl} />
                     <button
                       className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                       onClick={() => setThumbnailUrl(null)}
@@ -590,7 +595,7 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
           <div className='space-y-6'>
             {thumbnailUrl && (
               <div className='relative aspect-video w-full overflow-hidden rounded-lg border bg-muted'>
-                <img alt='Achievement preview' className='h-full w-full object-cover' src={thumbnailUrl} />
+                <Image alt='Achievement preview' className='object-cover' fill sizes='500px' src={thumbnailUrl} />
               </div>
             )}
 
@@ -655,8 +660,8 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
                 </h3>
                 <div className='grid grid-cols-3 gap-2'>
                   {imagesItems.map((item, i) => (
-                    <div className='aspect-square overflow-hidden rounded-md border bg-muted' key={item.url + i}>
-                      <img alt={`Gallery preview ${i}`} className='h-full w-full object-cover' src={item.url} />
+                    <div className='relative aspect-square overflow-hidden rounded-md border bg-muted' key={item.url}>
+                      <Image alt={`Gallery preview ${i}`} className='object-cover' fill sizes='150px' src={item.url} />
                     </div>
                   ))}
                 </div>

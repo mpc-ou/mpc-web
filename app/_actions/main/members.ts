@@ -84,6 +84,17 @@ export const getMembersGroupedByYear = async () =>
         }
       });
 
+      type GroupedMember = {
+        id: string;
+        firstName: string;
+        middleName: string | null;
+        lastName: string;
+        avatar: string | null;
+        slug: string | null;
+        socials: (typeof members)[number]["socials"];
+        currentRole: (typeof members)[number]["clubRoles"][number];
+      };
+
       const groupedByYear = members.reduce(
         (acc, member) => {
           if (member.clubRoles.length === 0) {
@@ -115,7 +126,7 @@ export const getMembersGroupedByYear = async () =>
           });
           return acc;
         },
-        {} as Record<number, any[]>
+        {} as Record<number, GroupedMember[]>
       );
 
       const sortedYears = Object.keys(groupedByYear)

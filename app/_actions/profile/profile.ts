@@ -2,6 +2,7 @@
 
 import { cacheTag, updateTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import type { Member, Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS, _CACHE_PROFILE } from "@/constants/cache";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
@@ -37,7 +38,7 @@ const updateProfile = async (data: {
   bio?: string;
   phone?: string;
   studentId?: string;
-  socials?: any;
+  socials?: Prisma.InputJsonValue;
   dob?: Date;
   avatar?: string;
   coverImage?: string;
@@ -59,7 +60,7 @@ const updateProfile = async (data: {
         }
       });
 
-      let updatedMember;
+      let updatedMember: Member;
 
       if (existing) {
         if (data.slug) {

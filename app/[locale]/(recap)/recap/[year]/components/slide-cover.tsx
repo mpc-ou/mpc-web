@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Hexagon } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FloatingShapes, GlowingOrbs, GridBackground, ScanningLine } from "./animations";
 
@@ -49,8 +50,7 @@ export function SlideCover({ coverImage, name, year }: { coverImage: string | nu
 
       {coverImage && (
         <div className='absolute inset-0'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt='' className='absolute inset-0 h-full w-full object-cover opacity-10' src={coverImage} />
+          <Image alt='' className='object-cover opacity-10' fill priority src={coverImage} />
           <div className='absolute inset-0 bg-orange-600/5 mix-blend-overlay' />
         </div>
       )}

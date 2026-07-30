@@ -71,7 +71,7 @@ const HeroSection = ({ stats }: Props) => {
 
   return (
     <section
-      className='relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-4 text-foreground dark:bg-[#0B1121] dark:text-white'
+      className='relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-4 text-foreground dark:text-white'
       ref={sectionRef}
     >
       <HeroBackground />

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import type { RecapData } from "@/lib/recap-data";
 import { getFullName } from "@/lib/utils";
@@ -79,13 +80,12 @@ export function SlideExecutiveBoard({ members }: { members: RecapData["executive
                   }}
                 >
                   {m.avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       alt={fullName}
-                      className={`rounded-full object-cover ring-2 ring-white/10 transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(245,158,11,0.2)] group-hover:ring-amber-400 ${
-                        pres ? "h-24 w-24" : "h-20 w-20"
-                      }`}
+                      className='rounded-full object-cover ring-2 ring-white/10 transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(245,158,11,0.2)] group-hover:ring-amber-400'
+                      height={pres ? 96 : 80}
                       src={m.avatar}
+                      width={pres ? 96 : 80}
                     />
                   ) : (
                     <div

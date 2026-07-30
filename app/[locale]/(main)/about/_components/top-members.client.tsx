@@ -2,6 +2,7 @@
 
 import AutoScroll from "embla-carousel-auto-scroll";
 import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
 
 import { SOCIAL_COLLECTION } from "@/constants/common";
-import { getFullName } from "@/lib/utils";
+import { buildSocialHref, getFullName } from "@/lib/utils";
 
 const getSocialMeta = (platform: string) => {
   const p = platform.toLowerCase();
@@ -45,7 +46,28 @@ const getSocialMeta = (platform: string) => {
   return SOCIAL_COLLECTION.WEBSITE;
 };
 
-export function TopMembersCarouselClient({ members, locale }: { members: any[]; locale: string }) {
+export type TopMember = {
+  id: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  avatar: string | null;
+  slug: string | null;
+  socials: unknown;
+  currentRole: {
+    position: string;
+    department?: { nameVi: string; nameEn: string } | null;
+  } | null;
+  achievementCount: number;
+};
+
+type SocialEntry = {
+  id?: string;
+  platform: string;
+  url: string;
+};
+
+export function TopMembersCarouselClient({ members, locale }: { members: TopMember[]; locale: string }) {
   const t = useTranslations("userMenu.positions");
   const tAbout = useTranslations("aboutPage.topMembers");
 
@@ -60,9 +82,9 @@ export function TopMembersCarouselClient({ members, locale }: { members: any[]; 
           const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
           const initials = `${member.firstName[0]}${member.lastName[0]}`;
           const role = member.currentRole;
-          const positionLabel = role ? t(role.position as any) || role.position : tAbout("member");
+          const positionLabel = role ? t(role.position as Parameters<typeof t>[0]) || role.position : tAbout("member");
           const departmentName = role?.department?.nameVi || "Ban Điều Hành";
-          const socials = Array.isArray(member.socials) ? member.socials : [];
+          const socials: SocialEntry[] = Array.isArray(member.socials) ? (member.socials as SocialEntry[]) : [];
 
           return (
             <div className='min-w-0 flex-[0_0_auto] px-4' key={member.id}>
@@ -103,17 +125,12 @@ export function TopMembersCarouselClient({ members, locale }: { members: any[]; 
                       {/* Social Links Mini */}
                       {socials.length > 0 && (
                         <div className='flex flex-wrap justify-center gap-1.5 pb-2'>
-                          {socials.slice(0, 4).map((social: any) => {
+                          {socials.slice(0, 4).map((social) => {
                             if (!social.url) {
                               return null;
                             }
                             const meta = getSocialMeta(social.platform);
-                            const href =
-                              social.url.startsWith("http") || social.url.startsWith("mailto:")
-                                ? social.url
-                                : meta.prefix
-                                  ? `${meta.prefix}${social.url}`
-                                  : `https://${social.url}`;
+                            const href = buildSocialHref(social.url, meta.prefix);
                             return (
                               <a
                                 className='flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs transition-colors hover:bg-primary/20'
@@ -123,7 +140,13 @@ export function TopMembersCarouselClient({ members, locale }: { members: any[]; 
                                 target='_blank'
                                 title={meta.platform}
                               >
-                                <img alt={meta.platform} className='h-3.5 w-3.5 object-contain' src={meta.icon} />
+                                <Image
+                                  alt={meta.platform}
+                                  className='object-contain'
+                                  height={14}
+                                  src={meta.icon}
+                                  width={14}
+                                />
                               </a>
                             );
                           })}

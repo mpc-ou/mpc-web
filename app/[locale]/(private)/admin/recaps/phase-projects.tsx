@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarDays, CheckSquare, FolderGit2, Square } from "lucide-react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,12 +71,23 @@ export function PhaseProjects({ projects, selectedIds, onChange }: Props) {
                 className={`flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors ${
                   checked ? "border-primary/50 bg-primary/5" : "border-border hover:border-muted-foreground/30"
                 }`}
+                htmlFor={`proj-${proj.id}`}
                 key={proj.id}
               >
-                <Checkbox checked={checked} className='mt-0.5' onCheckedChange={() => toggle(proj.id)} />
+                <Checkbox
+                  checked={checked}
+                  className='mt-0.5'
+                  id={`proj-${proj.id}`}
+                  onCheckedChange={() => toggle(proj.id)}
+                />
                 {proj.thumbnail && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img alt={proj.title} className='h-16 w-24 shrink-0 rounded-md object-cover' src={proj.thumbnail} />
+                  <Image
+                    alt={proj.title}
+                    className='shrink-0 rounded-md object-cover'
+                    height={64}
+                    src={proj.thumbnail}
+                    width={96}
+                  />
                 )}
                 <div className='min-w-0 flex-1'>
                   <div className='flex items-center gap-2'>

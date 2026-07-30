@@ -5,21 +5,37 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { adminGetRecap, adminGetRecapCandidates } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
+import type { RecapData } from "@/lib/recap-data";
 import { RecapWizard } from "../../wizard";
+
+type RecapPayload = {
+  year: number;
+  name: string;
+  description?: string | null;
+  coverImage?: string | null;
+  coverImage2?: string | null;
+  coverImage3?: string | null;
+  endImage?: string | null;
+  musicUrl?: string | null;
+  isPublished?: boolean;
+  data?: RecapData;
+  notFound?: boolean;
+};
 
 export default function EditRecapPage() {
   const router = useRouter();
   const params = useParams();
   const year = Number(params.year);
 
-  const [recap, setRecap] = useState<any>(null);
+  const [recap, setRecap] = useState<RecapPayload | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       const recapRes = await adminGetRecap(year);
-      if (recapRes.data?.payload && !(recapRes.data.payload as any).notFound) {
-        setRecap(recapRes.data.payload);
+      const payload = recapRes.data?.payload as RecapPayload | undefined;
+      if (payload && !payload.notFound) {
+        setRecap(payload);
       }
       setLoading(false);
     };

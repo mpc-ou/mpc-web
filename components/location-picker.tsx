@@ -1,5 +1,6 @@
 "use client";
 
+import type { DragEndEvent } from "leaflet";
 import { MapPin, Navigation, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMap, useMapEvents } from "react-leaflet";
@@ -8,6 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Map, MapMarker, MapSearchControl, MapTileLayer, MapZoomControl } from "@/components/ui/map";
+import type { PlaceFeature } from "@/components/ui/place-autocomplete";
 import { cn } from "@/lib/utils";
 
 export type LocationData = {
@@ -43,11 +45,6 @@ type PhotonProperties = {
   osm_key?: string;
   osm_value?: string;
   type?: string;
-};
-
-type PhotonFeature = {
-  geometry: { coordinates: [number, number] };
-  properties: PhotonProperties;
 };
 
 function buildDisplayNameVi(props: PhotonProperties): string {
@@ -160,7 +157,7 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
     setOpen(true);
   };
 
-  const handlePlaceSelect = useCallback((feature: PhotonFeature) => {
+  const handlePlaceSelect = useCallback((feature: PlaceFeature) => {
     const [lngVal, latVal] = feature.geometry.coordinates;
     const viName = buildDisplayNameVi(feature.properties);
     const enName = buildDisplayNameEn(feature.properties);
@@ -210,11 +207,12 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
   };
 
   const hasLocation = lat != null && lng != null;
-  const hasTempLocation = tempLat != null && tempLng != null;
+  const tempPosition: [number, number] | null = tempLat != null && tempLng != null ? [tempLat, tempLng] : null;
+  const hasTempLocation = tempPosition !== null;
 
   return (
     <div className='space-y-2'>
-      { }
+      {}
       {hasLocation ? (
         <div className='flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2'>
           <MapPin className='h-4 w-4 shrink-0 text-primary/60' />
@@ -275,7 +273,7 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
         </div>
       )}
 
-      { }
+      {}
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent className='flex max-h-[90vh] max-w-4xl flex-col'>
           <DialogHeader>
@@ -283,10 +281,7 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
           </DialogHeader>
 
           <div className='flex-1 overflow-hidden rounded-lg border' style={{ height: "70vh" }}>
-            <Map
-              center={hasTempLocation ? [tempLat!, tempLng!] : [10.762_622, 106.660_172]}
-              zoom={hasTempLocation ? 16 : 5}
-            >
+            <Map center={tempPosition ?? [10.762_622, 106.660_172]} zoom={hasTempLocation ? 16 : 5}>
               <MapTileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 darkUrl='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
@@ -296,31 +291,31 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
                 debounceMs={800}
                 lang='vi'
                 limit={5}
-                onPlaceSelect={handlePlaceSelect as any}
+                onPlaceSelect={handlePlaceSelect}
                 placeholder='Tìm kiếm địa điểm...'
               />
               <MapZoomControl />
               <MapClickHandler onMapClick={handleMapClick} />
-              {hasTempLocation && (
+              {tempPosition && (
                 <>
-                  <MapFlyTo center={[tempLat!, tempLng!]} />
+                  <MapFlyTo center={tempPosition} />
                   <MapMarker
                     draggable
                     eventHandlers={{
-                      dragend: (e: any) => {
+                      dragend: (e: DragEndEvent) => {
                         const pos = e.target.getLatLng();
                         setTempLat(pos.lat);
                         setTempLng(pos.lng);
                       }
                     }}
-                    position={[tempLat!, tempLng!]}
+                    position={tempPosition}
                   />
                 </>
               )}
             </Map>
           </div>
 
-          { }
+          {}
           <div className='space-y-3 pt-2'>
             {hasTempLocation && (
               <div className='flex items-center gap-4 text-[10px] text-muted-foreground'>

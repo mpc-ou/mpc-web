@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { adminBuildRecapData, adminCreateRecap, adminGetRecapCandidates, adminUpdateRecap } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import type { RecapData } from "@/lib/recap-data";
 import { PhaseAchievements } from "./phase-achievements";
 import { PhaseEvents } from "./phase-events";
 import { PhaseInfo, type PhaseInfoData } from "./phase-info";
@@ -19,10 +20,52 @@ const STEPS = [
   { label: "Review", icon: "5" }
 ];
 
+function stepButtonClass(stepIndex: number, currentStep: number): string {
+  if (stepIndex === currentStep) {
+    return "bg-primary text-primary-foreground shadow-md";
+  }
+  if (stepIndex < currentStep) {
+    return "bg-primary/20 text-primary";
+  }
+  return "bg-muted text-muted-foreground";
+}
+
+type EventCandidate = {
+  id: string;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  description: string | null;
+  startAt: string;
+  status: string;
+  type: string | null;
+  location: string | null;
+};
+
+type AchievementCandidate = {
+  id: string;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  summary: string | null;
+  date: string;
+  type: string;
+};
+
+type ProjectCandidate = {
+  id: string;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  description: string | null;
+  startDate: string | null;
+  technologies: string[];
+};
+
 type Candidates = {
-  events: any[];
-  achievements: any[];
-  projects: any[];
+  events: EventCandidate[];
+  achievements: AchievementCandidate[];
+  projects: ProjectCandidate[];
 };
 
 type Props = {
@@ -37,7 +80,7 @@ type Props = {
     endImage?: string | null;
     musicUrl?: string | null;
     isPublished?: boolean;
-    data?: any;
+    data?: RecapData;
   };
 };
 
@@ -68,7 +111,7 @@ export function RecapWizard({ mode, initialData }: Props) {
     const loadCands = async () => {
       const res = await adminGetRecapCandidates(info.year);
       if (res.data?.payload) {
-        setCandidates(res.data.payload as any);
+        setCandidates(res.data.payload as unknown as Candidates);
       }
     };
     if (info.year > 0) {
@@ -78,11 +121,9 @@ export function RecapWizard({ mode, initialData }: Props) {
 
   // Phase 2-4 — Selected IDs
   const existingData = initialData?.data;
-  const existingEventIds = existingData?.timeline?.filter((t: any) => t.type === "event").map((t: any) => t.id) ?? [];
-  const existingAchievementIds =
-    existingData?.timeline?.filter((t: any) => t.type === "achievement").map((t: any) => t.id) ?? [];
-  const existingProjectIds =
-    existingData?.timeline?.filter((t: any) => t.type === "project").map((t: any) => t.id) ?? [];
+  const existingEventIds = existingData?.timeline?.filter((t) => t.type === "event").map((t) => t.id) ?? [];
+  const existingAchievementIds = existingData?.timeline?.filter((t) => t.type === "achievement").map((t) => t.id) ?? [];
+  const existingProjectIds = existingData?.timeline?.filter((t) => t.type === "project").map((t) => t.id) ?? [];
 
   const [selectedEventIds, setSelectedEventIds] = useState<string[]>(existingEventIds);
   const [selectedAchievementIds, setSelectedAchievementIds] = useState<string[]>(existingAchievementIds);
@@ -143,10 +184,10 @@ export function RecapWizard({ mode, initialData }: Props) {
         description: `Recap ${info.year} đã được lưu!`
       });
       window.location.href = "/admin/recaps";
-    } catch (err: any) {
+    } catch (err) {
       toast({
         variant: "destructive",
-        description: err.message || "Lỗi không xác định"
+        description: err instanceof Error ? err.message : "Lỗi không xác định"
       });
     } finally {
       setLoading(false);
@@ -160,13 +201,7 @@ export function RecapWizard({ mode, initialData }: Props) {
         {STEPS.map((s, i) => (
           <div className='flex items-center' key={s.label}>
             <button
-              className={`flex h-9 items-center gap-2 rounded-full px-4 font-medium text-sm transition-all ${
-                i === step
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : i < step
-                    ? "bg-primary/20 text-primary"
-                    : "bg-muted text-muted-foreground"
-              }`}
+              className={`flex h-9 items-center gap-2 rounded-full px-4 font-medium text-sm transition-all ${stepButtonClass(i, step)}`}
               onClick={() => i < step && setStep(i)}
               type='button'
             >

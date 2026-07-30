@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
 import { SOCIAL_COLLECTION } from "@/constants/common";
-import { cn, getFullName } from "@/lib/utils";
+import { buildSocialHref, cn, getFullName } from "@/lib/utils";
 
 type SocialEntry = { id?: string; platform: string; url: string };
 
@@ -109,17 +109,7 @@ export function MemberHoverCard({
                     return null;
                   }
                   const meta = getSocialMeta(social.platform);
-                  let href: string;
-                  if (
-                    social.url.startsWith("http") ||
-                    social.url.startsWith("mailto:")
-                  ) {
-                    href = social.url;
-                  } else if (meta.prefix) {
-                    href = `${meta.prefix}${social.url}`;
-                  } else {
-                    href = `https://${social.url}`;
-                  }
+                  const href = buildSocialHref(social.url, meta.prefix);
                   return (
                     <a
                       className='flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs transition-colors hover:bg-primary/20'

@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/configs/prisma/db";
+import { exchangeOidcCode, verifyOidcIdToken } from "@/services/sso";
 import { setSession } from "@/utils/session";
-import { exchangeOidcCode, verifyOidcIdToken } from "@/utils/sso";
 
 async function linkAndMigrateMember(oldId: string, ssoSub: string) {
   await prisma.$transaction(async (tx) => {
@@ -77,6 +77,8 @@ async function linkAndMigrateMember(oldId: string, ssoSub: string) {
   });
 }
 
+const WHITESPACE_RE = /\s+/;
+
 const generateUniqueSlug = async (email: string) => {
   const base =
     email
@@ -129,7 +131,7 @@ export async function GET(request: Request) {
     const name = (claims.name as string) || "";
     const role = (claims.role as "ADMIN" | "COLLABORATOR" | "MEMBER" | "GUEST") || "GUEST";
 
-    const nameParts = name.trim().split(/\s+/);
+    const nameParts = name.trim().split(WHITESPACE_RE);
     let firstName = "";
     let middleName: string | null = null;
     let lastName = "";

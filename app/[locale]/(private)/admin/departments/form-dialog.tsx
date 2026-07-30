@@ -56,6 +56,18 @@ export function DeptFormDialog({ open, onOpenChange, dept }: Props) {
     onOpenChange(false);
   };
 
+  let submitContent: React.ReactNode = "Thêm ban";
+  if (loading) {
+    submitContent = (
+      <>
+        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+        Đang lưu...
+      </>
+    );
+  } else if (isEdit) {
+    submitContent = "Lưu thay đổi";
+  }
+
   return (
     <Dialog key={dept?.id ?? "new"} onOpenChange={onOpenChange} open={open}>
       <DialogContent className='sm:max-w-140'>
@@ -123,16 +135,7 @@ export function DeptFormDialog({ open, onOpenChange, dept }: Props) {
         </form>
         <DialogFooter>
           <Button disabled={loading} form='dept-form' type='submit'>
-            {loading ? (
-              <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                Đang lưu...
-              </>
-            ) : isEdit ? (
-              "Lưu thay đổi"
-            ) : (
-              "Thêm ban"
-            )}
+            {submitContent}
           </Button>
         </DialogFooter>
       </DialogContent>

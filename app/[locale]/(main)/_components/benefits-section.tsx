@@ -4,10 +4,10 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { cn } from "@/lib/utils";
 
 const benefits = [
-  { key: "skills", Icon: BookOpen, accent: "from-orange-500/20" },
-  { key: "network", Icon: Network, accent: "from-amber-500/20" },
-  { key: "opportunity", Icon: Rocket, accent: "from-orange-600/20" },
-  { key: "community", Icon: Users, accent: "from-amber-400/20" }
+  { key: "skills", Icon: BookOpen },
+  { key: "network", Icon: Network },
+  { key: "opportunity", Icon: Rocket },
+  { key: "community", Icon: Users }
 ] as const;
 
 const BenefitsSection = async ({ locale, compact = false }: { locale: string; compact?: boolean }) => {
@@ -24,44 +24,40 @@ const BenefitsSection = async ({ locale, compact = false }: { locale: string; co
           <p className='mt-3 text-muted-foreground'>{t("subtitle")}</p>
         </ScrollReveal>
 
-        <div
-          className={cn(
-            compact ? "mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4" : "mx-auto max-w-3xl space-y-5"
-          )}
-        >
-          {benefits.map(({ key, Icon, accent }, idx) => (
-            <ScrollReveal delay={idx * 120} key={key} variant={idx % 2 === 0 ? "fade-left" : "fade-right"}>
-              <div
-                className={cn(
-                  "group relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-orange-500/30",
-                  compact ? "flex h-full flex-col items-start gap-4" : "sm:flex sm:items-center sm:gap-6 sm:p-8"
-                )}
-              >
-                <div
-                  className={`absolute inset-0 bg-linear-to-r ${accent} to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
-                />
+        {/* Terminal-log styled list — a numbered, connected sequence rather
+            than a grid of interchangeable cards. */}
+        <div className='mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border bg-card/60 shadow-sm backdrop-blur-sm'>
+          <div className='flex items-center gap-2 border-border border-b bg-muted/60 px-4 py-2.5'>
+            <span className='h-2.5 w-2.5 rounded-full bg-red-500/70' />
+            <span className='h-2.5 w-2.5 rounded-full bg-yellow-500/70' />
+            <span className='h-2.5 w-2.5 rounded-full bg-green-500/70' />
+            <span className='ml-2 font-mono text-muted-foreground text-xs'>cat ./why-join.log</span>
+          </div>
 
-                <div className='relative shrink-0'>
-                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10 transition-colors group-hover:bg-orange-500/20'>
-                    <Icon className='h-6 w-6 text-orange-500' />
+          <div className='relative px-6 py-8 sm:px-10'>
+            {/* connecting rail */}
+            <div aria-hidden className='absolute top-10 bottom-10 left-9.5 w-px bg-border sm:left-11.5' />
+
+            <ul className='space-y-8'>
+              {benefits.map(({ key, Icon }, idx) => (
+                <ScrollReveal as='li' delay={idx * 100} key={key} variant='fade-left'>
+                  <div className='group relative flex gap-4 sm:gap-6'>
+                    <div className='relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-orange-500/30 bg-background shadow-sm transition-colors duration-300 group-hover:border-orange-500 group-hover:bg-orange-500/10 sm:h-14 sm:w-14'>
+                      <Icon className='h-5 w-5 text-orange-500 sm:h-6 sm:w-6' />
+                    </div>
+
+                    <div className='min-w-0 pt-1'>
+                      <div className='mb-1 flex items-baseline gap-2 font-mono text-orange-500/70 text-xs'>
+                        <span>[{String(idx + 1).padStart(2, "0")}]</span>
+                      </div>
+                      <h3 className='font-bold text-foreground text-lg'>{t(`${key}.title`)}</h3>
+                      <p className='mt-1 text-muted-foreground text-sm leading-relaxed'>{t(`${key}.desc`)}</p>
+                    </div>
                   </div>
-                </div>
-
-                <div className='relative min-w-0'>
-                  <h3 className='mb-1.5 font-bold text-foreground text-lg'>{t(`${key}.title`)}</h3>
-                  <p className='text-muted-foreground text-sm leading-relaxed'>{t(`${key}.desc`)}</p>
-                </div>
-
-                {!compact && (
-                  <div className='relative mt-4 shrink-0 sm:mt-0 sm:ml-auto'>
-                    <span className='inline-flex items-center gap-1 rounded-full border border-orange-500/20 bg-orange-500/5 px-3 py-1 font-mono text-orange-500 text-xs opacity-0 transition-all duration-300 group-hover:opacity-100'>
-                      #{idx + 1}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </ScrollReveal>
-          ))}
+                </ScrollReveal>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

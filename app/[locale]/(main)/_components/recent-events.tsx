@@ -1,4 +1,5 @@
 import { ArrowRight, CalendarDays, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
 import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getRecentEvents } from "@/app/_actions/main";
@@ -8,14 +9,28 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import { formatLocalDate } from "@/utils/handle-datetime";
 
+type RecentEvent = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  startAt: string | undefined;
+  // Kept as string (rather than the EventStatus/EventType enums) because the
+  // source data mixes PostType and EventType values (see `type` comparisons below).
+  status: string | null;
+  type: string | null;
+  eventType: string | null;
+};
+
 export async function RecentEventsSection() {
   await connection();
   const locale = await getLocale();
   const { data } = await getRecentEvents(3, locale);
   const t = await getTranslations();
   const ta = await getTranslations("aboutPage.recentEvents");
-  // biome-ignore lint/suspicious/noExplicitAny: API response shape is untyped
-  const events = (data?.payload as any)?.events || [];
+  const payload = data?.payload as { events: RecentEvent[] } | undefined;
+  const events = payload?.events || [];
 
   if (events.length === 0) {
     return null;
@@ -48,8 +63,8 @@ export async function RecentEventsSection() {
         </ScrollReveal>
 
         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {events.map((event: any, idx: number) => {
-            const statusInfo = statusMap[event.status] || {
+          {events.map((event, idx: number) => {
+            const statusInfo = statusMap[event.status ?? ""] || {
               label: event.status,
               variant: "outline"
             };
@@ -63,9 +78,11 @@ export async function RecentEventsSection() {
                 >
                   <div className='relative aspect-[4/3] w-full overflow-hidden bg-muted/30'>
                     {event.thumbnail ? (
-                      <img
+                      <Image
                         alt={event.title}
-                        className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                        className='object-cover transition-transform duration-500 group-hover:scale-105'
+                        fill
+                        sizes='(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
                         src={event.thumbnail}
                       />
                     ) : (
@@ -87,7 +104,7 @@ export async function RecentEventsSection() {
                             className='bg-background/80 text-foreground shadow-xs backdrop-blur-md hover:bg-background/90'
                             variant='secondary'
                           >
-                            {t(`events.types.${displayType}` as any) || displayType}
+                            {t(`events.types.${displayType}` as Parameters<typeof t>[0]) || displayType}
                           </Badge>
                         );
                       })()}

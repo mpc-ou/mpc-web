@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
@@ -76,6 +77,12 @@ export type PostCardData = {
 
 // ── Helpers ──
 
+const ACHIEVEMENT_TYPE_LABEL: Record<string, string> = {
+  INDIVIDUAL: "Cá nhân",
+  TEAM: "Đội",
+  COLLECTIVE: "Tập thể"
+};
+
 /** Get localized title */
 function getTitle(d: PostCardData, locale: string): string {
   return locale === "en" && d.titleEn ? d.titleEn : d.titleVi;
@@ -104,13 +111,14 @@ function fmtDate(d: PostCardData, locale: string, fmt?: string): string {
 
 function CardThumbnail({ data }: { data: PostCardData }) {
   const title = getTitle(data, "vi");
-  // biome-ignore lint/correctness/noImgElement: external images
   return (
     <div className='relative aspect-video w-full overflow-hidden bg-muted/30'>
       {data.thumbnail ? (
-        <img
+        <Image
           alt={title}
-          className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+          className='object-cover transition-transform duration-500 group-hover:scale-105'
+          fill
+          sizes='(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw'
           src={data.thumbnail}
         />
       ) : (
@@ -203,18 +211,19 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
       <div className='mb-3 flex items-center justify-between text-muted-foreground text-xs'>
         <div className='flex items-center gap-2'>
           {data.author?.avatar ? (
-            // biome-ignore lint/correctness/noImgElement: avatar
-            <img
+            <Image
               alt={`${data.author.lastName} ${data.author.firstName}`}
-              className='h-6 w-6 rounded-full object-cover ring-1 ring-border'
+              className='rounded-full object-cover ring-1 ring-border'
+              height={24}
               src={data.author.avatar}
+              width={24}
             />
           ) : (
             <div className='flex h-6 w-6 items-center justify-center rounded-full bg-muted'>
               <User className='h-3.5 w-3.5 text-muted-foreground' />
             </div>
           )}
-          <span className='font-medium text-foreground/80 hover:text-primary hover:underline'>
+          <span className='relative z-10 font-medium text-foreground/80 hover:text-primary hover:underline'>
             {data.author ? (
               <Link href={`/members/${data.author.slug || data.author.firstName}`}>
                 {data.author.lastName} {data.author.firstName}
@@ -245,7 +254,7 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
             ) : (
               <Users className='h-3.5 w-3.5' />
             )}
-            {data.achievementType === "INDIVIDUAL" ? "Cá nhân" : data.achievementType === "TEAM" ? "Đội" : "Tập thể"}
+            {ACHIEVEMENT_TYPE_LABEL[data.achievementType] ?? "Tập thể"}
           </span>
         )}
       </div>
@@ -290,8 +299,13 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
                 title={`${c.lastName} ${c.firstName}`}
               >
                 {c.avatar ? (
-                  // biome-ignore lint/correctness/noImgElement: avatar
-                  <img alt={`${c.lastName} ${c.firstName}`} className='h-full w-full object-cover' src={c.avatar} />
+                  <Image
+                    alt={`${c.lastName} ${c.firstName}`}
+                    className='object-cover'
+                    fill
+                    sizes='24px'
+                    src={c.avatar}
+                  />
                 ) : (
                   <div className='flex h-full w-full items-center justify-center font-bold text-[9px] text-muted-foreground uppercase'>
                     {c.firstName[0]}
@@ -327,8 +341,7 @@ function renderFooter(data: PostCardData, locale: string): React.ReactNode {
               title={`${m.lastName} ${m.firstName}`}
             >
               {m.avatar ? (
-                // biome-ignore lint/correctness/noImgElement: avatar
-                <img alt={`${m.lastName} ${m.firstName}`} className='h-full w-full object-cover' src={m.avatar} />
+                <Image alt={`${m.lastName} ${m.firstName}`} className='object-cover' fill sizes='32px' src={m.avatar} />
               ) : (
                 <div className='flex h-full w-full items-center justify-center font-bold text-[10px] text-muted-foreground uppercase'>
                   {m.firstName[0]}
@@ -377,13 +390,12 @@ function renderFooter(data: PostCardData, locale: string): React.ReactNode {
 
   // Blog / Event: read more link
   if (data.variant === "blog" || data.variant === "event") {
-    const href = data.href || `/${data.variant}s/${data.slug}`;
     return (
       <div className='mt-auto flex items-center border-border/10 border-t pt-4 font-semibold text-primary text-sm'>
-        <Link className='inline-flex items-center hover:underline' href={href}>
+        <span className='inline-flex items-center group-hover:underline'>
           {data.readMoreLabel || "Xem thêm"}
           <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
-        </Link>
+        </span>
       </div>
     );
   }
@@ -403,18 +415,25 @@ export function PostCard({ data }: { data: PostCardData }) {
   const isList = data.viewMode === "list";
   const href = data.href || `/${data.variant}s/${data.slug}`;
   const baseClass =
-    "group flex overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg";
+    "group relative flex overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg";
+
+  // The card links out to `href` via a "stretched link" that covers the whole
+  // card (z-0), so it can never itself contain other <a> tags — any nested
+  // links (author, read-more, ...) sit above it at z-10 and stay clickable.
+  const stretchedLink = <Link aria-label={getTitle(data, "vi")} className='absolute inset-0 z-0' href={href} />;
 
   if (isList) {
     return (
-      <Link className={`${baseClass} flex-row`} href={href}>
+      <div className={`${baseClass} flex-row`}>
+        {stretchedLink}
         {/* Thumbnail — fixed width */}
         <div className='relative w-48 shrink-0 overflow-hidden bg-muted/30 sm:w-64'>
           {data.thumbnail ? (
-            // biome-ignore lint/correctness/noImgElement: external images
-            <img
+            <Image
               alt={getTitle(data, "vi")}
-              className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+              className='object-cover transition-transform duration-500 group-hover:scale-105'
+              fill
+              sizes='(min-width: 640px) 256px, 192px'
               src={data.thumbnail}
             />
           ) : (
@@ -424,15 +443,16 @@ export function PostCard({ data }: { data: PostCardData }) {
           )}
         </div>
         <CardContent data={data} />
-      </Link>
+      </div>
     );
   }
 
   // Card mode
   return (
-    <Link className={`${baseClass} flex-col`} href={href}>
+    <div className={`${baseClass} flex-col`}>
+      {stretchedLink}
       <CardThumbnail data={data} />
       <CardContent data={data} />
-    </Link>
+    </div>
   );
 }

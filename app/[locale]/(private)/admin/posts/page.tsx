@@ -37,8 +37,9 @@ export default async function AdminPostsPage({
     status: statusFilter
   });
 
-  const posts = ((res.data?.payload as any)?.posts ?? []) as PostRow[];
-  const totalCount = ((res.data?.payload as any)?.total ?? 0) as number;
+  const payload = res.data?.payload as { posts: PostRow[]; total: number } | undefined;
+  const posts = payload?.posts ?? [];
+  const totalCount = payload?.total ?? 0;
   const totalPages = Math.ceil(totalCount / limit);
 
   return (

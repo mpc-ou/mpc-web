@@ -2,10 +2,34 @@ import { Handshake } from "lucide-react";
 import type { Metadata } from "next";
 import { getSponsorsPageData } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { generatePageSeo } from "@/utils/seo";
 import { SponsorsClient } from "./client";
 
 type Props = { params: Promise<{ locale: string }> };
+
+// Mirrors the `include` used in getSponsorsPageData (app/_actions/main/pages.ts)
+type SponsorWithSponsorships = Prisma.SponsorGetPayload<{
+  include: { sponsorships: true };
+}>;
+
+// Shape expected by SponsorsClient's `Sponsor` type
+type GroupedSponsor = {
+  id: string;
+  name: string;
+  slug: string;
+  logo: string | null;
+  website: string | null;
+  email: string | null;
+  phone: string | null;
+  description: string | null;
+  descriptionVi: string | null;
+  descriptionEn: string | null;
+  startAt: string | null;
+  endAt: string | null;
+  images: string[];
+  imageFolder: undefined;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -15,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SponsorsPage({ params }: Props): Promise<React.ReactNode> {
   const { locale } = await params;
   const { data } = await getSponsorsPageData();
-  const payload = data?.payload as { sponsors: any[] } | undefined;
+  const payload = data?.payload as { sponsors: SponsorWithSponsorships[] } | undefined;
   const sponsors = payload?.sponsors ?? [];
 
   const groupedByYear = sponsors.reduce(
@@ -40,14 +64,14 @@ export default async function SponsorsPage({ params }: Props): Promise<React.Rea
         description: locale === "en" ? sponsor.descriptionEn || sponsor.descriptionVi : sponsor.descriptionVi,
         descriptionVi: sponsor.descriptionVi,
         descriptionEn: sponsor.descriptionEn,
-        startAt: sponsor.startAt,
-        endAt: sponsor.endAt,
+        startAt: sponsor.startAt ? sponsor.startAt.toISOString() : null,
+        endAt: sponsor.endAt ? sponsor.endAt.toISOString() : null,
         images: sponsor.images,
         imageFolder: undefined
       });
       return acc;
     },
-    {} as Record<number, any[]>
+    {} as Record<number, GroupedSponsor[]>
   );
 
   const sortedYears = Object.keys(groupedByYear)

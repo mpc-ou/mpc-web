@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { adminCreateDepartment, adminUpdateDepartment } from "@/app/_actions/admin";
@@ -13,16 +14,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { DeptRow } from "./columns";
 
 type Props = {
   dept?: DeptRow & {
     missionsVi?: string;
     missionsEn?: string;
+    descriptionEn?: string | null;
     linkLabelVi?: string | null;
     linkLabelEn?: string | null;
     bgImage?: string | null;
+    hyperlink?: string | null;
   };
 };
 
@@ -36,7 +39,7 @@ export default function DeptForm({ dept }: Props) {
     titleVi: dept?.nameVi ?? "",
     titleEn: dept?.nameEn ?? "",
     summaryVi: dept?.descriptionVi ?? "",
-    summaryEn: (dept as any)?.descriptionEn ?? "",
+    summaryEn: dept?.descriptionEn ?? "",
     contentVi: dept?.missionsVi ?? "",
     contentEn: dept?.missionsEn ?? "",
     sourceLanguage: "VI"
@@ -45,13 +48,13 @@ export default function DeptForm({ dept }: Props) {
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
   const [slug, setSlug] = useState(dept?.slug ?? "");
   const [icon, setIcon] = useState(dept?.icon ?? "");
-  const [bgImage, setBgImage] = useState((dept as any)?.bgImage ?? "");
+  const [bgImage, setBgImage] = useState(dept?.bgImage ?? "");
   const [bgImageUploading, setBgImageUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [linkLabelVi, setLinkLabelVi] = useState((dept as any)?.linkLabelVi ?? "");
-  const [linkLabelEn, setLinkLabelEn] = useState((dept as any)?.linkLabelEn ?? "");
-  const [hyperlink, setHyperlink] = useState((dept as any)?.hyperlink ?? "");
+  const [linkLabelVi, setLinkLabelVi] = useState(dept?.linkLabelVi ?? "");
+  const [linkLabelEn, setLinkLabelEn] = useState(dept?.linkLabelEn ?? "");
+  const [hyperlink, setHyperlink] = useState(dept?.hyperlink ?? "");
   const [order, setOrder] = useState(dept?.order ?? 0);
   const [isActive, setIsActive] = useState(dept?.isActive ?? true);
 
@@ -209,8 +212,8 @@ export default function DeptForm({ dept }: Props) {
                 <div className='grid gap-1.5'>
                   <Label>Ảnh nền</Label>
                   {bgImage ? (
-                    <div className='relative flex aspect-video max-h-[180px] items-center justify-center overflow-hidden rounded-lg border bg-muted'>
-                      <img alt='' className='h-full w-full object-cover' src={bgImage} />
+                    <div className='relative aspect-video max-h-45 overflow-hidden rounded-lg border bg-muted'>
+                      <Image alt='' className='object-cover' fill sizes='400px' src={bgImage} />
                       <button
                         className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                         onClick={() => setBgImage("")}

@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { adminCreateSponsor, adminUpdateSponsor } from "@/app/_actions/admin";
@@ -14,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { SponsorRow } from "./columns";
 
 type Props = {
@@ -172,8 +173,8 @@ export default function SponsorForm({ sponsor, activities = [] }: Props) {
               <div className='grid gap-1.5'>
                 <Label>Logo</Label>
                 {logoUrl ? (
-                  <div className='relative flex h-24 items-center justify-center rounded-lg border bg-muted p-2'>
-                    <img alt='' className='max-h-full max-w-full object-contain' src={logoUrl} />
+                  <div className='relative h-24 w-full rounded-lg border bg-muted p-2'>
+                    <Image alt='' className='object-contain p-2' fill sizes='300px' src={logoUrl} />
                     <button
                       className='absolute top-1 right-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80'
                       onClick={() => setLogoUrl(null)}
@@ -329,7 +330,11 @@ export default function SponsorForm({ sponsor, activities = [] }: Props) {
             <h2 className='font-bold text-muted-foreground text-sm uppercase tracking-wider'>Xem trước</h2>
             <LanguageToggle onChange={bi.setViewLang} value={bi.viewLang} />
           </div>
-          {logoUrl && <img alt='' className='mx-auto h-20 object-contain' src={logoUrl} />}
+          {logoUrl && (
+            <div className='relative mx-auto h-20 w-full'>
+              <Image alt='' className='object-contain' fill sizes='300px' src={logoUrl} />
+            </div>
+          )}
           <h1 className='text-center font-bold text-2xl'>{getTitle() || "Tên nhà tài trợ"}</h1>
           {getDesc() && <p className='text-muted-foreground text-sm'>{getDesc()}</p>}
           {/* ... */}

@@ -1,5 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { prisma } from "@/configs/prisma/db";
+import type { ClubPosition, Prisma } from "@/configs/prisma/generated/prisma/client";
 
 const issuer = process.env.SSO_ISSUER || "https://auth.mpclub.dev";
 const clientId = process.env.SSO_CLIENT_ID || "";
@@ -297,7 +298,7 @@ export async function syncFromSso() {
     }
   }
 
-  const ssoDepartments = new Map<string, any>();
+  const ssoDepartments = new Map<string, NonNullable<SsoMemberRole["department"]>>();
   for (const ssoUser of ssoList) {
     if (ssoUser.roles && Array.isArray(ssoUser.roles)) {
       for (const ssoRole of ssoUser.roles) {
@@ -339,7 +340,7 @@ export async function syncFromSso() {
   const localMemberEmailMap = new Map(allLocalMembers.map((m) => [m.email, m]));
 
   const syncedIds = new Set<string>();
-  const rolesToCreate: any[] = [];
+  const rolesToCreate: Prisma.ClubRoleCreateManyInput[] = [];
 
   for (const ssoUser of ssoList) {
     if (!(ssoUser?.id && ssoUser.email)) {
@@ -364,7 +365,7 @@ export async function syncFromSso() {
         rolesToCreate.push({
           memberId: ssoUser.id,
           departmentId: ssoRole.department?.id || null,
-          position: ssoRole.position as any,
+          position: ssoRole.position as ClubPosition,
           term: ssoRole.term || null,
           note: ssoRole.note || null,
           startAt: ssoRole.startAt ? new Date(ssoRole.startAt) : new Date(),
@@ -374,12 +375,13 @@ export async function syncFromSso() {
     }
 
     const userRoles = rolesToCreate.filter((r) => r.memberId === ssoUser.id);
-    const joinedClubAt = userRoles.length > 0 ? new Date(Math.min(...userRoles.map((r) => r.startAt.getTime()))) : null;
+    const joinedClubAt =
+      userRoles.length > 0 ? new Date(Math.min(...userRoles.map((r) => new Date(r.startAt).getTime()))) : null;
 
     let leftClubAt: Date | null = null;
     if (ssoUser.isAlumni) {
-      const endDates = userRoles.map((r) => r.endAt).filter((d): d is Date => d !== null);
-      leftClubAt = endDates.length > 0 ? new Date(Math.max(...endDates.map((d) => d.getTime()))) : new Date();
+      const endDates = userRoles.map((r) => r.endAt).filter((d): d is Date | string => d !== null && d !== undefined);
+      leftClubAt = endDates.length > 0 ? new Date(Math.max(...endDates.map((d) => new Date(d).getTime()))) : new Date();
     }
 
     const memberData = {
@@ -451,7 +453,7 @@ export async function adminUpdateSsoUser(
     throw new Error("Missing SSO_ADMIN_SECRET environment variable");
   }
 
-  const payload: Record<string, any> = {};
+  const payload: Record<string, string | null> = {};
   if (data.firstName !== undefined) {
     payload.firstName = data.firstName;
   }

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RecapData } from "@/lib/recap-data";
@@ -194,12 +195,13 @@ function GravityBubbleField({ members }: { members: RecapData["newMembers"] }) {
           {/* Avatar */}
           <div className='relative flex h-full w-full items-center justify-center'>
             {b.avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 alt={b.fullName}
-                className='h-[60px] w-[60px] rounded-full object-cover shadow-lg ring-2 ring-white/10 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] group-hover:ring-orange-400'
+                className='rounded-full object-cover shadow-lg ring-2 ring-white/10 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] group-hover:ring-orange-400'
+                height={60}
                 src={b.avatar}
                 style={{ border: `2px solid ${b.borderColor}` }}
+                width={60}
               />
             ) : (
               <div
@@ -239,8 +241,7 @@ export function SlideNewMembers({
       <GlowingOrbs />
       {coverImage3 && (
         <div className='absolute inset-0'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt='' className='absolute inset-0 h-full w-full object-cover opacity-10' src={coverImage3} />
+          <Image alt='' className='object-cover opacity-10' fill src={coverImage3} />
           <div className='absolute inset-0 bg-orange-500/5 mix-blend-overlay' />
         </div>
       )}

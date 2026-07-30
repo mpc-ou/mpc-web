@@ -248,7 +248,7 @@ export function DonutChart({
   let offset = 0;
   return (
     <div className='relative inline-flex items-center justify-center'>
-      <svg height={size} width={size}>
+      <svg aria-hidden='true' height={size} role='presentation' width={size}>
         {/* Background ring */}
         <circle
           cx={size / 2}

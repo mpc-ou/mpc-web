@@ -1,7 +1,8 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil } from "lucide-react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +15,7 @@ export type SectionRow = {
   isActive: boolean;
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<SectionRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -47,10 +48,7 @@ export const createColumns = (onEdit: (s: SectionRow) => void): ColumnDef<Sectio
     cell: ({ row }) => {
       const { value, type } = row.original;
       if (type === "image") {
-        return (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img alt='preview' className='h-8 w-12 rounded object-cover' src={value} />
-        );
+        return <Image alt='preview' className='rounded object-cover' height={32} src={value} width={48} />;
       }
       return <p className='max-w-xs truncate text-muted-foreground text-xs'>{value}</p>;
     }

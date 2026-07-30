@@ -27,15 +27,48 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+type ProposalListItem = {
+  id: string;
+  name: string;
+  organization?: string;
+  path: string;
+  lastModified: string;
+};
+
+const PROPOSAL_LIST_URL = "https://proposal.mpclub.dev/proposal-list.json";
+const PROPOSAL_BASE_URL = "https://proposal.mpclub.dev/";
+const PROPOSAL_KEYWORD = "webdesign";
+
+async function getLatestWebDesignProposalUrl(): Promise<string> {
+  const fallback = `${PROPOSAL_BASE_URL}webdesign2026/`;
+  try {
+    const res = await fetch(PROPOSAL_LIST_URL, { next: { revalidate: 3600 } });
+    if (!res.ok) {
+      return fallback;
+    }
+    const json = (await res.json()) as { proposals?: ProposalListItem[] };
+    const matches = (json.proposals ?? []).filter(
+      (p) => p.id?.toLowerCase().includes(PROPOSAL_KEYWORD) || p.name?.toLowerCase().includes(PROPOSAL_KEYWORD)
+    );
+    if (matches.length === 0) {
+      return fallback;
+    }
+    const latest = matches.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime())[0];
+    return latest?.path ? `${PROPOSAL_BASE_URL}${latest.path}` : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export default async function WebDesignPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("webdesign");
 
-  // Fetch gallery images and FAQs from DB for 'webdesign'
-  const [{ data: galleryRes }, { data: faqRes }] = await Promise.all([
+  const [{ data: galleryRes }, { data: faqRes }, proposalUrl] = await Promise.all([
     getGalleryImages("webdesign"),
-    getFaqItems(locale, "WEBDESIGN")
+    getFaqItems(locale, "WEBDESIGN"),
+    getLatestWebDesignProposalUrl()
   ]);
 
   const dbImages = (galleryRes?.payload ?? []) as Array<{
@@ -53,7 +86,6 @@ export default async function WebDesignPage({ params }: Props) {
 
   return (
     <div className='relative min-h-screen overflow-hidden bg-slate-950 pb-20 text-slate-100'>
-      {/* Blueprint Dot Grid overlay */}
       <div
         className='pointer-events-none absolute inset-0 z-0 opacity-30'
         style={{
@@ -62,43 +94,31 @@ export default async function WebDesignPage({ params }: Props) {
           backgroundSize: "32px 32px, 16px 16px"
         }}
       />
-      {/* Background glow effects */}
-      <div className='pointer-events-none absolute top-1/4 left-[10%] z-0 h-[400px] w-[400px] rounded-full bg-orange-500/10 blur-[120px]' />
-      <div className='pointer-events-none absolute top-1/2 right-[10%] z-0 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[140px]' />
-      <div className='pointer-events-none absolute bottom-1/4 left-1/3 z-0 h-[300px] w-[300px] rounded-full bg-emerald-500/5 blur-[100px]' />
+      <div className='pointer-events-none absolute top-1/4 left-[10%] z-0 h-100 w-100 rounded-full bg-orange-500/10 blur-[120px]' />
+      <div className='pointer-events-none absolute top-1/2 right-[10%] z-0 h-125 w-125 rounded-full bg-blue-500/10 blur-[140px]' />
+      <div className='pointer-events-none absolute bottom-1/4 left-1/3 z-0 h-75 w-75 rounded-full bg-emerald-500/5 blur-[100px]' />
 
-      {/* Hero */}
       <WebDesignHeroClient subtitle={t("subtitle")} title={t("title")} />
 
       <div className='container relative z-10 mx-auto mt-16 max-w-6xl space-y-28 px-4 sm:mt-24'>
-        {/* Intro */}
         <WebDesignIntroClient />
 
-        {/* Rules */}
         <WebDesignRulesClient />
 
-        {/* Timeline */}
         <WebDesignTimelineClient />
 
-        {/* Criteria */}
         <WebDesignCriteriaClient />
 
-        {/* Exhibition */}
         <WebDesignExhibitionClient />
 
-        {/* Gallery */}
         <WebDesignGalleryClient images={dbImages} />
 
-        {/* Prizes */}
         <WebDesignPrizesClient />
 
-        {/* Sponsor */}
-        <WebDesignSponsorClient />
+        <WebDesignSponsorClient proposalUrl={proposalUrl} />
 
-        {/* CTA */}
         <WebDesignCtaClient />
 
-        {/* FAQ Section using reusable FaqAccordion */}
         <section className='relative z-10 mb-20'>
           <FaqAccordion badge='faq' items={dbFaq} title={t("faqSectionTitle")} />
         </section>

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import { getActiveAnnouncement, getFooterData, getHeaderProfile } from "@/app/_actions/main";
+import { BackToTop } from "@/components/custom/back-to-top.client";
 import type { FooterData } from "@/components/custom/footer";
 import { Footer } from "@/components/custom/footer";
 import { Header } from "@/components/custom/header";
@@ -9,8 +10,6 @@ import type { UserProfileData } from "@/components/custom/header/user-profile.cl
 import { prisma } from "@/configs/prisma/db";
 
 const PageLayout = async ({ children }: { children: ReactNode }) => {
-  // Opt in to dynamic rendering explicitly so parallel execution of new Date()
-  // in server actions doesn't trigger Next.js prerender errors.
   await cookies();
 
   const [announcementResult, profileResult, footerResult, brandingResult] = await Promise.allSettled([
@@ -62,6 +61,7 @@ const PageLayout = async ({ children }: { children: ReactNode }) => {
       />
       <main className='flex-1'>{children}</main>
       <Footer footerData={footerPayload ?? null} />
+      <BackToTop />
     </>
   );
 };

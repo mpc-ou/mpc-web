@@ -1,6 +1,6 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Copy, ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,12 @@ import { Link } from "@/configs/i18n/routing";
 import { _ROUTE_MEMBER_CARD } from "@/constants/route";
 import { getFullName } from "@/lib/utils";
 
+const POSITION_ONLY_LABEL: Record<string, string> = {
+  PRESIDENT: "Chủ nhiệm",
+  VICE_PRESIDENT: "Phó chủ nhiệm",
+  ADVISOR: "Cố vấn"
+};
+
 export type MemberRow = {
   id: string;
   email: string;
@@ -17,6 +23,7 @@ export type MemberRow = {
   middleName?: string | null;
   lastName: string;
   avatar: string | null;
+  coverImage?: string | null;
   phone: string | null;
   dob: string | null;
   studentId: string | null;
@@ -26,10 +33,15 @@ export type MemberRow = {
   isActive: boolean;
   leftClubAt: string | null;
   createdAt: string;
+  showDob?: boolean;
+  showPhone?: boolean;
+  showStudentId?: boolean;
+  spotifyUri?: string | null;
+  socials?: unknown;
   clubRoles: Array<{
     id: string;
     position: string;
-    department: { nameVi: string; slug: string } | null;
+    department: { id: string; nameVi: string; nameEn: string; slug: string } | null;
     startAt: string;
     endAt: string | null;
   }>;
@@ -48,7 +60,7 @@ const roleBadge: Record<
   GUEST: { label: "Khách", variant: "outline" }
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<MemberRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -78,14 +90,7 @@ function ClubRolesBadges({ roles }: { roles: MemberRow["clubRoles"] }) {
 
   if (!uniqueDepts.length) {
     const pos = displayRoles[0]?.position;
-    const label =
-      pos === "PRESIDENT"
-        ? "Chủ nhiệm"
-        : pos === "VICE_PRESIDENT"
-          ? "Phó chủ nhiệm"
-          : pos === "ADVISOR"
-            ? "Cố vấn"
-            : (pos ?? "CLB");
+    const label = (pos && POSITION_ONLY_LABEL[pos]) ?? pos ?? "CLB";
     return (
       <Badge className='text-[10px]' variant='secondary'>
         {label}
@@ -134,9 +139,10 @@ export const createColumns = (
     cell: ({ row }) => {
       const m = row.original;
       return (
-        <div
-          className='-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50'
+        <button
+          className='-m-1 flex w-full cursor-pointer items-center gap-3 rounded-md p-1 text-left transition-colors hover:bg-muted/50'
           onClick={() => onView(m)}
+          type='button'
         >
           <Avatar className='h-8 w-8'>
             <AvatarImage src={m.avatar ?? undefined} />
@@ -149,7 +155,7 @@ export const createColumns = (
             <div className='font-medium text-xs'>{getFullName(m.firstName, m.middleName, m.lastName, "vi")}</div>
             {m.studentId && <div className='text-[10px] text-muted-foreground'>{m.studentId}</div>}
           </div>
-        </div>
+        </button>
       );
     }
   },

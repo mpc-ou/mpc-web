@@ -13,16 +13,22 @@ type BilingualFields = {
   sourceLanguage: "VI" | "EN";
 };
 
+type LegacyBilingualFields = {
+  title?: string;
+  summary?: string | null;
+  content?: string;
+};
+
 /**
  * Derive initial bilingual state from a PostRow-like object.
  * Falls back gracefully when rows lack bilingual fields (old data).
  */
-export function useBilingualForm(initial?: Partial<BilingualFields> | null) {
-  const [titleVi, setTitleVi] = useState(initial?.titleVi ?? (initial as any)?.title ?? "");
+export function useBilingualForm(initial?: (Partial<BilingualFields> & LegacyBilingualFields) | null) {
+  const [titleVi, setTitleVi] = useState(initial?.titleVi ?? initial?.title ?? "");
   const [titleEn, setTitleEn] = useState(initial?.titleEn ?? "");
-  const [summaryVi, setSummaryVi] = useState<string | null>(initial?.summaryVi ?? (initial as any)?.summary ?? null);
+  const [summaryVi, setSummaryVi] = useState<string | null>(initial?.summaryVi ?? initial?.summary ?? null);
   const [summaryEn, setSummaryEn] = useState<string | null>(initial?.summaryEn ?? null);
-  const [contentVi, setContentVi] = useState(initial?.contentVi ?? (initial as any)?.content ?? "");
+  const [contentVi, setContentVi] = useState(initial?.contentVi ?? initial?.content ?? "");
   const [contentEn, setContentEn] = useState(initial?.contentEn ?? "");
   const [sourceLanguage, setSourceLanguage] = useState<"VI" | "EN">(initial?.sourceLanguage ?? "VI");
   const [viewLang, setViewLang] = useState<ViewLanguage>("vi");

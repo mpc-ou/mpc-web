@@ -159,8 +159,9 @@ export function FaqDataTable({ data }: Props) {
     setSeeding(true);
     await handleErrorClient({
       cb: () => adminSeedDefaultFaqItems(target),
-      onSuccess: (res: any) => {
-        const count = res?.seededCount ?? 0;
+      onSuccess: ({ data }) => {
+        const payload = data?.payload as { seededCount?: number } | undefined;
+        const count = payload?.seededCount ?? 0;
         toast({
           description: `Đã nạp thành công ${count} FAQ mẫu vào database!`
         });

@@ -22,7 +22,7 @@ export function WebDesignRulesClient() {
           { icon: PenTool, title: "rules2", desc: "rules2Desc", frame: "Register_Card" },
           { icon: Globe, title: "rules3", desc: "rules3Desc", frame: "Audience_Card" }
         ].map((item, idx) => (
-          <ScrollReveal delay={idx * 150} key={idx} variant='fade-up'>
+          <ScrollReveal delay={idx * 150} key={item.frame} variant='fade-up'>
             <div className='group relative flex h-full cursor-pointer select-none flex-col justify-between overflow-hidden rounded-2xl border border-white/5 bg-slate-900/40 p-8 shadow-lg transition-all duration-300 hover:border-orange-500/50 hover:bg-slate-900/60'>
               {/* Bounding box hover handler lines */}
               <div className='absolute top-0 left-0 h-[1px] w-full bg-orange-500/0 transition-colors group-hover:bg-orange-500/40' />
@@ -45,9 +45,11 @@ export function WebDesignRulesClient() {
                 <div className='mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)]'>
                   <item.icon className='h-6 w-6' />
                 </div>
-                <h3 className='mb-3 font-black text-lg text-white uppercase tracking-tight'>{t(item.title as any)}</h3>
+                <h3 className='mb-3 font-black text-lg text-white uppercase tracking-tight'>
+                  {t(item.title as Parameters<typeof t>[0])}
+                </h3>
                 <p className='text-slate-400 text-sm leading-relaxed transition-colors group-hover:text-slate-300'>
-                  {t(item.desc as any)}
+                  {t(item.desc as Parameters<typeof t>[0])}
                 </p>
               </div>
 

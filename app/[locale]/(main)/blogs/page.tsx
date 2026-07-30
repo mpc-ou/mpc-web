@@ -4,7 +4,7 @@ import { getBlogsPageData } from "@/app/_actions/main";
 import { PageHero } from "@/components/custom/page-hero.client";
 import { prisma } from "@/configs/prisma/db";
 import { createClientSsr } from "@/configs/supabase/server";
-import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/utils/blog-permission";
+import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { generatePageSeo } from "@/utils/seo";
 import { BlogsClient } from "./client";
 
@@ -30,7 +30,7 @@ export default async function BlogsPage({ params, searchParams }: Props): Promis
   const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
   const validPage = Number.isNaN(page) || page < 1 ? 1 : page;
 
-  const take = 9;
+  const take = 12;
 
   const [{ data }, t, permissionLevel] = await Promise.all([
     getBlogsPageData(validPage, take, locale),

@@ -1,4 +1,5 @@
 import { Film } from "lucide-react";
+import Image from "next/image";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -14,11 +15,18 @@ export default function RecapListPage() {
   );
 }
 
+type RecapListItem = {
+  year: number;
+  name: string;
+  description: string | null;
+  coverImage: string | null;
+};
+
 async function RecapListContent() {
   await connection();
   const t = await getTranslations("events");
   const { data } = await getPublishedRecaps();
-  const recaps = (data?.payload as any)?.recaps ?? [];
+  const recaps = (data?.payload as { recaps?: RecapListItem[] } | undefined)?.recaps ?? [];
 
   return (
     <div className='min-h-screen bg-background'>
@@ -45,18 +53,19 @@ async function RecapListContent() {
           <div className='py-20 text-center text-muted-foreground'>{t("recap.noRecaps")}</div>
         ) : (
           <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-            {recaps.map((recap: any) => (
+            {recaps.map((recap) => (
               <Link
                 className='group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg'
-                href={`/recap/${recap.year}` as any}
+                href={`/recap/${recap.year}`}
                 key={recap.year}
               >
                 <div className='relative aspect-video overflow-hidden bg-muted'>
                   {recap.coverImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       alt={recap.name}
-                      className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                      className='object-cover transition-transform duration-500 group-hover:scale-105'
+                      fill
+                      sizes='(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
                       src={recap.coverImage}
                     />
                   ) : (

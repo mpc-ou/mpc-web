@@ -8,6 +8,11 @@ type Props = {
   onChange: (tags: string[]) => void;
 };
 
+async function getTags() {
+  const res = await adminGetTags();
+  return (res.data?.payload as Array<{ id: string; name: string; slug: string }>) ?? [];
+}
+
 export function TagInput({ selectedTags, onChange }: Props) {
-  return <BaseTagInput getTags={adminGetTags as any} onChange={onChange} selectedTags={selectedTags} />;
+  return <BaseTagInput getTags={getTags} onChange={onChange} selectedTags={selectedTags} />;
 }

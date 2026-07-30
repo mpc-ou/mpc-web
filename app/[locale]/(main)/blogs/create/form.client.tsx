@@ -12,7 +12,7 @@ export function UserBlogCreateForm({ post }: { post?: BlogFormData | null }) {
     const res = await userCreateBlog({
       ...payload,
       sourceLanguage: payload.sourceLanguage ?? "VI"
-    } as any);
+    });
     if (res.error) {
       throw new Error(res.error?.message ?? "Lỗi tạo bài viết");
     }
@@ -23,7 +23,7 @@ export function UserBlogCreateForm({ post }: { post?: BlogFormData | null }) {
     const res = await userUpdateBlog(id, {
       ...payload,
       sourceLanguage: payload.sourceLanguage ?? "VI"
-    } as any);
+    });
     if (res.error) {
       throw new Error(res.error?.message ?? "Lỗi cập nhật");
     }

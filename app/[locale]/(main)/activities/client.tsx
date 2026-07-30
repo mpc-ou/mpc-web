@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, ArrowUpRight, Calendar, Camera, ChevronLeft, ChevronRight, FileImage, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { MarkdownContent } from "@/components/markdown-content";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,14 @@ type EventItem = {
   href?: string;
 };
 
+export type EventsClientTranslations = {
+  internalTitle: string;
+  internalDesc: string;
+  externalTitle: string;
+  externalDesc: string;
+  learnMore: string;
+};
+
 export function EventsClient({
   internalEvents,
   externalEvents,
@@ -25,7 +34,7 @@ export function EventsClient({
 }: {
   internalEvents: EventItem[];
   externalEvents: EventItem[];
-  t: any;
+  t: EventsClientTranslations;
 }) {
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
@@ -109,9 +118,11 @@ export function EventsClient({
                   className='relative aspect-video w-full overflow-hidden bg-muted'
                   style={{ transform: "translateZ(20px)" }}
                 >
-                  <img
+                  <Image
                     alt={event.title}
-                    className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                    className='object-cover transition-transform duration-500 group-hover:scale-105'
+                    fill
+                    sizes='(min-width: 1024px) 33vw, 100vw'
                     src={event.thumbnail}
                   />
 
@@ -176,6 +187,8 @@ export function EventsClient({
                 }}
                 type='button'
               >
+                {/* biome-ignore lint/a11y/noStaticElementInteractions: decorative mouse-tracking tilt effect inside an already-interactive parent button */}
+                {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
                 <div
                   className='group relative flex h-full select-none flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 ease-out hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/5'
                   onMouseLeave={handleMouseLeave}
@@ -193,9 +206,11 @@ export function EventsClient({
                     className='relative aspect-[4/3] w-full overflow-hidden bg-muted'
                     style={{ transform: "translateZ(20px)" }}
                   >
-                    <img
+                    <Image
                       alt={event.title}
-                      className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                      className='object-cover transition-transform duration-500 group-hover:scale-105'
+                      fill
+                      sizes='(min-width: 1024px) 33vw, 50vw'
                       src={event.thumbnail}
                     />
 
@@ -257,12 +272,16 @@ export function EventsClient({
 
                 {selectedEvent.images && selectedEvent.images.length > 0 ? (
                   <>
-                    <img
-                      alt={`${selectedEvent.title} - ảnh ${currentImageIdx + 1}`}
-                      className='fade-in max-h-full max-w-full animate-in select-none rounded-lg object-contain p-2 transition-all duration-500'
-                      key={currentImageIdx}
-                      src={selectedEvent.images[currentImageIdx]}
-                    />
+                    <div className='fade-in relative h-full w-full animate-in p-2 transition-all duration-500'>
+                      <Image
+                        alt={`${selectedEvent.title} - ảnh ${currentImageIdx + 1}`}
+                        className='select-none rounded-lg object-contain'
+                        fill
+                        key={currentImageIdx}
+                        sizes='94vw'
+                        src={selectedEvent.images[currentImageIdx]}
+                      />
+                    </div>
 
                     {/* Prev / Next controls */}
                     {selectedEvent.images.length > 1 && (
@@ -304,10 +323,11 @@ export function EventsClient({
                                   ? "scale-102 border-orange-500"
                                   : "border-transparent opacity-50 hover:opacity-100"
                               }`}
-                              key={idx}
+                              key={img}
                               onClick={() => setCurrentImageIdx(idx)}
+                              type='button'
                             >
-                              <img alt='' className='h-full w-full object-cover' src={img} />
+                              <Image alt='' className='object-cover' fill sizes='44px' src={img} />
                             </button>
                           ))}
                         </div>

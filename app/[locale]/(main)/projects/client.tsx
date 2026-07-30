@@ -9,12 +9,19 @@ import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui/button";
 import type { ProjectSummary } from "@/types/common";
 
+// getProjectsPageData (app/_actions/main/projects.ts) selects titleEn/descriptionEn as
+// well, which the shared ProjectSummary type doesn't declare.
+export type ProjectSummaryWithI18n = ProjectSummary & {
+  titleEn?: string | null;
+  descriptionEn?: string | null;
+};
+
 export function ProjectsClient({
   projects,
   currentPage,
   totalPages
 }: {
-  projects: ProjectSummary[];
+  projects: ProjectSummaryWithI18n[];
   currentPage: number;
   totalPages: number;
 }) {
@@ -37,9 +44,9 @@ export function ProjectsClient({
     slug: p.slug,
     variant: "project",
     titleVi: p.title,
-    titleEn: (p as any).titleEn,
+    titleEn: p.titleEn,
     summaryVi: p.description,
-    summaryEn: (p as any).descriptionEn,
+    summaryEn: p.descriptionEn,
     thumbnail: p.thumbnail ?? undefined,
     technologies: Array.isArray(p.technologies) ? p.technologies : [],
     startDate: p.startDate ?? null,

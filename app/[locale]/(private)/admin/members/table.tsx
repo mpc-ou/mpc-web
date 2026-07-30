@@ -184,7 +184,18 @@ export function MembersDataTable({
     const res = await adminGetMembers();
     const allMembers = Array.isArray(res.data?.payload) ? res.data.payload : [];
 
-    const exportData = allMembers.map((m: any) => ({
+    type ExportableMember = {
+      firstName: string;
+      middleName?: string | null;
+      lastName: string;
+      email: string;
+      phone: string | null;
+      studentId: string | null;
+      webRole: string;
+      isActive: boolean;
+    };
+
+    const exportData = (allMembers as ExportableMember[]).map((m) => ({
       "Họ tên": getFullName(m.firstName, m.middleName, m.lastName, "vi"),
       Email: m.email,
       SĐT: m.phone || "",

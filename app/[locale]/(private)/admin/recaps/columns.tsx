@@ -1,6 +1,6 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, ExternalLink, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export type RecapRow = {
   createdAt: string;
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<RecapRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

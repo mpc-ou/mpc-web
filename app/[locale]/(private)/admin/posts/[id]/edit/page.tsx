@@ -77,7 +77,7 @@ export default async function EditPostPage({ params }: { params: Params }) {
     achievementDate: post.achievementDate?.toISOString() ?? null,
     members: post.achievementMembers,
     tags: post.tags
-  } as any as PostRow;
+  } as unknown as PostRow;
 
   const members = await prisma.member.findMany({
     orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
@@ -93,7 +93,19 @@ export default async function EditPostPage({ params }: { params: Params }) {
 
   return (
     <div className='flex flex-col gap-6'>
-      {mappedPost.type === "BLOG" && <BlogForm post={mappedPost} />}
+      {mappedPost.type === "BLOG" && (
+        <BlogForm
+          post={{
+            ...mappedPost,
+            gallery: mappedPost.gallery?.map((g) => ({
+              url: g.url,
+              title: g.title ?? undefined,
+              caption: g.caption ?? undefined,
+              type: g.type
+            }))
+          }}
+        />
+      )}
       {mappedPost.type === "EVENT" && <EventForm post={mappedPost} />}
       {mappedPost.type === "ACHIEVEMENT" && <AchievementForm allMembers={members} post={mappedPost} />}
     </div>

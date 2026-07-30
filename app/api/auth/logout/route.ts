@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { revokeSsoSession } from "@/services/sso";
 import { clearSession, getSession } from "@/utils/session";
-import { revokeSsoSession } from "@/utils/sso";
 
 export async function GET() {
   const session = await getSession();

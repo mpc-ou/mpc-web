@@ -1,5 +1,10 @@
 "use server";
 
+const TITLE_TAG_RE = /<title>(.*?)<\/title>/;
+const TRACK_TITLE_RE = /(.*?) - song (?:and lyrics )?by (.*)/i;
+const ALBUM_TITLE_RE = /(.*?) - album by (.*)/i;
+const PLAYLIST_TITLE_RE = /(.*?) - playlist by (.*)/i;
+
 export async function getSpotifyMetadata(uri: string) {
   try {
     if (!uri) {
@@ -26,7 +31,7 @@ export async function getSpotifyMetadata(uri: string) {
     }
 
     const html = await response.text();
-    const titleMatch = html.match(/<title>(.*?)<\/title>/);
+    const titleMatch = html.match(TITLE_TAG_RE);
     if (!titleMatch) {
       return null;
     }
@@ -37,20 +42,16 @@ export async function getSpotifyMetadata(uri: string) {
     let title = cleanTitle;
     let artist = "";
 
-    const trackRegex = /(.*?) - song (?:and lyrics )?by (.*)/i;
-    const albumRegex = /(.*?) - album by (.*)/i;
-    const playlistRegex = /(.*?) - playlist by (.*)/i;
-
-    if (trackRegex.test(cleanTitle)) {
-      const match = cleanTitle.match(trackRegex);
+    if (TRACK_TITLE_RE.test(cleanTitle)) {
+      const match = cleanTitle.match(TRACK_TITLE_RE);
       title = match ? match[1] : cleanTitle;
       artist = match ? match[2] : "";
-    } else if (albumRegex.test(cleanTitle)) {
-      const match = cleanTitle.match(albumRegex);
+    } else if (ALBUM_TITLE_RE.test(cleanTitle)) {
+      const match = cleanTitle.match(ALBUM_TITLE_RE);
       title = match ? match[1] : cleanTitle;
       artist = match ? match[2] : "";
-    } else if (playlistRegex.test(cleanTitle)) {
-      const match = cleanTitle.match(playlistRegex);
+    } else if (PLAYLIST_TITLE_RE.test(cleanTitle)) {
+      const match = cleanTitle.match(PLAYLIST_TITLE_RE);
       title = match ? match[1] : cleanTitle;
       artist = match ? match[2] : "";
     } else if (cleanTitle.includes(" - ")) {

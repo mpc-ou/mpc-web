@@ -82,10 +82,7 @@ const Footer = ({ footerData }: Props) => {
                 </Link>
               </li>
               <li>
-                <Link
-                  className='text-muted-foreground text-sm transition-colors hover:text-primary'
-                  href={"/recap" as any}
-                >
+                <Link className='text-muted-foreground text-sm transition-colors hover:text-primary' href='/recap'>
                   {t("aboutUs")}
                 </Link>
               </li>

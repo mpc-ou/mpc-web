@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { adminGetDepartments } from "@/app/_actions/admin";
 import { generatePageSeo } from "@/utils/seo";
+import type { DeptRow } from "../../columns";
 import DeptForm from "../../dept-form";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -20,8 +21,8 @@ export default async function EditDeptPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
   const res = await adminGetDepartments();
-  const departments = (res.data?.payload as any[]) ?? [];
-  const dept = departments.find((d: any) => d.id === id);
+  const departments = (res.data?.payload as DeptRow[] | undefined) ?? [];
+  const dept = departments.find((d) => d.id === id);
   if (!dept) {
     notFound();
   }

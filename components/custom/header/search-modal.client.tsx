@@ -166,7 +166,7 @@ const SearchModal = () => {
             </div>
           )}
 
-          {hasSuggestions && <SearchSuggestions query={trimmed} sectionLabels={sectionLabels} sections={suggestions} />}
+          {hasSuggestions && <SearchSuggestions sectionLabels={sectionLabels} sections={suggestions} />}
         </form>
 
         {trimmed && (

@@ -19,6 +19,6 @@ export default async function NewSponsorPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const actRes = await adminGetActivities();
-  const activities = (actRes.data?.payload as any[]) ?? [];
+  const activities = (actRes.data?.payload as Array<{ id: string; titleVi: string }>) ?? [];
   return <SponsorForm activities={activities} />;
 }

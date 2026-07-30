@@ -12,6 +12,7 @@ import {
   Plus,
   XCircle
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ export function MyBlogsClient() {
     (async () => {
       const res = await getUserPosts();
       if (res.data?.payload) {
-        setPosts((res.data.payload as any).posts ?? []);
+        setPosts((res.data.payload as { posts?: PostRow[] }).posts ?? []);
       }
       setLoading(false);
     })();
@@ -132,10 +133,9 @@ export function MyBlogsClient() {
                 key={post.id}
               >
                 {/* Thumbnail */}
-                <div className='hidden h-16 w-24 shrink-0 overflow-hidden rounded-lg bg-muted sm:block'>
+                <div className='relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-lg bg-muted sm:block'>
                   {post.thumbnail ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img alt='' className='h-full w-full object-cover' src={post.thumbnail} />
+                    <Image alt='' className='object-cover' fill sizes='96px' src={post.thumbnail} />
                   ) : (
                     <div className='flex h-full w-full items-center justify-center'>
                       <FileText className='h-6 w-6 text-muted-foreground/30' />

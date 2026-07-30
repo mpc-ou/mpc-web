@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarDays, CheckSquare, Square, Trophy } from "lucide-react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,12 +77,23 @@ export function PhaseAchievements({ achievements, selectedIds, onChange }: Props
                 className={`flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors ${
                   checked ? "border-primary/50 bg-primary/5" : "border-border hover:border-muted-foreground/30"
                 }`}
+                htmlFor={`ach-${ach.id}`}
                 key={ach.id}
               >
-                <Checkbox checked={checked} className='mt-0.5' onCheckedChange={() => toggle(ach.id)} />
+                <Checkbox
+                  checked={checked}
+                  className='mt-0.5'
+                  id={`ach-${ach.id}`}
+                  onCheckedChange={() => toggle(ach.id)}
+                />
                 {ach.thumbnail && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img alt={ach.title} className='h-16 w-24 shrink-0 rounded-md object-cover' src={ach.thumbnail} />
+                  <Image
+                    alt={ach.title}
+                    className='shrink-0 rounded-md object-cover'
+                    height={64}
+                    src={ach.thumbnail}
+                    width={96}
+                  />
                 )}
                 <div className='min-w-0 flex-1'>
                   <div className='flex items-center gap-2'>

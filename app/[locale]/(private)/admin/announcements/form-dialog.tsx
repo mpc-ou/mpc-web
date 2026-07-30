@@ -144,6 +144,13 @@ export function AnnouncementFormDialog({ open, onOpenChange, announcement }: Pro
   const labelField = activeTab === "vi" ? linkLabelVi : linkLabelEn;
   const setLabelField = activeTab === "vi" ? setLinkLabelVi : setLinkLabelEn;
 
+  let submitLabel = "Thêm";
+  if (loading) {
+    submitLabel = "Đang lưu...";
+  } else if (isEdit) {
+    submitLabel = "Lưu thay đổi";
+  }
+
   return (
     <Dialog key={announcement?.id ?? "new"} onOpenChange={onOpenChange} open={open}>
       <DialogContent className='sm:max-w-[650px]'>
@@ -224,7 +231,7 @@ export function AnnouncementFormDialog({ open, onOpenChange, announcement }: Pro
         </form>
         <DialogFooter>
           <Button disabled={loading} form='announcement-form' type='submit'>
-            {loading ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Thêm"}
+            {submitLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

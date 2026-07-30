@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { syncFromSso } from "@/utils/sso";
+import { syncFromSso } from "@/services/sso";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,8 +13,9 @@ export async function GET(request: Request) {
   try {
     await syncFromSso();
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: err.message || "Failed to sync" }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Failed to sync";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

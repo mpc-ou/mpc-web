@@ -95,7 +95,7 @@ export function LeadershipTimelineClient({ roles, locale }: { roles: HistoricalR
                         role.member.lastName,
                         locale
                       );
-                      const posLabel = tPos(role.position as any) || role.position;
+                      const posLabel = tPos(role.position as Parameters<typeof tPos>[0]) || role.position;
 
                       return (
                         <div

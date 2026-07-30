@@ -1,8 +1,9 @@
 "use client";
 
 import { Trophy, X, ZoomIn } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
 import { getFullName } from "@/lib/utils";
@@ -36,6 +37,19 @@ export function HonoredMembers({ members, locale }: Props) {
   const t = useTranslations("achievements");
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!activeImage) {
+      return;
+    }
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setActiveImage(null);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [activeImage]);
+
   if (!members || members.length === 0) {
     return null;
   }
@@ -60,12 +74,15 @@ export function HonoredMembers({ members, locale }: Props) {
               <div className='relative w-full overflow-hidden bg-muted'>
                 {honorImg ? (
                   <>
-                    {/* biome-ignore lint/performance/noImgElement: honor photo */}
-                    <img
-                      alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                      className='aspect-4/3 w-full object-cover transition-transform duration-500 group-hover:scale-105'
-                      src={honorImg}
-                    />
+                    <div className='relative aspect-4/3 w-full'>
+                      <Image
+                        alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
+                        className='object-cover transition-transform duration-500 group-hover:scale-105'
+                        fill
+                        sizes='(min-width: 768px) 33vw, 100vw'
+                        src={honorImg}
+                      />
+                    </div>
                     <button
                       className='absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/20 group-hover:opacity-100'
                       onClick={() => setActiveImage(honorImg)}
@@ -93,13 +110,14 @@ export function HonoredMembers({ members, locale }: Props) {
               {/* Member info */}
               <div className='flex items-center gap-3 p-3'>
                 <Link
-                  className='h-9 w-9 shrink-0 overflow-hidden rounded-full ring-2 ring-amber-500/20 transition-all group-hover:ring-amber-500/40'
+                  className='relative h-9 w-9 shrink-0 overflow-hidden rounded-full ring-2 ring-amber-500/20 transition-all group-hover:ring-amber-500/40'
                   href={`/members/${m.member.slug || m.member.id}` as "/"}
                 >
-                  {/* biome-ignore lint/performance/noImgElement: avatar */}
-                  <img
+                  <Image
                     alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                    className='h-full w-full object-cover'
+                    className='object-cover'
+                    fill
+                    sizes='36px'
                     src={avatarSrc}
                   />
                 </Link>
@@ -120,30 +138,23 @@ export function HonoredMembers({ members, locale }: Props) {
 
       {/* Lightbox / Zoom Modal */}
       {activeImage && (
-        <div
-          className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-black/90 p-4 backdrop-blur-xs transition-all duration-300'
-          onClick={() => setActiveImage(null)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setActiveImage(null);
-            }
-          }}
-        >
+        <div className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center p-4 transition-all duration-300'>
           <button
             aria-label='Close'
-            className='absolute top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20'
+            className='absolute inset-0 cursor-default bg-black/90 backdrop-blur-xs'
+            onClick={() => setActiveImage(null)}
+            type='button'
+          />
+          <button
+            aria-label='Close'
+            className='absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20'
             onClick={() => setActiveImage(null)}
             type='button'
           >
             <X className='h-6 w-6' />
           </button>
-          <div className='relative max-h-full max-w-full overflow-hidden' onClick={(e) => e.stopPropagation()}>
-            {/* biome-ignore lint/performance/noImgElement: lightbox */}
-            <img
-              alt='Zoomed Honor'
-              className='max-h-[85vh] max-w-[95vw] animate-zoom-in select-none rounded-lg object-contain shadow-2xl'
-              src={activeImage}
-            />
+          <div className='relative z-10 h-[85vh] w-[95vw] animate-zoom-in overflow-hidden rounded-lg shadow-2xl'>
+            <Image alt='Zoomed Honor' className='select-none object-contain' fill sizes='95vw' src={activeImage} />
           </div>
         </div>
       )}

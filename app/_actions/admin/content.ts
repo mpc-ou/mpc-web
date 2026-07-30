@@ -3,7 +3,7 @@
 import { translate } from "bing-translate-api";
 import { revalidateTag } from "next/cache";
 import { _CACHE_FAQ, _CACHE_GALLERY, _CACHE_HOMEPAGE, _CACHE_SETTINGS } from "@/constants/cache";
-import { translateTextWithDeepseek } from "@/utils/deepseek";
+import { translateTextWithDeepseek } from "@/services/deepseek";
 import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
 export const adminGetFaqItems = async () =>
@@ -84,7 +84,10 @@ export const adminSeedDefaultFaqItems = async (target?: string) =>
     cb: async ({ user }) => {
       await requireAdmin(user);
 
-      const faqJson = (await import("@/configs/data/fqa.json")).default as any;
+      const faqJson = (await import("@/configs/data/fqa.json")).default as unknown as Record<
+        string,
+        Array<{ vi: { q: string; a: string }; en: { q: string; a: string } }>
+      >;
 
       let seededCount = 0;
       const targets = target ? [target] : Object.keys(faqJson).filter((k) => k !== "_README");

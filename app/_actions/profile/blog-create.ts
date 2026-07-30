@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { createClientSsr } from "@/configs/supabase/server";
 import { _CACHE_POSTS } from "@/constants/cache";
-import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/utils/blog-permission";
+import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
 // ── Create blog post (user) ──

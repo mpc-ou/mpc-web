@@ -1,6 +1,7 @@
 "use client";
 
 import { Database, Plus, Search, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { adminDeleteActivity, adminSeedActivities } from "@/app/_actions/admin";
@@ -132,9 +133,9 @@ export function ActivitiesDataTable({ data }: { data: ActivityRow[] }) {
           {viewActivity && (
             <div className='flex flex-col gap-4 py-2'>
               {/* Thumbnail */}
-              {(viewActivity as any)?.thumbnail && (
-                <div className='-mx-6 -mt-6 overflow-hidden rounded-t-lg'>
-                  <img alt='' className='aspect-video w-full object-cover' src={(viewActivity as any).thumbnail} />
+              {viewActivity?.thumbnail && (
+                <div className='relative -mx-6 -mt-6 aspect-video w-[calc(100%+3rem)] overflow-hidden rounded-t-lg'>
+                  <Image alt='' className='object-cover' fill sizes='512px' src={viewActivity.thumbnail} />
                 </div>
               )}
 
@@ -149,20 +150,18 @@ export function ActivitiesDataTable({ data }: { data: ActivityRow[] }) {
                     {viewActivity.isInternal ? "Nội bộ" : "Đối ngoại"}
                   </Badge>
                   <Badge variant='secondary'>Slug: {viewActivity.slug}</Badge>
-                  <Badge variant='secondary'>Thứ tự: {(viewActivity as any).order ?? 0}</Badge>
+                  <Badge variant='secondary'>Thứ tự: {viewActivity.order ?? 0}</Badge>
                 </div>
               </div>
 
-              {(viewActivity as any)?.descriptionVi && (
+              {viewActivity?.descriptionVi && (
                 <div>
                   <h4 className='mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>Mô tả</h4>
                   <div className='text-muted-foreground text-sm'>
-                    <MarkdownContent content={(viewActivity as any).descriptionVi} />
+                    <MarkdownContent content={viewActivity.descriptionVi} />
                   </div>
-                  {(viewActivity as any)?.descriptionEn && (
-                    <p className='mt-1 text-muted-foreground/60 text-xs italic'>
-                      {(viewActivity as any).descriptionEn}
-                    </p>
+                  {viewActivity?.descriptionEn && (
+                    <p className='mt-1 text-muted-foreground/60 text-xs italic'>{viewActivity.descriptionEn}</p>
                   )}
                 </div>
               )}
@@ -178,15 +177,15 @@ export function ActivitiesDataTable({ data }: { data: ActivityRow[] }) {
               )}
 
               {/* Gallery */}
-              {(viewActivity as any)?.images?.length > 0 && (
+              {(viewActivity?.images?.length ?? 0) > 0 && (
                 <div>
                   <h4 className='mb-2 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>
-                    Ảnh ({(viewActivity as any).images.length})
+                    Ảnh ({viewActivity.images.length})
                   </h4>
                   <div className='grid grid-cols-3 gap-2'>
-                    {(viewActivity as any).images.map((img: string, i: number) => (
-                      <div className='aspect-square overflow-hidden rounded-lg bg-muted' key={i}>
-                        <img alt='' className='h-full w-full object-cover' src={img} />
+                    {viewActivity.images.map((img: string) => (
+                      <div className='relative aspect-square overflow-hidden rounded-lg bg-muted' key={img}>
+                        <Image alt='' className='object-cover' fill sizes='150px' src={img} />
                       </div>
                     ))}
                   </div>

@@ -9,22 +9,54 @@ type SpotifyPlayerProps = {
   autoplay?: boolean;
 };
 
-let apiPromise: Promise<any> | null = null;
+// Minimal typings for Spotify's untyped embed IFrame API (https://developer.spotify.com/documentation/embeds)
+type SpotifyPlaybackUpdateEvent = {
+  data: {
+    isPaused: boolean;
+    isBuffering?: boolean;
+    duration?: number;
+    position?: number;
+  };
+};
 
-function loadSpotifyIframeApi(): Promise<any> {
+type SpotifyIframeController = {
+  play: () => void;
+  pause: () => void;
+  addListener: (event: "playback_update", cb: (e: SpotifyPlaybackUpdateEvent) => void) => void;
+};
+
+type SpotifyIframeApi = {
+  createController: (
+    element: HTMLElement,
+    options: { uri: string; width: number | string; height: number | string },
+    callback: (controller: SpotifyIframeController) => void
+  ) => void;
+};
+
+declare global {
+  // biome-ignore lint/style/useConsistentTypeDefinitions: augmenting the built-in Window type requires declaration merging, which only `interface` supports
+  interface Window {
+    SpotifyIframeApi?: SpotifyIframeApi;
+    onSpotifyIframeApiReady?: (IFrameAPI: SpotifyIframeApi) => void;
+  }
+}
+
+let apiPromise: Promise<SpotifyIframeApi> | null = null;
+
+function loadSpotifyIframeApi(): Promise<SpotifyIframeApi> {
   if (typeof window === "undefined") {
     return Promise.reject("Window is undefined");
   }
-  if ((window as any).SpotifyIframeApi) {
-    return Promise.resolve((window as any).SpotifyIframeApi);
+  if (window.SpotifyIframeApi) {
+    return Promise.resolve(window.SpotifyIframeApi);
   }
   if (apiPromise) {
     return apiPromise;
   }
   apiPromise = new Promise((resolve) => {
-    const prevReady = (window as any).onSpotifyIframeApiReady;
-    (window as any).onSpotifyIframeApiReady = (IFrameAPI: any) => {
-      (window as any).SpotifyIframeApi = IFrameAPI;
+    const prevReady = window.onSpotifyIframeApiReady;
+    window.onSpotifyIframeApiReady = (IFrameAPI: SpotifyIframeApi) => {
+      window.SpotifyIframeApi = IFrameAPI;
       if (prevReady) {
         prevReady(IFrameAPI);
       }
@@ -46,7 +78,7 @@ function loadSpotifyIframeApi(): Promise<any> {
 
 export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const controllerRef = useRef<any>(null);
+  const controllerRef = useRef<SpotifyIframeController | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -171,14 +203,14 @@ export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
             width: 100,
             height: 100
           },
-          (controller: any) => {
+          (controller: SpotifyIframeController) => {
             if (!active) {
               return;
             }
             controllerRef.current = controller;
             setIsReady(true);
 
-            controller.addListener("playback_update", (e: any) => {
+            controller.addListener("playback_update", (e) => {
               if (active) {
                 setIsPlaying(!e.data.isPaused);
               }
@@ -283,9 +315,11 @@ export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
         title={`${songTitle} - ${artistName}`}
       >
         {/* Vinyl Disc Container */}
-        <div
+        <button
+          aria-label={isPlaying ? "Pause" : "Play"}
           className='group/vinyl relative flex h-11 w-11 cursor-pointer select-none items-center justify-center rounded-full shadow-lg'
           onClick={togglePlay}
+          type='button'
         >
           <div
             className='absolute inset-0 rounded-full border border-neutral-800 bg-neutral-900 transition-transform duration-500'
@@ -303,7 +337,8 @@ export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
             {/* Album Cover Center Label */}
             <div className='absolute inset-[10px] flex items-center justify-center overflow-hidden rounded-full border border-black/40 bg-neutral-800'>
               {coverUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
+                // biome-ignore lint/performance/noImgElement: Spotify's cover-art CDN isn't in next.config's image remotePatterns
+                // biome-ignore lint/correctness/useImageSize: fills its fixed-size parent via CSS
                 <img alt='Album Art' className='h-full w-full object-cover' src={coverUrl} />
               ) : (
                 <Music className='h-3.5 w-3.5 text-neutral-400' />
@@ -324,7 +359,7 @@ export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
               <Play className='ml-0.5 h-4.5 w-4.5 fill-white text-white' />
             )}
           </div>
-        </div>
+        </button>
 
         {/* Sliding Metadata Text Panel */}
         <div className='flex select-none items-center gap-2 overflow-hidden'>

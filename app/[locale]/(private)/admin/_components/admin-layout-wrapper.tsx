@@ -35,9 +35,11 @@ export function AdminLayoutWrapper({ children, memberAvatar, memberName, memberR
 
         {/* Mobile Sidebar overlay backdrop */}
         {sidebarOpen && (
-          <div
-            className='fixed inset-0 z-30 bg-black/60 backdrop-blur-xs lg:hidden'
+          <button
+            aria-label='Close sidebar'
+            className='fixed inset-0 z-30 cursor-default bg-black/60 backdrop-blur-xs lg:hidden'
             onClick={() => setSidebarOpen(false)}
+            type='button'
           />
         )}
 

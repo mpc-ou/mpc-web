@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -103,13 +104,15 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
 
       {/* Image */}
       <div className='relative z-10 flex max-h-[90vh] max-w-[95vw] flex-col items-center'>
-        {/* biome-ignore lint/performance/noImgElement: lightbox image */}
-        {/* biome-ignore lint/correctness/useImageSize: dynamic sizing */}
-        <img
-          alt={current?.title || current?.caption || "Gallery image"}
-          className='max-h-[75vh] max-w-[90vw] rounded-lg border border-zinc-800 object-contain shadow-2xl'
-          src={current?.url}
-        />
+        <div className='relative h-[75vh] w-[90vw]'>
+          <Image
+            alt={current?.title || current?.caption || "Gallery image"}
+            className='rounded-lg border border-zinc-800 object-contain shadow-2xl'
+            fill
+            sizes='90vw'
+            src={current?.url ?? ""}
+          />
+        </div>
         {(current?.title || current?.caption) && (
           <div className='mt-4 max-w-[80vw] rounded-xl border border-zinc-800/50 bg-zinc-950/80 px-4 py-2 text-center shadow-lg backdrop-blur-md'>
             {current?.title && (
@@ -123,7 +126,6 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
         </p>
       </div>
 
-      {/* Next button */}
       {images.length > 1 && (
         <button
           aria-label='Next image'

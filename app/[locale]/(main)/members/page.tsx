@@ -7,6 +7,26 @@ import { generatePageSeo } from "@/utils/seo";
 import { MembersHeroClient } from "./_components/members-hero.client";
 import { MembersClient } from "./client";
 
+// Matches the item shape pushed in getMembersGroupedByYear (app/_actions/main/members.ts)
+type GroupedMember = {
+  id: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  avatar: string | null;
+  slug: string;
+  socials: { platform: string; url: string }[] | null;
+  currentRole: {
+    id: string;
+    position: string;
+    term: number | null;
+    startAt: Date;
+    endAt: Date | null;
+    note: string | null;
+    department: { nameVi?: string | null } | null;
+  } | null;
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return generatePageSeo({
@@ -24,7 +44,9 @@ export default async function MembersPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "membersPage" });
   const { data } = await getMembersGroupedByYear();
-  const payload = data?.payload as { sortedYears: number[]; groupedByYear: Record<number, any[]> } | undefined;
+  const payload = data?.payload as
+    | { sortedYears: number[]; groupedByYear: Record<number, GroupedMember[]> }
+    | undefined;
   const sortedYears = payload?.sortedYears ?? [];
   const groupedByYear = payload?.groupedByYear ?? {};
 

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Activity, Calendar, FolderGit2, GitBranch, Trophy, UserPlus, Users } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { RecapData } from "@/lib/recap-data";
 import {
@@ -50,7 +51,7 @@ export function SlideStats({
   }));
 
   const barData = eventTypeEntries.map(([type, count]) => ({
-    label: t(`recap.eventType.${type}` as any) ?? type,
+    label: t(`recap.eventType.${type}` as Parameters<typeof t>[0]) ?? type,
     value: count,
     color: TYPE_COLORS[type] ?? "#64748b"
   }));
@@ -61,8 +62,7 @@ export function SlideStats({
       <GlowingOrbs />
       {coverImage2 && (
         <div className='absolute inset-0'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt='' className='absolute inset-0 h-full w-full object-cover opacity-10' src={coverImage2} />
+          <Image alt='' className='object-cover opacity-10' fill src={coverImage2} />
           <div className='absolute inset-0 bg-orange-600/5 mix-blend-overlay' />
         </div>
       )}

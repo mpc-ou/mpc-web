@@ -1,5 +1,6 @@
 import { Calendar, ChevronLeft, Clock, MapPin, Star, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getEventBySlug, getRecentEvents } from "@/app/_actions/main";
@@ -11,11 +12,62 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
+import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
+import type { EventListItem } from "../client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
+
+// Mirrors the `include` used in getEventBySlug (app/_actions/main/events.ts)
+type EventPostWithRelations = Prisma.PostGetPayload<{
+  include: {
+    author: {
+      select: {
+        firstName: true;
+        lastName: true;
+        middleName: true;
+        avatar: true;
+        slug: true;
+      };
+    };
+    sponsorships: { include: { sponsor: true } };
+    organizers: {
+      include: {
+        member: {
+          select: {
+            firstName: true;
+            lastName: true;
+            middleName: true;
+            avatar: true;
+            slug: true;
+            clubRoles: {
+              where: { endAt: null };
+              include: { department: true };
+            };
+          };
+        };
+      };
+    };
+    gallery: { orderBy: { order: "asc" } };
+    tags: { include: { tag: true } };
+  };
+}>;
+
+// Shape returned by getEventBySlug after the post-processing map (see events.ts):
+// renames/derives title, description, type, status, creator, and re-serializes dates.
+type EventDetail = Omit<EventPostWithRelations, "author" | "startAt" | "endAt"> & {
+  title: string;
+  description: string;
+  content: string | null;
+  type: string | null;
+  status: string | null;
+  creator: EventPostWithRelations["author"];
+  startAt: string | undefined;
+  endAt: string | null;
+  images?: string[];
+};
 
 function fmtDate(iso: string | null, locale = "vi") {
   if (!iso) {
@@ -34,8 +86,7 @@ function fmtDateShort(iso: string | null, locale = "vi") {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const { data } = await getEventBySlug(slug, locale);
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const event = (data?.payload as any)?.event;
+  const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
     return { title: tSeo("event") };
@@ -60,18 +111,18 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
     getTranslations({ locale, namespace: "events" })
   ]);
 
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const event = (data?.payload as any)?.event;
+  const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
     notFound();
   }
 
   const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
 
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const recentEvents = ((recentData?.payload as any)?.events ?? []).filter((e: any) => e.slug !== slug).slice(0, 3);
+  const recentEvents = ((recentData?.payload as { events: EventListItem[] } | undefined)?.events ?? [])
+    .filter((e) => e.slug !== slug)
+    .slice(0, 3);
 
-  const dateLabel = fmtDate(event.startAt, locale);
+  const dateLabel = fmtDate(event.startAt ?? null, locale);
   const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
 
   // Combine gallery images: thumbnail, content images, and additional images
@@ -86,16 +137,17 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
     }
     match = imgRegex.exec(event.content || "");
   }
-  const additionalImages =
-    event.gallery && event.gallery.length > 0
-      ? event.gallery.filter((g: any) => g.type === "ADDITIONAL").map((g: any) => g.url)
-      : Array.isArray(event.images)
-        ? event.images
-        : [];
+  const hasStoredGallery = event.gallery && event.gallery.length > 0;
+  let additionalImages: string[] = [];
+  if (hasStoredGallery) {
+    additionalImages = event.gallery.filter((g) => g.type === "ADDITIONAL").map((g) => g.url);
+  } else if (Array.isArray(event.images)) {
+    additionalImages = event.images;
+  }
 
   const allImages = Array.from(new Set([...thumbnail, ...contentImages, ...additionalImages])).filter(Boolean);
 
-  const galleryData = event.gallery && event.gallery.length > 0 ? event.gallery : allImages;
+  const galleryData = hasStoredGallery ? event.gallery : allImages;
   const hasGallery = galleryData.length > 0;
 
   // ── Bilingual helpers ──
@@ -128,16 +180,14 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
         image={event.thumbnail || undefined}
         location={displayLocation || undefined}
         name={event.title}
-        startDate={event.startAt}
+        startDate={event.startAt ?? ""}
         url={eventUrl}
       />
 
       {/* ── HERO ── */}
       {event.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
-          {/* biome-ignore lint/performance/noImgElement: hero image */}
-          {/* biome-ignore lint/correctness/useImageSize: size from CSS */}
-          <img alt={event.title} className='h-full w-full object-cover' src={event.thumbnail} />
+          <Image alt={event.title} className='object-cover' fill priority sizes='100vw' src={event.thumbnail} />
           <div className='absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent' />
         </div>
       ) : (
@@ -170,16 +220,16 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             )}
             {displayType && displayType !== "OTHER" && (
               <Badge className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20' variant='outline'>
-                {t(`types.${displayType}` as any) || displayType}
+                {t(`types.${displayType}` as Parameters<typeof t>[0]) || displayType}
               </Badge>
             )}
-            {event.tags?.map((tTag: any) => (
+            {event.tags?.map((tTag) => (
               <Badge
                 className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
                 key={tTag.tag.id}
                 variant='outline'
               >
-                #{tTag.tag.name || tTag.tag.nameVi}
+                #{tTag.tag.name}
               </Badge>
             ))}
           </div>
@@ -193,12 +243,12 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <div className='flex items-center gap-3'>
               {event.creator?.avatar ? (
-                // biome-ignore lint/performance/noImgElement: avatar
-                // biome-ignore lint/correctness/useImageSize: CSS controlled
-                <img
+                <Image
                   alt={getFullName(event.creator.firstName, event.creator.middleName, event.creator.lastName, locale)}
-                  className='h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border'
+                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
+                  height={40}
                   src={event.creator.avatar}
+                  width={40}
                 />
               ) : (
                 <UserCircle className='h-10 w-10 text-muted-foreground' />
@@ -283,16 +333,18 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                       {t("sponsorsTitle")}
                     </div>
                     <div className='flex flex-wrap items-center gap-4'>
-                      {event.sponsorships.map((s: any) => (
+                      {event.sponsorships.map((s) => (
                         <div key={s.id}>
                           {s.sponsor.logo ? (
-                            // biome-ignore lint/performance/noImgElement: sponsor logo
-                            // biome-ignore lint/correctness/useImageSize: CSS
-                            <img
-                              alt={s.sponsor.name}
-                              className='h-8 w-auto max-w-24 object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
-                              src={s.sponsor.logo}
-                            />
+                            <div className='relative h-8 w-24'>
+                              <Image
+                                alt={s.sponsor.name}
+                                className='object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
+                                fill
+                                sizes='96px'
+                                src={s.sponsor.logo}
+                              />
+                            </div>
                           ) : (
                             <span className='font-semibold text-muted-foreground text-sm'>{s.sponsor.name}</span>
                           )}
@@ -326,19 +378,19 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                     {t("organizersTitle")}
                   </div>
                   <div className='flex flex-wrap gap-2'>
-                    {event.organizers.map((org: any) => (
+                    {event.organizers.map((org) => (
                       <Link
                         className='flex items-center gap-2 rounded-full border bg-background px-3 py-1.5 font-medium text-xs transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
-                        href={`/members/${org.member.slug || org.member.id}` as "/"}
+                        href={`/members/${org.member.slug}` as "/"}
                         key={org.id}
                       >
                         {org.member.avatar ? (
-                          // biome-ignore lint/performance/noImgElement: avatar
-                          // biome-ignore lint/correctness/useImageSize: CSS
-                          <img
+                          <Image
                             alt={getFullName(org.member.firstName, org.member.middleName, org.member.lastName, locale)}
-                            className='h-5 w-5 rounded-full object-cover'
+                            className='rounded-full object-cover'
+                            height={20}
                             src={org.member.avatar}
+                            width={20}
                           />
                         ) : (
                           <UserCircle className='h-5 w-5 text-muted-foreground' />
@@ -361,7 +413,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
           <div className='mt-20 border-t pt-10'>
             <h2 className='mb-8 font-black text-2xl text-foreground'>{t("otherEventsTitle")}</h2>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {recentEvents.map((e: any) => (
+              {recentEvents.map((e) => (
                 <Link
                   className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
                   href={`/events/${e.slug}` as "/"}
@@ -369,11 +421,11 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                 >
                   {e.thumbnail ? (
                     <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-                      {/* biome-ignore lint/performance/noImgElement: thumbnail */}
-                      {/* biome-ignore lint/correctness/useImageSize: CSS */}
-                      <img
+                      <Image
                         alt={e.title}
-                        className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                        className='object-cover transition-transform duration-500 group-hover:scale-105'
+                        fill
+                        sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
                         src={e.thumbnail}
                       />
                     </div>
@@ -385,7 +437,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                   <div className='flex flex-1 flex-col p-5'>
                     <div className='mb-2 flex items-center justify-between text-muted-foreground text-xs'>
                       <span className='rounded bg-muted px-2 py-0.5 font-medium'>{t("badgeLabel")}</span>
-                      <span>{fmtDateShort(e.startAt, locale)}</span>
+                      <span>{fmtDateShort(e.startAt ?? null, locale)}</span>
                     </div>
                     <h3 className='line-clamp-2 font-bold text-foreground leading-snug transition-colors group-hover:text-primary'>
                       {e.title}

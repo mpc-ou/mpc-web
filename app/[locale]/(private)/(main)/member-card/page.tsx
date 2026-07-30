@@ -3,7 +3,31 @@ import { getTranslations } from "next-intl/server";
 import { adminGetMembers } from "@/app/_actions/admin";
 import { getProfile } from "@/app/_actions/profile/profile";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import type { UserSession } from "@/utils/session";
 import { MemberCardClient } from "./client";
+
+type ProfileClubRole = {
+  startAt: Date | string;
+  endAt: Date | string | null;
+  department?: { nameVi: string } | null;
+};
+
+type ProfileMember = {
+  firstName: string;
+  lastName: string;
+  studentId: string | null;
+  dob: Date | string | null;
+  avatar: string | null;
+  slug: string | null;
+  webRole: string;
+  joinedClubAt: Date | string | null;
+  clubRoles?: ProfileClubRole[];
+};
+
+type ProfilePayload = UserSession & {
+  member: ProfileMember | null;
+  user_metadata?: { avatar_url?: string; full_name?: string };
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profile");
@@ -48,7 +72,7 @@ export default async function MemberCardPage({
     throw new Error(error?.message || "User not found");
   }
 
-  const user = data.payload as any;
+  const user = data.payload as ProfilePayload;
   let member = user.member;
 
   if (!member || member.webRole === "GUEST") {
@@ -66,14 +90,14 @@ export default async function MemberCardPage({
   if (member.webRole === "ADMIN" && targetMemberSlug) {
     const allMembersRes = await adminGetMembers();
     if (allMembersRes.data?.payload) {
-      const targetMember = (allMembersRes.data.payload as any[]).find((m: any) => m.slug === targetMemberSlug);
+      const targetMember = (allMembersRes.data.payload as ProfileMember[]).find((m) => m.slug === targetMemberSlug);
       if (targetMember) {
         member = targetMember;
       }
     }
   }
 
-  const activeRole = member.clubRoles?.find((r: any) => !r.endAt) || member.clubRoles?.[0];
+  const activeRole = member.clubRoles?.find((r) => !r.endAt) || member.clubRoles?.[0];
   const departmentName = activeRole?.department?.nameVi || "Thành viên";
 
   let joinedYear = new Date().getFullYear().toString();
@@ -81,7 +105,7 @@ export default async function MemberCardPage({
     joinedYear = new Date(member.joinedClubAt).getFullYear().toString();
   } else if (member.clubRoles && member.clubRoles.length > 0) {
     const earliestRole = [...member.clubRoles].sort(
-      (a: any, b: any) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+      (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     )[0];
     joinedYear = new Date(earliestRole.startAt).getFullYear().toString();
   }

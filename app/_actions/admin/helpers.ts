@@ -1,8 +1,8 @@
-import type { User } from "@supabase/supabase-js";
 import { prisma } from "@/configs/prisma/db";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import type { UserSession } from "@/utils/session";
 
-export async function requireAdmin(user?: any) {
+export async function requireAdmin(user?: UserSession) {
   if (!user) {
     throw new Error("Unauthorized");
   }

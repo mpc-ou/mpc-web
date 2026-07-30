@@ -3,8 +3,8 @@
 import { revalidateTag } from "next/cache";
 import type { Member, Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS } from "@/constants/cache";
+import { adminUpdateSsoUser } from "@/services/sso";
 import { isRootAdmin } from "@/utils/admin";
-import { adminUpdateSsoUser } from "@/utils/sso";
 import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
 const SLUG_REGEX = /^[a-z0-9_-]+$/;
@@ -691,7 +691,7 @@ export const adminSyncMembersFromSso = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      const { syncFromSso } = await import("@/utils/sso");
+      const { syncFromSso } = await import("@/services/sso");
       await syncFromSso();
       revalidateTag(_CACHE_MEMBERS, "default");
       return { success: true };

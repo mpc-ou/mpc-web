@@ -1,7 +1,8 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,8 +48,20 @@ export type PostRow = {
   isHighlight?: boolean;
   relatedUrl?: string | null;
   images?: string[];
-  members?: any[];
-  gallery?: any[];
+  members?: Array<{
+    member: { id: string; firstName: string; lastName: string; avatar: string | null };
+    role?: string | null;
+    prize?: string | null;
+    imageUrl?: string | null;
+  }>;
+  gallery?: Array<{
+    id: string;
+    url: string;
+    title?: string | null;
+    caption?: string | null;
+    type: string;
+    order: number;
+  }>;
   tags?: Array<{ tag: { id: string; name: string; slug: string } }>;
 };
 
@@ -70,7 +83,7 @@ const statusBadge: Record<
   CANCELLED: { label: "Đã hủy", variant: "destructive" }
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<PostRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -113,9 +126,7 @@ export const createColumns = (
       const url = row.original.thumbnail;
       return url ? (
         <div className='relative h-10 w-16 overflow-hidden rounded-md border bg-muted'>
-          {/* biome-ignore lint/performance/noImgElement: admin image preview */}
-          {/* biome-ignore lint/correctness/useImageSize: CSS controlled */}
-          <img alt={row.original.title} className='h-full w-full object-cover' src={url} />
+          <Image alt={row.original.title} className='object-cover' fill sizes='64px' src={url} />
         </div>
       ) : (
         <div className='flex h-10 w-16 select-none items-center justify-center rounded-md border border-dashed bg-muted/30 text-[10px] text-muted-foreground'>
@@ -129,13 +140,14 @@ export const createColumns = (
     accessorKey: "title",
     header: ({ column }) => <SortHeader column={column} label='Tiêu đề' />,
     cell: ({ row }) => (
-      <div
-        className='-m-1 cursor-pointer rounded-md p-1 transition-colors hover:bg-muted/50'
+      <button
+        className='-m-1 w-full cursor-pointer rounded-md p-1 text-left transition-colors hover:bg-muted/50'
         onClick={() => onView(row.original)}
+        type='button'
       >
-        <div className='max-w-[300px] truncate font-medium text-primary hover:underline'>{row.original.title}</div>
+        <div className='max-w-75 truncate font-medium text-primary hover:underline'>{row.original.title}</div>
         {row.original.category && <div className='text-muted-foreground text-xs'>{row.original.category.name}</div>}
-      </div>
+      </button>
     )
   },
   {

@@ -69,10 +69,10 @@ function getTierBg(tierKey: string): string {
 }
 
 export function getActiveBadges(data: BadgeData) {
-  return BADGE_DEFINITIONS.filter((def) => def.condition(data) !== null).map((def) => ({
-    def,
-    result: def.condition(data)!
-  }));
+  return BADGE_DEFINITIONS.map((def) => ({ def, result: def.condition(data) })).filter(
+    (entry): entry is { def: (typeof BADGE_DEFINITIONS)[number]; result: NonNullable<typeof entry.result> } =>
+      entry.result !== null
+  );
 }
 
 export function BadgeIcon({
@@ -88,8 +88,8 @@ export function BadgeIcon({
   const bgColor = getTierBg(result.tier);
   const tierInfo = BADGE_TIERS.find((tier) => tier.key === result.tier);
 
-  const label = t(def.id as any) || def.label;
-  const tierLabel = tierInfo?.label ? t(`tier.${tierInfo.key}` as any) || tierInfo.label : "";
+  const label = t(def.id as Parameters<typeof t>[0]) || def.label;
+  const tierLabel = tierInfo?.label ? t(`tier.${tierInfo.key}` as Parameters<typeof t>[0]) || tierInfo.label : "";
 
   // Map raw badge-config suffixes to i18n keys
   const SUFFIX_KEY_MAP: Record<string, string> = {
@@ -99,7 +99,7 @@ export function BadgeIcon({
     "dự án": "projects"
   };
   const suffixKey = result.suffix ? (SUFFIX_KEY_MAP[result.suffix] ?? result.suffix) : null;
-  const suffixLabel = suffixKey ? t(`suffix.${suffixKey}` as any) || result.suffix : "";
+  const suffixLabel = suffixKey ? t(`suffix.${suffixKey}` as Parameters<typeof t>[0]) || result.suffix : "";
 
   const tooltipText = result.value
     ? `${label} • ${result.value} ${suffixLabel}${tierLabel ? ` (${tierLabel})` : ""}`

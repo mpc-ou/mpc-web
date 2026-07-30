@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_PROJECTS } from "@/constants/cache";
 import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
@@ -45,7 +46,7 @@ export const adminGetProjectsPaginated = async (params: {
       const search = params.search || "";
       const isActiveFilter = params.isActive || "ALL";
 
-      const where: any = {};
+      const where: Prisma.ProjectWhereInput = {};
       if (isActiveFilter === "ACTIVE") {
         where.isActive = true;
       } else if (isActiveFilter === "INACTIVE") {

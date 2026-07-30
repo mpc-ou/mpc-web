@@ -46,7 +46,10 @@ import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
 import { UPLOAD_MAX_AVATAR_SIZE, UPLOAD_MAX_COVER_SIZE } from "@/constants/upload";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
+
+const SLUG_RE = /^[a-z0-9-_]+$/;
+const SPOTIFY_URL_RE = /spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/;
 
 // ── Types ──
 
@@ -154,7 +157,7 @@ const FormClient = ({ initialData }: Props) => {
 
   const [formData, setFormData] = useState({
     ...initialData,
-    socials: initialData.socials.map((s: any) => ({
+    socials: initialData.socials.map((s): { id: string; platform: string; url: string } => ({
       ...s,
       id: s.id || Math.random().toString(36).substring(2)
     }))
@@ -283,7 +286,7 @@ const FormClient = ({ initialData }: Props) => {
       setSlugError('Slug không được là "me", vui lòng chọn slug khác.');
       return;
     }
-    if (!/^[a-z0-9-_]+$/.test(slug)) {
+    if (!SLUG_RE.test(slug)) {
       setSlugError("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới.");
       return;
     }
@@ -311,7 +314,7 @@ const FormClient = ({ initialData }: Props) => {
           }
         }
       } catch {
-        const match = trimmed.match(/spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/);
+        const match = trimmed.match(SPOTIFY_URL_RE);
         if (match) {
           return `spotify:${match[1]}:${match[2]}`;
         }
@@ -380,8 +383,7 @@ const FormClient = ({ initialData }: Props) => {
             </Label>
             {formData.coverImage ? (
               <div className='group relative aspect-3/1 w-full overflow-hidden rounded-xl border bg-muted'>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img alt='Cover' className='h-full w-full object-cover' src={formData.coverImage} />
+                <Image alt='Cover' className='object-cover' fill sizes='800px' src={formData.coverImage} />
                 <div className='absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/30' />
                 <button
                   className='absolute top-3 right-3 z-10 rounded-full bg-black/60 p-2 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all hover:bg-black/80 group-hover:opacity-100'
@@ -443,6 +445,8 @@ const FormClient = ({ initialData }: Props) => {
               <UserCircle className='h-4 w-4 text-primary' />
               {t("avatarLabel")}
             </Label>
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: optional drag-and-drop target layered on the already-keyboard-accessible upload button below */}
+            {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
             <div
               className={`flex flex-col items-center gap-5 rounded-xl border-2 border-dashed p-5 transition-colors sm:flex-row ${
                 isAvatarDragOver ? "border-primary bg-primary/10" : "border-muted-foreground/20"
@@ -770,7 +774,7 @@ const FormClient = ({ initialData }: Props) => {
               >
                 <div className='w-full shrink-0 sm:w-48'>
                   <Select
-                    onValueChange={(val) => handleUpdateSocial(social.id!, "platform", val)}
+                    onValueChange={(val) => handleUpdateSocial(social.id, "platform", val)}
                     value={social.platform || undefined}
                   >
                     <SelectTrigger>
@@ -780,7 +784,7 @@ const FormClient = ({ initialData }: Props) => {
                       {PLATFORMS.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           <span className='flex items-center gap-2'>
-                            <img alt={p.label} className='h-4 w-4 object-contain' src={p.icon} />
+                            <Image alt={p.label} className='object-contain' height={16} src={p.icon} width={16} />
                             <span>{p.label}</span>
                           </span>
                         </SelectItem>
@@ -790,13 +794,13 @@ const FormClient = ({ initialData }: Props) => {
                 </div>
                 <div className='flex w-full flex-1 items-center gap-2'>
                   <Input
-                    onChange={(e) => handleUpdateSocial(social.id!, "url", e.target.value)}
+                    onChange={(e) => handleUpdateSocial(social.id, "url", e.target.value)}
                     placeholder={t("urlPlaceholder")}
                     value={social.url}
                   />
                   <Button
                     className='shrink-0 text-muted-foreground hover:text-destructive'
-                    onClick={() => handleRemoveSocial(social.id!)}
+                    onClick={() => handleRemoveSocial(social.id)}
                     size='icon'
                     type='button'
                     variant='ghost'

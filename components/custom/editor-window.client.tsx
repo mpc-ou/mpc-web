@@ -66,6 +66,8 @@ const EditorWindow = ({
   const displayLineNumbers = showLineNumbers && (activeTabItem?.lineCount !== undefined || !tabs || tabs.length === 0);
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: decorative mouse-tracking tilt effect
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: decorative mouse-tracking tilt effect
     <div
       className={cn(
         "group flex flex-col overflow-hidden rounded-xl border border-border shadow-lg transition-transform duration-200 ease-out",
@@ -118,6 +120,7 @@ const EditorWindow = ({
         {displayLineNumbers && activeLineCount > 0 && (
           <div className='hidden shrink-0 select-none overflow-y-hidden border-border border-r bg-muted/30 px-2 py-3 font-mono text-muted-foreground/40 text-xs leading-6 sm:block'>
             {Array.from({ length: activeLineCount }, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: line numbers are a fixed-order sequence where the index *is* the displayed value
               <div className='text-right tabular-nums' key={i}>
                 {i + 1}
               </div>

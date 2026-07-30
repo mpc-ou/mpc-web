@@ -10,14 +10,29 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { ABOUT_CLUB } from "@/configs/data/about";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { cn } from "@/lib/utils";
+import type { ActivityCard } from "./_components/activities-marquee.client";
+import { ActivitiesMarquee } from "./_components/activities-marquee.client";
 import { ClubShirtModelClient } from "./_components/club-shirt-model.client";
 import { DepartmentsCarouselClient } from "./_components/departments-carousel.client";
+import type { TopMember } from "./_components/top-members.client";
 import { TopMembersCarouselClient } from "./_components/top-members.client";
+
+type LocalizedDepartment = {
+  id: string;
+  icon: string | null;
+  bgImage: string | null;
+  link: string | undefined;
+  name: string;
+  description: string | null;
+  missions: string;
+  linkLabel: string | null;
+};
 
 type AboutClientProps = {
   locale: string;
-  serializedTopMembers: any[];
-  localizedDepartments: any[];
+  serializedTopMembers: TopMember[];
+  localizedDepartments: LocalizedDepartment[];
+  localizedActivities: ActivityCard[];
   statsSection: React.ReactNode;
   benefitsSection: React.ReactNode;
   faqSection: React.ReactNode;
@@ -81,6 +96,7 @@ export function AboutClient({
   locale,
   serializedTopMembers,
   localizedDepartments,
+  localizedActivities,
   statsSection,
   benefitsSection,
   faqSection,
@@ -360,7 +376,16 @@ export function AboutClient({
       <div className='w-full'>{statsSection}</div>
       <div className='w-full'>{benefitsSection}</div>
 
-      <DepartmentsCarouselClient departments={localizedDepartments} />
+      <DepartmentsCarouselClient
+        departments={localizedDepartments.map((dept) => ({
+          ...dept,
+          icon: dept.icon ?? "",
+          bgImage: dept.bgImage ?? "",
+          description: dept.description ?? "",
+          link: dept.link ?? undefined,
+          linkLabel: dept.linkLabel ?? undefined
+        }))}
+      />
 
       <ClubShirtModelClient />
 
@@ -375,32 +400,36 @@ export function AboutClient({
             </p>
           </ScrollReveal>
 
-          <div className='mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4'>
-            <CapabilityCard
-              desc={t("fields.web.desc")}
-              icon={Monitor}
-              image='/images/bg/web.png'
-              title={t("fields.web.title")}
-            />
-            <CapabilityCard
-              desc={t("fields.dsa.desc")}
-              icon={Code}
-              image='/images/bg/algo.jpg'
-              title={t("fields.dsa.title")}
-            />
-            <CapabilityCard
-              desc={t("fields.ai.desc")}
-              icon={Cpu}
-              image='/images/bg/mobile.png'
-              title={t("fields.ai.title")}
-            />
-            <CapabilityCard
-              desc={t("fields.android.desc")}
-              icon={Smartphone}
-              image='/images/bg/mobile.png'
-              title={t("fields.android.title")}
-            />
-          </div>
+          {localizedActivities.length > 0 ? (
+            <ActivitiesMarquee activities={localizedActivities} />
+          ) : (
+            <div className='mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4'>
+              <CapabilityCard
+                desc={t("fields.web.desc")}
+                icon={Monitor}
+                image='/images/bg/web.png'
+                title={t("fields.web.title")}
+              />
+              <CapabilityCard
+                desc={t("fields.dsa.desc")}
+                icon={Code}
+                image='/images/bg/algo.jpg'
+                title={t("fields.dsa.title")}
+              />
+              <CapabilityCard
+                desc={t("fields.ai.desc")}
+                icon={Cpu}
+                image='/images/bg/mobile.png'
+                title={t("fields.ai.title")}
+              />
+              <CapabilityCard
+                desc={t("fields.android.desc")}
+                icon={Smartphone}
+                image='/images/bg/mobile.png'
+                title={t("fields.android.title")}
+              />
+            </div>
+          )}
         </div>
       </section>
 

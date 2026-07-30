@@ -31,16 +31,16 @@ export default async function ErrorPage({ params, searchParams }: { params: Para
 }
 
 function ErrorPageContent({ i18nKey, statusCode }: { i18nKey: keyof IntlMessages["defaultPage"]; statusCode: number }) {
-  const t = useTranslations(`defaultPage.${i18nKey}` as any);
+  const t = useTranslations(`defaultPage.${i18nKey}` as "defaultPage.serverError");
 
   const is401 = statusCode === 401;
 
   return (
     <ErrorContent
       description={t("description")}
-      redirect={is401 ? (t as any)("redirect") : (t as any)("redirect")}
+      redirect={is401 ? t("redirect") : t("redirect")}
       redirectHref={is401 ? "/login" : "/"}
-      reminder={(t as any)("reminder")}
+      reminder={t("reminder")}
       statusCode={statusCode}
       title={t("title")}
     />

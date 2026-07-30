@@ -1,6 +1,7 @@
 "use client";
 
-import { Calendar, CheckCircle2, FolderGit2, Image, Music, Trophy } from "lucide-react";
+import { Calendar, CheckCircle2, FolderGit2, Image as ImageIcon, Music, Trophy } from "lucide-react";
+import NextImage from "next/image";
 import type { PhaseInfoData } from "./phase-info";
 
 type Props = {
@@ -52,11 +53,12 @@ export function PhaseReview({
           <div className='space-y-1' key={c.label}>
             <span className='text-muted-foreground text-xs'>{c.label}</span>
             {c.value ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img alt={c.label} className='aspect-video w-full rounded-md border object-cover' src={c.value} />
+              <div className='relative aspect-video w-full overflow-hidden rounded-md border'>
+                <NextImage alt={c.label} className='object-cover' fill sizes='200px' src={c.value} />
+              </div>
             ) : (
               <div className='flex aspect-video items-center justify-center rounded-md border border-dashed bg-muted/30'>
-                <Image className='h-5 w-5 text-muted-foreground/50' />
+                <ImageIcon className='h-5 w-5 text-muted-foreground/50' />
               </div>
             )}
           </div>

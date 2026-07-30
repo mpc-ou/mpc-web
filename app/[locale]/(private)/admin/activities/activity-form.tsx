@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { adminCreateActivity, adminUpdateActivity } from "@/app/_actions/admin";
@@ -15,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { ActivityRow } from "./columns";
 
 const FREQ_OPTIONS = [
@@ -48,8 +49,8 @@ export default function ActivityForm({ activity }: Props) {
   const bi = useBilingualForm({
     titleVi: activity?.titleVi ?? "",
     titleEn: activity?.titleEn ?? "",
-    summaryVi: (activity as any)?.descriptionVi ?? "",
-    summaryEn: (activity as any)?.descriptionEn ?? "",
+    summaryVi: activity?.descriptionVi ?? "",
+    summaryEn: activity?.descriptionEn ?? "",
     contentVi: "",
     contentEn: "",
     sourceLanguage: "VI"
@@ -59,18 +60,16 @@ export default function ActivityForm({ activity }: Props) {
 
   const [frequencyVi, setFrequencyVi] = useState(activity?.frequencyVi ?? "monthly");
   const [frequencyEn, setFrequencyEn] = useState(activity?.frequencyEn ?? "monthly");
-  const [hyperlink, setHyperlink] = useState((activity as any)?.hyperlink ?? "");
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>((activity as any)?.thumbnail ?? null);
+  const [hyperlink, setHyperlink] = useState(activity?.hyperlink ?? "");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(activity?.thumbnail ?? null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imagesItems, setImagesItems] = useState<ImageItem[]>(
-    ((activity as any)?.images ?? []).map((url: string) => ({ url }))
-  );
+  const [imagesItems, setImagesItems] = useState<ImageItem[]>((activity?.images ?? []).map((url: string) => ({ url })));
 
   useEffect(() => {
-    setThumbnailUrl((activity as any)?.thumbnail ?? null);
-    setImagesItems(((activity as any)?.images ?? []).map((url: string) => ({ url })));
+    setThumbnailUrl(activity?.thumbnail ?? null);
+    setImagesItems((activity?.images ?? []).map((url: string) => ({ url })));
   }, [activity]);
 
   const processThumbnailFile = async (file: File) => {
@@ -239,8 +238,8 @@ export default function ActivityForm({ activity }: Props) {
             <div className='grid gap-1.5'>
               <Label>Ảnh đại diện</Label>
               {thumbnailUrl ? (
-                <div className='relative flex aspect-video max-h-[200px] items-center justify-center overflow-hidden rounded-lg border bg-muted'>
-                  <img alt='' className='h-full w-full object-cover' src={thumbnailUrl} />
+                <div className='relative aspect-video max-h-50 overflow-hidden rounded-lg border bg-muted'>
+                  <Image alt='' className='object-cover' fill sizes='400px' src={thumbnailUrl} />
                   <button
                     className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                     onClick={() => setThumbnailUrl(null)}

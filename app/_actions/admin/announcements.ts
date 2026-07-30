@@ -58,11 +58,18 @@ export const adminUpdateAnnouncement = async (
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
+      let endAt: Date | null | undefined;
+      if (data.endAt === null) {
+        endAt = null;
+      } else if (data.endAt) {
+        endAt = new Date(data.endAt);
+      }
+
       const updated = await prisma.announcement.update({
         where: { id },
         data: {
           ...data,
-          endAt: data.endAt === null ? null : data.endAt ? new Date(data.endAt) : undefined
+          endAt
         }
       });
       revalidateTag(_CACHE_ANNOUNCEMENTS, "default");

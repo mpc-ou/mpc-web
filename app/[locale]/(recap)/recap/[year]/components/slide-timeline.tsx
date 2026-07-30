@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar, ExternalLink, FolderGit2, MapPin, Trophy, X } from "lucide-react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { MarkdownContent } from "@/components/markdown-content";
@@ -40,12 +41,13 @@ function MemberChip({
       title={role ?? undefined}
     >
       {avatar ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           alt={name}
-          className='h-6 w-6 rounded-full object-cover ring-1 ring-white/10 transition-all group-hover/chip:ring-orange-400/60'
+          className='rounded-full object-cover ring-1 ring-white/10 transition-all group-hover/chip:ring-orange-400/60'
+          height={24}
           src={avatar}
           style={{ borderColor }}
+          width={24}
         />
       ) : (
         <div
@@ -78,13 +80,13 @@ function ImageLightbox({ images, index, onClose }: { images: string[]; index: nu
   const goPrev = useCallback(() => setCurrent((p) => (p - 1 + images.length) % images.length), [images.length]);
 
   return (
-    <div
-      className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm'
-      onClick={onClose}
-    >
+    <div className='fixed inset-0 z-9999 flex items-center justify-center bg-black/95 backdrop-blur-sm'>
+      <button aria-label='Close' className='absolute inset-0 cursor-default' onClick={onClose} type='button' />
+
       <button
         className='absolute top-6 right-6 z-10 rounded-full bg-white/10 p-2 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
         onClick={onClose}
+        type='button'
       >
         <X className='h-5 w-5' />
       </button>
@@ -93,35 +95,27 @@ function ImageLightbox({ images, index, onClose }: { images: string[]; index: nu
         <>
           <button
             className='absolute left-4 z-10 rounded-full bg-white/10 p-3 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
-            onClick={(e) => {
-              e.stopPropagation();
-              goPrev();
-            }}
+            onClick={goPrev}
+            type='button'
           >
             <ExternalLink className='h-5 w-5 rotate-180' />
           </button>
           <button
             className='absolute right-4 z-10 rounded-full bg-white/10 p-3 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
-            onClick={(e) => {
-              e.stopPropagation();
-              goNext();
-            }}
+            onClick={goNext}
+            type='button'
           >
             <ExternalLink className='h-5 w-5' />
           </button>
         </>
       )}
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        alt=''
-        className='max-h-[90vh] max-w-[90vw] rounded-xl object-contain'
-        onClick={(e) => e.stopPropagation()}
-        src={images[current]}
-      />
+      <div className='relative z-10 h-[90vh] w-[90vw]'>
+        <Image alt='' className='rounded-xl object-contain' fill sizes='90vw' src={images[current]} />
+      </div>
 
       {images.length > 1 && (
-        <div className='absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 font-mono text-sm text-white/60 backdrop-blur-md'>
+        <div className='absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 font-mono text-sm text-white/60 backdrop-blur-md'>
           {current + 1} / {images.length}
         </div>
       )}
@@ -177,8 +171,7 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
       <FloatingShapes />
       {item.thumbnail && (
         <div className='absolute inset-0'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt='' className='h-full w-full scale-105 object-cover opacity-12' src={item.thumbnail} />
+          <Image alt='' className='scale-105 object-cover opacity-12' fill src={item.thumbnail} />
           <div className='absolute inset-0 bg-orange-600/3 mix-blend-overlay' />
         </div>
       )}
@@ -236,10 +229,10 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
                   <span className='ml-2 text-white/30'>{members.length}</span>
                 </p>
                 <div className='flex flex-wrap gap-2'>
-                  {displayMembers.map((m, i) => (
+                  {displayMembers.map((m) => (
                     <MemberChip
                       avatar={m.avatar}
-                      key={i}
+                      key={`${m.firstName}-${m.lastName}`}
                       name={getFullName(m.firstName, m.middleName, m.lastName, "vi")}
                       prize={m.prize ?? undefined}
                       role={m.role ?? undefined}
@@ -276,10 +269,11 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
           <div className='group relative aspect-video w-full cursor-pointer overflow-hidden rounded-2xl border border-white/6 bg-[#13131f] shadow-2xl transition-all duration-300 hover:border-orange-500/20 hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)]'>
             {item.thumbnail ? (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   alt={item.title}
-                  className='absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]'
+                  className='object-cover transition-transform duration-700 group-hover:scale-[1.03]'
+                  fill
+                  sizes='(min-width: 1024px) 45vw, 100vw'
                   src={item.thumbnail}
                 />
                 <div className='absolute inset-0 bg-linear-to-t from-[#0a0a0f]/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100' />
@@ -303,13 +297,15 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
               {images.slice(0, 6).map((img, i) => (
                 <button
                   className='group/img relative aspect-4/3 w-full cursor-pointer overflow-hidden rounded-xl border border-white/6 bg-[#13131f] transition-all duration-200 hover:z-10 hover:scale-104 hover:border-orange-500/40 hover:shadow-[0_8px_20px_rgba(249,115,22,0.2)]'
-                  key={i}
+                  key={img}
                   onClick={() => setLightboxIdx(i)}
+                  type='button'
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     alt={`${item.title} ${i + 1}`}
-                    className='h-full w-full object-cover transition-transform duration-500 group-hover/img:scale-110'
+                    className='object-cover transition-transform duration-500 group-hover/img:scale-110'
+                    fill
+                    sizes='150px'
                     src={img}
                   />
                   <div className='absolute inset-0 bg-black/0 transition-colors duration-200 group-hover/img:bg-black/20' />

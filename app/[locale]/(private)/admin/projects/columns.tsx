@@ -1,7 +1,8 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -28,7 +29,7 @@ export type ProjectRow = {
   }>;
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<ProjectRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -48,13 +49,13 @@ export const createColumns = (
     accessorKey: "title",
     header: ({ column }) => <SortHeader column={column} label='Dự án' />,
     cell: ({ row }) => (
-      <div
-        className='-m-1 flex cursor-pointer items-center gap-3 rounded-md p-1 transition-colors hover:bg-muted/50'
+      <button
+        className='-m-1 flex w-full cursor-pointer items-center gap-3 rounded-md p-1 text-left transition-colors hover:bg-muted/50'
         onClick={() => onView?.(row.original)}
+        type='button'
       >
         {row.original.thumbnail && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img alt='' className='h-12 w-12 rounded border object-cover' src={row.original.thumbnail} />
+          <Image alt='' className='rounded border object-cover' height={48} src={row.original.thumbnail} width={48} />
         )}
         <div>
           <div className='max-w-50 truncate font-medium text-primary text-xs hover:underline'>{row.original.title}</div>
@@ -62,7 +63,7 @@ export const createColumns = (
             <div className='max-w-50 truncate text-[10px] text-muted-foreground'>{row.original.description}</div>
           )}
         </div>
-      </div>
+      </button>
     )
   },
   {

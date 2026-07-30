@@ -1,6 +1,7 @@
 "use client";
 
 import { Award, ExternalLink, Trophy } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -132,10 +133,10 @@ function GoldCard({
 
   return (
     <>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-      <div
-        className='group relative cursor-pointer rounded-2xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-1 hover:border-amber-500/40 hover:shadow-lg'
+      <button
+        className='group relative w-full cursor-pointer rounded-2xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-1 hover:border-amber-500/40 hover:shadow-lg'
         onClick={() => setOpen(true)}
+        type='button'
       >
         {/* Rank badge */}
         {idx < 3 && (
@@ -166,7 +167,7 @@ function GoldCard({
             <span className='font-bold text-sm'>{projectCount}</span>
           </div>
         </div>
-      </div>
+      </button>
 
       {/* ── Achievement Modal ── */}
       <Dialog onOpenChange={setOpen} open={open}>
@@ -191,9 +192,13 @@ function GoldCard({
                     key={entry.post.id}
                   >
                     {entry.post.thumbnail ? (
-                      // biome-ignore lint/performance/noImgElement: external
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img alt='' className='h-14 w-14 shrink-0 rounded-lg object-cover' src={entry.post.thumbnail} />
+                      <Image
+                        alt=''
+                        className='shrink-0 rounded-lg object-cover'
+                        height={56}
+                        src={entry.post.thumbnail}
+                        width={56}
+                      />
                     ) : (
                       <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-muted'>
                         <Trophy className='h-5 w-5 text-muted-foreground/50' />

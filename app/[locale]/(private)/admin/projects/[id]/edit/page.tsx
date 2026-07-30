@@ -12,8 +12,8 @@ export default async function EditProjectPage({ params }: Props): Promise<React.
   const { id } = await params;
   const [projectRes, membersRes] = await Promise.all([adminGetProjectById(id), adminGetMembers()]);
 
-  const payload = projectRes.data?.payload;
-  if (!projectRes || projectRes.error || !payload || (payload as any).notFound) {
+  const payload = projectRes.data?.payload as (ProjectRow & { notFound?: boolean }) | undefined;
+  if (!projectRes || projectRes.error || !payload || payload.notFound) {
     redirect("/admin/projects");
   }
 

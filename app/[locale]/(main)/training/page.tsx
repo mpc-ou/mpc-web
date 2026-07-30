@@ -19,9 +19,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { ABOUT_CLUB } from "@/configs/data/about";
+import type { ProjectSummary } from "@/types/common";
 import { generatePageSeo } from "@/utils/seo";
 import { FeaturedProjectsClient } from "./_components/featured-projects.client";
 import { TrainingImage } from "./_components/training-image.client";
+
+// Mirrors the `select` used in getTrainingPageData (app/_actions/main/projects.ts).
+// startDate/endDate/members aren't selected there, so they're added back as null/undefined
+// defaults below to satisfy FeaturedProjectsClient's shared ProjectSummary prop type.
+type LatestProject = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  thumbnail: string | null;
+  technologies: string[];
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -81,8 +94,13 @@ export default async function TrainingPage({
   const t = await getTranslations({ locale, namespace: "trainingPage" });
 
   const { data } = await getTrainingPageData();
-  const latestProjects = (data?.payload as any)?.latestProjects ?? [];
-  const trainingFormUrl = (data?.payload as any)?.trainingFormUrl ?? null;
+  const payload = data?.payload as { latestProjects: LatestProject[]; trainingFormUrl: string | null } | undefined;
+  const latestProjects: ProjectSummary[] = (payload?.latestProjects ?? []).map((p) => ({
+    ...p,
+    startDate: null,
+    endDate: null
+  }));
+  const trainingFormUrl = payload?.trainingFormUrl ?? null;
 
   const phases: PhaseType[] = [
     {

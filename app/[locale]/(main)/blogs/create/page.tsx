@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/configs/prisma/db";
 import { createClientSsr } from "@/configs/supabase/server";
-import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/utils/blog-permission";
+import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { UserBlogCreateForm } from "./form.client";
 
 export const metadata: Metadata = {

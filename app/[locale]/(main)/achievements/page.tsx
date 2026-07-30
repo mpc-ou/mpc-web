@@ -5,7 +5,50 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { generatePageSeo } from "@/utils/seo";
 import { GoldBoard } from "./_components/gold-board.client";
 import { LeadershipCarouselClient } from "./_components/leadership-carousel.client";
+import type { Achievement } from "./client";
 import { AchievementsClient } from "./client";
+
+type LeaderRole = {
+  id: string;
+  position: string;
+  startAt: string;
+  endAt: string | null;
+  departmentName: string | null;
+};
+
+type Leader = {
+  member: {
+    id: string;
+    firstName: string;
+    middleName?: string | null;
+    lastName: string;
+    avatar: string | null;
+    slug: string;
+    socials: unknown;
+    coverImage?: string | null;
+    _count?: {
+      achievementEntries: number;
+      projects: number;
+    };
+  };
+  roles: LeaderRole[];
+};
+
+type GoldBoardMember = {
+  member: {
+    id: string;
+    firstName: string;
+    middleName?: string | null;
+    lastName: string;
+    avatar: string | null;
+    slug: string;
+    _count?: { achievementEntries: number; projects: number };
+  };
+  roles: Array<{
+    position: string;
+    departmentName: string | null;
+  }>;
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -37,10 +80,10 @@ export default async function AchievementsPage({
   const { data } = await getAchievementsPageData(validPage, take, locale);
   const payload = data?.payload as
     | {
-        achievements: any[];
+        achievements: Achievement[];
         totalPages: number;
-        leaders: any[];
-        goldBoard: any[];
+        leaders: Leader[];
+        goldBoard: GoldBoardMember[];
       }
     | undefined;
 

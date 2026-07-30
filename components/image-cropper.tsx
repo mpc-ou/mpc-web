@@ -123,9 +123,12 @@ export function ImageCropperModal({ isOpen, onOpenChange, imageSrc, onConfirm, a
           )}
         </div>
         <div className='flex flex-col gap-2'>
-          <label className='font-medium text-sm'>Thu phóng</label>
+          <label className='font-medium text-sm' htmlFor='crop-zoom'>
+            Thu phóng
+          </label>
           <input
             className='w-full'
+            id='crop-zoom'
             max={3}
             min={1}
             onChange={(e) => setZoom(Number(e.target.value))}

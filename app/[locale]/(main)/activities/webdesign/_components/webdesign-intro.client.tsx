@@ -1,6 +1,7 @@
 "use client";
 
 import { Laptop } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { EditorWindow } from "@/components/custom/editor-window.client";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
@@ -70,9 +71,11 @@ export function WebDesignIntroClient() {
                 name: "2025.jpg",
                 content: (
                   <div className='relative h-full min-h-[260px] w-full select-none overflow-hidden bg-slate-950'>
-                    <img
+                    <Image
                       alt='2025 Logo'
-                      className='absolute inset-0 h-full w-full object-cover'
+                      className='object-cover'
+                      fill
+                      sizes='(min-width: 1024px) 42vw, 100vw'
                       src='/images/wd_logo.jpg'
                     />
                   </div>

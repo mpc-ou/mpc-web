@@ -56,6 +56,8 @@ const LoginClient = () => {
   const glowTransform = `translate(${mousePosition.x * 40}px, ${mousePosition.y * 40}px)`;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: decorative mouse-tracking parallax effect
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: decorative mouse-tracking parallax effect
     <div
       className='flex h-screen w-full overflow-hidden bg-slate-50 transition-colors duration-300 dark:bg-[#070b13]'
       onMouseLeave={handleMouseLeave}

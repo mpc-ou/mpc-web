@@ -1,13 +1,14 @@
 "use client";
 
 import { ImagePlus, Loader2, X } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { adminRegisterTempImage } from "@/app/_actions/admin";
 import { Label } from "@/components/ui/label";
 import { STORAGE_BUCKET } from "@/constants/storage";
 import { UPLOAD_MAX_BANNER_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 
 export type ImageItem = {
   url: string;
@@ -139,10 +140,19 @@ export function MultiImageUpload({
       {images.length > 0 && (
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
           {images.map((img, idx) => (
-            <div className='group relative flex flex-col space-y-2 rounded-lg border bg-muted/40 p-2' key={img.url || idx}>
+            <div
+              className='group relative flex flex-col space-y-2 rounded-lg border bg-muted/40 p-2'
+              key={img.url || idx}
+            >
               {/* Image preview */}
               <div className='relative aspect-video w-full overflow-hidden rounded-md border bg-muted'>
-                <img alt={`Gallery ${idx + 1}`} className='h-full w-full object-cover' src={img.url} />
+                <Image
+                  alt={`Gallery ${idx + 1}`}
+                  className='object-cover'
+                  fill
+                  sizes='(min-width: 768px) 33vw, 100vw'
+                  src={img.url}
+                />
                 <button
                   className='absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                   onClick={() => removeImage(idx)}

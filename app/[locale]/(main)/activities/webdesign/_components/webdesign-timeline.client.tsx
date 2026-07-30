@@ -40,7 +40,12 @@ export function WebDesignTimelineClient() {
           const commitHash = `df80b0${idx + 1}`;
 
           return (
-            <ScrollReveal className='group relative mb-10 last:mb-0' delay={idx * 150} key={idx} variant='fade-up'>
+            <ScrollReveal
+              className='group relative mb-10 last:mb-0'
+              delay={idx * 150}
+              key={commitHash}
+              variant='fade-up'
+            >
               {/* Git Commit Node Dot */}
               <div
                 className={`absolute top-6 left-[-26px] z-10 h-4 w-4 rounded-full border border-slate-950 transition-all duration-300 sm:left-[-53px] ${dotColors[idx]} group-hover:scale-125 group-hover:ring-4`}
@@ -64,17 +69,17 @@ export function WebDesignTimelineClient() {
                     className='border-white/10 bg-white/5 font-semibold text-slate-300 text-xs tracking-wider'
                     variant='outline'
                   >
-                    {t(`phase${phase}Title` as any)}
+                    {t(`phase${phase}Title` as Parameters<typeof t>[0])}
                   </Badge>
                 </div>
 
                 <h3
                   className={`bg-gradient-to-r bg-clip-text font-black text-transparent text-white text-xl uppercase tracking-tight ${textGradients[idx]}`}
                 >
-                  {t(`phase${phase}` as any)}
+                  {t(`phase${phase}` as Parameters<typeof t>[0])}
                 </h3>
                 <p className='mt-2 border-white/10 border-l pl-4 text-slate-400 text-sm leading-relaxed transition-colors group-hover:border-white/20'>
-                  {t(`phase${phase}Desc` as any)}
+                  {t(`phase${phase}Desc` as Parameters<typeof t>[0])}
                 </p>
               </div>
             </ScrollReveal>

@@ -56,7 +56,7 @@ const UserProfile = ({ profile }: Props) => {
           <DropdownMenuLabel className='font-normal'>
             <p className='truncate font-semibold text-sm'>{profile.fullName ?? "—"}</p>
             <p className='mt-0.5 text-muted-foreground text-xs'>
-              {tUserMenu(`roles.${profile.webRole}` as any) || profile.webRole}
+              {tUserMenu(`roles.${profile.webRole}` as Parameters<typeof tUserMenu>[0]) || profile.webRole}
             </p>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

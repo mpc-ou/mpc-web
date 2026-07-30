@@ -1,6 +1,7 @@
 "use client";
 
 import { ImagePlus, Loader2, Search, X } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import { adminRegisterTempImage } from "@/app/_actions/admin";
@@ -12,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { STORAGE_BUCKET } from "@/constants/storage";
 import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 
 export type MemberOption = {
   id: string;
@@ -166,9 +167,11 @@ export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate 
                 <span className='text-[10px] text-muted-foreground'>Ảnh tuyên dương:</span>
                 {l.imageUrl ? (
                   <div className='relative h-12 w-12 shrink-0 rounded-md border bg-muted'>
-                    <img
+                    <Image
                       alt={`Avatar ${l.member.firstName}`}
-                      className='h-full w-full rounded-md object-cover'
+                      className='rounded-md object-cover'
+                      fill
+                      sizes='48px'
                       src={l.imageUrl}
                     />
                     <button

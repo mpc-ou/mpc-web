@@ -4,6 +4,7 @@ import { getMemberBySlug, getMemberSlugByAuthId } from "@/app/_actions/main/memb
 import { createClientSsr } from "@/configs/supabase/server";
 import { getFullName } from "@/lib/utils";
 import { generatePageSeo } from "@/utils/seo";
+import type { Member } from "./profile-client";
 import { ProfilePageClient } from "./profile-client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Trang cá nhân" };
   }
   const { data } = await getMemberBySlug(slug);
-  const member = (data?.payload as any)?.member;
+  const member = (data?.payload as { member: Member | null } | undefined)?.member;
 
   if (!member) {
     return { title: "Không tìm thấy" };
@@ -43,7 +44,7 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
     }
 
     const { data } = await getMemberSlugByAuthId();
-    const authSlug = (data?.payload as any)?.slug;
+    const authSlug = (data?.payload as { slug: string | null } | undefined)?.slug;
 
     if (!authSlug) {
       redirect(`/${locale}/profile`);
@@ -53,11 +54,11 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
   }
 
   const { data } = await getMemberBySlug(slug);
-  const member = (data?.payload as any)?.member;
+  const member = (data?.payload as { member: Member | null } | undefined)?.member;
 
   if (!member) {
     notFound();
   }
 
-  return <ProfilePageClient member={member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]} />;
+  return <ProfilePageClient member={member} />;
 }

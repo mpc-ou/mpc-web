@@ -69,8 +69,6 @@ export type RecapData = {
   timeline: RecapTimelineItem[];
 };
 
-// ── Empty defaults ──
-
 export const EMPTY_RECAP_DATA: RecapData = {
   stats: {
     totalEvents: 0,
@@ -85,7 +83,6 @@ export const EMPTY_RECAP_DATA: RecapData = {
   timeline: []
 };
 
-/** Parse JSON from DB into typed RecapData (returns empty defaults on failure) */
 export function parseRecapData(raw: unknown): RecapData {
   if (!raw || typeof raw !== "object") {
     return EMPTY_RECAP_DATA;

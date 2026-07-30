@@ -14,6 +14,7 @@ import {
   Trophy,
   User
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -28,7 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BadgeData } from "@/configs/badges";
 import { SOCIAL_COLLECTION } from "@/constants/common";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
-import { getFullName } from "@/lib/utils";
+import { buildSocialHref, getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 
 const getSocialMeta = (platform: string) => {
@@ -63,7 +64,7 @@ const getSocialMeta = (platform: string) => {
   return SOCIAL_COLLECTION.WEBSITE;
 };
 
-type Member = {
+export type Member = {
   id: string;
   firstName: string;
   middleName: string | null;
@@ -121,6 +122,16 @@ type Member = {
       isActive: boolean;
       startDate: string | null;
       endDate: string | null;
+      members?: {
+        member: {
+          id: string;
+          firstName: string;
+          lastName: string;
+          middleName: string | null;
+          avatar: string | null;
+          slug: string;
+        };
+      }[];
     };
   }[];
   authoredPosts: {
@@ -147,6 +158,14 @@ export function ProfilePageClient({ member }: { member: Member }) {
   const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
+  const presentLabel = locale.startsWith("en") ? "Present" : "Hiện tại";
+
+  let joinedDateLabel = "";
+  if (member.joinedClubAt) {
+    joinedDateLabel = formatLocalDate(member.joinedClubAt, locale);
+  } else if (member.clubRoles.length > 0) {
+    joinedDateLabel = formatLocalDate(member.clubRoles.at(-1)?.startAt ?? "", locale);
+  }
 
   const activeRole = member.clubRoles.find((r) => !r.endAt);
   const isGuest = member.webRole === "GUEST";
@@ -223,7 +242,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                 </h1>
                 {activeRole && (
                   <Badge className='text-sm' variant='default'>
-                    {tPos(activeRole.position as any) || activeRole.position}
+                    {tPos(activeRole.position as Parameters<typeof tPos>[0]) || activeRole.position}
                     {activeRole.department ? ` · ${activeRole.department.nameVi}` : ""}
                   </Badge>
                 )}
@@ -326,13 +345,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     )}
                     <div className='flex items-center gap-3'>
                       <Calendar className='h-4 w-4 shrink-0 text-muted-foreground' />
-                      <span className='font-semibold text-sm'>
-                        {member.joinedClubAt
-                          ? formatLocalDate(member.joinedClubAt, locale)
-                          : member.clubRoles.length > 0
-                            ? formatLocalDate(member.clubRoles.at(-1)?.startAt ?? "", locale)
-                            : ""}
-                      </span>
+                      <span className='font-semibold text-sm'>{joinedDateLabel}</span>
                     </div>
                   </div>
 
@@ -352,12 +365,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                           return null;
                         }
                         const meta = getSocialMeta(social.platform);
-                        const href =
-                          social.url.startsWith("http") || social.url.startsWith("mailto:")
-                            ? social.url
-                            : meta.prefix
-                              ? `${meta.prefix}${social.url}`
-                              : `https://${social.url}`;
+                        const href = buildSocialHref(social.url, meta.prefix);
                         return (
                           <a
                             className='inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs transition-colors hover:border-primary/50 hover:text-primary'
@@ -366,7 +374,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
                             rel='noopener noreferrer'
                             target='_blank'
                           >
-                            <img alt={meta.platform} className='h-3.5 w-3.5 object-contain' src={meta.icon} />
+                            <Image
+                              alt={meta.platform}
+                              className='object-contain'
+                              height={14}
+                              src={meta.icon}
+                              width={14}
+                            />
                             <span className='font-medium'>{social.platform}</span>
                           </a>
                         );
@@ -397,10 +411,11 @@ export function ProfilePageClient({ member }: { member: Member }) {
                             >
                               <div className='relative h-40 shrink-0 overflow-hidden bg-muted sm:h-auto sm:w-48'>
                                 {achievement.thumbnail ? (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img
+                                  <Image
                                     alt={achievement.title}
-                                    className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                                    className='object-cover transition-transform duration-500 group-hover:scale-105'
+                                    fill
+                                    sizes='(min-width: 640px) 192px, 100vw'
                                     src={achievement.thumbnail}
                                   />
                                 ) : (
@@ -460,17 +475,15 @@ export function ProfilePageClient({ member }: { member: Member }) {
                             className={`relative z-10 mt-1.5 h-3 w-3 shrink-0 rounded-full border-2 ${isActive ? "border-primary bg-primary" : "border-muted-foreground/50 bg-background"}`}
                           />
                           <div className='flex-1'>
-                            <p className='font-bold text-sm'>{tPos(role.position as any) || role.position}</p>
+                            <p className='font-bold text-sm'>
+                              {tPos(role.position as Parameters<typeof tPos>[0]) || role.position}
+                            </p>
                             {role.department && (
                               <p className='mt-0.5 font-semibold text-primary text-xs'>{role.department.nameVi}</p>
                             )}
                             <p className='mt-1 text-muted-foreground text-xs'>
                               {formatLocalDate(role.startAt, locale)} →{" "}
-                              {role.endAt
-                                ? formatLocalDate(role.endAt, locale)
-                                : locale.startsWith("en")
-                                  ? "Present"
-                                  : "Hiện tại"}
+                              {role.endAt ? formatLocalDate(role.endAt, locale) : presentLabel}
                             </p>
                             {role.term && (
                               <Badge className='mt-2 text-[10px]' variant='outline'>
@@ -535,7 +548,7 @@ export function ProfilePageClient({ member }: { member: Member }) {
                       startDate: project.startDate ?? null,
                       endDate: project.endDate ?? null,
                       contributors:
-                        (project as any).members?.map((m: any) => ({
+                        project.members?.map((m) => ({
                           id: m.member.id,
                           firstName: m.member.firstName,
                           lastName: m.member.lastName,

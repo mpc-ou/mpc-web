@@ -2,6 +2,7 @@ import { Activity } from "lucide-react";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { adminGetActivities } from "@/app/_actions/admin";
+import type { Activity as ActivityModel } from "@/configs/prisma/generated/prisma/client";
 import { generatePageSeo } from "@/utils/seo";
 import { AdminPageHeader } from "../_components/admin-page-header";
 import { ActivitiesDataTable } from "./manager";
@@ -21,7 +22,7 @@ export default async function ActivitiesAdminPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const res = await adminGetActivities();
-  const data = (res.data?.payload as any[]) ?? [];
+  const data = (res.data?.payload as ActivityModel[] | undefined) ?? [];
   return (
     <div className='flex flex-col gap-6'>
       <AdminPageHeader

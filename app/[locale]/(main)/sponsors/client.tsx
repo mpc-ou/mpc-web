@@ -29,6 +29,7 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
     <>
       <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {sponsors.map((item) => (
+          // biome-ignore lint/a11y/useSemanticElements: contains nested <a> children (website/email links); a real <button> can't legally contain interactive content
           <div
             className={cn(
               "group relative flex flex-col items-center rounded-2xl border bg-card p-8 shadow-sm transition-all duration-300",
@@ -36,6 +37,14 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
             )}
             key={item.id}
             onClick={() => setSelected(item)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSelected(item);
+              }
+            }}
+            role='button'
+            tabIndex={0}
           >
             {/* Active badge */}
             {hasActiveSponsorship(item) && (
@@ -45,11 +54,11 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
             )}
 
             {/* Logo */}
-            <div className='mb-5 flex h-24 w-48 items-center justify-center rounded-xl bg-muted/20 p-3 transition-transform duration-300 group-hover:scale-105'>
+            <div className='relative mb-5 h-24 w-48 rounded-xl bg-muted/20 p-3 transition-transform duration-300 group-hover:scale-105'>
               {item.logo ? (
-                <img alt={item.name} className='max-h-full max-w-full object-contain' src={item.logo} />
+                <Image alt={item.name} className='object-contain p-3' fill sizes='192px' src={item.logo} />
               ) : (
-                <span className='font-bold text-3xl text-muted-foreground/25'>
+                <span className='flex h-full w-full items-center justify-center font-bold text-3xl text-muted-foreground/25'>
                   {item.name.substring(0, 2).toUpperCase()}
                 </span>
               )}
@@ -106,11 +115,11 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
           {selected && (
             <div className='flex flex-col items-center gap-6 py-4'>
               {/* Logo */}
-              <div className='flex h-28 w-56 items-center justify-center rounded-xl bg-muted/20 p-4'>
+              <div className='relative h-28 w-56 rounded-xl bg-muted/20 p-4'>
                 {selected.logo ? (
-                  <img alt={selected.name} className='max-h-full max-w-full object-contain' src={selected.logo} />
+                  <Image alt={selected.name} className='object-contain p-4' fill sizes='224px' src={selected.logo} />
                 ) : (
-                  <span className='font-bold text-4xl text-muted-foreground/25'>
+                  <span className='flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/25'>
                     {selected.name.substring(0, 2).toUpperCase()}
                   </span>
                 )}
@@ -173,9 +182,9 @@ export function SponsorsClient({ sponsors }: { sponsors: Sponsor[] }) {
                     Hình ảnh
                   </h4>
                   <div className='grid grid-cols-2 gap-2'>
-                    {selected.images.map((img, i) => (
-                      <div className='aspect-video overflow-hidden rounded-lg bg-muted' key={i}>
-                        <img alt='' className='h-full w-full object-cover' src={img} />
+                    {selected.images.map((img) => (
+                      <div className='relative aspect-video overflow-hidden rounded-lg bg-muted' key={img}>
+                        <Image alt='' className='object-cover' fill sizes='(min-width: 640px) 288px, 45vw' src={img} />
                       </div>
                     ))}
                   </div>

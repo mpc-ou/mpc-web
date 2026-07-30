@@ -81,8 +81,8 @@ export function TagInput({ selectedTags, onChange, getTags = defaultGetTags }: P
     setIsOpen(false);
   };
 
-  const removeTag = (idx: number) => {
-    const updated = selectedTags.filter((_, i) => i !== idx);
+  const removeTag = (tag: string) => {
+    const updated = selectedTags.filter((t) => t !== tag);
     onChange(updated);
   };
 
@@ -98,23 +98,25 @@ export function TagInput({ selectedTags, onChange, getTags = defaultGetTags }: P
 
   return (
     <div className='space-y-2' ref={containerRef}>
-      <label className='font-medium text-foreground text-sm'>Tags / Nhãn bài viết</label>
+      <label className='font-medium text-foreground text-sm' htmlFor='tag-input-field'>
+        Tags / Nhãn bài viết
+      </label>
 
       {/* Selected tags list */}
       <div className='flex min-h-[36px] flex-wrap gap-1.5 rounded-lg border bg-muted/20 p-1.5'>
         {selectedTags.length === 0 ? (
           <span className='self-center px-1 text-muted-foreground text-xs'>Chưa có tag nào</span>
         ) : (
-          selectedTags.map((tag, idx) => (
+          selectedTags.map((tag) => (
             <Badge
               className='flex items-center gap-1 py-0.5 pr-1 pl-2.5 font-medium text-xs'
-              key={tag + idx}
+              key={tag}
               variant='secondary'
             >
               {tag}
               <button
                 className='rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-muted-foreground/20 hover:text-foreground'
-                onClick={() => removeTag(idx)}
+                onClick={() => removeTag(tag)}
                 title={`Xóa tag ${tag}`}
                 type='button'
               >
@@ -130,6 +132,7 @@ export function TagInput({ selectedTags, onChange, getTags = defaultGetTags }: P
         <div className='flex gap-2'>
           <Input
             className='h-9 text-xs'
+            id='tag-input-field'
             onChange={(e) => {
               setInputValue(e.target.value);
               setIsOpen(true);

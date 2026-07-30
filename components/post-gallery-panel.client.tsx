@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox.client";
 
@@ -70,11 +71,11 @@ export function PostGalleryPanel({ images, title }: Props) {
               onClick={() => openAt(i)}
               type='button'
             >
-              {/* biome-ignore lint/performance/noImgElement: gallery thumbnail */}
-              {/* biome-ignore lint/correctness/useImageSize: size by CSS */}
-              <img
+              <Image
                 alt={img.title || img.caption || `Gallery ${i + 1}`}
-                className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
+                className='object-cover transition-transform duration-300 group-hover:scale-105'
+                fill
+                sizes='(min-width: 1024px) 33vw, 200px'
                 src={img.url}
               />
               {/* Overlay for last item when overflow exists */}

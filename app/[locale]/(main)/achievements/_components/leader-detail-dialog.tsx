@@ -1,6 +1,7 @@
 "use client";
 
 import { FolderGit2, Trophy, X } from "lucide-react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import { getMemberAchievements } from "@/app/_actions/main";
@@ -85,10 +86,65 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
   const achievementCount = leader.member._count?.achievements ?? leader.member._count?.achievementEntries ?? 0;
   const projectCount = leader.member._count?.projects ?? 0;
 
+  let achievementsContent: React.ReactNode;
+  if (loading) {
+    achievementsContent = (
+      <div className='flex items-center justify-center py-20'>
+        <div className='h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+      </div>
+    );
+  } else if (achievements.length === 0) {
+    achievementsContent = <p className='py-20 text-center text-muted-foreground'>Chưa có thành tựu nào.</p>;
+  } else {
+    achievementsContent = (
+      <div className='space-y-4'>
+        {achievements.map((a, i) => (
+          <ScrollReveal className='w-full' delay={i * 50} key={a.id} variant='fade-up'>
+            <Link
+              className='group flex gap-4 rounded-xl border border-border bg-background p-4 transition-all hover:border-primary/30 hover:shadow-sm'
+              href={`/achievements/${a.slug}`}
+            >
+              {/* Thumbnail */}
+              <div className='relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted'>
+                {a.thumbnail ? (
+                  <Image alt='' className='object-cover' fill sizes='112px' src={a.thumbnail} />
+                ) : (
+                  <div className='flex h-full w-full items-center justify-center'>
+                    <Trophy className='h-8 w-8 text-muted-foreground/30' />
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className='flex min-w-0 flex-1 flex-col justify-center'>
+                <div className='mb-1 flex items-center gap-2'>
+                  <h4 className='truncate font-semibold transition-colors group-hover:text-primary'>{title(a)}</h4>
+                  {a.isHighlight && <Badge className='shrink-0 bg-yellow-500 text-black hover:bg-yellow-400'>★</Badge>}
+                </div>
+                {summary(a) && (
+                  <p className='line-clamp-2 text-muted-foreground text-sm leading-relaxed'>{summary(a)}</p>
+                )}
+                <div className='mt-1.5 flex items-center gap-3 text-muted-foreground text-xs'>
+                  <Badge variant='secondary'>{a.achievementType}</Badge>
+                  {a.achievementDate && <span>{formatLocalDate(a.achievementDate, locale, "MM/yyyy")}</span>}
+                </div>
+              </div>
+            </Link>
+          </ScrollReveal>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className='fixed inset-0 z-[9999] flex items-center justify-center p-4'>
+    <div className='fixed inset-0 z-9999 flex items-center justify-center p-4'>
       {/* Backdrop */}
-      <div className='absolute inset-0 bg-black/70 backdrop-blur-xs' onClick={onClose} />
+      <button
+        aria-label='Close'
+        className='absolute inset-0 cursor-default bg-black/70 backdrop-blur-xs'
+        onClick={onClose}
+        type='button'
+      />
 
       {/* Dialog */}
       <div className='fade-in zoom-in-95 relative flex max-h-[90vh] w-full max-w-5xl animate-in overflow-hidden rounded-2xl border border-border bg-card shadow-2xl duration-200'>
@@ -96,6 +152,7 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
         <button
           className='absolute top-4 right-4 z-10 rounded-full bg-background/80 p-1.5 text-muted-foreground transition-colors hover:bg-background hover:text-foreground'
           onClick={onClose}
+          type='button'
         >
           <X className='h-5 w-5' />
         </button>
@@ -105,8 +162,7 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
           {/* Cover image */}
           <div className='relative h-36 w-full overflow-hidden bg-muted'>
             {leader.member.coverImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img alt='' className='absolute inset-0 h-full w-full object-cover' src={leader.member.coverImage} />
+              <Image alt='' className='object-cover' fill sizes='35vw' src={leader.member.coverImage} />
             ) : (
               <div className='absolute inset-0 bg-gradient-to-br from-orange-500/20 to-amber-500/10' />
             )}
@@ -117,8 +173,7 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
           <div className='-mt-12 flex justify-center'>
             <div className='relative h-24 w-24 overflow-hidden rounded-full border-4 border-card bg-muted shadow-lg'>
               {leader.member.avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img alt={fullName} className='h-full w-full object-cover' src={leader.member.avatar} />
+                <Image alt={fullName} className='object-cover' fill sizes='96px' src={leader.member.avatar} />
               ) : (
                 <div className='flex h-full w-full items-center justify-center bg-primary/10 font-bold text-2xl text-primary'>
                   {leader.member.firstName[0]}
@@ -157,9 +212,9 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
               <div className='mt-2 w-full space-y-2 text-left'>
                 <p className='font-semibold text-muted-foreground text-xs uppercase tracking-wider'>Lịch sử chức vụ</p>
                 {leader.roles
-                  .filter((r) => r.startAt)
+                  .filter((r): r is typeof r & { startAt: string } => Boolean(r.startAt))
                   .map((role) => {
-                    const startYear = new Date(role.startAt!).getFullYear();
+                    const startYear = new Date(role.startAt).getFullYear();
                     const endYear = role.endAt ? new Date(role.endAt).getFullYear() : "Nay";
                     return (
                       <div className='border-muted-foreground/20 border-l-2 py-0.5 pl-3' key={role.id}>
@@ -189,57 +244,7 @@ export function LeaderDetailDialog({ leader, open, onClose }: Props) {
             <h3 className='font-semibold text-lg'>Thành tựu ({achievements.length})</h3>
           </div>
 
-          <div className='flex-1 overflow-y-auto px-6 py-4'>
-            {loading ? (
-              <div className='flex items-center justify-center py-20'>
-                <div className='h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent' />
-              </div>
-            ) : achievements.length === 0 ? (
-              <p className='py-20 text-center text-muted-foreground'>Chưa có thành tựu nào.</p>
-            ) : (
-              <div className='space-y-4'>
-                {achievements.map((a, i) => (
-                  <ScrollReveal className='w-full' delay={i * 50} key={a.id} variant='fade-up'>
-                    <Link
-                      className='group flex gap-4 rounded-xl border border-border bg-background p-4 transition-all hover:border-primary/30 hover:shadow-sm'
-                      href={`/achievements/${a.slug}`}
-                    >
-                      {/* Thumbnail */}
-                      <div className='relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted'>
-                        {a.thumbnail ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img alt='' className='absolute inset-0 h-full w-full object-cover' src={a.thumbnail} />
-                        ) : (
-                          <div className='flex h-full w-full items-center justify-center'>
-                            <Trophy className='h-8 w-8 text-muted-foreground/30' />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className='flex min-w-0 flex-1 flex-col justify-center'>
-                        <div className='mb-1 flex items-center gap-2'>
-                          <h4 className='truncate font-semibold transition-colors group-hover:text-primary'>
-                            {title(a)}
-                          </h4>
-                          {a.isHighlight && (
-                            <Badge className='shrink-0 bg-yellow-500 text-black hover:bg-yellow-400'>★</Badge>
-                          )}
-                        </div>
-                        {summary(a) && (
-                          <p className='line-clamp-2 text-muted-foreground text-sm leading-relaxed'>{summary(a)}</p>
-                        )}
-                        <div className='mt-1.5 flex items-center gap-3 text-muted-foreground text-xs'>
-                          <Badge variant='secondary'>{a.achievementType}</Badge>
-                          {a.achievementDate && <span>{formatLocalDate(a.achievementDate, locale, "MM/yyyy")}</span>}
-                        </div>
-                      </div>
-                    </Link>
-                  </ScrollReveal>
-                ))}
-              </div>
-            )}
-          </div>
+          <div className='flex-1 overflow-y-auto px-6 py-4'>{achievementsContent}</div>
         </div>
       </div>
     </div>

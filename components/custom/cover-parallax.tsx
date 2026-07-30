@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 export function CoverParallax({
@@ -30,6 +31,8 @@ export function CoverParallax({
   };
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: decorative mouse-tracking parallax effect
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: decorative mouse-tracking parallax effect
     <div
       className='relative h-70 w-full overflow-hidden bg-linear-to-br from-primary/20 via-primary/10 to-muted md:h-90'
       onMouseLeave={handleMouseLeave}
@@ -38,10 +41,12 @@ export function CoverParallax({
       style={{ transform, transition: "transform 0.15s ease-out" }}
     >
       {coverImage ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           alt='Cover'
-          className='h-full w-full object-cover'
+          className='object-cover'
+          fill
+          priority
+          sizes='100vw'
           src={coverImage}
           style={{
             transform: "scale(1.1)",

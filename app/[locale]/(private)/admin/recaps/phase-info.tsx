@@ -1,12 +1,13 @@
 "use client";
 
 import { ImagePlus, Loader2, Music, X } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 
 export type PhaseInfoData = {
   year: number;
@@ -63,8 +64,7 @@ function CoverUpload({
       <Label>{label}</Label>
       {value ? (
         <div className='relative aspect-video w-full overflow-hidden rounded-lg border bg-muted'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt={label} className='h-full w-full object-cover' src={value} />
+          <Image alt={label} className='object-cover' fill sizes='400px' src={value} />
           <button
             className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
             onClick={onRemove}
@@ -100,7 +100,7 @@ export function PhaseInfo({ data, onChange, mode }: Props) {
   const musicRef = useRef<HTMLInputElement>(null);
   const [musicUploading, setMusicUploading] = useState(false);
 
-  const set = (key: keyof PhaseInfoData, value: any) => onChange({ ...data, [key]: value });
+  const set = <K extends keyof PhaseInfoData>(key: K, value: PhaseInfoData[K]) => onChange({ ...data, [key]: value });
 
   const handleMusicUpload = async (file: File) => {
     if (!file.type.startsWith("audio/")) {
@@ -194,7 +194,7 @@ export function PhaseInfo({ data, onChange, mode }: Props) {
           <div className='flex items-center gap-3 rounded-lg border p-3'>
             <Music className='h-5 w-5 shrink-0 text-primary' />
             <span className='flex-1 truncate text-sm'>{data.musicUrl.split("/").pop()}</span>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            {/* biome-ignore lint/a11y/useMediaCaption: background/instrumental music preview, not spoken content — captions don't apply */}
             <audio className='h-8' controls src={data.musicUrl} />
             <button
               className='rounded-full p-1 text-muted-foreground hover:text-destructive'

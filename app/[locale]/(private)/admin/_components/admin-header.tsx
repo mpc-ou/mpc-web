@@ -17,6 +17,8 @@ type AdminHeaderProps = {
   onToggleSidebar?: () => void;
 };
 
+const LOCALE_PREFIX_RE = /^\/[a-z]{2}/;
+
 const breadcrumbMap: Record<string, string> = {
   "/admin": "Dashboard",
   "/admin/members": "Thành viên",
@@ -35,7 +37,7 @@ const breadcrumbMap: Record<string, string> = {
 
 export function AdminHeader({ memberName, memberAvatar, memberRole, logoUrl, onToggleSidebar }: AdminHeaderProps) {
   const pathname = usePathname();
-  const normalizedPath = pathname.replace(/^\/[a-z]{2}/, "");
+  const normalizedPath = pathname.replace(LOCALE_PREFIX_RE, "");
 
   const currentPage = Object.entries(breadcrumbMap)
     .filter(([key]) => normalizedPath.startsWith(key))

@@ -24,7 +24,7 @@ type Leader = {
     lastName: string;
     avatar: string | null;
     slug: string;
-    socials: any;
+    socials: unknown;
     coverImage?: string | null;
     _count?: {
       achievementEntries: number;
@@ -118,7 +118,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
                   <span>[ REC ]</span>
                   <span className='opacity-80'>
                     {activeLeader.roles[0]?.position
-                      ? (t as any)(`leadership.positions.${activeLeader.roles[0].position}`)
+                      ? t(`leadership.positions.${activeLeader.roles[0].position}` as Parameters<typeof t>[0])
                       : t("leadership.leader")}
                   </span>
                   <span className='opacity-80'>
@@ -163,12 +163,13 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
               </div>
 
               {/* Active Avatar */}
-              <div className='mb-2 shrink-0 md:mb-0'>
+              <div className='relative mb-2 h-20 w-20 shrink-0 md:mb-0 md:h-56 md:w-56'>
                 {activeLeader.member.avatar ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     alt={activeLeader.member.firstName}
-                    className='h-20 w-20 rounded-full border-2 border-primary object-cover shadow-xl md:h-56 md:w-56'
+                    className='rounded-full border-2 border-primary object-cover shadow-xl'
+                    fill
+                    sizes='(min-width: 768px) 224px, 80px'
                     src={activeLeader.member.avatar}
                   />
                 ) : (
@@ -198,7 +199,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
                       <div className='mt-1.5 -ml-[21px] h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-black' />
                       <div>
                         <div className='font-bold text-base text-white'>
-                          {(t as any)(`leadership.positions.${role.position}`) || role.position}
+                          {t(`leadership.positions.${role.position}` as Parameters<typeof t>[0]) || role.position}
                         </div>
                         <div className='font-mono text-white/70 text-xs tracking-tight'>
                           {role.departmentName ? `${role.departmentName} // ` : ""}
@@ -257,12 +258,14 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
                     }`}
                     key={leader.member.id}
                     onClick={() => setCurrentIndex(i)}
+                    type='button'
                   >
                     {leader.member.avatar ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         alt={leader.member.firstName}
-                        className='h-full w-full object-cover'
+                        className='object-cover'
+                        fill
+                        sizes='(min-width: 640px) 56px, 72px'
                         src={leader.member.avatar}
                       />
                     ) : (

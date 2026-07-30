@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_RECAPS } from "@/constants/cache";
 import type { RecapData, RecapTimelineItem } from "@/lib/recap-data";
 import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
@@ -31,7 +32,7 @@ export const adminGetRecapsPaginated = async (params: { page: number; limit: num
       const limit = params.limit || 10;
       const search = params.search || "";
 
-      const where: any = {};
+      const where: Prisma.YearRecapWhereInput = {};
       if (search) {
         where.OR = [
           { name: { contains: search, mode: "insensitive" } },
@@ -122,7 +123,7 @@ export const adminUpdateRecap = async (
     endImage?: string | null;
     musicUrl?: string | null;
     isPublished?: boolean;
-    data?: any;
+    data?: RecapData;
   }
 ) =>
   handleErrorServerWithAuth({
@@ -147,7 +148,7 @@ export const adminUpdateRecap = async (
           ...(data.isPublished !== undefined && {
             isPublished: data.isPublished
           }),
-          ...(data.data !== undefined && { data: data.data })
+          ...(data.data !== undefined && { data: data.data as unknown as Prisma.InputJsonValue })
         }
       });
       revalidateTag(_CACHE_RECAPS, "default");
@@ -521,7 +522,7 @@ export const adminBuildRecapData = async (
       // Save to DB
       await prisma.yearRecap.update({
         where: { year },
-        data: { data: recapData as any }
+        data: { data: recapData as unknown as Prisma.InputJsonValue }
       });
 
       revalidateTag(_CACHE_RECAPS, "default");

@@ -13,7 +13,7 @@ type GalleryImage = {
 };
 
 const GAP = 10;
-const COL_SPEEDS = [0.55, 0.42, 0.5, 0.46];
+const COL_SPEEDS = [0.5, -0.5, 0.5, -0.5];
 const CARD_SIZES = [
   { w: 640, h: 480 },
   { w: 640, h: 800 },
@@ -37,7 +37,7 @@ const getColCount = (): number => {
 
 const hashHeight = (id: string, colW: number): number => {
   const idx = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_SIZES.length;
-  const size = CARD_SIZES[idx]!;
+  const size = CARD_SIZES[idx] ?? CARD_SIZES[0];
   return Math.round((colW * size.h) / size.w);
 };
 
@@ -82,19 +82,22 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
     const cycleRows = lcm(N, cols) / cols;
 
     const colSequences: GalleryImage[][] = Array.from({ length: cols }, (_, c) =>
-      Array.from({ length: cycleRows }, (__, r) => images[(r * cols + c) % N]!)
+      Array.from({ length: cycleRows }, (__, r) => images[(r * cols + c) % N] ?? images[0])
     );
 
     const heightCache = new Map<string, number>();
     const getH = (img: GalleryImage) => {
-      if (!heightCache.has(img.id)) {
-        heightCache.set(img.id, hashHeight(img.id, colW));
+      const cached = heightCache.get(img.id);
+      if (cached !== undefined) {
+        return cached;
       }
-      return heightCache.get(img.id)!;
+      const h = hashHeight(img.id, colW);
+      heightCache.set(img.id, h);
+      return h;
     };
 
     for (let c = 0; c < cols; c++) {
-      const seq = colSequences[c]!;
+      const seq = colSequences[c] ?? [];
       const cycleH = seq.reduce((s, img) => s + getH(img) + GAP, 0);
 
       const copies = Math.max(5, Math.ceil((containerH * 3 + 400) / cycleH) + 2);
@@ -185,7 +188,10 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
       const wheelActive = now - lastWheelRef.current < 150;
 
       for (let c = 0; c < colDataRef.current.length; c++) {
-        const col = colDataRef.current[c]!;
+        const col = colDataRef.current[c];
+        if (!col) {
+          continue;
+        }
         if (!(isPausedRef.current || wheelActive)) {
           col.offset += (COL_SPEEDS[c] ?? 0.5) * (dt / 16);
         }
@@ -246,6 +252,8 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
 
   return (
     <>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: hover only pauses the decorative auto-scroll, not a real control */}
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
       <div
         className='group/gallery relative mx-auto max-w-6xl overflow-hidden'
         onMouseEnter={() => {

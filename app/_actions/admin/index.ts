@@ -3,13 +3,13 @@ export {
   adminDeleteActivity,
   adminGetActivities,
   adminSeedActivities,
-  adminUpdateActivity,
+  adminUpdateActivity
 } from "./activities";
 export {
   adminCreateAnnouncement,
   adminDeleteAnnouncement,
   adminGetAnnouncements,
-  adminUpdateAnnouncement,
+  adminUpdateAnnouncement
 } from "./announcements";
 export {
   adminCreateExternalLink,
@@ -32,7 +32,7 @@ export {
   adminUpdateFaqItem,
   adminUpdateGalleryOrders,
   adminUpsertHomepageSection,
-  adminUpsertSetting,
+  adminUpsertSetting
 } from "./content";
 export { adminGetDashboardStats } from "./dashboard";
 export {
@@ -40,7 +40,7 @@ export {
   adminDeleteDepartment,
   adminGetDepartments,
   adminSeedDepartments,
-  adminUpdateDepartment,
+  adminUpdateDepartment
 } from "./departments";
 export {
   adminAddClubRole,
@@ -55,7 +55,7 @@ export {
   adminSyncMembersFromSso,
   adminUpdateClubRole,
   adminUpdateMember,
-  adminUpdateMemberRole,
+  adminUpdateMemberRole
 } from "./members";
 export type { PostRow } from "./posts";
 export {
@@ -80,7 +80,7 @@ export {
   adminUpdateAchievementMember,
   adminUpdateEvent,
   adminUpdatePost,
-  adminUpdatePostStatus,
+  adminUpdatePostStatus
 } from "./posts";
 export {
   adminCreateProject,
@@ -90,7 +90,7 @@ export {
   adminGetProjectsPaginated,
   adminLinkProjectMember,
   adminUnlinkProjectMember,
-  adminUpdateProject,
+  adminUpdateProject
 } from "./projects";
 export {
   adminBuildRecapData,
@@ -101,11 +101,11 @@ export {
   adminGetRecaps,
   adminGetRecapsPaginated,
   adminGetRecapsStats,
-  adminUpdateRecap,
+  adminUpdateRecap
 } from "./recaps";
 export {
   adminCreateSponsor,
   adminDeleteSponsor,
   adminGetSponsors,
-  adminUpdateSponsor,
+  adminUpdateSponsor
 } from "./sponsors";

@@ -33,10 +33,12 @@ import { UPLOAD_MAX_AVATAR_SIZE, UPLOAD_MAX_COVER_SIZE } from "@/constants/uploa
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { getFullName } from "@/lib/utils";
+import { uploadToStorage } from "@/services/supabase-upload";
 import { formatLocalDate } from "@/utils/handle-datetime";
-import { uploadToStorage } from "@/utils/supabase-upload";
 import type { MemberRow } from "../columns";
 import { type ClubRoleEntry, type Department, PLATFORMS, POSITION_LABELS, type SocialEntry } from "../types";
+
+const SPOTIFY_URL_RE = /spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/;
 
 type Props = {
   member?: MemberRow;
@@ -85,7 +87,7 @@ function parseSpotifyUri(input: string): string | null {
       }
     }
   } catch {
-    const match = trimmed.match(/spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/);
+    const match = trimmed.match(SPOTIFY_URL_RE);
     if (match) {
       return `spotify:${match[1]}:${match[2]}`;
     }
@@ -109,17 +111,17 @@ export function MemberForm({ member, departments }: Props) {
   const [studentId, setStudentId] = useState(member?.studentId ?? "");
   const [slugValue, setSlugValue] = useState(member?.slug ?? "");
   const [dob, setDob] = useState(member?.dob ? new Date(member.dob).toISOString().split("T")[0] : "");
-  const [showDob, setShowDob] = useState((member as any)?.showDob ?? true);
-  const [showPhone, setShowPhone] = useState((member as any)?.showPhone ?? true);
-  const [showStudentId, setShowStudentId] = useState((member as any)?.showStudentId ?? true);
+  const [showDob, setShowDob] = useState(member?.showDob ?? true);
+  const [showPhone, setShowPhone] = useState(member?.showPhone ?? true);
+  const [showStudentId, setShowStudentId] = useState(member?.showStudentId ?? true);
   const [bio, setBio] = useState(member?.bio ?? "");
   const [webRole, setWebRole] = useState(member?.webRole ?? "MEMBER");
-  const [spotifyUri, setSpotifyUri] = useState((member as any)?.spotifyUri ?? "");
+  const [spotifyUri, setSpotifyUri] = useState(member?.spotifyUri ?? "");
 
   // Avatars/Covers
   const [avatarUrl, setAvatarUrl] = useState<string | null>(member?.avatar ?? null);
   const [avatarUploading, setAvatarUploading] = useState(false);
-  const [coverUrl, setCoverUrl] = useState<string | null>((member as any)?.coverImage ?? null);
+  const [coverUrl, setCoverUrl] = useState<string | null>(member?.coverImage ?? null);
   const [coverUploading, setCoverUploading] = useState(false);
   const [isAvatarDragOver, setIsAvatarDragOver] = useState(false);
   const [isCoverDragOver, setIsCoverDragOver] = useState(false);
@@ -141,9 +143,9 @@ export function MemberForm({ member, departments }: Props) {
       ...r,
       department: r.department
         ? {
-            id: (r.department as any).id || "",
+            id: r.department.id || "",
             nameVi: r.department.nameVi || "",
-            nameEn: (r.department as any).nameEn || "",
+            nameEn: r.department.nameEn || "",
             slug: r.department.slug || ""
           }
         : null
@@ -385,7 +387,7 @@ export function MemberForm({ member, departments }: Props) {
         firstName: firstName.trim(),
         middleName: middleName.trim() || undefined,
         lastName: lastName.trim(),
-        webRole: webRole as any,
+        webRole: webRole as "ADMIN" | "COLLABORATOR" | "MEMBER" | "GUEST",
         phone: phone.trim() || undefined,
         dob: dob || null,
         studentId: studentId.trim() || undefined,
@@ -521,6 +523,8 @@ export function MemberForm({ member, departments }: Props) {
               />
             </div>
 
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: optional drag-and-drop target layered on the already-keyboard-accessible upload button below */}
+            {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
             <div
               className={`absolute bottom-0 left-6 flex translate-y-1/2 items-end gap-4 rounded-xl p-1 transition-colors ${
                 isAvatarDragOver ? "border-primary bg-primary/10" : ""
@@ -756,7 +760,7 @@ export function MemberForm({ member, departments }: Props) {
               <div className='flex items-center gap-2' key={social.id}>
                 <div className='w-40 shrink-0'>
                   <Select
-                    onValueChange={(val) => handleUpdateSocial(social.id!, "platform", val)}
+                    onValueChange={(val) => handleUpdateSocial(social.id, "platform", val)}
                     value={social.platform || undefined}
                   >
                     <SelectTrigger>
@@ -766,7 +770,7 @@ export function MemberForm({ member, departments }: Props) {
                       {PLATFORMS.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           <span className='flex items-center gap-2'>
-                            <img alt={p.label} className='h-4 w-4 shrink-0' src={p.icon} />
+                            <Image alt={p.label} className='shrink-0' height={16} src={p.icon} width={16} />
                             <span>{p.label}</span>
                           </span>
                         </SelectItem>
@@ -776,13 +780,13 @@ export function MemberForm({ member, departments }: Props) {
                 </div>
                 <div className='flex flex-1 items-center gap-2'>
                   <Input
-                    onChange={(e) => handleUpdateSocial(social.id!, "url", e.target.value)}
+                    onChange={(e) => handleUpdateSocial(social.id, "url", e.target.value)}
                     placeholder='Link / Username'
                     value={social.url}
                   />
                   <Button
                     className='h-9 w-9 shrink-0 text-destructive'
-                    onClick={() => handleRemoveSocial(social.id!)}
+                    onClick={() => handleRemoveSocial(social.id)}
                     size='icon'
                     type='button'
                     variant='ghost'

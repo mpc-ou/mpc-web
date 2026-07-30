@@ -3,11 +3,23 @@ import { adminGetDashboardStats } from "@/app/_actions/admin";
 import { Link } from "@/configs/i18n/routing";
 import { DashboardChart } from "./_components/dashboard-chart";
 
+type DashboardChartData = {
+  month: string;
+  blog: number;
+  event: number;
+  achievement: number;
+};
+
+type DashboardPayload = {
+  stats?: Record<string, number>;
+  chartData?: DashboardChartData[];
+};
+
 export default async function AdminDashboard(): Promise<React.ReactNode> {
   const { data } = await adminGetDashboardStats();
-  const payload = (data?.payload ?? { stats: {}, chartData: [] }) as any;
-  const stats = (payload.stats ?? {}) as Record<string, number>;
-  const chartData = (payload.chartData ?? []) as any[];
+  const payload = (data?.payload ?? { stats: {}, chartData: [] }) as DashboardPayload;
+  const stats = payload.stats ?? {};
+  const chartData = payload.chartData ?? [];
 
   const cards = [
     {

@@ -4,12 +4,17 @@ import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
+type SwaggerUIWindow = Window & {
+  SwaggerUIBundle?: (config: { url: string; dom_id: string }) => void;
+};
+
 function ApiDoc() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (loaded && (window as any).SwaggerUIBundle) {
-      (window as any).SwaggerUIBundle({
+    const swaggerWindow = window as SwaggerUIWindow;
+    if (loaded && swaggerWindow.SwaggerUIBundle) {
+      swaggerWindow.SwaggerUIBundle({
         url: "/api/docs",
         dom_id: "#swagger-ui"
       });

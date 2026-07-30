@@ -43,6 +43,8 @@ export const TERMINAL_SEQUENCE: TerminalLine[] = [
 
 export const CLUB_TAGS = ["Workshop", "Web Design", "Robocode", "Open Source"] as const;
 
+export const MPC_FOUNDED_YEAR = 2015;
+
 export const PARALLAX_FACTOR = 8;
 export const TERMINAL_MAX_LINES = 60;
 export const TYPING_SPEED_MS = 25;

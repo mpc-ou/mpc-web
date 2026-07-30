@@ -1,18 +1,10 @@
-/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: <explanation> */
+/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: admin CRUD actions for posts (blog/event/achievement) branch heavily on post type by design; splitting each type's logic out is a larger refactor tracked separately */
 "use server";
 
 import { revalidateTag } from "next/cache";
-import {
-  _CACHE_ACHIEVEMENTS,
-  _CACHE_EVENTS,
-  _CACHE_POSTS,
-} from "@/constants/cache";
-import {
-  generateSlug,
-  handleErrorServerWithAuth,
-  prisma,
-  requireAdmin,
-} from "./helpers";
+import type { PostStatus, Prisma } from "@/configs/prisma/generated/prisma/client";
+import { _CACHE_ACHIEVEMENTS, _CACHE_EVENTS, _CACHE_POSTS } from "@/constants/cache";
+import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
 // ════════════════════════════════════════════════════════════════
 // Shared helpers
@@ -21,17 +13,14 @@ import {
 const CACHE_MAP = {
   BLOG: _CACHE_POSTS,
   EVENT: _CACHE_EVENTS,
-  ACHIEVEMENT: _CACHE_ACHIEVEMENTS,
+  ACHIEVEMENT: _CACHE_ACHIEVEMENTS
 } as const;
 
-const invalidate = (type: keyof typeof CACHE_MAP) =>
-  revalidateTag(CACHE_MAP[type], "default");
+const invalidate = (type: keyof typeof CACHE_MAP) => revalidateTag(CACHE_MAP[type], "default");
 
-const withAdmin = (
-  fn: (admin: Awaited<ReturnType<typeof requireAdmin>>) => Promise<object>,
-) =>
+const withAdmin = (fn: (admin: Awaited<ReturnType<typeof requireAdmin>>) => Promise<object>) =>
   handleErrorServerWithAuth({
-    cb: async ({ user }) => fn(await requireAdmin(user)),
+    cb: async ({ user }) => fn(await requireAdmin(user))
   });
 
 // ════════════════════════════════════════════════════════════════
@@ -56,9 +45,7 @@ export type PostRow = {
 // List
 // ════════════════════════════════════════════════════════════════
 
-export const adminGetPosts = async (
-  type?: "BLOG" | "EVENT" | "ACHIEVEMENT" | "ALL",
-) =>
+export const adminGetPosts = async (type?: "BLOG" | "EVENT" | "ACHIEVEMENT" | "ALL") =>
   withAdmin(async () =>
     prisma.post
       .findMany({
@@ -93,7 +80,7 @@ export const adminGetPosts = async (
           relatedUrl: true,
           images: true,
           author: {
-            select: { firstName: true, lastName: true, middleName: true },
+            select: { firstName: true, lastName: true, middleName: true }
           },
           category: { select: { name: true } },
           achievementMembers: {
@@ -104,12 +91,12 @@ export const adminGetPosts = async (
                   firstName: true,
                   lastName: true,
                   middleName: true,
-                  avatar: true,
-                },
-              },
-            },
-          },
-        },
+                  avatar: true
+                }
+              }
+            }
+          }
+        }
       })
       .then((posts) =>
         posts.map((p) => ({
@@ -127,9 +114,9 @@ export const adminGetPosts = async (
           startAt: p.startAt?.toISOString() ?? null,
           endAt: p.endAt?.toISOString() ?? null,
           achievementDate: p.achievementDate?.toISOString() ?? null,
-          members: p.achievementMembers,
-        })),
-      ),
+          members: p.achievementMembers
+        }))
+      )
   );
 
 export const adminGetPostsPaginated = async (params: {
@@ -146,19 +133,19 @@ export const adminGetPostsPaginated = async (params: {
     const type = params.type || "ALL";
     const status = params.status || "ALL";
 
-    const where: any = {};
+    const where: Prisma.PostWhereInput = {};
     if (type !== "ALL") {
       where.type = type;
     }
     if (status !== "ALL") {
-      where.status = status;
+      where.status = status as PostStatus;
     }
     if (search) {
       where.OR = [
         { titleVi: { contains: search, mode: "insensitive" } },
         { titleEn: { contains: search, mode: "insensitive" } },
         { summaryVi: { contains: search, mode: "insensitive" } },
-        { summaryEn: { contains: search, mode: "insensitive" } },
+        { summaryEn: { contains: search, mode: "insensitive" } }
       ];
     }
 
@@ -197,7 +184,7 @@ export const adminGetPostsPaginated = async (params: {
           relatedUrl: true,
           images: true,
           author: {
-            select: { firstName: true, lastName: true, middleName: true },
+            select: { firstName: true, lastName: true, middleName: true }
           },
           category: { select: { name: true } },
           achievementMembers: {
@@ -208,14 +195,14 @@ export const adminGetPostsPaginated = async (params: {
                   firstName: true,
                   lastName: true,
                   middleName: true,
-                  avatar: true,
-                },
-              },
-            },
-          },
-        },
+                  avatar: true
+                }
+              }
+            }
+          }
+        }
       }),
-      prisma.post.count({ where }),
+      prisma.post.count({ where })
     ]);
 
     const mappedPosts = posts.map((p) => ({
@@ -233,12 +220,12 @@ export const adminGetPostsPaginated = async (params: {
       startAt: p.startAt?.toISOString() ?? null,
       endAt: p.endAt?.toISOString() ?? null,
       achievementDate: p.achievementDate?.toISOString() ?? null,
-      members: p.achievementMembers,
+      members: p.achievementMembers
     }));
 
     return {
       posts: mappedPosts,
-      total,
+      total
     };
   });
 
@@ -265,9 +252,9 @@ export const adminGetEvents = async () =>
           eventStatus: true,
           eventType: true,
           author: {
-            select: { firstName: true, lastName: true, middleName: true },
-          },
-        },
+            select: { firstName: true, lastName: true, middleName: true }
+          }
+        }
       })
       .then((list) =>
         list.map((e) => ({
@@ -278,9 +265,9 @@ export const adminGetEvents = async () =>
           type: e.eventType,
           creator: e.author,
           startAt: e.startAt?.toISOString(),
-          endAt: e.endAt?.toISOString() ?? null,
-        })),
-      ),
+          endAt: e.endAt?.toISOString() ?? null
+        }))
+      )
   );
 
 export const adminGetAchievements = async () =>
@@ -303,8 +290,8 @@ export const adminGetAchievements = async () =>
           relatedUrl: true,
           createdAt: true,
           updatedAt: true,
-          achievementMembers: { include: { member: true } },
-        },
+          achievementMembers: { include: { member: true } }
+        }
       })
       .then((list) =>
         list.map((a) => ({
@@ -314,19 +301,16 @@ export const adminGetAchievements = async () =>
           content: a.contentVi,
           date: a.achievementDate,
           type: a.achievementType,
-          members: a.achievementMembers,
-        })),
-      ),
+          members: a.achievementMembers
+        }))
+      )
   );
 
 // ════════════════════════════════════════════════════════════════
 // Delete
 // ════════════════════════════════════════════════════════════════
 
-export const adminDeletePost = async (
-  id: string,
-  type: "BLOG" | "EVENT" | "ACHIEVEMENT",
-) =>
+export const adminDeletePost = async (id: string, type: "BLOG" | "EVENT" | "ACHIEVEMENT") =>
   withAdmin(async () => {
     await prisma.post.delete({ where: { id, type } });
     invalidate(type);
@@ -337,14 +321,12 @@ export const adminDeletePosts = async (ids: string[]) =>
   withAdmin(async () => {
     const posts = await prisma.post.findMany({
       where: { id: { in: ids } },
-      select: { type: true },
+      select: { type: true }
     });
-    const types = Array.from(new Set(posts.map((p) => p.type))) as Array<
-      "BLOG" | "EVENT" | "ACHIEVEMENT"
-    >;
+    const types = Array.from(new Set(posts.map((p) => p.type))) as Array<"BLOG" | "EVENT" | "ACHIEVEMENT">;
 
     await prisma.post.deleteMany({
-      where: { id: { in: ids } },
+      where: { id: { in: ids } }
     });
 
     for (const t of types) {
@@ -354,18 +336,14 @@ export const adminDeletePosts = async (ids: string[]) =>
     return { success: true };
   });
 
-export const adminDeleteEvent = async (id: string) =>
-  adminDeletePost(id, "EVENT");
-export const adminDeleteAchievement = async (id: string) =>
-  adminDeletePost(id, "ACHIEVEMENT");
+export const adminDeleteEvent = async (id: string) => adminDeletePost(id, "EVENT");
+export const adminDeleteAchievement = async (id: string) => adminDeletePost(id, "ACHIEVEMENT");
 
 // ════════════════════════════════════════════════════════════════
 // Create
 // ════════════════════════════════════════════════════════════════
 
-const normalizeAdditionalPhotos = (
-  images?: (string | { url: string; title?: string; caption?: string })[],
-) => {
+const normalizeAdditionalPhotos = (images?: (string | { url: string; title?: string; caption?: string })[]) => {
   if (!images) {
     return [];
   }
@@ -393,8 +371,7 @@ export const adminCreatePost = async (data: {
   images?: (string | { url: string; title?: string; caption?: string })[];
 }) =>
   withAdmin(async (admin) => {
-    const isAutoPublish =
-      admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
+    const isAutoPublish = admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
     const normalizedImages = normalizeAdditionalPhotos(data.images);
     const result = await prisma.post.create({
       data: {
@@ -410,23 +387,14 @@ export const adminCreatePost = async (data: {
         thumbnail: data.thumbnail ?? null,
         categoryId: data.categoryId ?? null,
         activityId: data.activityId ?? null,
-        status: isAutoPublish
-          ? "PUBLISHED"
-          : ((data.status as "DRAFT" | "PENDING_REVIEW") ?? "DRAFT"),
+        status: isAutoPublish ? "PUBLISHED" : ((data.status as "DRAFT" | "PENDING_REVIEW") ?? "DRAFT"),
         publishedAt: isAutoPublish ? new Date() : null,
         authorId: admin.id,
-        images: normalizedImages.map((x) => x.url),
-      },
+        images: normalizedImages.map((x) => x.url)
+      }
     });
 
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      [],
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, []);
 
     invalidate("BLOG");
     return result;
@@ -454,10 +422,8 @@ export const adminCreateEvent = async (data: {
   postStatus?: string;
 }) =>
   withAdmin(async (admin) => {
-    const isAutoPublish =
-      admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
-    const finalPostStatus = (data.postStatus ||
-      (isAutoPublish ? "PUBLISHED" : "DRAFT")) as any;
+    const isAutoPublish = admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
+    const finalPostStatus = (data.postStatus || (isAutoPublish ? "PUBLISHED" : "DRAFT")) as PostStatus;
     const normalizedImages = normalizeAdditionalPhotos(data.images);
     const result = await prisma.post.create({
       data: {
@@ -477,31 +443,16 @@ export const adminCreateEvent = async (data: {
         longitude: data.longitude ?? null,
         startAt: new Date(data.startAt),
         endAt: data.endAt ? new Date(data.endAt) : null,
-        eventStatus:
-          (data.status as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED") ??
-          "UPCOMING",
-        eventType:
-          (data.type as
-            | "ACADEMIC"
-            | "MEMBER_ACTIVITY"
-            | "VOLUNTEER"
-            | "SEMINAR"
-            | "OTHER") ?? "OTHER",
+        eventStatus: (data.status as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED") ?? "UPCOMING",
+        eventType: (data.type as "ACADEMIC" | "MEMBER_ACTIVITY" | "VOLUNTEER" | "SEMINAR" | "OTHER") ?? "OTHER",
         authorId: admin.id,
         images: normalizedImages.map((x) => x.url),
         status: finalPostStatus,
-        publishedAt: finalPostStatus === "PUBLISHED" ? new Date() : null,
-      },
+        publishedAt: finalPostStatus === "PUBLISHED" ? new Date() : null
+      }
     });
 
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      [],
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, []);
 
     invalidate("EVENT");
     return result;
@@ -529,10 +480,8 @@ export const adminCreateAchievement = async (data: {
   postStatus?: string;
 }) =>
   withAdmin(async (admin) => {
-    const isAutoPublish =
-      admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
-    const finalPostStatus = (data.postStatus ||
-      (isAutoPublish ? "PUBLISHED" : "DRAFT")) as any;
+    const isAutoPublish = admin.webRole === "ADMIN" || admin.webRole === "COLLABORATOR";
+    const finalPostStatus = (data.postStatus || (isAutoPublish ? "PUBLISHED" : "DRAFT")) as PostStatus;
     const slug = data.slug || generateSlug(data.title, true);
     const normalizedImages = normalizeAdditionalPhotos(data.images);
     const result = await prisma.post.create({
@@ -548,8 +497,7 @@ export const adminCreateAchievement = async (data: {
         sourceLanguage: data.sourceLanguage ?? "VI",
         thumbnail: data.thumbnail ?? null,
         achievementDate: new Date(data.date),
-        achievementType:
-          (data.type as "INDIVIDUAL" | "TEAM" | "CLUB") ?? "TEAM",
+        achievementType: (data.type as "INDIVIDUAL" | "TEAM" | "CLUB") ?? "TEAM",
         isHighlight: data.isHighlight ?? false,
         relatedUrl: data.relatedUrl ?? null,
         locationVi: data.locationVi ?? null,
@@ -559,18 +507,11 @@ export const adminCreateAchievement = async (data: {
         authorId: admin.id,
         images: normalizedImages.map((x) => x.url),
         status: finalPostStatus,
-        publishedAt: finalPostStatus === "PUBLISHED" ? new Date() : null,
-      },
+        publishedAt: finalPostStatus === "PUBLISHED" ? new Date() : null
+      }
     });
 
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      [],
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, []);
 
     invalidate("ACHIEVEMENT");
     return result;
@@ -595,7 +536,7 @@ export const adminUpdatePost = async (
     categoryId?: string | null;
     activityId?: string | null;
     images?: (string | { url: string; title?: string; caption?: string })[];
-  },
+  }
 ) =>
   withAdmin(async (admin) => {
     const update: Record<string, unknown> = {};
@@ -641,20 +582,13 @@ export const adminUpdatePost = async (
     }
     const result = await prisma.post.update({
       where: { id, type: "BLOG" },
-      data: update,
+      data: update
     });
 
     const normalizedImages = normalizeAdditionalPhotos(
-      data.images !== undefined ? data.images : (result.images as string[]),
+      data.images !== undefined ? data.images : (result.images as string[])
     );
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      [],
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, []);
 
     invalidate("BLOG");
     return result;
@@ -681,7 +615,7 @@ export const adminUpdateEvent = async (
     endAt?: string | null;
     images?: (string | { url: string; title?: string; caption?: string })[];
     postStatus?: string;
-  },
+  }
 ) =>
   withAdmin(async (admin) => {
     const update: Record<string, unknown> = {};
@@ -745,20 +679,13 @@ export const adminUpdateEvent = async (
     }
     const result = await prisma.post.update({
       where: { id, type: "EVENT" },
-      data: update,
+      data: update
     });
 
     const normalizedImages = normalizeAdditionalPhotos(
-      data.images !== undefined ? data.images : (result.images as string[]),
+      data.images !== undefined ? data.images : (result.images as string[])
     );
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      [],
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, []);
 
     invalidate("EVENT");
     return result;
@@ -785,7 +712,7 @@ export const adminUpdateAchievement = async (
     longitude?: number | null;
     images?: (string | { url: string; title?: string; caption?: string })[];
     postStatus?: string;
-  },
+  }
 ) =>
   withAdmin(async (admin) => {
     const update: Record<string, unknown> = {};
@@ -850,26 +777,19 @@ export const adminUpdateAchievement = async (
     const result = await prisma.post.update({
       where: { id, type: "ACHIEVEMENT" },
       data: update,
-      include: { achievementMembers: { include: { member: true } } },
+      include: { achievementMembers: { include: { member: true } } }
     });
 
     const normalizedImages = normalizeAdditionalPhotos(
-      data.images !== undefined ? data.images : (result.images as string[]),
+      data.images !== undefined ? data.images : (result.images as string[])
     );
     const memberPhotos = result.achievementMembers.map((m) => ({
       url: m.imageUrl || "",
       memberName: `${m.member.firstName} ${m.member.lastName}`.trim(),
-      role: m.role || "",
+      role: m.role || ""
     }));
 
-    await syncPostImages(
-      result.id,
-      result.titleVi,
-      result.contentVi,
-      result.thumbnail,
-      normalizedImages,
-      memberPhotos,
-    );
+    await syncPostImages(result.id, result.titleVi, result.contentVi, result.thumbnail, normalizedImages, memberPhotos);
 
     invalidate("ACHIEVEMENT");
     return result;
@@ -882,16 +802,11 @@ export const adminUpdateAchievement = async (
 export const adminUpdatePostStatus = async (
   id: string,
   status: string,
-  type: "BLOG" | "EVENT" | "ACHIEVEMENT" = "BLOG",
+  type: "BLOG" | "EVENT" | "ACHIEVEMENT" = "BLOG"
 ) =>
   withAdmin(async (admin) => {
     const update: Record<string, unknown> = {};
-    if (
-      status === "UPCOMING" ||
-      status === "ONGOING" ||
-      status === "COMPLETED" ||
-      status === "CANCELLED"
-    ) {
+    if (status === "UPCOMING" || status === "ONGOING" || status === "COMPLETED" || status === "CANCELLED") {
       update.eventStatus = status;
     } else {
       update.status = status;
@@ -902,7 +817,7 @@ export const adminUpdatePostStatus = async (
     }
     const result = await prisma.post.update({
       where: { id, type },
-      data: update,
+      data: update
     });
     invalidate(type);
     return result;
@@ -917,7 +832,7 @@ export const adminLinkAchievementMember = async (
   memberId: string,
   role?: string,
   prize?: string,
-  imageUrl?: string | null,
+  imageUrl?: string | null
 ) =>
   withAdmin(async () => {
     const result = await prisma.postAchievementMember.create({
@@ -926,16 +841,16 @@ export const adminLinkAchievementMember = async (
         memberId,
         role: role ?? null,
         prize: prize ?? null,
-        imageUrl: imageUrl ?? null,
-      },
+        imageUrl: imageUrl ?? null
+      }
     });
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
       include: {
         achievementMembers: { include: { member: true } },
-        gallery: true,
-      },
+        gallery: true
+      }
     });
     if (post) {
       const additionalPhotos = post.gallery
@@ -943,21 +858,14 @@ export const adminLinkAchievementMember = async (
         .map((g) => ({
           url: g.url,
           title: g.title ?? undefined,
-          caption: g.caption ?? undefined,
+          caption: g.caption ?? undefined
         }));
       const memberPhotos = post.achievementMembers.map((m) => ({
         url: m.imageUrl || "",
         memberName: `${m.member.firstName} ${m.member.lastName}`.trim(),
-        role: m.role || "",
+        role: m.role || ""
       }));
-      await syncPostImages(
-        postId,
-        post.titleVi,
-        post.contentVi,
-        post.thumbnail,
-        additionalPhotos,
-        memberPhotos,
-      );
+      await syncPostImages(postId, post.titleVi, post.contentVi, post.thumbnail, additionalPhotos, memberPhotos);
     }
 
     invalidate("ACHIEVEMENT");
@@ -971,20 +879,20 @@ export const adminUpdateAchievementMember = async (
     role?: string | null;
     prize?: string | null;
     imageUrl?: string | null;
-  },
+  }
 ) =>
   withAdmin(async () => {
     const result = await prisma.postAchievementMember.update({
       where: { postId_memberId: { postId, memberId } },
-      data: updates,
+      data: updates
     });
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
       include: {
         achievementMembers: { include: { member: true } },
-        gallery: true,
-      },
+        gallery: true
+      }
     });
     if (post) {
       const additionalPhotos = post.gallery
@@ -992,42 +900,32 @@ export const adminUpdateAchievementMember = async (
         .map((g) => ({
           url: g.url,
           title: g.title ?? undefined,
-          caption: g.caption ?? undefined,
+          caption: g.caption ?? undefined
         }));
       const memberPhotos = post.achievementMembers.map((m) => ({
         url: m.imageUrl || "",
         memberName: `${m.member.firstName} ${m.member.lastName}`.trim(),
-        role: m.role || "",
+        role: m.role || ""
       }));
-      await syncPostImages(
-        postId,
-        post.titleVi,
-        post.contentVi,
-        post.thumbnail,
-        additionalPhotos,
-        memberPhotos,
-      );
+      await syncPostImages(postId, post.titleVi, post.contentVi, post.thumbnail, additionalPhotos, memberPhotos);
     }
 
     invalidate("ACHIEVEMENT");
     return result;
   });
 
-export const adminUnlinkAchievementMember = async (
-  postId: string,
-  memberId: string,
-) =>
+export const adminUnlinkAchievementMember = async (postId: string, memberId: string) =>
   withAdmin(async () => {
     await prisma.postAchievementMember.delete({
-      where: { postId_memberId: { postId, memberId } },
+      where: { postId_memberId: { postId, memberId } }
     });
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
       include: {
         achievementMembers: { include: { member: true } },
-        gallery: true,
-      },
+        gallery: true
+      }
     });
     if (post) {
       const additionalPhotos = post.gallery
@@ -1035,21 +933,14 @@ export const adminUnlinkAchievementMember = async (
         .map((g) => ({
           url: g.url,
           title: g.title ?? undefined,
-          caption: g.caption ?? undefined,
+          caption: g.caption ?? undefined
         }));
       const memberPhotos = post.achievementMembers.map((m) => ({
         url: m.imageUrl || "",
         memberName: `${m.member.firstName} ${m.member.lastName}`.trim(),
-        role: m.role || "",
+        role: m.role || ""
       }));
-      await syncPostImages(
-        postId,
-        post.titleVi,
-        post.contentVi,
-        post.thumbnail,
-        additionalPhotos,
-        memberPhotos,
-      );
+      await syncPostImages(postId, post.titleVi, post.contentVi, post.thumbnail, additionalPhotos, memberPhotos);
     }
 
     invalidate("ACHIEVEMENT");
@@ -1062,7 +953,7 @@ export const adminGetPostsStats = async () =>
       prisma.post.count(),
       prisma.post.count({ where: { type: "BLOG" } }),
       prisma.post.count({ where: { type: "EVENT" } }),
-      prisma.post.count({ where: { type: "ACHIEVEMENT" } }),
+      prisma.post.count({ where: { type: "ACHIEVEMENT" } })
     ]);
     return { total, blog, event, achievement };
   });
@@ -1084,7 +975,7 @@ export const adminSetPostTags = async (postId: string, tagNames: string[]) =>
       return prisma.tag.upsert({
         where: { slug },
         create: { name, slug },
-        update: {},
+        update: {}
       });
     });
     const tags = await Promise.all(tagOps);
@@ -1094,7 +985,7 @@ export const adminSetPostTags = async (postId: string, tagNames: string[]) =>
     if (tags.length > 0) {
       await prisma.postTag.createMany({
         data: tags.map((t) => ({ postId, tagId: t.id })),
-        skipDuplicates: true,
+        skipDuplicates: true
       });
     }
 
@@ -1115,8 +1006,8 @@ export const adminRegisterTempImage = async (url: string) =>
         data: {
           url,
           isTemp: true,
-          type: "ADDITIONAL",
-        },
+          type: "ADDITIONAL"
+        }
       });
     }
     return { success: true };
@@ -1128,7 +1019,7 @@ export const syncPostImages = async (
   contentVi: string,
   thumbnailUrl: string | null,
   additionalPhotos: { url: string; title?: string; caption?: string }[],
-  memberPhotos: { url: string; memberName: string; role?: string }[],
+  memberPhotos: { url: string; memberName: string; role?: string }[]
 ) => {
   const targetImages: {
     url: string;
@@ -1147,7 +1038,7 @@ export const syncPostImages = async (
       type: "THUMBNAIL",
       title: postTitle,
       caption: "",
-      order: orderCounter++,
+      order: orderCounter++
     });
   }
 
@@ -1163,7 +1054,7 @@ export const syncPostImages = async (
         type: "CONTENT",
         title: caption,
         caption,
-        order: orderCounter++,
+        order: orderCounter++
       });
     }
     match = mdImageRegex.exec(contentVi);
@@ -1177,7 +1068,7 @@ export const syncPostImages = async (
         type: "MEMBER",
         title: mPhoto.memberName,
         caption: mPhoto.role || "",
-        order: orderCounter++,
+        order: orderCounter++
       });
     }
   }
@@ -1190,7 +1081,7 @@ export const syncPostImages = async (
         type: "ADDITIONAL",
         title: photo.title || "",
         caption: photo.caption || "",
-        order: orderCounter++,
+        order: orderCounter++
       });
     }
   }
@@ -1211,8 +1102,8 @@ export const syncPostImages = async (
   await prisma.image.deleteMany({
     where: {
       postId,
-      url: { notIn: targetUrls },
-    },
+      url: { notIn: targetUrls }
+    }
   });
 
   // Upsert targets
@@ -1225,7 +1116,7 @@ export const syncPostImages = async (
         title: img.title ?? null,
         caption: img.caption ?? null,
         isTemp: false,
-        order: img.order,
+        order: img.order
       },
       create: {
         url: img.url,
@@ -1234,8 +1125,8 @@ export const syncPostImages = async (
         title: img.title ?? null,
         caption: img.caption ?? null,
         isTemp: false,
-        order: img.order,
-      },
+        order: img.order
+      }
     });
   }
 };

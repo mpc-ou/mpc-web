@@ -96,11 +96,10 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
 
   for (const m of members) {
     const latestRole = m.clubRoles[0];
-    const deptName = latestRole?.department
-      ? isVi
-        ? latestRole.department.nameVi
-        : latestRole.department.nameEn || latestRole.department.nameVi
-      : null;
+    let deptName: string | null = null;
+    if (latestRole?.department) {
+      deptName = isVi ? latestRole.department.nameVi : latestRole.department.nameEn || latestRole.department.nameVi;
+    }
     const extraParts: string[] = [];
     if (deptName) {
       extraParts.push(deptName);
@@ -159,8 +158,12 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
   const projVector = `setweight(to_tsvector('simple', coalesce(proj.title,'') || ' ' || coalesce(proj."titleEn",'')), 'A')
     || setweight(to_tsvector('simple', coalesce(proj.description,'') || ' ' || coalesce(proj."descriptionEn",'')), 'B')`;
 
-  const memberVector = `setweight(to_tsvector('simple', coalesce(m."firstName",'') || ' ' || coalesce(m."lastName",'')), 'A')
-    || setweight(to_tsvector('simple', coalesce(m.bio,'') || ' ' || coalesce(m."studentId",'')), 'B')`;
+  // Member vector also folds in the titles of achievements the member is
+  // honored in and projects they contributed to (weight C), so searching an
+  // achievement / activity / project name surfaces the people linked to it.
+  const memberVector = `setweight(to_tsvector('simple', coalesce(m."firstName",'') || ' ' || coalesce(m."middleName",'') || ' ' || coalesce(m."lastName",'')), 'A')
+    || setweight(to_tsvector('simple', coalesce(m.bio,'') || ' ' || coalesce(m."studentId",'')), 'B')
+    || setweight(to_tsvector('simple', coalesce(rel.related_titles,'')), 'C')`;
 
   const rows = await prisma.$queryRaw<FtsRow[]>(Prisma.sql`
     SELECT section, id, title, slug, thumbnail, author_name, summary, extra, rank FROM (
@@ -261,6 +264,20 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
         LIMIT 1
       ) cr ON TRUE
       LEFT JOIN "Department" d ON d.id = cr."departmentId"
+      LEFT JOIN LATERAL (
+        SELECT string_agg(title, ' ') AS related_titles
+        FROM (
+          SELECT coalesce(ap."titleVi",'') || ' ' || coalesce(ap."titleEn",'') AS title
+          FROM "PostAchievementMember" pam
+          JOIN "Post" ap ON ap.id = pam."postId" AND ap.status = 'PUBLISHED'
+          WHERE pam."memberId" = m.id
+          UNION ALL
+          SELECT coalesce(pr.title,'') || ' ' || coalesce(pr."titleEn",'') AS title
+          FROM "ProjectMember" pm
+          JOIN "Project" pr ON pr.id = pm."projectId" AND pr."isActive" = TRUE
+          WHERE pm."memberId" = m.id
+        ) titles
+      ) rel ON TRUE
       WHERE m."isActive" = TRUE AND m."webRole" IN ('ADMIN', 'COLLABORATOR', 'MEMBER')
         AND ${Prisma.raw(memberVector)} @@ plainto_tsquery('simple', ${query})
     ) sub

@@ -1,8 +1,9 @@
 "use client";
 
 import { Calendar, FileText, FolderKanban, Trophy, User } from "lucide-react";
+import Image from "next/image";
 import type { SearchIndexItem, SearchSection } from "@/types/search";
-import type { SearchSuggestions } from "@/utils/fuse-search";
+import type { SearchSuggestions as SearchSuggestionsData } from "@/utils/fuse-search";
 
 const sectionIcons: Record<SearchSection, typeof User> = {
   member: User,
@@ -13,12 +14,11 @@ const sectionIcons: Record<SearchSection, typeof User> = {
 };
 
 type Props = {
-  sections: SearchSuggestions;
+  sections: SearchSuggestionsData;
   sectionLabels: Record<SearchSection, string>;
-  query: string;
 };
 
-export function SearchSuggestions({ sections, sectionLabels, query }: Props) {
+export function SearchSuggestions({ sections, sectionLabels }: Props) {
   const hasAny = Object.values(sections).some((arr) => arr.length > 0);
   if (!hasAny) {
     return null;
@@ -52,16 +52,16 @@ export function SearchSuggestions({ sections, sectionLabels, query }: Props) {
 
 function SuggestionRow({ item }: { item: SearchIndexItem }) {
   const isMember = item.section === "member";
+  const subtitle = isMember && item.extra ? item.extra : item.authorName;
 
   return (
     <a
       className='flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted'
       href={item.url}
     >
-      <span className='h-7 w-7 shrink-0 overflow-hidden rounded-md bg-muted'>
+      <span className='relative h-7 w-7 shrink-0 overflow-hidden rounded-md bg-muted'>
         {item.thumbnail ? (
-          // biome-ignore lint/a11y/noImgElement: decorative thumbnail in search suggestions
-          <img alt='' className='h-full w-full object-cover' src={item.thumbnail} />
+          <Image alt='' className='object-cover' fill sizes='28px' src={item.thumbnail} />
         ) : (
           <span className='flex h-full w-full items-center justify-center text-muted-foreground text-xs'>
             {isMember ? "?" : "—"}
@@ -70,11 +70,7 @@ function SuggestionRow({ item }: { item: SearchIndexItem }) {
       </span>
       <div className='min-w-0 flex-1'>
         <p className='truncate font-medium'>{item.title}</p>
-        {isMember && item.extra ? (
-          <p className='truncate text-muted-foreground text-xs'>{item.extra}</p>
-        ) : item.authorName ? (
-          <p className='truncate text-muted-foreground text-xs'>{item.authorName}</p>
-        ) : null}
+        {subtitle && <p className='truncate text-muted-foreground text-xs'>{subtitle}</p>}
       </div>
     </a>
   );

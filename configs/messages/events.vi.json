@@ -1,7 +1,10 @@
 {
   "activities": {
     "title": "Các hoạt động",
-    "subtitle": "Các hoạt động của CLB rất đa dạng và được tổ chức thường xuyên, bao gồm các buổi đào tạo, workshop, hợp tác dự án và các sự kiện xã hội. Những hoạt động này nhằm mục đích xây dựng một cộng đồng sôi động, nâng cao kỹ năng của các thành viên và tạo cơ hội kết nối cũng như phát triển bản thân."
+    "subtitle": "Các hoạt động của CLB rất đa dạng và được tổ chức thường xuyên, bao gồm các buổi đào tạo, workshop, hợp tác dự án và các sự kiện xã hội. Những hoạt động này nhằm mục đích xây dựng một cộng đồng sôi động, nâng cao kỹ năng của các thành viên và tạo cơ hội kết nối cũng như phát triển bản thân.",
+    "projectsTitle": "Dự án tiêu biểu",
+    "projectsDesc": "Một số sản phẩm được xây dựng bởi các thành viên CLB trong quá trình học tập và hoạt động.",
+    "viewAllProjects": "Xem tất cả dự án"
   },
   "events": {
     "title": "Sự Kiện",
@@ -182,6 +185,7 @@
     "sponsorHeading": "Đồng hành cùng cuộc thi",
     "sponsorDesc": "Web Design thu hút hơn <b>500+ sinh viên quan tâm</b> mỗi năm. Đây là cơ hội tốt để doanh nghiệp quảng bá và tiếp cận nguồn nhân lực chất lượng.",
     "sponsorBtn": "Xem trang nhà tài trợ",
+    "proposalBtn": "Xem hồ sơ mời tài trợ",
     "faqSectionTitle": "Câu hỏi thường gặp",
     "joinTitle": "Tham gia",
     "joinHeading": "Cách thức đăng ký",

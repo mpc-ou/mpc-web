@@ -1,23 +1,14 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Department } from "@/configs/prisma/generated/prisma/client";
 
-export type DeptRow = {
-  id: string;
-  nameVi: string;
-  nameEn: string;
-  slug: string;
-  descriptionVi: string | null;
-  icon: string | null;
-  order: number;
-  isActive: boolean;
-  _count: { clubRoles: number };
-};
+export type DeptRow = Department & { _count: { clubRoles: number } };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<DeptRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

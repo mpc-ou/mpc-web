@@ -1,7 +1,8 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -23,7 +24,7 @@ export type SponsorRow = {
   isActive: boolean;
 };
 
-const SortHeader = ({ label, column }: { label: string; column: any }) => (
+const SortHeader = ({ label, column }: { label: string; column: Column<SponsorRow, unknown> }) => (
   <Button
     className='h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground'
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -44,8 +45,7 @@ export const createColumns = (
     cell: ({ row }) => (
       <div className='flex items-center gap-3'>
         {row.original.logo && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img alt='' className='h-10 w-10 shrink-0 object-contain' src={row.original.logo} />
+          <Image alt='' className='shrink-0 object-contain' height={40} src={row.original.logo} width={40} />
         )}
         <span className='font-medium text-xs'>{row.original.name}</span>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Github, Globe } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -49,9 +50,11 @@ export function WebDesignExhibitionClient() {
 
               {/* Browser Viewport Area (Image + Controls hover) */}
               <div className='relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-slate-950'>
-                <img
+                <Image
                   alt={team.projectName}
-                  className='absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105'
+                  className='object-cover transition-transform duration-700 group-hover:scale-105'
+                  fill
+                  sizes='(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
                   src={team.thumbnail}
                 />
 
@@ -132,7 +135,7 @@ export function WebDesignExhibitionClient() {
             {Array.from({ length: totalPages }).map((_, idx) => (
               <Button
                 className='h-10 w-10 border-white/10 font-bold'
-                key={idx}
+                key={`page-${idx + 1}`}
                 onClick={() => setCurrentPage(idx + 1)}
                 variant={currentPage === idx + 1 ? "default" : "outline"}
               >

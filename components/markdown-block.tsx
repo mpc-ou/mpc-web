@@ -8,7 +8,6 @@ import { sanitizeHtml } from "@/utils/sanitize-html";
 
 const PROJECT_LINK_REGEX = /(?:^|\/)(?:[a-z]{2}\/)?projects\/([a-zA-Z0-9_-]+)(?:\?|#|$)/;
 
-// Custom offline syntax highlighter
 function highlightCode(code: string, lang = ""): string {
   const cleanLang = (lang || "").toLowerCase();
 
@@ -37,13 +36,11 @@ function highlightCode(code: string, lang = ""): string {
     let html = escapedCode;
     const placeholders: string[] = [];
 
-    // Comments
     html = html.replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, (match) => {
       placeholders.push(`<span class="text-zinc-500 italic">${match}</span>`);
       return `___PLACEHOLDER_${placeholders.length - 1}___`;
     });
 
-    // Strings
     html = html.replace(/(&quot;[\s\S]*?&quot;|&#039;[\s\S]*?&#039;|`[\s\S]*?`)/g, (match) => {
       placeholders.push(`<span class="text-emerald-400">${match}</span>`);
       return `___PLACEHOLDER_${placeholders.length - 1}___`;

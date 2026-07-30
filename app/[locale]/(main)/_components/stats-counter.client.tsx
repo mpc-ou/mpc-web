@@ -9,8 +9,10 @@ type StatItem = {
   value: string;
 };
 
+const STAT_VALUE_RE = /^(\d+)(.*)$/;
+
 function parseStatValue(raw: string): { number: number; suffix: string } {
-  const match = /^(\d+)(.*)$/.exec(raw.trim());
+  const match = STAT_VALUE_RE.exec(raw.trim());
   if (!match) {
     return { number: 0, suffix: raw };
   }

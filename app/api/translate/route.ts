@@ -1,6 +1,6 @@
 import { translate } from "bing-translate-api";
 import { NextResponse } from "next/server";
-import { translateTextWithDeepseek } from "@/utils/deepseek";
+import { translateTextWithDeepseek } from "@/services/deepseek";
 
 export async function POST(request: Request) {
   try {

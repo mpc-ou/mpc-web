@@ -12,6 +12,7 @@ import {
   Users
 } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
@@ -56,7 +57,14 @@ type PostPayload = {
     content: string | null;
     thumbnail: string | null;
     images: string[];
-    gallery?: any[];
+    gallery?: Array<{
+      id: string;
+      url: string;
+      title: string | null;
+      caption: string | null;
+      type: string;
+      order: number;
+    }>;
     publishedAt: string;
     startAt: string | null;
     endAt: string | null;
@@ -118,24 +126,20 @@ function fmtDateShort(iso: string | null, locale = "vi") {
 export default async function BlogDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
-  // Try public published post first, then check if current user is author
   let [{ data }, t] = await Promise.all([getBlogBySlug(slug, locale), getTranslations({ locale, namespace: "blogs" })]);
   let payload = data?.payload as PostPayload | undefined;
   let blog = payload?.blog;
 
   if (!blog) {
-    // Fallback: check if user is author of a non-published post
     const userResult = await getBlogBySlugForUser(slug, locale);
     const userPayload = userResult.data?.payload as PostPayload | undefined;
     blog = userPayload?.blog ?? undefined;
     if (!blog) {
       notFound();
     }
-    // Re-fetch translations if needed
     t = await getTranslations({ locale, namespace: "blogs" });
   }
 
-  // Redirect to the canonical route based on post type
   if (blog.type === "EVENT") {
     const { redirect } = await import("next/navigation");
     redirect(`/${locale}/events/${slug}`);
@@ -167,11 +171,9 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
   const isEvent = blog.type === "EVENT";
   const isAchievement = blog.type === "ACHIEVEMENT";
 
-  // Combine gallery images: thumbnail, content images, and additional images
   const thumbnail = blog.thumbnail ? [blog.thumbnail] : [];
   const contentImages: string[] = [];
   const imgRegex = /!\[.*?\]\((.*?)\)/g;
-  // Reset regex lastIndex just to be safe
   imgRegex.lastIndex = 0;
   let match = imgRegex.exec(blog.content || "");
   while (match !== null) {
@@ -180,16 +182,18 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
     }
     match = imgRegex.exec(blog.content || "");
   }
-  const additionalImages =
-    blog.gallery && blog.gallery.length > 0
-      ? blog.gallery.filter((g: any) => g.type === "ADDITIONAL").map((g: any) => g.url)
-      : Array.isArray(blog.images)
-        ? blog.images
-        : [];
+  const storedGallery = blog.gallery ?? [];
+  const hasStoredGallery = storedGallery.length > 0;
+  let additionalImages: string[] = [];
+  if (hasStoredGallery) {
+    additionalImages = storedGallery.filter((g) => g.type === "ADDITIONAL").map((g) => g.url);
+  } else if (Array.isArray(blog.images)) {
+    additionalImages = blog.images;
+  }
 
   const galleryImages = Array.from(new Set([...thumbnail, ...contentImages, ...additionalImages])).filter(Boolean);
 
-  const galleryData = blog.gallery && blog.gallery.length > 0 ? blog.gallery : galleryImages;
+  const galleryData = hasStoredGallery ? storedGallery : galleryImages;
   const hasGallery = galleryData.length > 0;
 
   let canEdit = false;
@@ -211,23 +215,26 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
     // Not logged in
   }
 
-  const backHref = isEvent ? "/events" : isAchievement ? "/achievements" : "/blogs";
-  const backLabel = isEvent ? t("backToEvents") : isAchievement ? t("backToAchievements") : t("backToBlogs");
+  let backHref = "/blogs";
+  let backLabel = t("backToBlogs");
+  if (isEvent) {
+    backHref = "/events";
+    backLabel = t("backToEvents");
+  } else if (isAchievement) {
+    backHref = "/achievements";
+    backLabel = t("backToAchievements");
+  }
 
-  // Determine localized labels for type and status mapping
   const eventTypeKey = blog.eventType?.toLowerCase();
   const achievementTypeKey = blog.achievementType?.toLowerCase();
   const eventStatusKey = blog.eventStatus?.toLowerCase();
 
-  const typeBadge = isEvent
-    ? eventTypeKey
-      ? t(`eventType.${eventTypeKey}`)
-      : t("badgeEvent")
-    : isAchievement
-      ? achievementTypeKey
-        ? t(`achievementType.${achievementTypeKey}`)
-        : t("badgeAchievement")
-      : t("badgeBlog");
+  let typeBadge = t("badgeBlog");
+  if (isEvent) {
+    typeBadge = eventTypeKey ? t(`eventType.${eventTypeKey}`) : t("badgeEvent");
+  } else if (isAchievement) {
+    typeBadge = achievementTypeKey ? t(`achievementType.${achievementTypeKey}`) : t("badgeAchievement");
+  }
 
   const EVENT_STATUS_MAP: Record<string, { label: string; color: string }> = {
     UPCOMING: {
@@ -252,9 +259,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
     <div className='min-h-screen bg-background'>
       {blog.thumbnail ? (
         <div className='relative h-[40vh] min-h-72 w-full overflow-hidden'>
-          {/* biome-ignore lint/performance/noImgElement: allow external images */}
-          {/* biome-ignore lint/correctness/useImageSize: allow responsive size */}
-          <img alt={blog.title} className='h-full w-full object-cover' src={blog.thumbnail} />
+          <Image alt={blog.title} className='object-cover' fill priority sizes='100vw' src={blog.thumbnail} />
           <div className='absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent' />
         </div>
       ) : (
@@ -310,11 +315,12 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <div className='flex items-center gap-3'>
               {blog.creator?.avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   alt={getFullName(blog.creator.firstName, blog.creator.middleName, blog.creator.lastName, locale)}
-                  className='h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border'
+                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
+                  height={40}
                   src={blog.creator.avatar}
+                  width={40}
                 />
               ) : (
                 <UserCircle className='h-10 w-10 text-muted-foreground' />
@@ -451,11 +457,12 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
                             key={am.member.id}
                           >
                             {am.member.avatar ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
+                              <Image
                                 alt={getFullName(am.member.firstName, am.member.middleName, am.member.lastName, locale)}
-                                className='h-5 w-5 rounded-full object-cover'
+                                className='rounded-full object-cover'
+                                height={20}
                                 src={am.member.avatar}
+                                width={20}
                               />
                             ) : (
                               <UserCircle className='h-5 w-5 text-muted-foreground' />
@@ -491,55 +498,54 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
           <div className='mt-20 border-t pt-10'>
             <h2 className='mb-8 font-black text-2xl text-foreground'>{t("relatedBlogsTitle")}</h2>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {relatedPosts.map((post) => (
-                <Link
-                  className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
-                  href={
-                    post.type === "EVENT"
-                      ? `/events/${post.slug}`
-                      : post.type === "ACHIEVEMENT"
-                        ? `/achievements/${post.slug}`
-                        : `/blogs/${post.slug}`
-                  }
-                  key={post.id}
-                >
-                  {post.thumbnail ? (
-                    <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-                      {/* biome-ignore lint/performance/noImgElement: allow external images */}
-                      {/* biome-ignore lint/correctness/useImageSize: allow responsive size */}
-                      <img
-                        alt={post.title}
-                        className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
-                        src={post.thumbnail}
-                      />
-                    </div>
-                  ) : (
-                    <div className='relative flex aspect-video w-full items-center justify-center bg-muted/40 text-muted-foreground'>
-                      <span>{t("noThumbnail")}</span>
-                    </div>
-                  )}
-                  <div className='flex flex-1 flex-col p-5'>
-                    <div className='mb-2 flex items-center justify-between text-muted-foreground text-xs'>
-                      <span className='rounded bg-muted px-2 py-0.5 font-medium'>
-                        {post.type === "EVENT"
-                          ? t("badgeEvent")
-                          : post.type === "ACHIEVEMENT"
-                            ? t("badgeAchievement")
-                            : t("badgeBlog")}
-                      </span>
-                      <span>{fmtDateShort(post.publishedAt, locale)}</span>
-                    </div>
-                    <h3 className='line-clamp-2 font-bold text-foreground leading-snug transition-colors group-hover:text-primary'>
-                      {post.title}
-                    </h3>
-                    {post.description && (
-                      <p className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
-                        {post.description}
-                      </p>
+              {relatedPosts.map((post) => {
+                let relatedHref = `/blogs/${post.slug}`;
+                let relatedBadge = t("badgeBlog");
+                if (post.type === "EVENT") {
+                  relatedHref = `/events/${post.slug}`;
+                  relatedBadge = t("badgeEvent");
+                } else if (post.type === "ACHIEVEMENT") {
+                  relatedHref = `/achievements/${post.slug}`;
+                  relatedBadge = t("badgeAchievement");
+                }
+                return (
+                  <Link
+                    className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
+                    href={relatedHref}
+                    key={post.id}
+                  >
+                    {post.thumbnail ? (
+                      <div className='relative aspect-video w-full overflow-hidden bg-muted'>
+                        <Image
+                          alt={post.title}
+                          className='object-cover transition-transform duration-500 group-hover:scale-105'
+                          fill
+                          sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
+                          src={post.thumbnail}
+                        />
+                      </div>
+                    ) : (
+                      <div className='relative flex aspect-video w-full items-center justify-center bg-muted/40 text-muted-foreground'>
+                        <span>{t("noThumbnail")}</span>
+                      </div>
                     )}
-                  </div>
-                </Link>
-              ))}
+                    <div className='flex flex-1 flex-col p-5'>
+                      <div className='mb-2 flex items-center justify-between text-muted-foreground text-xs'>
+                        <span className='rounded bg-muted px-2 py-0.5 font-medium'>{relatedBadge}</span>
+                        <span>{fmtDateShort(post.publishedAt, locale)}</span>
+                      </div>
+                      <h3 className='line-clamp-2 font-bold text-foreground leading-snug transition-colors group-hover:text-primary'>
+                        {post.title}
+                      </h3>
+                      {post.description && (
+                        <p className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
+                          {post.description}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

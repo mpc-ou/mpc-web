@@ -1,6 +1,7 @@
 "use client";
 
 import { ImagePlus, Loader2, X } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { adminCreateSponsor, adminUpdateSponsor } from "@/app/_actions/admin";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
 import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { SponsorRow } from "./columns";
 
 type Props = {
@@ -93,6 +94,13 @@ export function SponsorFormDialog({ open, onOpenChange, sponsor }: Props) {
     onOpenChange(false);
   };
 
+  let submitLabel = "Thêm";
+  if (loading) {
+    submitLabel = "Đang lưu...";
+  } else if (isEdit) {
+    submitLabel = "Lưu thay đổi";
+  }
+
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className='sm:max-w-125'>
@@ -123,9 +131,8 @@ export function SponsorFormDialog({ open, onOpenChange, sponsor }: Props) {
             <div className='grid gap-2'>
               <Label>Logo</Label>
               {logoUrl ? (
-                <div className='relative flex h-[120px] w-full items-center justify-center overflow-hidden rounded-lg border bg-muted p-2'>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt='Logo' className='h-full w-full object-contain' src={logoUrl} />
+                <div className='relative h-30 w-full overflow-hidden rounded-lg border bg-muted p-2'>
+                  <Image alt='Logo' className='object-contain p-2' fill sizes='400px' src={logoUrl} />
                   <button
                     className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                     onClick={() => setLogoUrl(null)}
@@ -184,7 +191,7 @@ export function SponsorFormDialog({ open, onOpenChange, sponsor }: Props) {
         </form>
         <DialogFooter>
           <Button disabled={loading} form='sponsor-form' type='submit'>
-            {loading ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Thêm"}
+            {submitLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

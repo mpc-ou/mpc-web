@@ -46,7 +46,7 @@ import { UPLOAD_MAX_BATCH_SIZE, UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { cn } from "@/lib/utils";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 
 const GALLERY_TYPES = [
   { value: "common", label: "Trang chủ" },
@@ -96,6 +96,8 @@ function SortableImage({
       style={style}
     >
       {/* Checkbox Selection */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: stops the drag handle from starting when clicking the checkbox, not itself an interactive control */}
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
       <div
         className='absolute top-3 left-3 z-10 rounded bg-background/90 p-1 transition-colors hover:bg-background'
         onMouseDown={(e) => e.stopPropagation()}
@@ -104,9 +106,21 @@ function SortableImage({
         <Checkbox checked={isSelected} onCheckedChange={(checked) => onSelectChange(img.id, !!checked)} />
       </div>
 
-      <div className='aspect-video bg-muted' {...attributes} {...listeners}>
-        <img alt={img.caption ?? "Gallery"} className='pointer-events-none h-full w-full object-cover' src={img.url} />
-      </div>
+      <button
+        aria-label='Kéo để sắp xếp lại'
+        className='relative aspect-video w-full bg-muted'
+        type='button'
+        {...attributes}
+        {...listeners}
+      >
+        <Image
+          alt={img.caption ?? "Gallery"}
+          className='pointer-events-none object-cover'
+          fill
+          sizes='(min-width: 768px) 25vw, 50vw'
+          src={img.url}
+        />
+      </button>
 
       <div className='flex items-center justify-between gap-2 p-3'>
         <span className='truncate font-medium text-muted-foreground text-xs' title={img.caption ?? ""}>
@@ -301,8 +315,9 @@ export function GalleryManager({ images: initialImages }: { images: GalleryImage
     setSeeding(true);
     await handleErrorClient({
       cb: () => adminSeedDefaultGalleryImages(),
-      onSuccess: (res: any) => {
-        const count = res?.seededCount ?? 0;
+      onSuccess: ({ data }) => {
+        const payload = data?.payload as { seededCount?: number } | undefined;
+        const count = payload?.seededCount ?? 0;
         alert(`Đã nạp thành công ${count} ảnh mặc định vào database!`);
         startTransition(() => {
           router.refresh();
@@ -577,9 +592,11 @@ export function GalleryManager({ images: initialImages }: { images: GalleryImage
             {/* Select upload type only if no specific category is selected */}
             {!selectedType && (
               <div className='flex flex-col gap-2'>
-                <label className='font-semibold text-foreground text-xs'>Phân loại ảnh</label>
+                <label className='font-semibold text-foreground text-xs' htmlFor='gallery-upload-type'>
+                  Phân loại ảnh
+                </label>
                 <Select onValueChange={setUploadType} value={uploadType}>
-                  <SelectTrigger className='h-9 w-full text-xs'>
+                  <SelectTrigger className='h-9 w-full text-xs' id='gallery-upload-type'>
                     <SelectValue placeholder='Chọn phân loại' />
                   </SelectTrigger>
                   <SelectContent>
@@ -593,8 +610,8 @@ export function GalleryManager({ images: initialImages }: { images: GalleryImage
               </div>
             )}
 
-            <div
-              className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors ${
+            <button
+              className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors ${
                 isDragOver ? "border-primary bg-primary/10" : "border-border hover:border-primary/50 hover:bg-muted/30"
               }`}
               onClick={() => fileRef.current?.click()}
@@ -613,13 +630,12 @@ export function GalleryManager({ images: initialImages }: { images: GalleryImage
                   processFiles(e.dataTransfer.files);
                 }
               }}
-              role='button'
-              tabIndex={0}
+              type='button'
             >
               {previews.length > 0 ? (
                 <div className='grid w-full grid-cols-4 gap-2 sm:grid-cols-5'>
-                  {previews.map((p, idx) => (
-                    <div className='relative aspect-square' key={idx}>
+                  {previews.map((p) => (
+                    <div className='relative aspect-square' key={p.url}>
                       <Image alt='Preview' className='rounded-lg object-cover' fill sizes='100px' src={p.url} />
                     </div>
                   ))}
@@ -633,7 +649,7 @@ export function GalleryManager({ images: initialImages }: { images: GalleryImage
                   <p className='text-muted-foreground/60 text-xs'>Hỗ trợ chọn nhiều ảnh</p>
                 </>
               )}
-            </div>
+            </button>
             <input
               accept='image/*'
               className='hidden'

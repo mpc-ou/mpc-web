@@ -1,5 +1,6 @@
 import { CalendarDays, ChevronLeft, Github, Globe2, Play, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getGoldBoardMembers, getOtherProjects, getProjectDetail } from "@/app/_actions/main";
@@ -12,9 +13,44 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
+import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { getFullName, pickLang } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
+import type { ProjectSummaryWithI18n } from "../client";
+
+// Mirrors the `include` used in getProjectDetail (app/_actions/main/projects.ts)
+type ProjectDetail = Prisma.ProjectGetPayload<{
+  include: {
+    members: {
+      include: {
+        member: {
+          select: {
+            id: true;
+            firstName: true;
+            lastName: true;
+            middleName: true;
+            avatar: true;
+            slug: true;
+          };
+        };
+      };
+    };
+  };
+}> & { images?: string[] };
+
+// Mirrors the `select` used in getOtherProjects
+type OtherProject = ProjectSummaryWithI18n;
+
+// Mirrors the `select` used in getGoldBoardMembers
+type GoldBoardMember = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  middleName: string | null;
+  avatar: string | null;
+  slug: string;
+};
 
 export async function generateMetadata({
   params
@@ -23,8 +59,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, locale } = await params;
   const { data } = await getProjectDetail(slug);
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const project = (data?.payload as any)?.project;
+  const project = (data?.payload as { project: ProjectDetail | null } | undefined)?.project;
 
   if (!project) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
@@ -55,17 +90,14 @@ export default async function ProjectDetailPage({
     getGoldBoardMembers(),
     getTranslations({ locale, namespace: "projects" })
   ]);
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const project = (data?.payload as any)?.project;
+  const project = (data?.payload as { project: ProjectDetail | null } | undefined)?.project;
 
   if (!project?.isActive) {
     notFound();
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const otherProjects = (otherData?.payload as any)?.projects ?? [];
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const goldMembers = (goldData?.payload as any)?.members ?? [];
+  const otherProjects = (otherData?.payload as { projects: OtherProject[] } | undefined)?.projects ?? [];
+  const goldMembers = (goldData?.payload as { members: GoldBoardMember[] } | undefined)?.members ?? [];
 
   const techs = Array.isArray(project.technologies) ? (project.technologies as string[]) : [];
 
@@ -89,7 +121,7 @@ export default async function ProjectDetailPage({
   const startDateLabel = project.startDate ? formatLocalDate(project.startDate, locale, "MMMM yyyy") : null;
   const endDateLabel = project.endDate ? formatLocalDate(project.endDate, locale, "MMMM yyyy") : t("present");
 
-  const otherProjectCards: PostCardData[] = otherProjects.map((p: any) => ({
+  const otherProjectCards: PostCardData[] = otherProjects.map((p) => ({
     id: p.id,
     slug: p.slug,
     variant: "project" as const,
@@ -102,7 +134,7 @@ export default async function ProjectDetailPage({
     startDate: p.startDate ?? null,
     endDate: p.endDate ?? null,
     contributors:
-      p.members?.map((m: any) => ({
+      p.members?.map((m) => ({
         id: m.member.id,
         firstName: m.member.firstName,
         lastName: m.member.lastName,
@@ -116,10 +148,7 @@ export default async function ProjectDetailPage({
       {/* ── HERO IMAGE ─────────────────────────────────────────────── */}
       {project.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {/* biome-ignore lint/performance/noImgElement: allow external images */}
-          {/* biome-ignore lint/correctness/useImageSize: allow responsive layout */}
-          <img alt={project.title} className='h-full w-full object-cover' src={project.thumbnail} />
+          <Image alt={project.title} className='object-cover' fill priority sizes='100vw' src={project.thumbnail} />
           <div className='absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent' />
         </div>
       ) : (
@@ -227,16 +256,15 @@ export default async function ProjectDetailPage({
                     <Users className='h-5 w-5 text-primary' /> {t("teamTitle")}
                   </h2>
                   <div className='flex flex-col gap-3'>
-                    {/* biome-ignore lint/suspicious/noExplicitAny: API shape */}
-                    {project.members.map((m: any) => (
+                    {project.members.map((m) => (
                       <div className='flex items-center gap-3' key={m.member.id}>
                         {m.member.avatar ? (
-                          // biome-ignore lint/performance/noImgElement lint/correctness/useImageSize: external avatar
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
+                          <Image
                             alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                            className='h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-border'
+                            className='shrink-0 rounded-full object-cover ring-2 ring-border'
+                            height={40}
                             src={m.member.avatar}
+                            width={40}
                           />
                         ) : (
                           <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>

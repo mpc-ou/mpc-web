@@ -37,7 +37,7 @@ import {
 import { STORAGE_BUCKET } from "@/constants/storage";
 import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import { MarkdownBlock } from "./markdown-block";
 
 const FILE_EXT_REGEX = /\.[^.]+$/;
@@ -344,10 +344,10 @@ export const MarkdownEditor = ({
 
             {/* Formats Group */}
             <div className='flex flex-wrap items-center gap-0.5'>
-              {toolbarItems.map((item, idx) => (
+              {toolbarItems.map((item) => (
                 <button
                   className='cursor-pointer rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-                  key={idx}
+                  key={item.title}
                   onClick={() => insertMarkdown(item.prefix, item.suffix)}
                   title={item.title}
                   type='button'

@@ -24,12 +24,14 @@ type Achievement = {
   summary: string | null;
   content: string | null;
   thumbnail: string | null;
-  date: Date;
+  date: string | null;
   type: string;
   isHighlight: boolean;
   relatedUrl: string | null;
   members: AchievementMember[];
 };
+
+export type { Achievement };
 
 export function AchievementsClient({
   achievements,

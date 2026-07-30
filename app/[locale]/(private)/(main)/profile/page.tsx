@@ -60,7 +60,7 @@ export default async function Page({ params }: PageProps): Promise<React.ReactNo
     dob: user?.member?.dob ? new Date(user.member.dob).toISOString().split("T")[0] : null,
     slug: user?.member?.slug || "",
     avatar: user?.member?.avatar || user?.user_metadata?.avatar_url || null,
-    coverImage: (user?.member as any)?.coverImage || null,
+    coverImage: user?.member?.coverImage || null,
     socials: socialsArray,
     spotifyUri: user?.member?.spotifyUri || "",
     showDob: user?.member?.showDob ?? true,

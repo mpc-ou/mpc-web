@@ -8,12 +8,24 @@ import type { PostCardData } from "@/components/post-card";
 import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui/button";
 
+export type EventListItem = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  startAt: string | undefined;
+  status: string | null;
+  type: string | null;
+  eventType: string | null;
+};
+
 export function DynamicEventsClient({
   events,
   currentPage,
   totalPages
 }: {
-  events: any[];
+  events: EventListItem[];
   currentPage: number;
   totalPages: number;
 }) {
@@ -38,11 +50,13 @@ export function DynamicEventsClient({
   };
 
   const cards: PostCardData[] = events.map((event) => {
-    const statusInfo = statusMap[event.status] || { labelKey: "", variant: "outline" as const };
-    const statusLabel = statusInfo.labelKey ? t(statusInfo.labelKey as any) : event.status;
+    const statusInfo = statusMap[event.status ?? ""] || { labelKey: "", variant: "outline" as const };
+    const statusLabel = statusInfo.labelKey ? t(statusInfo.labelKey as Parameters<typeof t>[0]) : (event.status ?? "");
     const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
     const eventTypeLabel =
-      displayType && displayType !== "OTHER" ? t(`types.${displayType}` as any) || displayType : null;
+      displayType && displayType !== "OTHER"
+        ? t(`types.${displayType}` as Parameters<typeof t>[0]) || displayType
+        : null;
 
     return {
       id: event.id,

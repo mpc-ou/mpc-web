@@ -5,6 +5,8 @@ import { _CACHE_POSTS } from "@/constants/cache";
 import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
 
 const _CACHE_ACTIVITIES = "activities";
+const LEADING_SLASH_RE = /^\//;
+const IMAGE_EXT_RE = /\.(jpg|jpeg|png|webp|gif)$/i;
 
 export const adminGetActivities = async () =>
   handleErrorServerWithAuth({
@@ -90,6 +92,7 @@ export const adminDeleteActivity = async (id: string) =>
 
 export const adminSeedActivities = async () =>
   handleErrorServerWithAuth({
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: one-time admin seed script migrating configs/data/activities.json into the DB; not worth splitting up for a single call site
     cb: async ({ user }) => {
       await requireAdmin(user);
       const data = (await import("@/configs/data/activities.json")).default as {
@@ -99,6 +102,7 @@ export const adminSeedActivities = async () =>
           en: { title: string; description: string; frequency: string };
           imageFolder?: string;
           href?: string;
+          images?: string[];
         }>;
         externalEvents: Array<{
           id: string;
@@ -106,6 +110,7 @@ export const adminSeedActivities = async () =>
           en: { title: string; description: string; frequency: string };
           imageFolder?: string;
           href?: string;
+          images?: string[];
         }>;
       };
 
@@ -132,18 +137,16 @@ export const adminSeedActivities = async () =>
         const item = all[i];
         let images: string[] = [];
 
-        // Prefer pre-computed images array (works on all platforms)
-        if ((item as any).images && (item as any).images.length > 0) {
-          images = (item as any).images;
+        if (item.images && item.images.length > 0) {
+          images = item.images;
         } else if (item.imageFolder && publicDir) {
-          // Fallback: scan filesystem (local dev only)
-          const relFolder = item.imageFolder.replace(/^\//, "");
+          const relFolder = item.imageFolder.replace(LEADING_SLASH_RE, "");
           const folderPath = pathModule.join(publicDir, relFolder);
           try {
             if (fsModule.existsSync(folderPath)) {
               images = fsModule
                 .readdirSync(folderPath)
-                .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+                .filter((f) => IMAGE_EXT_RE.test(f))
                 .sort((a, b) => b.localeCompare(a))
                 .map((f) => `${item.imageFolder}/${f}`);
             }

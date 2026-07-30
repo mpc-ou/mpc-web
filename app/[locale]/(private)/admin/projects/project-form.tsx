@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -24,7 +25,7 @@ import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
 import { UPLOAD_MAX_BANNER_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
 import { pickLang } from "@/lib/utils";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 import type { ProjectRow } from "./columns";
 
 type Props = {
@@ -38,7 +39,9 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const bi = useBilingualForm(project as any);
+  const bi = useBilingualForm(
+    project ? { title: project.title, titleEn: project.titleEn, summary: project.description ?? undefined } : null
+  );
 
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
 
@@ -271,8 +274,8 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
               <div className='grid gap-1.5'>
                 <Label>Ảnh thumbnail</Label>
                 {thumbnailUrl ? (
-                  <div className='relative flex aspect-video max-h-[200px] items-center justify-center overflow-hidden rounded-lg border bg-muted'>
-                    <img alt='Thumbnail' className='h-full w-full object-cover' src={thumbnailUrl} />
+                  <div className='relative aspect-video max-h-50 overflow-hidden rounded-lg border bg-muted'>
+                    <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={thumbnailUrl} />
                     <button
                       className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
                       onClick={() => setThumbnailUrl(null)}
@@ -511,7 +514,13 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
 
           {thumbnailUrl && (
             <div className='relative aspect-video w-full overflow-hidden rounded-lg border bg-muted'>
-              <img alt={getTitle() || "Project Thumbnail"} className='h-full w-full object-cover' src={thumbnailUrl} />
+              <Image
+                alt={getTitle() || "Project Thumbnail"}
+                className='object-cover'
+                fill
+                sizes='500px'
+                src={thumbnailUrl}
+              />
             </div>
           )}
 

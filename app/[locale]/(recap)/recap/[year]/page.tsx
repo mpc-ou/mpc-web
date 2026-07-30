@@ -9,6 +9,21 @@ type Props = {
   params: Promise<{ year: string; locale: string }>;
 };
 
+type YearRecapPayload = {
+  year: number;
+  name: string;
+  description: string | null;
+  coverImage: string | null;
+  coverImage2: string | null;
+  coverImage3: string | null;
+  endImage: string | null;
+  musicUrl: string | null;
+  data: unknown;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
   await connection();
   const yearStr = await yearPromise;
@@ -18,7 +33,7 @@ async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
   }
 
   const { data } = await getRecapByYear(year);
-  const recap = (data?.payload as any)?.recap;
+  const recap = (data?.payload as { recap?: YearRecapPayload | null } | undefined)?.recap;
   if (!recap) {
     notFound();
   }

@@ -1,9 +1,9 @@
-import type { ResponseType } from "@/types/response";
+import type { ResponseType, SuccessResponseType } from "@/types/response";
 import { ErrorResponse, SuccessResponse } from "./response";
-import { getSession } from "./session";
+import { getSession, type UserSession } from "./session";
 
-type HandleErrorServerType = {
-  cb: ({ user }: { user?: any }) => Promise<any>;
+type HandleErrorServerType<T> = {
+  cb: ({ user }: { user?: UserSession }) => Promise<T>;
 };
 
 function isInternalCancelError(error: unknown): boolean {
@@ -13,14 +13,19 @@ function isInternalCancelError(error: unknown): boolean {
   return false;
 }
 
-const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<ResponseType> => {
+const handleErrorServerNoAuth = async <T>({ cb }: HandleErrorServerType<T>): Promise<ResponseType> => {
   try {
     const res = await cb({});
-    return SuccessResponse({ payload: res });
+    return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
     if (isInternalCancelError(error)) {
       throw error;
     }
+    // Errors here get converted into a plain ErrorResponse, which callers
+    // (e.g. a page component) commonly treat as "not found" and swallow into
+    // a 404 — so without logging, real failures (DB timeouts, bad queries)
+    // are invisible and look identical to a genuinely missing record.
+    console.error("[handleErrorServerNoAuth]", error);
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }
@@ -28,7 +33,7 @@ const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<R
   }
 };
 
-const handleErrorServerWithAuth = async ({ cb }: HandleErrorServerType): Promise<ResponseType> => {
+const handleErrorServerWithAuth = async <T>({ cb }: HandleErrorServerType<T>): Promise<ResponseType> => {
   try {
     const session = await getSession();
 
@@ -37,11 +42,12 @@ const handleErrorServerWithAuth = async ({ cb }: HandleErrorServerType): Promise
     }
 
     const res = await cb({ user: session });
-    return SuccessResponse({ payload: res });
+    return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
     if (isInternalCancelError(error)) {
       throw error;
     }
+    console.error("[handleErrorServerWithAuth]", error);
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }

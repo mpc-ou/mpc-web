@@ -23,6 +23,11 @@ type Props = {
   section?: SectionRow | null;
 };
 
+const VALUE_PLACEHOLDER: Record<string, string> = {
+  json: '{"key": "value"}',
+  image: "https://..."
+};
+
 export function SectionFormDialog({ open, onOpenChange, section }: Props) {
   const isEdit = !!section;
   const { toast } = useToast();
@@ -91,7 +96,7 @@ export function SectionFormDialog({ open, onOpenChange, section }: Props) {
               defaultValue={section?.value}
               id='value'
               name='value'
-              placeholder={type === "json" ? '{"key": "value"}' : type === "image" ? "https://..." : "Nội dung..."}
+              placeholder={VALUE_PLACEHOLDER[type] ?? "Nội dung..."}
               required
             />
           </div>

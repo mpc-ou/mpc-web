@@ -21,6 +21,7 @@ import {
   Trash2,
   Trophy
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useState, useTransition } from "react";
@@ -45,6 +46,18 @@ import { useHandleError } from "@/hooks/use-handle-error";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { createColumns, type PostRow } from "./columns";
+
+const POST_TYPE_META: Record<string, { className: string; label: string }> = {
+  BLOG: { className: "border-purple-500/20 bg-purple-500/10 text-purple-600", label: "Bài viết" },
+  EVENT: { className: "border-green-500/20 bg-green-500/10 text-green-600", label: "Sự kiện" }
+};
+const POST_TYPE_FALLBACK = { className: "border-amber-500/20 bg-amber-500/10 text-amber-600", label: "Thành tựu" };
+
+const POST_TYPE_CARD_META: Record<string, { className: string; label: string }> = {
+  BLOG: { className: "border-purple-500/30 bg-purple-500/20 text-purple-400", label: "Bài viết" },
+  EVENT: { className: "border-green-500/30 bg-green-500/20 text-green-400", label: "Sự kiện" }
+};
+const POST_TYPE_CARD_FALLBACK = { className: "border-amber-500/30 bg-amber-500/20 text-amber-400", label: "Thành tựu" };
 
 export function PostsDataTable({
   locale,
@@ -212,20 +225,14 @@ export function PostsDataTable({
       { label: "Đường dẫn (Slug)", value: viewPost.slug, colSpan: 2 as const },
       {
         label: "Loại nội dung",
-        value: (
-          <Badge
-            className={
-              viewPost.type === "BLOG"
-                ? "border-purple-500/20 bg-purple-500/10 text-purple-600"
-                : viewPost.type === "EVENT"
-                  ? "border-green-500/20 bg-green-500/10 text-green-600"
-                  : "border-amber-500/20 bg-amber-500/10 text-amber-600"
-            }
-            variant='outline'
-          >
-            {viewPost.type === "BLOG" ? "Bài viết" : viewPost.type === "EVENT" ? "Sự kiện" : "Thành tựu"}
-          </Badge>
-        )
+        value: (() => {
+          const meta = POST_TYPE_META[viewPost.type] ?? POST_TYPE_FALLBACK;
+          return (
+            <Badge className={meta.className} variant='outline'>
+              {meta.label}
+            </Badge>
+          );
+        })()
       },
       {
         label: "Trạng thái",
@@ -269,7 +276,7 @@ export function PostsDataTable({
           label: "Ảnh bìa (Thumbnail)",
           value: viewPost.thumbnail ? (
             <div className='relative aspect-video max-h-40 overflow-hidden rounded-md border bg-muted'>
-              <img alt='Thumbnail' className='h-full w-full object-cover' src={viewPost.thumbnail} />
+              <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={viewPost.thumbnail} />
             </div>
           ) : (
             "—"
@@ -282,8 +289,8 @@ export function PostsDataTable({
             viewPost.images && viewPost.images.length > 0 ? (
               <div className='flex flex-wrap gap-2'>
                 {viewPost.images.map((img, idx) => (
-                  <div className='relative h-16 w-24 overflow-hidden rounded-md border bg-muted' key={idx}>
-                    <img alt={`Event image ${idx}`} className='h-full w-full object-cover' src={img} />
+                  <div className='relative h-16 w-24 overflow-hidden rounded-md border bg-muted' key={img}>
+                    <Image alt={`Event image ${idx}`} className='object-cover' fill sizes='96px' src={img} />
                   </div>
                 ))}
               </div>
@@ -302,7 +309,7 @@ export function PostsDataTable({
           label: "Ảnh đại diện (Thumbnail)",
           value: viewPost.thumbnail ? (
             <div className='relative aspect-video max-h-40 overflow-hidden rounded-md border bg-muted'>
-              <img alt='Thumbnail' className='h-full w-full object-cover' src={viewPost.thumbnail} />
+              <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={viewPost.thumbnail} />
             </div>
           ) : (
             "—"
@@ -315,8 +322,8 @@ export function PostsDataTable({
             viewPost.images && viewPost.images.length > 0 ? (
               <div className='flex flex-wrap gap-2'>
                 {viewPost.images.map((img, idx) => (
-                  <div className='relative h-16 w-24 overflow-hidden rounded-md border bg-muted' key={idx}>
-                    <img alt={`Achievement image ${idx}`} className='h-full w-full object-cover' src={img} />
+                  <div className='relative h-16 w-24 overflow-hidden rounded-md border bg-muted' key={img}>
+                    <Image alt={`Achievement image ${idx}`} className='object-cover' fill sizes='96px' src={img} />
                   </div>
                 ))}
               </div>
@@ -601,9 +608,11 @@ export function PostsDataTable({
                     <div className='space-y-3'>
                       <div className='relative aspect-video w-full overflow-hidden rounded-lg border border-white/5 bg-muted'>
                         {post.thumbnail ? (
-                          <img
+                          <Image
                             alt={post.title}
-                            className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
+                            className='object-cover transition-transform duration-300 group-hover:scale-105'
+                            fill
+                            sizes='(min-width: 1024px) 25vw, 50vw'
                             src={post.thumbnail}
                           />
                         ) : (
@@ -613,16 +622,10 @@ export function PostsDataTable({
                         )}
                         <div className='absolute top-2 left-2 flex flex-col gap-1'>
                           <Badge
-                            className={
-                              post.type === "BLOG"
-                                ? "border-purple-500/30 bg-purple-500/20 text-purple-400"
-                                : post.type === "EVENT"
-                                  ? "border-green-500/30 bg-green-500/20 text-green-400"
-                                  : "border-amber-500/30 bg-amber-500/20 text-amber-400"
-                            }
+                            className={(POST_TYPE_CARD_META[post.type] ?? POST_TYPE_CARD_FALLBACK).className}
                             variant='outline'
                           >
-                            {post.type === "BLOG" ? "Bài viết" : post.type === "EVENT" ? "Sự kiện" : "Thành tựu"}
+                            {(POST_TYPE_CARD_META[post.type] ?? POST_TYPE_CARD_FALLBACK).label}
                           </Badge>
                         </div>
                         <div className='absolute top-2 right-2'>
@@ -661,7 +664,7 @@ export function PostsDataTable({
                         </Button>
                         <Button
                           className='h-7 w-7 cursor-pointer text-destructive hover:text-destructive/80'
-                          onClick={() => handleDelete(post.id, post.type as any)}
+                          onClick={() => handleDelete(post.id, post.type)}
                           size='icon'
                           variant='ghost'
                         >
@@ -760,7 +763,7 @@ export function PostsDataTable({
         onDelete={() => {
           if (viewPost) {
             setViewPost(null);
-            handleDelete(viewPost.id, viewPost.type as any);
+            handleDelete(viewPost.id, viewPost.type);
           }
         }}
         onEdit={() => {

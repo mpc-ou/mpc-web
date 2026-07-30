@@ -124,7 +124,7 @@ export function FaqDialogModal({ isOpen, onOpenChange, faq, target, onSuccess }:
     }
     setTranslatingAll(true);
     try {
-      const promises = [];
+      const promises: Promise<void>[] = [];
       if (questionVi.trim()) {
         promises.push(
           adminTranslateText(questionVi, "vi", "en", engine).then((res) => {
@@ -194,6 +194,13 @@ export function FaqDialogModal({ isOpen, onOpenChange, faq, target, onSuccess }:
     onSuccess();
   };
 
+  let submitLabel = "Lưu câu hỏi";
+  if (loading) {
+    submitLabel = "Đang lưu...";
+  } else if (isEdit) {
+    submitLabel = "Lưu thay đổi";
+  }
+
   return (
     <Dialog onOpenChange={onOpenChange} open={isOpen}>
       <DialogContent className='max-h-[90vh] max-w-4xl overflow-y-auto'>
@@ -250,7 +257,7 @@ export function FaqDialogModal({ isOpen, onOpenChange, faq, target, onSuccess }:
                   <h4 className='font-bold text-foreground text-xs uppercase tracking-wider'>English Content</h4>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Select onValueChange={(val: any) => setEngine(val)} value={engine}>
+                  <Select onValueChange={(val) => setEngine(val as "deepseek" | "bing")} value={engine}>
                     <SelectTrigger className='h-6 w-24 border-primary/20 px-2 py-0 text-[10px]'>
                       <SelectValue placeholder='Trình dịch' />
                     </SelectTrigger>
@@ -361,7 +368,7 @@ export function FaqDialogModal({ isOpen, onOpenChange, faq, target, onSuccess }:
             </Button>
             <Button disabled={loading} type='submit'>
               {loading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : <Save className='mr-2 h-4 w-4' />}
-              {loading ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Lưu câu hỏi"}
+              {submitLabel}
             </Button>
           </DialogFooter>
         </form>

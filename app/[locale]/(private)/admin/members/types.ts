@@ -12,7 +12,7 @@ export type ClubRoleEntry = {
   department: Department | null;
 };
 
-export type SocialEntry = { id?: string; platform: string; url: string };
+export type SocialEntry = { id: string; platform: string; url: string };
 
 export const POSITION_LABELS: Record<string, string> = {
   PRESIDENT: "Chủ nhiệm CLB",

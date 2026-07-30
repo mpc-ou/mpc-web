@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getEventsPageData } from "@/app/_actions/main";
 import { generatePageSeo } from "@/utils/seo";
+import type { EventListItem } from "./client";
 import { DynamicEventsClient } from "./client";
 
 type Props = {
@@ -29,11 +30,11 @@ export default async function EventsPage({ params, searchParams }: Props): Promi
   const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
   const validPage = Number.isNaN(page) || page < 1 ? 1 : page;
 
-  const take = 9;
+  const take = 12;
   const t = await getTranslations("events");
 
   const { data } = await getEventsPageData(validPage, take, locale);
-  const payload = data?.payload as { events: any[]; totalPages: number } | undefined;
+  const payload = data?.payload as { events: EventListItem[]; totalPages: number } | undefined;
 
   const dbEvents = payload?.events ?? [];
   const totalPages = payload?.totalPages ?? 0;

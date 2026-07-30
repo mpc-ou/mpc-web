@@ -8,10 +8,11 @@ export function UserBlogEditForm({ post }: { post: BlogFormData }) {
   const router = useRouter();
 
   const handleUpdate = async (id: string, payload: BlogFormPayload) => {
+    const { status: _status, activityId: _activityId, ...rest } = payload;
     const res = await userUpdateBlog(id, {
-      ...payload,
+      ...rest,
       sourceLanguage: payload.sourceLanguage ?? "VI"
-    } as any);
+    });
     if (res.error) {
       throw new Error(res.error?.message ?? "Lỗi cập nhật");
     }

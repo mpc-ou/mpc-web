@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Shield, Trash2, Upload } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { adminCreateExternalLink, adminDeleteExternalLink, adminUpsertSetting } from "@/app/_actions/admin";
@@ -12,7 +13,7 @@ import { ABOUT_CLUB } from "@/configs/data/about";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
 
 type Setting = {
   id: string;
@@ -310,7 +311,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
               <div className='mt-2 flex items-center gap-4'>
                 <div className='relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-border bg-background'>
                   {siteLogo ? (
-                    <img alt='Logo Preview' className='h-full w-full object-cover' src={siteLogo} />
+                    <Image alt='Logo Preview' className='object-cover' fill sizes='64px' src={siteLogo} />
                   ) : (
                     <span className='text-muted-foreground text-xs'>No Logo</span>
                   )}
@@ -343,7 +344,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
               <div className='mt-2 flex items-center gap-4'>
                 <div className='relative flex h-16 w-16 items-center justify-center overflow-hidden rounded border border-border bg-background'>
                   {siteFavicon ? (
-                    <img alt='Favicon Preview' className='h-8 w-8 object-contain' src={siteFavicon} />
+                    <Image alt='Favicon Preview' className='object-contain' height={32} src={siteFavicon} width={32} />
                   ) : (
                     <span className='text-muted-foreground text-xs'>No Icon</span>
                   )}

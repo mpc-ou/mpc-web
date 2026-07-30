@@ -178,7 +178,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
               <div className='pointer-events-none absolute -top-[20%] -right-[10%] h-[70%] w-[60%] rounded-full bg-orange-500/10 blur-3xl' />
               <div className='pointer-events-none absolute -bottom-[20%] -left-[10%] h-[60%] w-[50%] rounded-full bg-amber-500/10 blur-3xl' />
               {/* Club logo watermark */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {/* biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer */}
+              {/* biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout */}
               <img
                 alt=''
                 className='pointer-events-none absolute top-1/2 left-1/2 h-[60%] w-[60%] -translate-x-1/2 -translate-y-1/2 -rotate-12 object-contain opacity-[0.04] grayscale'
@@ -198,7 +199,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
                     <div className='relative'>
                       <div className='relative z-10 h-48 w-48 overflow-hidden rounded-full border-[6px] border-white bg-slate-100 shadow-[0_10px_30px_rgba(234,88,12,0.15)]'>
                         {data.avatar ? (
-                          // eslint-disable-next-line @next/next/no-img-element
+                          // biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer
+                          // biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout
                           <img
                             alt='Avatar'
                             className='h-full w-full object-cover'
@@ -248,7 +250,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
                   <div
                     className={`flex items-center gap-4 ${isHorizontal ? "w-full justify-end" : "justify-center"} mb-4 opacity-90`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {/* biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer */}
+                    {/* biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout */}
                     <img
                       alt='Logos'
                       className={`h-12 object-contain ${isHorizontal ? "" : "mx-auto"}`}
@@ -274,7 +277,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
                     <div className='relative my-4'>
                       <div className='relative z-10 mx-auto h-48 w-48 overflow-hidden rounded-full border-[6px] border-white bg-slate-100 shadow-[0_10px_30px_rgba(234,88,12,0.15)]'>
                         {data.avatar ? (
-                          // eslint-disable-next-line @next/next/no-img-element
+                          // biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer
+                          // biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout
                           <img
                             alt='Avatar'
                             className='h-full w-full object-cover'
@@ -373,7 +377,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
               />
               <div className='absolute inset-0 bg-gradient-to-tr from-black via-slate-950 to-orange-950/40' />
               {/* Club logo watermark */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {/* biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer */}
+              {/* biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout */}
               <img
                 alt=''
                 className='pointer-events-none absolute top-1/2 left-1/2 h-[55%] w-[55%] -translate-x-1/2 -translate-y-1/2 rotate-12 object-contain opacity-[0.05]'
@@ -394,7 +399,8 @@ export function MemberCardClient({ data, locale }: MemberCardProps) {
                 <div className={`flex flex-col items-center justify-center ${isHorizontal ? "mt-8" : "mr-8"} gap-8`}>
                   <div className='relative flex items-center justify-center'>
                     <div className='pointer-events-none absolute h-[200px] w-[200px] rounded-full bg-orange-500/50 blur-[50px]' />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {/* biome-ignore lint/performance/noImgElement: html-to-image export requires crossOrigin-capturable raw <img>, not the optimizer */}
+                    {/* biome-ignore lint/correctness/useImageSize: sized via CSS to fit the card layout */}
                     <img
                       alt='MPC Logo'
                       className='relative z-10 h-auto w-48 drop-shadow-2xl'

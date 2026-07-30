@@ -12,13 +12,15 @@ type Props = {
 
 export function BlogForm({ post, activities = [] }: Props) {
   const router = useRouter();
-  const [activityId, setActivityId] = useState<string>((post as any)?.activityId ?? "");
+  const [activityId, setActivityId] = useState<string>(
+    (post as (BlogFormData & { activityId?: string | null }) | null | undefined)?.activityId ?? ""
+  );
 
   const handleCreate = async (payload: BlogFormPayload): Promise<string | undefined> => {
     const res = await adminCreatePost({
       ...payload,
       activityId: activityId || null
-    } as any);
+    });
     if (res.error) {
       throw new Error(res.error?.message ?? "Lỗi tạo bài viết");
     }
@@ -29,7 +31,7 @@ export function BlogForm({ post, activities = [] }: Props) {
     const res = await adminUpdatePost(id, {
       ...payload,
       activityId: activityId || null
-    } as any);
+    });
     if (res.error) {
       throw new Error(res.error?.message ?? "Lỗi cập nhật");
     }
@@ -44,9 +46,12 @@ export function BlogForm({ post, activities = [] }: Props) {
       {activities.length > 0 && (
         <div className='rounded-xl border bg-card p-4'>
           <div className='flex items-center gap-3'>
-            <label className='font-medium text-sm'>Loại hoạt động</label>
+            <label className='font-medium text-sm' htmlFor='blog-activity-select'>
+              Loại hoạt động
+            </label>
             <select
               className='rounded-md border border-input bg-transparent px-3 py-1.5 text-sm'
+              id='blog-activity-select'
               onChange={(e) => setActivityId(e.target.value)}
               value={activityId}
             >

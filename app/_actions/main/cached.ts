@@ -1,4 +1,5 @@
 import { cacheTag } from "next/cache";
+import { ABOUT_CLUB } from "@/configs/data/about";
 import { prisma } from "@/configs/prisma/db";
 import {
   _CACHE_ACHIEVEMENTS,
@@ -134,7 +135,11 @@ export const getTerminalStatsCached = async () => {
     projects: projectCount,
     events: eventCount,
     achievements: achievementCount,
-    github: "https://github.com/Mobile-Programming-Club-MPC",
-    fanpage: "https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong"
+    // Read the current year inside the cache boundary — under cacheComponents,
+    // `new Date()` isn't allowed in a plain Server Component that only reads
+    // cached data, so callers use this instead of calling new Date() directly.
+    currentYear: new Date().getFullYear(),
+    github: ABOUT_CLUB.contact.github,
+    fanpage: ABOUT_CLUB.contact.facebook
   };
 };

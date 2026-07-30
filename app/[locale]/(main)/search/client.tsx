@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar, FileText, FolderKanban, Search, Trophy, User } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -165,8 +166,8 @@ function SearchResults({
   if (loading) {
     return (
       <div className='space-y-4'>
-        {[...new Array(3)].map((_, i) => (
-          <div className='animate-pulse rounded-xl border border-border bg-card p-5' key={`sk-${i}`}>
+        {["sk-1", "sk-2", "sk-3"].map((key) => (
+          <div className='animate-pulse rounded-xl border border-border bg-card p-5' key={key}>
             <div className='mb-2 h-4 w-32 rounded bg-muted' />
             <div className='h-3 w-64 rounded bg-muted' />
           </div>
@@ -244,9 +245,9 @@ function SearchResults({
                     href={buildUrl(section, item.slug)}
                     key={`${section}-${item.id}`}
                   >
-                    <span className='mt-0.5 h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted'>
+                    <span className='relative mt-0.5 h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted'>
                       {item.thumbnail ? (
-                        <img alt='' className='h-full w-full object-cover' src={item.thumbnail} />
+                        <Image alt='' className='object-cover' fill sizes='40px' src={item.thumbnail} />
                       ) : (
                         <span className='flex h-full w-full items-center justify-center text-muted-foreground'>
                           <Icon className='h-4 w-4' />

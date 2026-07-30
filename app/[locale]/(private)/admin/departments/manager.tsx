@@ -136,9 +136,9 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
           {viewDept && (
             <div className='flex flex-col gap-5 py-2'>
               {/* BG Image */}
-              {(viewDept as any)?.bgImage && (
-                <div className='relative -mx-6 -mt-6 h-40 overflow-hidden rounded-t-lg'>
-                  <img alt='' className='h-full w-full object-cover' src={(viewDept as any).bgImage} />
+              {viewDept?.bgImage && (
+                <div className='relative -mx-6 -mt-6 h-40 w-[calc(100%+3rem)] overflow-hidden rounded-t-lg'>
+                  <Image alt='' className='object-cover' fill sizes='512px' src={viewDept.bgImage} />
                   <div className='absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent' />
                 </div>
               )}
@@ -146,7 +146,7 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
               {/* Header */}
               <div className='text-center'>
                 <div className='mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary'>
-                  <span className='font-bold text-lg text-primary'>{(viewDept as any).icon || viewDept.nameVi[0]}</span>
+                  <span className='font-bold text-lg text-primary'>{viewDept.icon || viewDept.nameVi[0]}</span>
                 </div>
                 <h2 className='font-bold text-xl'>{viewDept.nameVi}</h2>
                 {viewDept.nameEn && <p className='text-muted-foreground text-sm'>{viewDept.nameEn}</p>}
@@ -160,12 +160,12 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
               </div>
 
               {/* Description */}
-              {(viewDept as any)?.descriptionVi && (
+              {viewDept?.descriptionVi && (
                 <div>
                   <h4 className='mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>Mô tả</h4>
-                  <p className='text-muted-foreground text-sm leading-relaxed'>{(viewDept as any).descriptionVi}</p>
-                  {(viewDept as any)?.descriptionEn && (
-                    <p className='mt-1 text-muted-foreground/60 text-xs italic'>{(viewDept as any).descriptionEn}</p>
+                  <p className='text-muted-foreground text-sm leading-relaxed'>{viewDept.descriptionVi}</p>
+                  {viewDept?.descriptionEn && (
+                    <p className='mt-1 text-muted-foreground/60 text-xs italic'>{viewDept.descriptionEn}</p>
                   )}
                 </div>
               )}
@@ -177,23 +177,23 @@ export function DepartmentsDataTable({ data }: { data: DeptRow[] }) {
               </div>
 
               {/* Missions */}
-              {(viewDept as any)?.missionsVi && (
+              {viewDept?.missionsVi && (
                 <div>
                   <h4 className='mb-2 font-semibold text-muted-foreground text-xs uppercase tracking-wider'>
                     Nhiệm vụ
                   </h4>
                   <div className='prose prose-sm max-w-none rounded-lg border bg-muted/20 p-4'>
-                    <MarkdownContent content={(viewDept as any).missionsVi} />
+                    <MarkdownContent content={viewDept.missionsVi} />
                   </div>
                 </div>
               )}
 
               {/* Link */}
-              {(viewDept as any)?.hyperlink && (
+              {viewDept?.hyperlink && (
                 <div className='flex items-center gap-2 rounded-lg bg-primary/5 p-3'>
                   <span className='font-medium text-primary text-sm'>Liên kết:</span>
-                  <a className='text-sm underline' href={(viewDept as any).hyperlink} target='_blank'>
-                    {(viewDept as any).linkLabelVi || (viewDept as any).hyperlink}
+                  <a className='text-sm underline' href={viewDept.hyperlink} target='_blank'>
+                    {viewDept.linkLabelVi || viewDept.hyperlink}
                   </a>
                 </div>
               )}

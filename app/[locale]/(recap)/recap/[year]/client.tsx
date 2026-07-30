@@ -178,12 +178,12 @@ export function RecapSlideViewer({
   };
 
   return (
-    <div className='fixed inset-0 z-[100] cursor-default select-none bg-slate-950' onClick={startAudio}>
+    // biome-ignore lint/a11y/noStaticElementInteractions: full-page "click anywhere" gesture required by browser autoplay policy to unlock audio; wraps real <button> controls for actual actions
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above
+    // biome-ignore lint/a11y/useKeyWithClickEvents: same as above, not a discrete actionable target
+    <div className='fixed inset-0 z-100 cursor-default select-none bg-slate-950' onClick={startAudio}>
       {/* Audio */}
-      {musicUrl && (
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        <audio autoPlay loop muted={muted} ref={audioRef} src={musicUrl} />
-      )}
+      {musicUrl && <audio autoPlay loop muted={muted} ref={audioRef} src={musicUrl} />}
 
       {/* Top bar */}
       <div className='absolute top-0 right-0 left-0 z-30 flex items-center justify-between px-4 py-3'>
@@ -193,6 +193,7 @@ export function RecapSlideViewer({
             className='rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white'
             onClick={() => router.push("/recap")}
             title={t("recap.exit")}
+            type='button'
           >
             <X className='h-4 w-4' />
           </button>
@@ -200,6 +201,7 @@ export function RecapSlideViewer({
             className='rounded-full bg-white/10 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white'
             onClick={() => router.push("/")}
             title={t("recap.home")}
+            type='button'
           >
             <Home className='h-4 w-4' />
           </button>
@@ -217,6 +219,7 @@ export function RecapSlideViewer({
             className={`rounded-full p-2 backdrop-blur-md transition-colors ${autoPlay ? "bg-orange-500/30 text-orange-500" : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"}`}
             onClick={() => setAutoPlay(!autoPlay)}
             title={autoPlay ? t("recap.pause") : t("recap.autoPlay")}
+            type='button'
           >
             {autoPlay ? <Pause className='h-4 w-4' /> : <Play className='h-4 w-4' />}
           </button>
@@ -231,6 +234,7 @@ export function RecapSlideViewer({
                   startAudio();
                 }}
                 title={muted ? t("recap.volumeOff") : t("recap.volumeOn")}
+                type='button'
               >
                 {muted ? <VolumeX className='h-4 w-4' /> : <Volume2 className='h-4 w-4' />}
               </button>
@@ -275,6 +279,7 @@ export function RecapSlideViewer({
           startAudio();
           goPrev();
         }}
+        type='button'
       >
         <ChevronLeft className='h-10 w-10 text-white/70 transition-colors hover:text-white' />
       </button>
@@ -284,6 +289,7 @@ export function RecapSlideViewer({
           startAudio();
           goNext();
         }}
+        type='button'
       >
         <ChevronRight className='h-10 w-10 text-white/70 transition-colors hover:text-white' />
       </button>
@@ -299,14 +305,16 @@ export function RecapSlideViewer({
         {Array.from({ length: totalSlides }).map((_, i) => {
           const info = getSlideInfo(i);
           return (
-            <div
+            <button
+              aria-label={info.title}
               className='group/node relative z-10 h-full flex-1 transition-colors hover:bg-white/10'
-              key={i}
+              key={`${i}-${info.title}`}
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrent(i);
                 startAudio();
               }}
+              type='button'
             >
               <div className='pointer-events-none absolute bottom-full left-1/2 z-100 mb-3 hidden w-max -translate-x-1/2 flex-col items-center group-hover/node:flex'>
                 <div className='rounded-xl border border-white/10 bg-black/90 px-3 py-2 text-center text-white text-xs shadow-xl backdrop-blur-md'>
@@ -315,7 +323,7 @@ export function RecapSlideViewer({
                 </div>
                 <div className='-mt-1 h-2 w-2 rotate-45 border-white/10 border-r border-b bg-black/90 shadow-sm' />
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -330,6 +338,7 @@ export function RecapSlideViewer({
               startAudio();
               goPrev();
             }}
+            type='button'
           >
             <ChevronLeft className='h-4 w-4' />
           </button>
@@ -341,11 +350,12 @@ export function RecapSlideViewer({
                 className={`rounded-full transition-all duration-300 ${
                   i === current ? "h-1.5 w-5 bg-orange-500" : "h-1.5 w-1.5 bg-white/20 hover:bg-white/40"
                 }`}
-                key={i}
+                key={getSlideInfo(i).title}
                 onClick={() => {
                   setCurrent(i);
                   startAudio();
                 }}
+                type='button'
               />
             ))}
           </div>
@@ -357,6 +367,7 @@ export function RecapSlideViewer({
               startAudio();
               goNext();
             }}
+            type='button'
           >
             <ChevronRight className='h-4 w-4' />
           </button>

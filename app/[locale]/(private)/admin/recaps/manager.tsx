@@ -19,6 +19,7 @@ import {
   Search,
   Trash2
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
@@ -63,7 +64,7 @@ export function RecapsManager() {
       search
     });
     if (res.data?.payload) {
-      const payload = res.data.payload as { recaps: any[]; total: number };
+      const payload = res.data.payload as { recaps: RecapRow[]; total: number };
       setRecaps(payload.recaps);
       setTotal(payload.total);
     }
@@ -257,9 +258,11 @@ export function RecapsManager() {
                   <div className='space-y-3'>
                     <div className='relative aspect-video w-full overflow-hidden rounded-lg border border-white/5 bg-muted'>
                       {recap.coverImage ? (
-                        <img
+                        <Image
                           alt={recap.name}
-                          className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
+                          className='object-cover transition-transform duration-300 group-hover:scale-105'
+                          fill
+                          sizes='(min-width: 1024px) 25vw, 50vw'
                           src={recap.coverImage}
                         />
                       ) : (

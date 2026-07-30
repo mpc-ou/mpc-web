@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { _LOCALES } from "@/constants/lang";
 import { _ROUTE_AUTH, _ROUTE_PRIVATES } from "@/constants/route";
+import { refreshAccessToken } from "@/services/sso";
 import { decrypt, encrypt } from "@/utils/session";
-import { refreshAccessToken } from "@/utils/sso";
 
 export async function updateSession(request: NextRequest, response: NextResponse) {
   const sessionCookie = request.cookies.get("mpc_session")?.value;

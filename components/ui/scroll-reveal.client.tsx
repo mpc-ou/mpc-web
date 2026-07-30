@@ -20,6 +20,7 @@ type ScrollRevealProps = {
   as?: "div" | "section" | "li" | "article";
   once?: boolean;
   threshold?: number;
+  rootMargin?: string;
 };
 
 const hiddenStyles: Record<AnimationVariant, string> = {
@@ -48,7 +49,8 @@ function ScrollReveal({
   className,
   as: Tag = "div",
   once = true,
-  threshold = 0.15,
+  threshold = 0,
+  rootMargin = "0px 0px -10% 0px",
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -70,12 +72,12 @@ function ScrollReveal({
           setIsVisible(false);
         }
       },
-      { threshold },
+      { threshold, rootMargin },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [once, threshold]);
+  }, [once, threshold, rootMargin]);
 
   return (
     <Tag

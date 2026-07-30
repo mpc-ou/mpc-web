@@ -45,11 +45,13 @@ const navItems = [
   { label: "Settings", href: "/admin/settings", icon: Settings }
 ];
 
+const LOCALE_PREFIX_RE = /^\/[a-z]{2}/;
+
 const AdminSidebar = ({ memberName, memberAvatar, isOpen = false, onClose }: SidebarProps) => {
   const pathname = usePathname();
 
   // Extract the path after locale (e.g., /vi/admin/members → /admin/members)
-  const normalizedPath = pathname.replace(/^\/[a-z]{2}/, "");
+  const normalizedPath = pathname.replace(LOCALE_PREFIX_RE, "");
 
   const isActive = (href: string) => {
     if (href === "/admin") {

@@ -1,5 +1,6 @@
 import { Award, Calendar, ChevronLeft, ExternalLink, Star, Trophy, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getAchievementBySlug, getRecentAchievements } from "@/app/_actions/main";
@@ -18,6 +19,70 @@ import { HonoredMembers } from "./_components/honored-members.client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
+type MemberDetail = {
+  id: string;
+  firstName: string;
+  middleName?: string | null;
+  lastName: string;
+  avatar: string | null;
+  slug: string | null;
+};
+
+type AchievementMember = {
+  id: string;
+  postId: string;
+  memberId: string;
+  role: string | null;
+  prize: string | null;
+  imageUrl: string | null;
+  member: MemberDetail;
+};
+
+type GalleryImage = {
+  id: string;
+  url: string;
+  title: string | null;
+  caption: string | null;
+  type: string;
+  order: number;
+};
+
+type AchievementTag = {
+  postId: string;
+  tagId: string;
+  tag: { id: string; name: string; slug: string };
+};
+
+type AchievementDetail = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  content: string | null;
+  thumbnail: string | null;
+  images: string[];
+  date: string | null;
+  type: string | null;
+  isHighlight: boolean;
+  relatedUrl: string | null;
+  achievementMembers: AchievementMember[];
+  members: AchievementMember[];
+  creator: MemberDetail | null;
+  gallery: GalleryImage[];
+  tags: AchievementTag[];
+};
+
+type RecentAchievement = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  thumbnail: string | null;
+  date: string | null;
+  type: string | null;
+  isHighlight: boolean;
+};
+
 function fmtDate(iso: string | null, locale = "vi") {
   if (!iso) {
     return null;
@@ -35,8 +100,7 @@ function fmtDateShort(iso: string | null, locale = "vi") {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const { data } = await getAchievementBySlug(slug, locale);
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const achievement = (data?.payload as any)?.achievement;
+  const achievement = (data?.payload as { achievement: AchievementDetail | null } | undefined)?.achievement;
   if (!achievement) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
     return { title: tSeo("achievement") };
@@ -61,17 +125,17 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
     getTranslations({ locale, namespace: "achievements" })
   ]);
 
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const achievement = (data?.payload as any)?.achievement;
+  const achievement = (data?.payload as { achievement: AchievementDetail | null } | undefined)?.achievement;
   if (!achievement) {
     notFound();
   }
 
   const dateLabel = fmtDate(achievement.date, locale);
 
-  // biome-ignore lint/suspicious/noExplicitAny: API shape
-  const recentAchievements = ((recentData?.payload as any)?.achievements ?? [])
-    .filter((a: any) => a.slug !== slug)
+  const recentAchievements = (
+    (recentData?.payload as { achievements: RecentAchievement[] } | undefined)?.achievements ?? []
+  )
+    .filter((a) => a.slug !== slug)
     .slice(0, 3);
 
   // Combine gallery images: thumbnail, content images, member profile images, and additional images
@@ -86,20 +150,23 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
     }
     match = imgRegex.exec(achievement.content || "");
   }
-  const memberImages = (achievement.achievementMembers || []).map((am: any) => am.imageUrl).filter(Boolean);
+  const memberImages = (achievement.achievementMembers || [])
+    .map((am) => am.imageUrl)
+    .filter((url): url is string => Boolean(url));
 
-  const additionalImages =
-    achievement.gallery && achievement.gallery.length > 0
-      ? achievement.gallery.filter((g: any) => g.type === "ADDITIONAL").map((g: any) => g.url)
-      : Array.isArray(achievement.images)
-        ? achievement.images
-        : [];
+  const hasStoredGallery = achievement.gallery && achievement.gallery.length > 0;
+  let additionalImages: string[] = [];
+  if (hasStoredGallery) {
+    additionalImages = achievement.gallery.filter((g) => g.type === "ADDITIONAL").map((g) => g.url);
+  } else if (Array.isArray(achievement.images)) {
+    additionalImages = achievement.images;
+  }
 
   const allImages = Array.from(new Set([...thumbnail, ...contentImages, ...memberImages, ...additionalImages])).filter(
     Boolean
   );
 
-  const galleryData = achievement.gallery && achievement.gallery.length > 0 ? achievement.gallery : allImages;
+  const galleryData = hasStoredGallery ? achievement.gallery : allImages;
   const hasGallery = galleryData.length > 0;
 
   const typeMap: Record<string, string> = {
@@ -113,9 +180,14 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
       {/* ── HERO ── */}
       {achievement.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
-          {/* biome-ignore lint/performance/noImgElement: hero */}
-          {/* biome-ignore lint/correctness/useImageSize: CSS */}
-          <img alt={achievement.title} className='h-full w-full object-cover' src={achievement.thumbnail} />
+          <Image
+            alt={achievement.title}
+            className='object-cover'
+            fill
+            priority
+            sizes='100vw'
+            src={achievement.thumbnail}
+          />
           <div className='absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent' />
         </div>
       ) : (
@@ -155,7 +227,7 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
                 {t("highlight")}
               </Badge>
             )}
-            {achievement.tags?.map((tTag: any) => (
+            {achievement.tags?.map((tTag) => (
               <Badge
                 className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
                 key={tTag.tag.id}
@@ -175,17 +247,17 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <div className='flex items-center gap-3'>
               {achievement.creator?.avatar ? (
-                // biome-ignore lint/performance/noImgElement: avatar
-                // biome-ignore lint/correctness/useImageSize: CSS
-                <img
+                <Image
                   alt={getFullName(
                     achievement.creator.firstName,
                     achievement.creator.middleName,
                     achievement.creator.lastName,
                     locale
                   )}
-                  className='h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border'
+                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
+                  height={40}
                   src={achievement.creator.avatar}
+                  width={40}
                 />
               ) : (
                 <UserCircle className='h-10 w-10 text-muted-foreground' />
@@ -308,7 +380,7 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
           <div className='mt-20 border-t pt-10'>
             <h2 className='mb-8 font-black text-2xl text-foreground'>{t("otherAchievements")}</h2>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {recentAchievements.map((a: any) => (
+              {recentAchievements.map((a) => (
                 <Link
                   className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
                   href={`/achievements/${a.slug}` as "/"}
@@ -316,11 +388,11 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
                 >
                   {a.thumbnail ? (
                     <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-                      {/* biome-ignore lint/performance/noImgElement: thumbnail */}
-                      {/* biome-ignore lint/correctness/useImageSize: CSS */}
-                      <img
+                      <Image
                         alt={a.title}
-                        className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                        className='object-cover transition-transform duration-500 group-hover:scale-105'
+                        fill
+                        sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
                         src={a.thumbnail}
                       />
                     </div>

@@ -1,10 +1,9 @@
-import type { User } from "@supabase/supabase-js";
-import { createClientSsr } from "@/configs/supabase/server";
-import type { ResponseType } from "@/types/response";
+import type { ResponseType, SuccessResponseType } from "@/types/response";
 import { ErrorResponse, SuccessResponse } from "./response";
+import { getSession, type UserSession } from "./session";
 
-type HandleErrorServerType = {
-  cb: ({ user }: { user?: User }) => Promise<object>;
+type HandleErrorServerType<T> = {
+  cb: ({ user }: { user?: UserSession }) => Promise<T>;
 };
 
 function isInternalCancelError(error: unknown): boolean {
@@ -14,14 +13,42 @@ function isInternalCancelError(error: unknown): boolean {
   return false;
 }
 
-const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<ResponseType> => {
+function isNextError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  const err = error as { name?: string; digest?: unknown };
+
+  if (err.name === "DynamicServerError") {
+    return true;
+  }
+
+  if (
+    typeof err.digest === "string" &&
+    (err.digest.startsWith("NEXT_") ||
+      err.digest === "HANGING_PROMISE_REJECTION" ||
+      err.digest.startsWith("DYNAMIC_SERVER_USAGE"))
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+const handleErrorServerNoAuth = async <T>({ cb }: HandleErrorServerType<T>): Promise<ResponseType> => {
   try {
     const res = await cb({});
-    return SuccessResponse({ payload: res });
+    return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
-    if (isInternalCancelError(error)) {
+    if (isInternalCancelError(error) || isNextError(error)) {
       throw error;
     }
+    // Errors here get converted into a plain ErrorResponse, which callers
+    // (e.g. a page component) commonly treat as "not found" and swallow into
+    // a 404 — so without logging, real failures (DB timeouts, bad queries)
+    // are invisible and look identical to a genuinely missing record.
+    console.error("[handleErrorServerNoAuth]", error);
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }
@@ -29,25 +56,21 @@ const handleErrorServerNoAuth = async ({ cb }: HandleErrorServerType): Promise<R
   }
 };
 
-const handleErrorServerWithAuth = async ({ cb }: HandleErrorServerType): Promise<ResponseType> => {
+const handleErrorServerWithAuth = async <T>({ cb }: HandleErrorServerType<T>): Promise<ResponseType> => {
   try {
-    const supabase = await createClientSsr();
-    const { data, error: authError } = await supabase.auth.getUser();
+    const session = await getSession();
 
-    if (authError) {
-      return ErrorResponse({ message: authError.message });
-    }
-
-    if (!data.user) {
+    if (!session) {
       return ErrorResponse({ message: "Unauthorized" });
     }
 
-    const res = await cb({ user: data.user });
-    return SuccessResponse({ payload: res });
+    const res = await cb({ user: session });
+    return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
-    if (isInternalCancelError(error)) {
+    if (isInternalCancelError(error) || isNextError(error)) {
       throw error;
     }
+    console.error("[handleErrorServerWithAuth]", error);
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });
     }

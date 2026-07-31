@@ -1,17 +1,27 @@
 "use client";
 
 import { ImagePlus, Loader2, X } from "lucide-react";
-import { useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { adminRegisterTempImage } from "@/app/_actions/admin";
 import { Label } from "@/components/ui/label";
+import { STORAGE_BUCKET } from "@/constants/storage";
+import { UPLOAD_MAX_BANNER_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
+import { uploadToStorage } from "@/services/supabase-upload";
+
+export type ImageItem = {
+  url: string;
+  title?: string;
+  caption?: string;
+};
 
 type Props = {
   label?: string;
-  initialImages?: string[];
+  initialImages?: (string | ImageItem)[];
   maxImages?: number;
-  storagePath: string; // e.g. "events/gallery"
-  onChange: (urls: string[]) => void;
+  storagePath: string;
+  onChange: (images: ImageItem[]) => void;
 };
 
 export function MultiImageUpload({
@@ -22,10 +32,38 @@ export function MultiImageUpload({
   onChange
 }: Props) {
   const { toast } = useToast();
-  const [images, setImages] = useState<string[]>(initialImages);
+
+  const normalizedInitial = initialImages.map((img) => {
+    if (typeof img === "string") {
+      return { url: img, title: "", caption: "" };
+    }
+    return {
+      url: img.url,
+      title: img.title ?? "",
+      caption: img.caption ?? ""
+    };
+  });
+
+  const [images, setImages] = useState<ImageItem[]>(normalizedInitial);
   const [uploading, setUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const norm = initialImages.map((img) => {
+      if (typeof img === "string") {
+        return { url: img, title: "", caption: "" };
+      }
+      return {
+        url: img.url,
+        title: img.title ?? "",
+        caption: img.caption ?? ""
+      };
+    });
+    if (JSON.stringify(norm) !== JSON.stringify(images)) {
+      setImages(norm);
+    }
+  }, [initialImages, images]);
 
   const canAdd = images.length < maxImages;
 
@@ -36,7 +74,7 @@ export function MultiImageUpload({
     }
 
     setUploading(true);
-    const urls: string[] = [];
+    const newItems: ImageItem[] = [];
     for (const file of allowed) {
       if (!file.type.startsWith("image/")) {
         toast({
@@ -45,7 +83,7 @@ export function MultiImageUpload({
         });
         continue;
       }
-      if (file.size > 8 * 1024 * 1024) {
+      if (file.size > UPLOAD_MAX_BANNER_SIZE) {
         toast({
           variant: "destructive",
           description: `Bỏ qua "${file.name}": ảnh tối đa 8MB`
@@ -53,17 +91,18 @@ export function MultiImageUpload({
         continue;
       }
       try {
-        const url = await uploadToStorage(file, "media", storagePath);
-        urls.push(url);
-      } catch {
+        const url = await uploadToStorage(file, STORAGE_BUCKET, storagePath);
+        await adminRegisterTempImage(url);
+        newItems.push({ url, title: "", caption: "" });
+      } catch (err) {
         toast({
           variant: "destructive",
-          description: `Upload thất bại: ${file.name}`
+          description: `Upload thất bại "${file.name}": ${err instanceof Error ? err.message : "lỗi không xác định"}`
         });
       }
     }
     setUploading(false);
-    const updated = [...images, ...urls];
+    const updated = [...images, ...newItems];
     setImages(updated);
     onChange(updated);
     if (fileInputRef.current) {
@@ -77,8 +116,19 @@ export function MultiImageUpload({
     onChange(updated);
   };
 
+  const updateImageField = (idx: number, field: "title" | "caption", value: string) => {
+    const updated = images.map((img, i) => {
+      if (i === idx) {
+        return { ...img, [field]: value };
+      }
+      return img;
+    });
+    setImages(updated);
+    onChange(updated);
+  };
+
   return (
-    <div className='space-y-2'>
+    <div className='space-y-3'>
       <Label>
         {label}{" "}
         <span className='font-normal text-muted-foreground text-xs'>
@@ -88,35 +138,50 @@ export function MultiImageUpload({
 
       {/* Gallery grid */}
       {images.length > 0 && (
-        <div className='grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5'>
-          {images.map((url, idx) => (
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
+          {images.map((img, idx) => (
             <div
-              className='group relative aspect-square overflow-hidden rounded-lg border bg-muted'
-              // biome-ignore lint/suspicious/noArrayIndexKey: order-based key is fine for images
-              key={idx}
+              className='group relative flex flex-col space-y-2 rounded-lg border bg-muted/40 p-2'
+              key={img.url || idx}
             >
-              {/* biome-ignore lint/performance/noImgElement: admin preview */}
-              <img
-                alt={`Gallery ${idx + 1}`}
-                className='h-full w-full object-cover'
-                height={200}
-                src={url}
-                width={200}
-              />
-              <button
-                className='absolute top-1 right-1 hidden rounded-full bg-black/60 p-1 text-white hover:bg-black/80 group-hover:flex'
-                onClick={() => removeImage(idx)}
-                title='Xóa ảnh'
-                type='button'
-              >
-                <X className='h-3 w-3' />
-              </button>
+              {/* Image preview */}
+              <div className='relative aspect-video w-full overflow-hidden rounded-md border bg-muted'>
+                <Image
+                  alt={`Gallery ${idx + 1}`}
+                  className='object-cover'
+                  fill
+                  sizes='(min-width: 768px) 33vw, 100vw'
+                  src={img.url}
+                />
+                <button
+                  className='absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
+                  onClick={() => removeImage(idx)}
+                  title='Xóa ảnh'
+                  type='button'
+                >
+                  <X className='h-3.5 w-3.5' />
+                </button>
+              </div>
+
+              <div className='space-y-1.5'>
+                <input
+                  className='w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary'
+                  onChange={(e) => updateImageField(idx, "title", e.target.value)}
+                  placeholder='Tiêu đề ảnh...'
+                  value={img.title || ""}
+                />
+                <input
+                  className='w-full rounded border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary'
+                  onChange={(e) => updateImageField(idx, "caption", e.target.value)}
+                  placeholder='Ghi chú/Mô tả ảnh...'
+                  value={img.caption || ""}
+                />
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Upload area */}
       {canAdd && (
         <button
           className={`flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${

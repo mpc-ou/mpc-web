@@ -1,19 +1,27 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Code2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { Badge } from "@/components/ui/badge";
+import type { PostCardData } from "@/components/post-card";
+import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/configs/i18n/routing";
 import type { ProjectSummary } from "@/types/common";
+
+// getProjectsPageData (app/_actions/main/projects.ts) selects titleEn/descriptionEn as
+// well, which the shared ProjectSummary type doesn't declare.
+export type ProjectSummaryWithI18n = ProjectSummary & {
+  titleEn?: string | null;
+  descriptionEn?: string | null;
+};
 
 export function ProjectsClient({
   projects,
   currentPage,
   totalPages
 }: {
-  projects: ProjectSummary[];
+  projects: ProjectSummaryWithI18n[];
   currentPage: number;
   totalPages: number;
 }) {
@@ -21,6 +29,7 @@ export function ProjectsClient({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("projects");
 
   const handlePageChange = (newPage: number) => {
     startTransition(() => {
@@ -30,64 +39,40 @@ export function ProjectsClient({
     });
   };
 
+  const cards: PostCardData[] = projects.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    variant: "project",
+    titleVi: p.title,
+    titleEn: p.titleEn,
+    summaryVi: p.description,
+    summaryEn: p.descriptionEn,
+    thumbnail: p.thumbnail ?? undefined,
+    technologies: Array.isArray(p.technologies) ? p.technologies : [],
+    startDate: p.startDate ?? null,
+    endDate: p.endDate ?? null,
+    contributors:
+      p.members?.map((m) => ({
+        id: m.member.id,
+        firstName: m.member.firstName,
+        lastName: m.member.lastName,
+        avatar: m.member.avatar,
+        slug: m.member.slug
+      })) ?? []
+  }));
+
   return (
     <div className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}>
       {projects.length === 0 ? (
-        <div className='py-20 text-center text-muted-foreground'>Chưa có dự án nào được đăng tải.</div>
+        <div className='py-20 text-center text-muted-foreground'>{t("emptyData")}</div>
       ) : (
         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {projects.map((project) => {
-            const techs = Array.isArray(project.technologies) ? project.technologies : [];
-
-            return (
-              <Link
-                className='group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md'
-                href={`/projects/${project.slug}`}
-                key={project.id}
-              >
-                <div className='relative aspect-video w-full overflow-hidden bg-muted/30'>
-                  {project.thumbnail ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      alt={project.title}
-                      className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
-                      src={project.thumbnail}
-                    />
-                  ) : (
-                    <div className='flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/30'>
-                      <Code2 className='h-12 w-12 opacity-50' />
-                    </div>
-                  )}
-                </div>
-                <div className='flex flex-1 flex-col p-5'>
-                  <h3 className='mb-2 font-bold text-foreground text-xl leading-tight transition-colors group-hover:text-primary'>
-                    {project.title}
-                  </h3>
-                  <p className='mb-4 line-clamp-2 flex-1 text-muted-foreground text-sm'>
-                    {project.description || "Chưa có mô tả."}
-                  </p>
-                  {techs.length > 0 && (
-                    <div className='flex flex-wrap gap-1.5'>
-                      {techs.slice(0, 3).map((t: string) => (
-                        <Badge className='px-1.5 font-normal text-[10px]' key={t} variant='secondary'>
-                          {t}
-                        </Badge>
-                      ))}
-                      {techs.length > 3 && (
-                        <Badge className='px-1.5 font-normal text-[10px]' variant='secondary'>
-                          +{techs.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
+          {cards.map((card) => (
+            <PostCard data={card} key={card.id} />
+          ))}
         </div>
       )}
 
-      {/* Pagination Container */}
       {totalPages > 1 && (
         <div className='mt-12 flex items-center justify-center gap-2'>
           <Button
@@ -99,7 +84,6 @@ export function ProjectsClient({
           >
             <ChevronLeft className='h-4 w-4' />
           </Button>
-
           <div className='flex items-center gap-1'>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
               if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
@@ -126,7 +110,6 @@ export function ProjectsClient({
               return null;
             })}
           </div>
-
           <Button
             className='h-8 w-8 p-0'
             disabled={currentPage >= totalPages || isPending}

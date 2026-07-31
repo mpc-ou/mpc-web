@@ -1,0 +1,149 @@
+import { ArrowRight, CalendarDays, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
+import { connection } from "next/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { getRecentEvents } from "@/app/_actions/main";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Link } from "@/configs/i18n/routing";
+import { formatLocalDate } from "@/utils/handle-datetime";
+
+type RecentEvent = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  startAt: string | undefined;
+  // Kept as string (rather than the EventStatus/EventType enums) because the
+  // source data mixes PostType and EventType values (see `type` comparisons below).
+  status: string | null;
+  type: string | null;
+  eventType: string | null;
+};
+
+export async function RecentEventsSection() {
+  await connection();
+  const locale = await getLocale();
+  const { data } = await getRecentEvents(3, locale);
+  const t = await getTranslations();
+  const ta = await getTranslations("aboutPage.recentEvents");
+  const payload = data?.payload as { events: RecentEvent[] } | undefined;
+  const events = payload?.events || [];
+
+  if (events.length === 0) {
+    return null;
+  }
+
+  const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
+    UPCOMING: { label: ta("status.UPCOMING"), variant: "default" },
+    ONGOING: { label: ta("status.ONGOING"), variant: "secondary" },
+    COMPLETED: { label: ta("status.COMPLETED"), variant: "outline" }
+  };
+
+  return (
+    <section className='py-20 md:py-32' id='recent-events'>
+      <div className='container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'>
+        <ScrollReveal className='mb-12 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end'>
+          <div className='max-w-2xl space-y-4 text-center md:text-left'>
+            <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm'>
+              &gt; {ta("badge")}
+            </span>
+            <h2 className='font-bold text-3xl text-foreground tracking-tight md:text-4xl'>{ta("title")}</h2>
+            <div className='mx-auto h-1 w-20 rounded-full bg-orange-500/70 md:mx-0' />
+            <p className='text-lg text-muted-foreground'>{ta("description")}</p>
+          </div>
+
+          <Button asChild className='hidden rounded-full md:flex' variant='outline'>
+            <Link href='/events'>
+              {ta("viewAll")} <ArrowRight className='ml-2 h-4 w-4' />
+            </Link>
+          </Button>
+        </ScrollReveal>
+
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+          {events.map((event, idx: number) => {
+            const statusInfo = statusMap[event.status ?? ""] || {
+              label: event.status,
+              variant: "outline"
+            };
+            const dateStr = event.startAt ? formatLocalDate(event.startAt, locale) : "";
+
+            return (
+              <ScrollReveal delay={idx * 150} key={event.id} variant='fade-up'>
+                <Link
+                  className='group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg'
+                  href={`/events/${event.slug}`}
+                >
+                  <div className='relative aspect-[4/3] w-full overflow-hidden bg-muted/30'>
+                    {event.thumbnail ? (
+                      <Image
+                        alt={event.title}
+                        className='object-cover transition-transform duration-500 group-hover:scale-105'
+                        fill
+                        sizes='(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
+                        src={event.thumbnail}
+                      />
+                    ) : (
+                      <div className='flex h-full w-full items-center justify-center font-bold text-4xl text-muted-foreground/30'>
+                        <ImageIcon className='h-12 w-12 opacity-50' />
+                      </div>
+                    )}
+                    <div className='absolute top-3 left-3 flex flex-wrap gap-2 pr-3'>
+                      <Badge className='bg-background/80 shadow-xs backdrop-blur-md' variant={statusInfo.variant}>
+                        {statusInfo.label}
+                      </Badge>
+                      {(() => {
+                        const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
+                        if (!displayType || displayType === "OTHER") {
+                          return null;
+                        }
+                        return (
+                          <Badge
+                            className='bg-background/80 text-foreground shadow-xs backdrop-blur-md hover:bg-background/90'
+                            variant='secondary'
+                          >
+                            {t(`events.types.${displayType}` as Parameters<typeof t>[0]) || displayType}
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  <div className='flex grow flex-col p-6'>
+                    <h3 className='mb-3 line-clamp-2 font-bold text-foreground text-xl leading-tight transition-colors group-hover:text-primary'>
+                      {event.title}
+                    </h3>
+
+                    <div className='mb-4 flex items-center gap-2 font-medium text-muted-foreground text-xs'>
+                      <CalendarDays className='h-3.5 w-3.5' />
+                      <span>{dateStr}</span>
+                    </div>
+
+                    <p className='mb-6 line-clamp-2 flex-1 text-muted-foreground text-sm leading-relaxed'>
+                      {event.description || ta("noDescription")}
+                    </p>
+
+                    <div className='mt-auto flex items-center border-border/10 border-t pt-4 font-semibold text-primary text-sm'>
+                      {ta("viewDetail")}
+                      <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
+                    </div>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+
+        <div className='mt-10 flex justify-center md:hidden'>
+          <Button asChild className='w-full max-w-sm rounded-full' variant='outline'>
+            <Link href='/events'>
+              {ta("viewAll")} <ArrowRight className='ml-2 h-4 w-4' />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}

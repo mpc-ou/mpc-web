@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ErrorContent } from "@/components/custom/ErrorContent";
+import { ErrorContent } from "@/components/custom/error-content.client";
 
 type ErrorType = { error: Error & { digest?: string }; reset: () => void };
 
@@ -16,5 +16,11 @@ export default function ErrorGlobal({ error, reset }: ErrorType) {
     return null;
   }
 
-  return <ErrorContent reset={reset} />;
+  return (
+    <ErrorContent
+      description='An unexpected error occurred. Please try again.'
+      reset={reset}
+      title='Something went wrong'
+    />
+  );
 }

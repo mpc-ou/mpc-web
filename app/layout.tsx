@@ -52,9 +52,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 512,
-        height: 512,
-        alt: `${SITE_NAME} Logo`
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — Where there's a bug, there's MPC!`
       }
     ]
   },
@@ -72,8 +72,12 @@ export const metadata: Metadata = {
     }
   },
   verification: {
-    // Add your Google Search Console verification code here
-    // google: "YOUR_GOOGLE_VERIFICATION_CODE",
+    // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in the production env to the
+    // token from Google Search Console (URL-prefix property) to verify domain
+    // ownership and unlock indexing reports.
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {})
   }
 };
 

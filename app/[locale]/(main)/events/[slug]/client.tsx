@@ -1,11 +1,14 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-export function EventContentClient({ gallery }: { gallery: any[] }) {
+type GalleryImage = { url: string; order: number };
+
+export function EventContentClient({ gallery }: { gallery: GalleryImage[] }) {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const images = gallery.sort((a, b) => (a.order || 0) - (b.order || 0)).map((g) => g.url);
@@ -18,14 +21,14 @@ export function EventContentClient({ gallery }: { gallery: any[] }) {
     if (selectedImage === null) {
       return;
     }
-    setSelectedImage((prev) => (prev! + 1) % images.length);
+    setSelectedImage((selectedImage + 1) % images.length);
   };
 
   const prevImage = () => {
     if (selectedImage === null) {
       return;
     }
-    setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev! - 1));
+    setSelectedImage(selectedImage === 0 ? images.length - 1 : selectedImage - 1);
   };
 
   return (
@@ -33,26 +36,28 @@ export function EventContentClient({ gallery }: { gallery: any[] }) {
       <h2 className='mb-6 border-border border-b pb-2 font-bold text-2xl'>Thư viện ảnh</h2>
       <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
         {images.map((url, idx) => (
-          <div
+          <button
             className='group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-muted/30'
-            key={idx}
+            key={url}
             onClick={() => setSelectedImage(idx)}
+            type='button'
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               alt={`Gallery image ${idx + 1}`}
-              className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
+              className='object-cover transition-transform duration-500 group-hover:scale-110'
+              fill
+              sizes='(min-width: 768px) 33vw, 50vw'
               src={url}
             />
             <div className='absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100'>
               <span className='font-medium text-sm text-white'>Phóng to</span>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
       <Dialog onOpenChange={(open) => !open && setSelectedImage(null)} open={selectedImage !== null}>
-        <DialogContent className='h-[90vh] max-w-5xl overflow-hidden border-none bg-black/95 p-0'>
+        <DialogContent className='h-[90vh] max-w-7xl overflow-hidden border-none bg-black/95 p-0'>
           <DialogTitle className='sr-only'>Hình ảnh sự kiện</DialogTitle>
           {selectedImage !== null && (
             <div className='relative flex h-full flex-col'>
@@ -66,11 +71,15 @@ export function EventContentClient({ gallery }: { gallery: any[] }) {
               </Button>
 
               <div className='relative flex flex-1 items-center justify-center p-4'>
-                <img
-                  alt={`Gallery image ${selectedImage + 1}`}
-                  className='max-h-full max-w-full object-contain'
-                  src={images[selectedImage]}
-                />
+                <div className='relative h-full w-full'>
+                  <Image
+                    alt={`Gallery image ${selectedImage + 1}`}
+                    className='object-contain'
+                    fill
+                    sizes='90vw'
+                    src={images[selectedImage]}
+                  />
+                </div>
 
                 {images.length > 1 && (
                   <>

@@ -10,7 +10,17 @@ export async function generateMetadata({ params }: PageType) {
 
   const t = await getTranslations({ locale, namespace: "auth" });
   return {
-    title: t("title")
+    title: t("title"),
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true
+      }
+    }
   };
 }
 
@@ -18,9 +28,5 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
   const { locale } = await params;
   setRequestLocale(locale as locale);
 
-  return (
-    <section className='flex h-full items-center justify-center'>
-      <LoginClient />
-    </section>
-  );
+  return <LoginClient />;
 }

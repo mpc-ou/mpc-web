@@ -14,10 +14,16 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Post
- * Bài viết / Blog post
- * Workflow: DRAFT -> PENDING_REVIEW -> PUBLISHED (hoặc REJECTED)
- * Member chỉ được tạo DRAFT và gửi PENDING_REVIEW
- * Collaborator/Admin được PUBLISHED trực tiếp
+ * Bài viết thống nhất - gộp Post, Event, Achievement cũ
+ * 
+ * Workflow theo type:
+ * BLOG: Member tạo -> PENDING_REVIEW -> Admin duyệt -> PUBLISHED
+ * Admin/COLLABORATOR tạo -> PUBLISHED (tự động)
+ * EVENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+ * ACHIEVEMENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+ * 
+ * Song ngữ: Khi soạn thảo chọn sourceLanguage, sau đó dùng tool dịch
+ * tự động để điền bản còn lại. Cả 2 bản cùng lưu trong 1 record.
  */
 export type PostModel = runtime.Types.Result.DefaultSelection<Prisma.$PostPayload>
 
@@ -31,18 +37,29 @@ export type AggregatePost = {
 
 export type PostAvgAggregateOutputType = {
   viewCount: number | null
+  latitude: number | null
+  longitude: number | null
+  maxAttendees: number | null
 }
 
 export type PostSumAggregateOutputType = {
   viewCount: number | null
+  latitude: number | null
+  longitude: number | null
+  maxAttendees: number | null
 }
 
 export type PostMinAggregateOutputType = {
   id: string | null
-  title: string | null
+  type: $Enums.PostType | null
+  titleVi: string | null
+  titleEn: string | null
   slug: string | null
-  summary: string | null
-  content: string | null
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string | null
+  contentEn: string | null
+  sourceLanguage: $Enums.PostLanguage | null
   thumbnail: string | null
   status: $Enums.PostStatus | null
   isPinned: boolean | null
@@ -50,6 +67,20 @@ export type PostMinAggregateOutputType = {
   authorId: string | null
   reviewerId: string | null
   categoryId: string | null
+  activityId: string | null
+  eventStatus: $Enums.EventStatus | null
+  eventType: $Enums.EventType | null
+  locationVi: string | null
+  locationEn: string | null
+  latitude: number | null
+  longitude: number | null
+  maxAttendees: number | null
+  startAt: Date | null
+  endAt: Date | null
+  achievementType: $Enums.AchievementType | null
+  achievementDate: Date | null
+  isHighlight: boolean | null
+  relatedUrl: string | null
   publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,10 +88,15 @@ export type PostMinAggregateOutputType = {
 
 export type PostMaxAggregateOutputType = {
   id: string | null
-  title: string | null
+  type: $Enums.PostType | null
+  titleVi: string | null
+  titleEn: string | null
   slug: string | null
-  summary: string | null
-  content: string | null
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string | null
+  contentEn: string | null
+  sourceLanguage: $Enums.PostLanguage | null
   thumbnail: string | null
   status: $Enums.PostStatus | null
   isPinned: boolean | null
@@ -68,6 +104,20 @@ export type PostMaxAggregateOutputType = {
   authorId: string | null
   reviewerId: string | null
   categoryId: string | null
+  activityId: string | null
+  eventStatus: $Enums.EventStatus | null
+  eventType: $Enums.EventType | null
+  locationVi: string | null
+  locationEn: string | null
+  latitude: number | null
+  longitude: number | null
+  maxAttendees: number | null
+  startAt: Date | null
+  endAt: Date | null
+  achievementType: $Enums.AchievementType | null
+  achievementDate: Date | null
+  isHighlight: boolean | null
+  relatedUrl: string | null
   publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -75,17 +125,37 @@ export type PostMaxAggregateOutputType = {
 
 export type PostCountAggregateOutputType = {
   id: number
-  title: number
+  type: number
+  titleVi: number
+  titleEn: number
   slug: number
-  summary: number
-  content: number
+  summaryVi: number
+  summaryEn: number
+  contentVi: number
+  contentEn: number
+  sourceLanguage: number
   thumbnail: number
+  images: number
   status: number
   isPinned: number
   viewCount: number
   authorId: number
   reviewerId: number
   categoryId: number
+  activityId: number
+  eventStatus: number
+  eventType: number
+  locationVi: number
+  locationEn: number
+  latitude: number
+  longitude: number
+  maxAttendees: number
+  startAt: number
+  endAt: number
+  achievementType: number
+  achievementDate: number
+  isHighlight: number
+  relatedUrl: number
   publishedAt: number
   createdAt: number
   updatedAt: number
@@ -95,18 +165,29 @@ export type PostCountAggregateOutputType = {
 
 export type PostAvgAggregateInputType = {
   viewCount?: true
+  latitude?: true
+  longitude?: true
+  maxAttendees?: true
 }
 
 export type PostSumAggregateInputType = {
   viewCount?: true
+  latitude?: true
+  longitude?: true
+  maxAttendees?: true
 }
 
 export type PostMinAggregateInputType = {
   id?: true
-  title?: true
+  type?: true
+  titleVi?: true
+  titleEn?: true
   slug?: true
-  summary?: true
-  content?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
+  sourceLanguage?: true
   thumbnail?: true
   status?: true
   isPinned?: true
@@ -114,6 +195,20 @@ export type PostMinAggregateInputType = {
   authorId?: true
   reviewerId?: true
   categoryId?: true
+  activityId?: true
+  eventStatus?: true
+  eventType?: true
+  locationVi?: true
+  locationEn?: true
+  latitude?: true
+  longitude?: true
+  maxAttendees?: true
+  startAt?: true
+  endAt?: true
+  achievementType?: true
+  achievementDate?: true
+  isHighlight?: true
+  relatedUrl?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -121,10 +216,15 @@ export type PostMinAggregateInputType = {
 
 export type PostMaxAggregateInputType = {
   id?: true
-  title?: true
+  type?: true
+  titleVi?: true
+  titleEn?: true
   slug?: true
-  summary?: true
-  content?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
+  sourceLanguage?: true
   thumbnail?: true
   status?: true
   isPinned?: true
@@ -132,6 +232,20 @@ export type PostMaxAggregateInputType = {
   authorId?: true
   reviewerId?: true
   categoryId?: true
+  activityId?: true
+  eventStatus?: true
+  eventType?: true
+  locationVi?: true
+  locationEn?: true
+  latitude?: true
+  longitude?: true
+  maxAttendees?: true
+  startAt?: true
+  endAt?: true
+  achievementType?: true
+  achievementDate?: true
+  isHighlight?: true
+  relatedUrl?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -139,17 +253,37 @@ export type PostMaxAggregateInputType = {
 
 export type PostCountAggregateInputType = {
   id?: true
-  title?: true
+  type?: true
+  titleVi?: true
+  titleEn?: true
   slug?: true
-  summary?: true
-  content?: true
+  summaryVi?: true
+  summaryEn?: true
+  contentVi?: true
+  contentEn?: true
+  sourceLanguage?: true
   thumbnail?: true
+  images?: true
   status?: true
   isPinned?: true
   viewCount?: true
   authorId?: true
   reviewerId?: true
   categoryId?: true
+  activityId?: true
+  eventStatus?: true
+  eventType?: true
+  locationVi?: true
+  locationEn?: true
+  latitude?: true
+  longitude?: true
+  maxAttendees?: true
+  startAt?: true
+  endAt?: true
+  achievementType?: true
+  achievementDate?: true
+  isHighlight?: true
+  relatedUrl?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -244,17 +378,37 @@ export type PostGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type PostGroupByOutputType = {
   id: string
-  title: string
+  type: $Enums.PostType
+  titleVi: string
+  titleEn: string
   slug: string
-  summary: string | null
-  content: string
+  summaryVi: string | null
+  summaryEn: string | null
+  contentVi: string
+  contentEn: string
+  sourceLanguage: $Enums.PostLanguage
   thumbnail: string | null
+  images: string[]
   status: $Enums.PostStatus
   isPinned: boolean
   viewCount: number
-  authorId: string
+  authorId: string | null
   reviewerId: string | null
   categoryId: string | null
+  activityId: string | null
+  eventStatus: $Enums.EventStatus | null
+  eventType: $Enums.EventType | null
+  locationVi: string | null
+  locationEn: string | null
+  latitude: number | null
+  longitude: number | null
+  maxAttendees: number | null
+  startAt: Date | null
+  endAt: Date | null
+  achievementType: $Enums.AchievementType | null
+  achievementDate: Date | null
+  isHighlight: boolean
+  relatedUrl: string | null
   publishedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -285,50 +439,102 @@ export type PostWhereInput = {
   OR?: Prisma.PostWhereInput[]
   NOT?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
   id?: Prisma.StringFilter<"Post"> | string
-  title?: Prisma.StringFilter<"Post"> | string
+  type?: Prisma.EnumPostTypeFilter<"Post"> | $Enums.PostType
+  titleVi?: Prisma.StringFilter<"Post"> | string
+  titleEn?: Prisma.StringFilter<"Post"> | string
   slug?: Prisma.StringFilter<"Post"> | string
-  summary?: Prisma.StringNullableFilter<"Post"> | string | null
-  content?: Prisma.StringFilter<"Post"> | string
+  summaryVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  contentVi?: Prisma.StringFilter<"Post"> | string
+  contentEn?: Prisma.StringFilter<"Post"> | string
+  sourceLanguage?: Prisma.EnumPostLanguageFilter<"Post"> | $Enums.PostLanguage
   thumbnail?: Prisma.StringNullableFilter<"Post"> | string | null
+  images?: Prisma.StringNullableListFilter<"Post">
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Post"> | string | null
+  eventStatus?: Prisma.EnumEventStatusNullableFilter<"Post"> | $Enums.EventStatus | null
+  eventType?: Prisma.EnumEventTypeNullableFilter<"Post"> | $Enums.EventType | null
+  locationVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  locationEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  latitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  maxAttendees?: Prisma.IntNullableFilter<"Post"> | number | null
+  startAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  achievementType?: Prisma.EnumAchievementTypeNullableFilter<"Post"> | $Enums.AchievementType | null
+  achievementDate?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  isHighlight?: Prisma.BoolFilter<"Post"> | boolean
+  relatedUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
-  author?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
+  author?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   reviewer?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
   tags?: Prisma.PostTagListRelationFilter
   revisions?: Prisma.PostRevisionListRelationFilter
-  achievements?: Prisma.AchievementListRelationFilter
+  activities?: Prisma.PostActivityListRelationFilter
+  organizers?: Prisma.PostOrganizerListRelationFilter
+  sponsorships?: Prisma.PostSponsorshipListRelationFilter
+  gallery?: Prisma.ImageListRelationFilter
+  achievementMembers?: Prisma.PostAchievementMemberListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type PostOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
-  content?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  summaryEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
+  sourceLanguage?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  activityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventType?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrderInput | Prisma.SortOrder
+  startAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementType?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isHighlight?: Prisma.SortOrder
+  relatedUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   author?: Prisma.MemberOrderByWithRelationInput
   reviewer?: Prisma.MemberOrderByWithRelationInput
   category?: Prisma.CategoryOrderByWithRelationInput
+  activity?: Prisma.ActivityOrderByWithRelationInput
   tags?: Prisma.PostTagOrderByRelationAggregateInput
   revisions?: Prisma.PostRevisionOrderByRelationAggregateInput
-  achievements?: Prisma.AchievementOrderByRelationAggregateInput
+  activities?: Prisma.PostActivityOrderByRelationAggregateInput
+  organizers?: Prisma.PostOrganizerOrderByRelationAggregateInput
+  sponsorships?: Prisma.PostSponsorshipOrderByRelationAggregateInput
+  gallery?: Prisma.ImageOrderByRelationAggregateInput
+  achievementMembers?: Prisma.PostAchievementMemberOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -337,40 +543,86 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
   OR?: Prisma.PostWhereInput[]
   NOT?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
-  title?: Prisma.StringFilter<"Post"> | string
-  summary?: Prisma.StringNullableFilter<"Post"> | string | null
-  content?: Prisma.StringFilter<"Post"> | string
+  type?: Prisma.EnumPostTypeFilter<"Post"> | $Enums.PostType
+  titleVi?: Prisma.StringFilter<"Post"> | string
+  titleEn?: Prisma.StringFilter<"Post"> | string
+  summaryVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  contentVi?: Prisma.StringFilter<"Post"> | string
+  contentEn?: Prisma.StringFilter<"Post"> | string
+  sourceLanguage?: Prisma.EnumPostLanguageFilter<"Post"> | $Enums.PostLanguage
   thumbnail?: Prisma.StringNullableFilter<"Post"> | string | null
+  images?: Prisma.StringNullableListFilter<"Post">
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Post"> | string | null
+  eventStatus?: Prisma.EnumEventStatusNullableFilter<"Post"> | $Enums.EventStatus | null
+  eventType?: Prisma.EnumEventTypeNullableFilter<"Post"> | $Enums.EventType | null
+  locationVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  locationEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  latitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  maxAttendees?: Prisma.IntNullableFilter<"Post"> | number | null
+  startAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  achievementType?: Prisma.EnumAchievementTypeNullableFilter<"Post"> | $Enums.AchievementType | null
+  achievementDate?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  isHighlight?: Prisma.BoolFilter<"Post"> | boolean
+  relatedUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
-  author?: Prisma.XOR<Prisma.MemberScalarRelationFilter, Prisma.MemberWhereInput>
+  author?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   reviewer?: Prisma.XOR<Prisma.MemberNullableScalarRelationFilter, Prisma.MemberWhereInput> | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
   tags?: Prisma.PostTagListRelationFilter
   revisions?: Prisma.PostRevisionListRelationFilter
-  achievements?: Prisma.AchievementListRelationFilter
+  activities?: Prisma.PostActivityListRelationFilter
+  organizers?: Prisma.PostOrganizerListRelationFilter
+  sponsorships?: Prisma.PostSponsorshipListRelationFilter
+  gallery?: Prisma.ImageListRelationFilter
+  achievementMembers?: Prisma.PostAchievementMemberListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "slug">
 
 export type PostOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
-  content?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  summaryEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
+  sourceLanguage?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  activityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventType?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrderInput | Prisma.SortOrder
+  startAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementType?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isHighlight?: Prisma.SortOrder
+  relatedUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -386,17 +638,37 @@ export type PostScalarWhereWithAggregatesInput = {
   OR?: Prisma.PostScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PostScalarWhereWithAggregatesInput | Prisma.PostScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Post"> | string
-  title?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  type?: Prisma.EnumPostTypeWithAggregatesFilter<"Post"> | $Enums.PostType
+  titleVi?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  titleEn?: Prisma.StringWithAggregatesFilter<"Post"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Post"> | string
-  summary?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
-  content?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  summaryVi?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  summaryEn?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  contentVi?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  contentEn?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  sourceLanguage?: Prisma.EnumPostLanguageWithAggregatesFilter<"Post"> | $Enums.PostLanguage
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  images?: Prisma.StringNullableListFilter<"Post">
   status?: Prisma.EnumPostStatusWithAggregatesFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
   viewCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
-  authorId?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  authorId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  activityId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  eventStatus?: Prisma.EnumEventStatusNullableWithAggregatesFilter<"Post"> | $Enums.EventStatus | null
+  eventType?: Prisma.EnumEventTypeNullableWithAggregatesFilter<"Post"> | $Enums.EventType | null
+  locationVi?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  locationEn?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
+  latitude?: Prisma.FloatNullableWithAggregatesFilter<"Post"> | number | null
+  longitude?: Prisma.FloatNullableWithAggregatesFilter<"Post"> | number | null
+  maxAttendees?: Prisma.IntNullableWithAggregatesFilter<"Post"> | number | null
+  startAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
+  achievementType?: Prisma.EnumAchievementTypeNullableWithAggregatesFilter<"Post"> | $Enums.AchievementType | null
+  achievementDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
+  isHighlight?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
+  relatedUrl?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
@@ -404,101 +676,221 @@ export type PostScalarWhereWithAggregatesInput = {
 
 export type PostCreateInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateManyInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -506,14 +898,33 @@ export type PostCreateManyInput = {
 
 export type PostUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -521,17 +932,37 @@ export type PostUpdateManyMutationInput = {
 
 export type PostUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -547,19 +978,47 @@ export type PostOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type PostCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
+  sourceLanguage?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  eventStatus?: Prisma.SortOrder
+  eventType?: Prisma.SortOrder
+  locationVi?: Prisma.SortOrder
+  locationEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
+  achievementType?: Prisma.SortOrder
+  achievementDate?: Prisma.SortOrder
+  isHighlight?: Prisma.SortOrder
+  relatedUrl?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -567,14 +1026,22 @@ export type PostCountOrderByAggregateInput = {
 
 export type PostAvgOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrder
 }
 
 export type PostMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
+  sourceLanguage?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
@@ -582,6 +1049,20 @@ export type PostMaxOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  eventStatus?: Prisma.SortOrder
+  eventType?: Prisma.SortOrder
+  locationVi?: Prisma.SortOrder
+  locationEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
+  achievementType?: Prisma.SortOrder
+  achievementDate?: Prisma.SortOrder
+  isHighlight?: Prisma.SortOrder
+  relatedUrl?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -589,10 +1070,15 @@ export type PostMaxOrderByAggregateInput = {
 
 export type PostMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  titleVi?: Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  summaryVi?: Prisma.SortOrder
+  summaryEn?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
+  sourceLanguage?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
@@ -600,6 +1086,20 @@ export type PostMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   reviewerId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  eventStatus?: Prisma.SortOrder
+  eventType?: Prisma.SortOrder
+  locationVi?: Prisma.SortOrder
+  locationEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
+  achievementType?: Prisma.SortOrder
+  achievementDate?: Prisma.SortOrder
+  isHighlight?: Prisma.SortOrder
+  relatedUrl?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -607,6 +1107,9 @@ export type PostMinOrderByAggregateInput = {
 
 export type PostSumOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  maxAttendees?: Prisma.SortOrder
 }
 
 export type PostScalarRelationFilter = {
@@ -745,8 +1248,45 @@ export type PostUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
+export type PostCreateimagesInput = {
+  set: string[]
+}
+
+export type EnumPostTypeFieldUpdateOperationsInput = {
+  set?: $Enums.PostType
+}
+
+export type EnumPostLanguageFieldUpdateOperationsInput = {
+  set?: $Enums.PostLanguage
+}
+
+export type PostUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type EnumPostStatusFieldUpdateOperationsInput = {
   set?: $Enums.PostStatus
+}
+
+export type NullableEnumEventStatusFieldUpdateOperationsInput = {
+  set?: $Enums.EventStatus | null
+}
+
+export type NullableEnumEventTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EventType | null
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableEnumAchievementTypeFieldUpdateOperationsInput = {
+  set?: $Enums.AchievementType | null
 }
 
 export type PostCreateNestedOneWithoutRevisionsInput = {
@@ -777,60 +1317,226 @@ export type PostUpdateOneRequiredWithoutTagsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutTagsInput, Prisma.PostUpdateWithoutTagsInput>, Prisma.PostUncheckedUpdateWithoutTagsInput>
 }
 
-export type PostCreateNestedOneWithoutAchievementsInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAchievementsInput, Prisma.PostUncheckedCreateWithoutAchievementsInput>
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAchievementsInput
+export type PostCreateNestedOneWithoutActivitiesInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivitiesInput, Prisma.PostUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivitiesInput
   connect?: Prisma.PostWhereUniqueInput
 }
 
-export type PostUpdateOneWithoutAchievementsNestedInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAchievementsInput, Prisma.PostUncheckedCreateWithoutAchievementsInput>
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAchievementsInput
-  upsert?: Prisma.PostUpsertWithoutAchievementsInput
+export type PostUpdateOneRequiredWithoutActivitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivitiesInput, Prisma.PostUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivitiesInput
+  upsert?: Prisma.PostUpsertWithoutActivitiesInput
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutActivitiesInput, Prisma.PostUpdateWithoutActivitiesInput>, Prisma.PostUncheckedUpdateWithoutActivitiesInput>
+}
+
+export type PostCreateNestedOneWithoutOrganizersInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutOrganizersInput, Prisma.PostUncheckedCreateWithoutOrganizersInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutOrganizersInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneRequiredWithoutOrganizersNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutOrganizersInput, Prisma.PostUncheckedCreateWithoutOrganizersInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutOrganizersInput
+  upsert?: Prisma.PostUpsertWithoutOrganizersInput
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutOrganizersInput, Prisma.PostUpdateWithoutOrganizersInput>, Prisma.PostUncheckedUpdateWithoutOrganizersInput>
+}
+
+export type PostCreateNestedOneWithoutGalleryInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutGalleryInput, Prisma.PostUncheckedCreateWithoutGalleryInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutGalleryInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneWithoutGalleryNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutGalleryInput, Prisma.PostUncheckedCreateWithoutGalleryInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutGalleryInput
+  upsert?: Prisma.PostUpsertWithoutGalleryInput
   disconnect?: Prisma.PostWhereInput | boolean
   delete?: Prisma.PostWhereInput | boolean
   connect?: Prisma.PostWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutAchievementsInput, Prisma.PostUpdateWithoutAchievementsInput>, Prisma.PostUncheckedUpdateWithoutAchievementsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutGalleryInput, Prisma.PostUpdateWithoutGalleryInput>, Prisma.PostUncheckedUpdateWithoutGalleryInput>
+}
+
+export type PostCreateNestedOneWithoutAchievementMembersInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAchievementMembersInput, Prisma.PostUncheckedCreateWithoutAchievementMembersInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAchievementMembersInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneRequiredWithoutAchievementMembersNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAchievementMembersInput, Prisma.PostUncheckedCreateWithoutAchievementMembersInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAchievementMembersInput
+  upsert?: Prisma.PostUpsertWithoutAchievementMembersInput
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutAchievementMembersInput, Prisma.PostUpdateWithoutAchievementMembersInput>, Prisma.PostUncheckedUpdateWithoutAchievementMembersInput>
+}
+
+export type PostCreateNestedManyWithoutActivityInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput> | Prisma.PostCreateWithoutActivityInput[] | Prisma.PostUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivityInput | Prisma.PostCreateOrConnectWithoutActivityInput[]
+  createMany?: Prisma.PostCreateManyActivityInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+}
+
+export type PostUncheckedCreateNestedManyWithoutActivityInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput> | Prisma.PostCreateWithoutActivityInput[] | Prisma.PostUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivityInput | Prisma.PostCreateOrConnectWithoutActivityInput[]
+  createMany?: Prisma.PostCreateManyActivityInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+}
+
+export type PostUpdateManyWithoutActivityNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput> | Prisma.PostCreateWithoutActivityInput[] | Prisma.PostUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivityInput | Prisma.PostCreateOrConnectWithoutActivityInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutActivityInput | Prisma.PostUpsertWithWhereUniqueWithoutActivityInput[]
+  createMany?: Prisma.PostCreateManyActivityInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutActivityInput | Prisma.PostUpdateWithWhereUniqueWithoutActivityInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutActivityInput | Prisma.PostUpdateManyWithWhereWithoutActivityInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+}
+
+export type PostUncheckedUpdateManyWithoutActivityNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput> | Prisma.PostCreateWithoutActivityInput[] | Prisma.PostUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutActivityInput | Prisma.PostCreateOrConnectWithoutActivityInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutActivityInput | Prisma.PostUpsertWithWhereUniqueWithoutActivityInput[]
+  createMany?: Prisma.PostCreateManyActivityInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutActivityInput | Prisma.PostUpdateWithWhereUniqueWithoutActivityInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutActivityInput | Prisma.PostUpdateManyWithWhereWithoutActivityInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+}
+
+export type PostCreateNestedOneWithoutSponsorshipsInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutSponsorshipsInput, Prisma.PostUncheckedCreateWithoutSponsorshipsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutSponsorshipsInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneWithoutSponsorshipsNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutSponsorshipsInput, Prisma.PostUncheckedCreateWithoutSponsorshipsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutSponsorshipsInput
+  upsert?: Prisma.PostUpsertWithoutSponsorshipsInput
+  disconnect?: Prisma.PostWhereInput | boolean
+  delete?: Prisma.PostWhereInput | boolean
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutSponsorshipsInput, Prisma.PostUpdateWithoutSponsorshipsInput>, Prisma.PostUncheckedUpdateWithoutSponsorshipsInput>
+}
+
+export type PostCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutNotificationsInput, Prisma.PostUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.PostWhereUniqueInput
+}
+
+export type PostUpdateOneWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutNotificationsInput, Prisma.PostUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.PostUpsertWithoutNotificationsInput
+  disconnect?: Prisma.PostWhereInput | boolean
+  delete?: Prisma.PostWhereInput | boolean
+  connect?: Prisma.PostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostUpdateToOneWithWhereWithoutNotificationsInput, Prisma.PostUpdateWithoutNotificationsInput>, Prisma.PostUncheckedUpdateWithoutNotificationsInput>
 }
 
 export type PostCreateWithoutAuthorInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutAuthorInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutAuthorInput = {
@@ -845,42 +1551,92 @@ export type PostCreateManyAuthorInputEnvelope = {
 
 export type PostCreateWithoutReviewerInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutReviewerInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutReviewerInput = {
@@ -914,17 +1670,37 @@ export type PostScalarWhereInput = {
   OR?: Prisma.PostScalarWhereInput[]
   NOT?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
   id?: Prisma.StringFilter<"Post"> | string
-  title?: Prisma.StringFilter<"Post"> | string
+  type?: Prisma.EnumPostTypeFilter<"Post"> | $Enums.PostType
+  titleVi?: Prisma.StringFilter<"Post"> | string
+  titleEn?: Prisma.StringFilter<"Post"> | string
   slug?: Prisma.StringFilter<"Post"> | string
-  summary?: Prisma.StringNullableFilter<"Post"> | string | null
-  content?: Prisma.StringFilter<"Post"> | string
+  summaryVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  summaryEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  contentVi?: Prisma.StringFilter<"Post"> | string
+  contentEn?: Prisma.StringFilter<"Post"> | string
+  sourceLanguage?: Prisma.EnumPostLanguageFilter<"Post"> | $Enums.PostLanguage
   thumbnail?: Prisma.StringNullableFilter<"Post"> | string | null
+  images?: Prisma.StringNullableListFilter<"Post">
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   isPinned?: Prisma.BoolFilter<"Post"> | boolean
   viewCount?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.StringFilter<"Post"> | string
+  authorId?: Prisma.StringNullableFilter<"Post"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"Post"> | string | null
   categoryId?: Prisma.StringNullableFilter<"Post"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Post"> | string | null
+  eventStatus?: Prisma.EnumEventStatusNullableFilter<"Post"> | $Enums.EventStatus | null
+  eventType?: Prisma.EnumEventTypeNullableFilter<"Post"> | $Enums.EventType | null
+  locationVi?: Prisma.StringNullableFilter<"Post"> | string | null
+  locationEn?: Prisma.StringNullableFilter<"Post"> | string | null
+  latitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Post"> | number | null
+  maxAttendees?: Prisma.IntNullableFilter<"Post"> | number | null
+  startAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  achievementType?: Prisma.EnumAchievementTypeNullableFilter<"Post"> | $Enums.AchievementType | null
+  achievementDate?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
+  isHighlight?: Prisma.BoolFilter<"Post"> | boolean
+  relatedUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -948,42 +1724,92 @@ export type PostUpdateManyWithWhereWithoutReviewerInput = {
 
 export type PostCreateWithoutCategoryInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutCategoryInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutCategoryInput = {
@@ -1014,42 +1840,92 @@ export type PostUpdateManyWithWhereWithoutCategoryInput = {
 
 export type PostCreateWithoutRevisionsInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutRevisionsInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutRevisionsInput = {
@@ -1070,82 +1946,182 @@ export type PostUpdateToOneWithWhereWithoutRevisionsInput = {
 
 export type PostUpdateWithoutRevisionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutRevisionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateWithoutTagsInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
 export type PostUncheckedCreateWithoutTagsInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutRelatedPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type PostCreateOrConnectWithoutTagsInput = {
@@ -1166,152 +2142,1418 @@ export type PostUpdateToOneWithWhereWithoutTagsInput = {
 
 export type PostUpdateWithoutTagsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutTagsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
-export type PostCreateWithoutAchievementsInput = {
+export type PostCreateWithoutActivitiesInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  author: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
   reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
   category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
   tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
 }
 
-export type PostUncheckedCreateWithoutAchievementsInput = {
+export type PostUncheckedCreateWithoutActivitiesInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
   revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
 }
 
-export type PostCreateOrConnectWithoutAchievementsInput = {
+export type PostCreateOrConnectWithoutActivitiesInput = {
   where: Prisma.PostWhereUniqueInput
-  create: Prisma.XOR<Prisma.PostCreateWithoutAchievementsInput, Prisma.PostUncheckedCreateWithoutAchievementsInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutActivitiesInput, Prisma.PostUncheckedCreateWithoutActivitiesInput>
 }
 
-export type PostUpsertWithoutAchievementsInput = {
-  update: Prisma.XOR<Prisma.PostUpdateWithoutAchievementsInput, Prisma.PostUncheckedUpdateWithoutAchievementsInput>
-  create: Prisma.XOR<Prisma.PostCreateWithoutAchievementsInput, Prisma.PostUncheckedCreateWithoutAchievementsInput>
+export type PostUpsertWithoutActivitiesInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutActivitiesInput, Prisma.PostUncheckedUpdateWithoutActivitiesInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutActivitiesInput, Prisma.PostUncheckedCreateWithoutActivitiesInput>
   where?: Prisma.PostWhereInput
 }
 
-export type PostUpdateToOneWithWhereWithoutAchievementsInput = {
+export type PostUpdateToOneWithWhereWithoutActivitiesInput = {
   where?: Prisma.PostWhereInput
-  data: Prisma.XOR<Prisma.PostUpdateWithoutAchievementsInput, Prisma.PostUncheckedUpdateWithoutAchievementsInput>
+  data: Prisma.XOR<Prisma.PostUpdateWithoutActivitiesInput, Prisma.PostUncheckedUpdateWithoutActivitiesInput>
 }
 
-export type PostUpdateWithoutAchievementsInput = {
+export type PostUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
-export type PostUncheckedUpdateWithoutAchievementsInput = {
+export type PostUncheckedUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostCreateWithoutOrganizersInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutOrganizersInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutOrganizersInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutOrganizersInput, Prisma.PostUncheckedCreateWithoutOrganizersInput>
+}
+
+export type PostUpsertWithoutOrganizersInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutOrganizersInput, Prisma.PostUncheckedUpdateWithoutOrganizersInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutOrganizersInput, Prisma.PostUncheckedCreateWithoutOrganizersInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutOrganizersInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutOrganizersInput, Prisma.PostUncheckedUpdateWithoutOrganizersInput>
+}
+
+export type PostUpdateWithoutOrganizersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutOrganizersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostCreateWithoutGalleryInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutGalleryInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutGalleryInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutGalleryInput, Prisma.PostUncheckedCreateWithoutGalleryInput>
+}
+
+export type PostUpsertWithoutGalleryInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutGalleryInput, Prisma.PostUncheckedUpdateWithoutGalleryInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutGalleryInput, Prisma.PostUncheckedCreateWithoutGalleryInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutGalleryInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutGalleryInput, Prisma.PostUncheckedUpdateWithoutGalleryInput>
+}
+
+export type PostUpdateWithoutGalleryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutGalleryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostCreateWithoutAchievementMembersInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutAchievementMembersInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutAchievementMembersInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutAchievementMembersInput, Prisma.PostUncheckedCreateWithoutAchievementMembersInput>
+}
+
+export type PostUpsertWithoutAchievementMembersInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutAchievementMembersInput, Prisma.PostUncheckedUpdateWithoutAchievementMembersInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutAchievementMembersInput, Prisma.PostUncheckedCreateWithoutAchievementMembersInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutAchievementMembersInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutAchievementMembersInput, Prisma.PostUncheckedUpdateWithoutAchievementMembersInput>
+}
+
+export type PostUpdateWithoutAchievementMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutAchievementMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostCreateWithoutActivityInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutActivityInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutActivityInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput>
+}
+
+export type PostCreateManyActivityInputEnvelope = {
+  data: Prisma.PostCreateManyActivityInput | Prisma.PostCreateManyActivityInput[]
+  skipDuplicates?: boolean
+}
+
+export type PostUpsertWithWhereUniqueWithoutActivityInput = {
+  where: Prisma.PostWhereUniqueInput
+  update: Prisma.XOR<Prisma.PostUpdateWithoutActivityInput, Prisma.PostUncheckedUpdateWithoutActivityInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutActivityInput, Prisma.PostUncheckedCreateWithoutActivityInput>
+}
+
+export type PostUpdateWithWhereUniqueWithoutActivityInput = {
+  where: Prisma.PostWhereUniqueInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutActivityInput, Prisma.PostUncheckedUpdateWithoutActivityInput>
+}
+
+export type PostUpdateManyWithWhereWithoutActivityInput = {
+  where: Prisma.PostScalarWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyWithoutActivityInput>
+}
+
+export type PostCreateWithoutSponsorshipsInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutSponsorshipsInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutSponsorshipsInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutSponsorshipsInput, Prisma.PostUncheckedCreateWithoutSponsorshipsInput>
+}
+
+export type PostUpsertWithoutSponsorshipsInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutSponsorshipsInput, Prisma.PostUncheckedUpdateWithoutSponsorshipsInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutSponsorshipsInput, Prisma.PostUncheckedCreateWithoutSponsorshipsInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutSponsorshipsInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutSponsorshipsInput, Prisma.PostUncheckedUpdateWithoutSponsorshipsInput>
+}
+
+export type PostUpdateWithoutSponsorshipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutSponsorshipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostCreateWithoutNotificationsInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.MemberCreateNestedOneWithoutAuthoredPostsInput
+  reviewer?: Prisma.MemberCreateNestedOneWithoutReviewedPostsInput
+  category?: Prisma.CategoryCreateNestedOneWithoutPostsInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutPostsInput
+  tags?: Prisma.PostTagCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.PostTagUncheckedCreateNestedManyWithoutPostInput
+  revisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutPostInput
+  activities?: Prisma.PostActivityUncheckedCreateNestedManyWithoutPostInput
+  organizers?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutPostInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutPostInput
+  gallery?: Prisma.ImageUncheckedCreateNestedManyWithoutPostInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutNotificationsInput, Prisma.PostUncheckedCreateWithoutNotificationsInput>
+}
+
+export type PostUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.PostUpdateWithoutNotificationsInput, Prisma.PostUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutNotificationsInput, Prisma.PostUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.PostWhereInput
+}
+
+export type PostUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.PostWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutNotificationsInput, Prisma.PostUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type PostUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostCreateManyAuthorInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
   reviewerId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1319,16 +3561,36 @@ export type PostCreateManyAuthorInput = {
 
 export type PostCreateManyReviewerInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   categoryId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1336,56 +3598,126 @@ export type PostCreateManyReviewerInput = {
 
 export type PostUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1393,56 +3725,126 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
 
 export type PostUpdateWithoutReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateManyWithoutReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1450,16 +3852,36 @@ export type PostUncheckedUpdateManyWithoutReviewerInput = {
 
 export type PostCreateManyCategoryInput = {
   id?: string
-  title: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
   slug: string
-  summary?: string | null
-  content: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
   thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
   status?: $Enums.PostStatus
   isPinned?: boolean
   viewCount?: number
-  authorId: string
+  authorId?: string | null
   reviewerId?: string | null
+  activityId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1467,56 +3889,290 @@ export type PostCreateManyCategoryInput = {
 
 export type PostUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
   reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutPostsNestedInput
   tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
   revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutRelatedPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type PostUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
-  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PostCreateManyActivityInput = {
+  id?: string
+  type?: $Enums.PostType
+  titleVi: string
+  titleEn?: string
+  slug: string
+  summaryVi?: string | null
+  summaryEn?: string | null
+  contentVi: string
+  contentEn?: string
+  sourceLanguage?: $Enums.PostLanguage
+  thumbnail?: string | null
+  images?: Prisma.PostCreateimagesInput | string[]
+  status?: $Enums.PostStatus
+  isPinned?: boolean
+  viewCount?: number
+  authorId?: string | null
+  reviewerId?: string | null
+  categoryId?: string | null
+  eventStatus?: $Enums.EventStatus | null
+  eventType?: $Enums.EventType | null
+  locationVi?: string | null
+  locationEn?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  maxAttendees?: number | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  achievementType?: $Enums.AchievementType | null
+  achievementDate?: Date | string | null
+  isHighlight?: boolean
+  relatedUrl?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PostUpdateWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.MemberUpdateOneWithoutAuthoredPostsNestedInput
+  reviewer?: Prisma.MemberUpdateOneWithoutReviewedPostsNestedInput
+  category?: Prisma.CategoryUpdateOneWithoutPostsNestedInput
+  tags?: Prisma.PostTagUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.PostTagUncheckedUpdateManyWithoutPostNestedInput
+  revisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutPostNestedInput
+  activities?: Prisma.PostActivityUncheckedUpdateManyWithoutPostNestedInput
+  organizers?: Prisma.PostOrganizerUncheckedUpdateManyWithoutPostNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutPostNestedInput
+  gallery?: Prisma.ImageUncheckedUpdateManyWithoutPostNestedInput
+  achievementMembers?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutPostNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateManyWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPostTypeFieldUpdateOperationsInput | $Enums.PostType
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  summaryVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summaryEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceLanguage?: Prisma.EnumPostLanguageFieldUpdateOperationsInput | $Enums.PostLanguage
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PostUpdateimagesInput | string[]
+  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventStatus?: Prisma.NullableEnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus | null
+  eventType?: Prisma.NullableEnumEventTypeFieldUpdateOperationsInput | $Enums.EventType | null
+  locationVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxAttendees?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievementType?: Prisma.NullableEnumAchievementTypeFieldUpdateOperationsInput | $Enums.AchievementType | null
+  achievementDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isHighlight?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  relatedUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1530,13 +4186,23 @@ export type PostUncheckedUpdateManyWithoutCategoryInput = {
 export type PostCountOutputType = {
   tags: number
   revisions: number
-  achievements: number
+  activities: number
+  organizers: number
+  sponsorships: number
+  gallery: number
+  achievementMembers: number
+  notifications: number
 }
 
 export type PostCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tags?: boolean | PostCountOutputTypeCountTagsArgs
   revisions?: boolean | PostCountOutputTypeCountRevisionsArgs
-  achievements?: boolean | PostCountOutputTypeCountAchievementsArgs
+  activities?: boolean | PostCountOutputTypeCountActivitiesArgs
+  organizers?: boolean | PostCountOutputTypeCountOrganizersArgs
+  sponsorships?: boolean | PostCountOutputTypeCountSponsorshipsArgs
+  gallery?: boolean | PostCountOutputTypeCountGalleryArgs
+  achievementMembers?: boolean | PostCountOutputTypeCountAchievementMembersArgs
+  notifications?: boolean | PostCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1566,140 +4232,297 @@ export type PostCountOutputTypeCountRevisionsArgs<ExtArgs extends runtime.Types.
 /**
  * PostCountOutputType without action
  */
-export type PostCountOutputTypeCountAchievementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AchievementWhereInput
+export type PostCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostActivityWhereInput
+}
+
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountOrganizersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostOrganizerWhereInput
+}
+
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountSponsorshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostSponsorshipWhereInput
+}
+
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountGalleryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImageWhereInput
+}
+
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountAchievementMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostAchievementMemberWhereInput
+}
+
+/**
+ * PostCountOutputType without action
+ */
+export type PostCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
 }
 
 
 export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
+  type?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
   slug?: boolean
-  summary?: boolean
-  content?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
+  sourceLanguage?: boolean
   thumbnail?: boolean
+  images?: boolean
   status?: boolean
   isPinned?: boolean
   viewCount?: boolean
   authorId?: boolean
   reviewerId?: boolean
   categoryId?: boolean
+  activityId?: boolean
+  eventStatus?: boolean
+  eventType?: boolean
+  locationVi?: boolean
+  locationEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  maxAttendees?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  achievementType?: boolean
+  achievementDate?: boolean
+  isHighlight?: boolean
+  relatedUrl?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
   tags?: boolean | Prisma.Post$tagsArgs<ExtArgs>
   revisions?: boolean | Prisma.Post$revisionsArgs<ExtArgs>
-  achievements?: boolean | Prisma.Post$achievementsArgs<ExtArgs>
+  activities?: boolean | Prisma.Post$activitiesArgs<ExtArgs>
+  organizers?: boolean | Prisma.Post$organizersArgs<ExtArgs>
+  sponsorships?: boolean | Prisma.Post$sponsorshipsArgs<ExtArgs>
+  gallery?: boolean | Prisma.Post$galleryArgs<ExtArgs>
+  achievementMembers?: boolean | Prisma.Post$achievementMembersArgs<ExtArgs>
+  notifications?: boolean | Prisma.Post$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
+  type?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
   slug?: boolean
-  summary?: boolean
-  content?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
+  sourceLanguage?: boolean
   thumbnail?: boolean
+  images?: boolean
   status?: boolean
   isPinned?: boolean
   viewCount?: boolean
   authorId?: boolean
   reviewerId?: boolean
   categoryId?: boolean
+  activityId?: boolean
+  eventStatus?: boolean
+  eventType?: boolean
+  locationVi?: boolean
+  locationEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  maxAttendees?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  achievementType?: boolean
+  achievementDate?: boolean
+  isHighlight?: boolean
+  relatedUrl?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
+  type?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
   slug?: boolean
-  summary?: boolean
-  content?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
+  sourceLanguage?: boolean
   thumbnail?: boolean
+  images?: boolean
   status?: boolean
   isPinned?: boolean
   viewCount?: boolean
   authorId?: boolean
   reviewerId?: boolean
   categoryId?: boolean
+  activityId?: boolean
+  eventStatus?: boolean
+  eventType?: boolean
+  locationVi?: boolean
+  locationEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  maxAttendees?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  achievementType?: boolean
+  achievementDate?: boolean
+  isHighlight?: boolean
+  relatedUrl?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectScalar = {
   id?: boolean
-  title?: boolean
+  type?: boolean
+  titleVi?: boolean
+  titleEn?: boolean
   slug?: boolean
-  summary?: boolean
-  content?: boolean
+  summaryVi?: boolean
+  summaryEn?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
+  sourceLanguage?: boolean
   thumbnail?: boolean
+  images?: boolean
   status?: boolean
   isPinned?: boolean
   viewCount?: boolean
   authorId?: boolean
   reviewerId?: boolean
   categoryId?: boolean
+  activityId?: boolean
+  eventStatus?: boolean
+  eventType?: boolean
+  locationVi?: boolean
+  locationEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  maxAttendees?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  achievementType?: boolean
+  achievementDate?: boolean
+  isHighlight?: boolean
+  relatedUrl?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "summary" | "content" | "thumbnail" | "status" | "isPinned" | "viewCount" | "authorId" | "reviewerId" | "categoryId" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "titleVi" | "titleEn" | "slug" | "summaryVi" | "summaryEn" | "contentVi" | "contentEn" | "sourceLanguage" | "thumbnail" | "images" | "status" | "isPinned" | "viewCount" | "authorId" | "reviewerId" | "categoryId" | "activityId" | "eventStatus" | "eventType" | "locationVi" | "locationEn" | "latitude" | "longitude" | "maxAttendees" | "startAt" | "endAt" | "achievementType" | "achievementDate" | "isHighlight" | "relatedUrl" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
   tags?: boolean | Prisma.Post$tagsArgs<ExtArgs>
   revisions?: boolean | Prisma.Post$revisionsArgs<ExtArgs>
-  achievements?: boolean | Prisma.Post$achievementsArgs<ExtArgs>
+  activities?: boolean | Prisma.Post$activitiesArgs<ExtArgs>
+  organizers?: boolean | Prisma.Post$organizersArgs<ExtArgs>
+  sponsorships?: boolean | Prisma.Post$sponsorshipsArgs<ExtArgs>
+  gallery?: boolean | Prisma.Post$galleryArgs<ExtArgs>
+  achievementMembers?: boolean | Prisma.Post$achievementMembersArgs<ExtArgs>
+  notifications?: boolean | Prisma.Post$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.PostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
 }
 export type PostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  author?: boolean | Prisma.MemberDefaultArgs<ExtArgs>
+  author?: boolean | Prisma.Post$authorArgs<ExtArgs>
   reviewer?: boolean | Prisma.Post$reviewerArgs<ExtArgs>
   category?: boolean | Prisma.Post$categoryArgs<ExtArgs>
+  activity?: boolean | Prisma.Post$activityArgs<ExtArgs>
 }
 
 export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Post"
   objects: {
-    author: Prisma.$MemberPayload<ExtArgs>
+    author: Prisma.$MemberPayload<ExtArgs> | null
     reviewer: Prisma.$MemberPayload<ExtArgs> | null
     category: Prisma.$CategoryPayload<ExtArgs> | null
+    activity: Prisma.$ActivityPayload<ExtArgs> | null
     tags: Prisma.$PostTagPayload<ExtArgs>[]
     revisions: Prisma.$PostRevisionPayload<ExtArgs>[]
-    achievements: Prisma.$AchievementPayload<ExtArgs>[]
+    activities: Prisma.$PostActivityPayload<ExtArgs>[]
+    organizers: Prisma.$PostOrganizerPayload<ExtArgs>[]
+    sponsorships: Prisma.$PostSponsorshipPayload<ExtArgs>[]
+    gallery: Prisma.$ImagePayload<ExtArgs>[]
+    achievementMembers: Prisma.$PostAchievementMemberPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    title: string
+    type: $Enums.PostType
+    titleVi: string
+    titleEn: string
     slug: string
-    summary: string | null
-    content: string
+    summaryVi: string | null
+    summaryEn: string | null
+    contentVi: string
+    contentEn: string
+    sourceLanguage: $Enums.PostLanguage
     thumbnail: string | null
+    images: string[]
     status: $Enums.PostStatus
     isPinned: boolean
     viewCount: number
-    authorId: string
+    authorId: string | null
     reviewerId: string | null
     categoryId: string | null
+    activityId: string | null
+    eventStatus: $Enums.EventStatus | null
+    eventType: $Enums.EventType | null
+    locationVi: string | null
+    locationEn: string | null
+    latitude: number | null
+    longitude: number | null
+    maxAttendees: number | null
+    startAt: Date | null
+    endAt: Date | null
+    achievementType: $Enums.AchievementType | null
+    achievementDate: Date | null
+    isHighlight: boolean
+    relatedUrl: string | null
     publishedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -2097,12 +4920,18 @@ readonly fields: PostFieldRefs;
  */
 export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  author<T extends Prisma.MemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberDefaultArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  author<T extends Prisma.Post$authorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$authorArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reviewer<T extends Prisma.Post$reviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$reviewerArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.Post$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$categoryArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  activity<T extends Prisma.Post$activityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$activityArgs<ExtArgs>>): Prisma.Prisma__ActivityClient<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tags<T extends Prisma.Post$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   revisions<T extends Prisma.Post$revisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$revisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostRevisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  achievements<T extends Prisma.Post$achievementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activities<T extends Prisma.Post$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  organizers<T extends Prisma.Post$organizersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$organizersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostOrganizerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sponsorships<T extends Prisma.Post$sponsorshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$sponsorshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostSponsorshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  gallery<T extends Prisma.Post$galleryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$galleryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  achievementMembers<T extends Prisma.Post$achievementMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$achievementMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostAchievementMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Post$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2133,17 +4962,37 @@ export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface PostFieldRefs {
   readonly id: Prisma.FieldRef<"Post", 'String'>
-  readonly title: Prisma.FieldRef<"Post", 'String'>
+  readonly type: Prisma.FieldRef<"Post", 'PostType'>
+  readonly titleVi: Prisma.FieldRef<"Post", 'String'>
+  readonly titleEn: Prisma.FieldRef<"Post", 'String'>
   readonly slug: Prisma.FieldRef<"Post", 'String'>
-  readonly summary: Prisma.FieldRef<"Post", 'String'>
-  readonly content: Prisma.FieldRef<"Post", 'String'>
+  readonly summaryVi: Prisma.FieldRef<"Post", 'String'>
+  readonly summaryEn: Prisma.FieldRef<"Post", 'String'>
+  readonly contentVi: Prisma.FieldRef<"Post", 'String'>
+  readonly contentEn: Prisma.FieldRef<"Post", 'String'>
+  readonly sourceLanguage: Prisma.FieldRef<"Post", 'PostLanguage'>
   readonly thumbnail: Prisma.FieldRef<"Post", 'String'>
+  readonly images: Prisma.FieldRef<"Post", 'String[]'>
   readonly status: Prisma.FieldRef<"Post", 'PostStatus'>
   readonly isPinned: Prisma.FieldRef<"Post", 'Boolean'>
   readonly viewCount: Prisma.FieldRef<"Post", 'Int'>
   readonly authorId: Prisma.FieldRef<"Post", 'String'>
   readonly reviewerId: Prisma.FieldRef<"Post", 'String'>
   readonly categoryId: Prisma.FieldRef<"Post", 'String'>
+  readonly activityId: Prisma.FieldRef<"Post", 'String'>
+  readonly eventStatus: Prisma.FieldRef<"Post", 'EventStatus'>
+  readonly eventType: Prisma.FieldRef<"Post", 'EventType'>
+  readonly locationVi: Prisma.FieldRef<"Post", 'String'>
+  readonly locationEn: Prisma.FieldRef<"Post", 'String'>
+  readonly latitude: Prisma.FieldRef<"Post", 'Float'>
+  readonly longitude: Prisma.FieldRef<"Post", 'Float'>
+  readonly maxAttendees: Prisma.FieldRef<"Post", 'Int'>
+  readonly startAt: Prisma.FieldRef<"Post", 'DateTime'>
+  readonly endAt: Prisma.FieldRef<"Post", 'DateTime'>
+  readonly achievementType: Prisma.FieldRef<"Post", 'AchievementType'>
+  readonly achievementDate: Prisma.FieldRef<"Post", 'DateTime'>
+  readonly isHighlight: Prisma.FieldRef<"Post", 'Boolean'>
+  readonly relatedUrl: Prisma.FieldRef<"Post", 'String'>
   readonly publishedAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Post", 'DateTime'>
@@ -2543,6 +5392,25 @@ export type PostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * Post.author
+ */
+export type Post$authorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Member
+   */
+  select?: Prisma.MemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Member
+   */
+  omit?: Prisma.MemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberInclude<ExtArgs> | null
+  where?: Prisma.MemberWhereInput
+}
+
+/**
  * Post.reviewer
  */
 export type Post$reviewerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2578,6 +5446,25 @@ export type Post$categoryArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.CategoryInclude<ExtArgs> | null
   where?: Prisma.CategoryWhereInput
+}
+
+/**
+ * Post.activity
+ */
+export type Post$activityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Activity
+   */
+  select?: Prisma.ActivitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Activity
+   */
+  omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  where?: Prisma.ActivityWhereInput
 }
 
 /**
@@ -2629,27 +5516,147 @@ export type Post$revisionsArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Post.achievements
+ * Post.activities
  */
-export type Post$achievementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Post$activitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Achievement
+   * Select specific fields to fetch from the PostActivity
    */
-  select?: Prisma.AchievementSelect<ExtArgs> | null
+  select?: Prisma.PostActivitySelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Achievement
+   * Omit specific fields from the PostActivity
    */
-  omit?: Prisma.AchievementOmit<ExtArgs> | null
+  omit?: Prisma.PostActivityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AchievementInclude<ExtArgs> | null
-  where?: Prisma.AchievementWhereInput
-  orderBy?: Prisma.AchievementOrderByWithRelationInput | Prisma.AchievementOrderByWithRelationInput[]
-  cursor?: Prisma.AchievementWhereUniqueInput
+  include?: Prisma.PostActivityInclude<ExtArgs> | null
+  where?: Prisma.PostActivityWhereInput
+  orderBy?: Prisma.PostActivityOrderByWithRelationInput | Prisma.PostActivityOrderByWithRelationInput[]
+  cursor?: Prisma.PostActivityWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AchievementScalarFieldEnum | Prisma.AchievementScalarFieldEnum[]
+  distinct?: Prisma.PostActivityScalarFieldEnum | Prisma.PostActivityScalarFieldEnum[]
+}
+
+/**
+ * Post.organizers
+ */
+export type Post$organizersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostOrganizer
+   */
+  select?: Prisma.PostOrganizerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostOrganizer
+   */
+  omit?: Prisma.PostOrganizerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostOrganizerInclude<ExtArgs> | null
+  where?: Prisma.PostOrganizerWhereInput
+  orderBy?: Prisma.PostOrganizerOrderByWithRelationInput | Prisma.PostOrganizerOrderByWithRelationInput[]
+  cursor?: Prisma.PostOrganizerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostOrganizerScalarFieldEnum | Prisma.PostOrganizerScalarFieldEnum[]
+}
+
+/**
+ * Post.sponsorships
+ */
+export type Post$sponsorshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostSponsorship
+   */
+  select?: Prisma.PostSponsorshipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostSponsorship
+   */
+  omit?: Prisma.PostSponsorshipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostSponsorshipInclude<ExtArgs> | null
+  where?: Prisma.PostSponsorshipWhereInput
+  orderBy?: Prisma.PostSponsorshipOrderByWithRelationInput | Prisma.PostSponsorshipOrderByWithRelationInput[]
+  cursor?: Prisma.PostSponsorshipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostSponsorshipScalarFieldEnum | Prisma.PostSponsorshipScalarFieldEnum[]
+}
+
+/**
+ * Post.gallery
+ */
+export type Post$galleryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Image
+   */
+  select?: Prisma.ImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Image
+   */
+  omit?: Prisma.ImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImageInclude<ExtArgs> | null
+  where?: Prisma.ImageWhereInput
+  orderBy?: Prisma.ImageOrderByWithRelationInput | Prisma.ImageOrderByWithRelationInput[]
+  cursor?: Prisma.ImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
+}
+
+/**
+ * Post.achievementMembers
+ */
+export type Post$achievementMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostAchievementMember
+   */
+  select?: Prisma.PostAchievementMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostAchievementMember
+   */
+  omit?: Prisma.PostAchievementMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostAchievementMemberInclude<ExtArgs> | null
+  where?: Prisma.PostAchievementMemberWhereInput
+  orderBy?: Prisma.PostAchievementMemberOrderByWithRelationInput | Prisma.PostAchievementMemberOrderByWithRelationInput[]
+  cursor?: Prisma.PostAchievementMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostAchievementMemberScalarFieldEnum | Prisma.PostAchievementMemberScalarFieldEnum[]
+}
+
+/**
+ * Post.notifications
+ */
+export type Post$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

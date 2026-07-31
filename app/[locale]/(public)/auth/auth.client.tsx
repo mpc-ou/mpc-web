@@ -1,29 +1,21 @@
 "use client";
 
-import type { Provider } from "@supabase/supabase-js";
+import { Sparkles, Terminal } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { signInWithOAuth, signInWithPassword } from "@/app/[locale]/actions/auth";
-import { LocaleSelect } from "@/components/custom/Header/LocaleSelect.client";
-import { ModeToggle } from "@/components/custom/Header/ModeToggle.client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { LocaleSelect } from "@/components/custom/header/locale-select.client";
+import { ModeToggle } from "@/components/custom/header/mode-toggle.client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { _ROUTE_AUTH_CALLBACK } from "@/constants/route";
 import { useHandleError } from "@/hooks/use-handle-error";
 
 const LoginClient = () => {
-  const t = useTranslations("common.text");
   const tAuth = useTranslations("auth");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
-
-  const { handleErrorClient, toast } = useHandleError();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { toast } = useHandleError();
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -41,147 +33,207 @@ const LoginClient = () => {
     }
   }, [tAuth, toast]);
 
-  const handleLogin = async (provider: Provider) => {
-    const redirectTo = `${location.origin}${_ROUTE_AUTH_CALLBACK}`;
-
-    await handleErrorClient({
-      cb: async () => await signInWithOAuth(provider, redirectTo),
-      onSuccess: ({ data }: { data: any }) => {
-        if ((data as any)?.payload?.url) {
-          window.location.href = (data as any).payload.url;
-        }
-      },
-      withSuccessNotify: false
-    });
-  };
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!(email && password)) {
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!containerRef.current) {
       return;
     }
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePosition({ x, y });
+  }, []);
 
-    setIsEmailLoading(true);
+  const handleMouseLeave = useCallback(() => {
+    setMousePosition({ x: 0, y: 0 });
+  }, []);
 
-    await handleErrorClient({
-      cb: async () => await signInWithPassword({ email, password }),
-      onSuccess: () => {
-        window.location.href = "/";
-      },
-      withSuccessNotify: false
-    });
-
-    setIsEmailLoading(false);
+  const handleSsoLogin = () => {
+    window.location.href = "/api/auth/login";
   };
 
+  const leftLogoTransform = `translate(${mousePosition.x * 25}px, ${mousePosition.y * 25}px) rotate(${mousePosition.x * 5}deg)`;
+  const leftTextTransform = `translate(${mousePosition.x * 12}px, ${mousePosition.y * 12}px)`;
+  const glowTransform = `translate(${mousePosition.x * 40}px, ${mousePosition.y * 40}px)`;
+
   return (
-    <div className='flex h-screen w-full'>
-      {/* Top-right controls (floating) */}
+    // biome-ignore lint/a11y/noStaticElementInteractions: decorative mouse-tracking parallax effect
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: decorative mouse-tracking parallax effect
+    <div
+      className='flex h-screen w-full overflow-hidden bg-slate-50 transition-colors duration-300 dark:bg-[#070b13]'
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      ref={containerRef}
+    >
+      <style>{`
+        @keyframes float-up-slow {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-12px) rotate(2deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes float-down-slow {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(12px) rotate(-2deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes laser-sweep {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        @keyframes grid-move {
+          0% { background-position: 0 0; }
+          100% { background-position: 32px 32px; }
+        }
+        .animate-float-up {
+          animation: float-up-slow 8s ease-in-out infinite;
+        }
+        .animate-float-down {
+          animation: float-down-slow 10s ease-in-out infinite;
+        }
+        .animate-laser {
+          animation: laser-sweep 15s ease-in-out infinite;
+        }
+        .animate-grid-move {
+          animation: grid-move 1s linear infinite;
+        }
+      `}</style>
+
       <div className='fixed top-4 right-4 z-50 flex items-center gap-2'>
         <LocaleSelect />
         <ModeToggle />
       </div>
 
-      {/* Left side - Hero image + slogan (PC only, 3/4 width) */}
-      <div className='relative hidden w-3/4 lg:block'>
-        <Image alt='MPClub Banner' className='object-cover' fill priority src='/images/bg/toc2025.jpg' />
-        <div className='absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent' />
-        <div className='absolute bottom-0 left-0 flex flex-col items-start p-10 text-white xl:p-14'>
-          <div className='mb-4 flex items-center gap-4'>
-            <Image alt='MPClub Logo' className='drop-shadow-lg' height={56} src='/images/logo.png' width={56} />
-            <h1 className='font-bold text-3xl drop-shadow-lg xl:text-4xl'>MPClub</h1>
+      <div className='relative hidden w-[60%] flex-col justify-between overflow-hidden border-slate-200/40 border-r p-12 lg:flex xl:p-16 dark:border-white/5'>
+        <div
+          className='absolute inset-0 z-0 scale-105 transition-transform duration-500 ease-out'
+          style={{
+            transform: `translate(${mousePosition.x * -8}px, ${mousePosition.y * -8}px)`
+          }}
+        >
+          <Image
+            alt='Banner background'
+            className='object-cover object-center brightness-[0.45] dark:brightness-[0.35]'
+            fill
+            priority
+            src='/images/bg/toc2025.jpg'
+          />
+          <div className='absolute inset-0 bg-[#070b13]/55 dark:bg-[#070b13]/75' />
+          <div className='absolute inset-0 bg-gradient-to-r from-[#070b13]/70 via-transparent to-transparent' />
+        </div>
+
+        <div className='relative z-10 flex items-center gap-3'>
+          <div
+            className='relative h-10 w-10 select-none drop-shadow-[0_2px_8px_rgba(249,115,22,0.4)] filter transition-transform duration-500 ease-out'
+            style={{ transform: leftLogoTransform }}
+          >
+            <Image alt='MPClub Logo' className='object-contain' fill src='/images/logo.png' />
           </div>
-          <p className='max-w-md text-base text-white/90 drop-shadow-md xl:text-lg'>
-            Where there&apos;s a bug, there&apos;s MPC!
-          </p>
-          <p className='mt-1 text-sm text-white/60'>Faculty of Information Technology — HCMOU</p>
+          <span className='font-black text-white text-xl tracking-tight'>MPClub</span>
+        </div>
+
+        <div
+          className='relative z-10 max-w-xl transition-transform duration-500 ease-out'
+          style={{ transform: leftTextTransform }}
+        >
+          <div className='inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/20 px-3 py-1 font-bold text-[11px] text-orange-400 uppercase tracking-wider'>
+            <Sparkles className='h-3 w-3 animate-pulse' />
+            {tAuth("clubManagementSystem")}
+          </div>
+          <h1 className='mt-6 font-black text-4xl text-white leading-tight tracking-tight xl:text-5xl'>
+            {tAuth("adminPlatform")}
+            <br />
+            <span className='bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent'>
+              {tAuth("membersActivities")}
+            </span>
+          </h1>
+          <p className='mt-4 font-medium text-slate-300 text-sm leading-relaxed'>{tAuth("descriptionLeft")}</p>
+        </div>
+
+        <div className='relative z-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs'>
+          <span className='font-bold text-slate-300 uppercase tracking-wider'>&copy; {tAuth("copyright")}</span>
+          <div className='h-1 w-1 rounded-full bg-slate-500' />
+          <span className='font-semibold text-slate-300'>{tAuth("version")}</span>
         </div>
       </div>
 
-      {/* Right side - Login form (1/4 on PC, full on mobile) */}
-      <div className='relative flex w-full flex-col items-center justify-center px-6 lg:w-1/4 lg:min-w-90'>
-        {/* Mobile background image */}
-        <div className='absolute inset-0 lg:hidden'>
-          <Image alt='Background' className='object-cover opacity-5' fill src='/images/bg/toc2025.jpg' />
+      <div className='relative flex flex-1 items-center justify-center p-6 sm:p-10 lg:w-[40%]'>
+        <div className='absolute inset-0 z-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] opacity-40 [background-size:16px_16px] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] dark:opacity-30' />
+
+        <div className='pointer-events-none absolute inset-0 z-0 overflow-hidden'>
+          <div className='absolute top-0 bottom-0 w-[180px] animate-laser bg-gradient-to-r from-transparent via-orange-500/10 to-transparent blur-2xl dark:via-orange-400/8' />
+        </div>
+        <div className='pointer-events-none absolute inset-0 z-0 overflow-hidden'>
+          <div
+            className='absolute top-[20%] left-[25%] h-[4px] w-[4px] animate-ping rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]'
+            style={{ animationDuration: "3s" }}
+          />
+          <div
+            className='absolute top-[75%] left-[65%] h-[4px] w-[4px] animate-ping rounded-full bg-orange-400 shadow-[0_0_8px_#fb923c]'
+            style={{ animationDuration: "4s", animationDelay: "1.5s" }}
+          />
+          <div
+            className='absolute top-[45%] left-[80%] h-[3px] w-[3px] animate-pulse rounded-full bg-cyan-400/80 shadow-[0_0_6px_#22d3ee]'
+            style={{ animationDuration: "2.5s" }}
+          />
         </div>
 
-        <div className='relative z-10 flex w-full max-w-sm flex-col items-center'>
-          {/* Mobile logo */}
-          <div className='mb-8 flex flex-col items-center lg:hidden'>
-            <Image alt='MPClub Logo' className='mb-3' height={80} src='/images/logo.png' width={80} />
-            <h2 className='font-bold text-2xl'>MPClub</h2>
-            <p className='text-muted-foreground text-sm'>Where there&apos;s a bug, there&apos;s MPC!</p>
+        <div className='pointer-events-none absolute inset-0 z-0 overflow-hidden'>
+          <div className='absolute top-12 left-1/4 h-32 w-32 animate-float-up rounded-full bg-orange-500/5 blur-2xl dark:bg-orange-500/8' />
+          <div className='absolute right-1/4 bottom-20 h-40 w-40 animate-float-down rounded-full bg-cyan-500/5 blur-2xl dark:bg-cyan-500/6' />
+        </div>
+
+        <div
+          className='pointer-events-none absolute top-1/4 left-1/4 z-0 h-[300px] w-[300px] rounded-full bg-orange-500/10 blur-3xl transition-transform duration-500 ease-out dark:bg-orange-500/5'
+          style={{ transform: glowTransform }}
+        />
+        <div className='absolute inset-0 z-0 overflow-hidden lg:hidden'>
+          <Image
+            alt='Background'
+            className='scale-105 object-cover opacity-10 saturate-[1.2] filter'
+            fill
+            src='/images/bg/toc2025.jpg'
+          />
+          <div className='absolute inset-0 bg-linear-to-b from-[#070b13]/80 via-[#070b13]/95 to-[#070b13]' />
+        </div>
+
+        <div className='relative z-10 flex w-full max-w-md flex-col items-center'>
+          <div className='mb-8 flex flex-col items-center text-center lg:hidden'>
+            <div className='relative mb-4 h-20 w-20 select-none drop-shadow-[0_4px_12px_rgba(249,115,22,0.3)] filter'>
+              <Image alt='MPClub Logo' className='object-contain' fill src='/images/logo.png' />
+            </div>
+            <h2 className='font-black text-2xl text-slate-900 dark:text-white'>MPClub</h2>
+            <p className='mt-1 font-medium text-muted-foreground text-xs'>
+              Where there&apos;s a bug, there&apos;s MPC!
+            </p>
           </div>
 
-          <Card className='w-full shadow-lg'>
-            <CardHeader className='text-center'>
-              <CardTitle className='font-bold text-xl uppercase'>{tAuth("title2")}</CardTitle>
-              <CardDescription>{tAuth("description")}</CardDescription>
+          <Card className='w-full border-slate-200/50 bg-white/80 shadow-2xl backdrop-blur-lg dark:border-white/10 dark:bg-[#0b1324]/80'>
+            <CardHeader className='space-y-2 pb-6 text-center'>
+              <CardTitle className='flex items-center justify-center gap-2 font-black text-2xl text-slate-900 uppercase tracking-tight dark:text-white'>
+                <Terminal className='h-5 w-5 text-orange-500' />
+                {tAuth("ssoTitle")}
+              </CardTitle>
+              <CardDescription className='text-slate-500 text-sm dark:text-slate-400'>
+                {tAuth("description")}
+              </CardDescription>
             </CardHeader>
-            <CardContent className='space-y-4'>
-              <form className='space-y-3' onSubmit={handleEmailLogin}>
-                <div className='space-y-2'>
-                  <Label htmlFor='email'>Email</Label>
-                  <Input
-                    id='email'
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder='m.example@gmail.com'
-                    required
-                    type='email'
-                    value={email}
-                  />
+            <CardContent className='space-y-6 pt-2 pb-8'>
+              <Button
+                className='flex h-12 w-full items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 font-semibold text-base transition-all duration-300 hover:from-orange-600 hover:to-amber-600 hover:shadow-lg hover:shadow-orange-500/20 active:scale-[0.98]'
+                onClick={handleSsoLogin}
+                type='button'
+              >
+                <div className='relative h-6.5 w-6.5 select-none drop-shadow-[0_2px_4px_rgba(255,255,255,0.25)] filter'>
+                  <Image alt='Logo' className='object-contain' fill src='/images/logo.png' />
                 </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='password'>Mật khẩu</Label>
-                  <Input
-                    id='password'
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    type='password'
-                    value={password}
-                  />
-                </div>
-                <Button className='w-full' disabled={isEmailLoading || !email || !password} type='submit'>
-                  {isEmailLoading ? "Đang đăng nhập..." : "Đăng nhập bằng Email"}
-                </Button>
-              </form>
-
-              <div className='relative'>
-                <div className='absolute inset-0 flex items-center'>
-                  <Separator className='w-full' />
-                </div>
-                <div className='relative flex justify-center text-xs uppercase'>
-                  <span className='bg-card px-2 text-muted-foreground'>Hoặc tiếp tục với</span>
-                </div>
-              </div>
-
-              <div className='flex flex-col gap-3'>
-                <Button className='w-full' onClick={() => handleLogin("google")} type='button' variant='outline'>
-                  <Image
-                    alt='Google Icon'
-                    className='mr-2'
-                    height={20}
-                    src='/images/icons/google-icon.svg'
-                    width={20}
-                  />
-                  Google
-                </Button>
-
-                <Button className='w-full' onClick={() => handleLogin("github")} type='button' variant='outline'>
-                  <Image
-                    alt='GitHub Icon'
-                    className='mr-2'
-                    height={20}
-                    src='/images/icons/github-icon.svg'
-                    width={20}
-                  />
-                  GitHub
-                </Button>
-              </div>
+                <span>{tAuth("ssoButton")}</span>
+              </Button>
             </CardContent>
           </Card>
 
-          <p className='mt-6 text-center text-muted-foreground text-xs'>&copy; 2025 MPClub. All rights reserved.</p>
+          <p className='mt-8 text-center font-medium text-[11px] text-slate-400 tracking-wide dark:text-slate-500'>
+            &copy; {new Date().getFullYear()} Mobile Programing Club. All rights reserved.
+          </p>
         </div>
       </div>
     </div>

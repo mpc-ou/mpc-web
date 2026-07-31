@@ -15,7 +15,8 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model Member
  * Thành viên CLB - liên kết với Supabase Auth qua authId
- * Mỗi thành viên tương ứng 1 email Google, đăng nhập qua Supabase Auth
+ * Hỗ trợ đăng nhập: Google, GitHub, Discord, Email/Password
+ * GitHub và Discord có field riêng để xác thực, socials JSON chỉ chứa mạng xã hội khác
  */
 export type MemberModel = runtime.Types.Result.DefaultSelection<Prisma.$MemberPayload>
 
@@ -27,18 +28,17 @@ export type AggregateMember = {
 
 export type MemberMinAggregateOutputType = {
   id: string | null
-  authId: string | null
   email: string | null
-  password: string | null
-  githubId: string | null
-  githubEmail: string | null
   firstName: string | null
+  middleName: string | null
   lastName: string | null
   avatar: string | null
   coverImage: string | null
   slug: string | null
   dob: Date | null
   showDob: boolean | null
+  showPhone: boolean | null
+  showStudentId: boolean | null
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -46,25 +46,24 @@ export type MemberMinAggregateOutputType = {
   leftClubAt: Date | null
   webRole: $Enums.WebRole | null
   isActive: boolean | null
-  createdBy: string | null
+  spotifyUri: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type MemberMaxAggregateOutputType = {
   id: string | null
-  authId: string | null
   email: string | null
-  password: string | null
-  githubId: string | null
-  githubEmail: string | null
   firstName: string | null
+  middleName: string | null
   lastName: string | null
   avatar: string | null
   coverImage: string | null
   slug: string | null
   dob: Date | null
   showDob: boolean | null
+  showPhone: boolean | null
+  showStudentId: boolean | null
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -72,25 +71,24 @@ export type MemberMaxAggregateOutputType = {
   leftClubAt: Date | null
   webRole: $Enums.WebRole | null
   isActive: boolean | null
-  createdBy: string | null
+  spotifyUri: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type MemberCountAggregateOutputType = {
   id: number
-  authId: number
   email: number
-  password: number
-  githubId: number
-  githubEmail: number
   firstName: number
+  middleName: number
   lastName: number
   avatar: number
   coverImage: number
   slug: number
   dob: number
   showDob: number
+  showPhone: number
+  showStudentId: number
   bio: number
   phone: number
   studentId: number
@@ -99,7 +97,7 @@ export type MemberCountAggregateOutputType = {
   leftClubAt: number
   webRole: number
   isActive: number
-  createdBy: number
+  spotifyUri: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -108,18 +106,17 @@ export type MemberCountAggregateOutputType = {
 
 export type MemberMinAggregateInputType = {
   id?: true
-  authId?: true
   email?: true
-  password?: true
-  githubId?: true
-  githubEmail?: true
   firstName?: true
+  middleName?: true
   lastName?: true
   avatar?: true
   coverImage?: true
   slug?: true
   dob?: true
   showDob?: true
+  showPhone?: true
+  showStudentId?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -127,25 +124,24 @@ export type MemberMinAggregateInputType = {
   leftClubAt?: true
   webRole?: true
   isActive?: true
-  createdBy?: true
+  spotifyUri?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type MemberMaxAggregateInputType = {
   id?: true
-  authId?: true
   email?: true
-  password?: true
-  githubId?: true
-  githubEmail?: true
   firstName?: true
+  middleName?: true
   lastName?: true
   avatar?: true
   coverImage?: true
   slug?: true
   dob?: true
   showDob?: true
+  showPhone?: true
+  showStudentId?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -153,25 +149,24 @@ export type MemberMaxAggregateInputType = {
   leftClubAt?: true
   webRole?: true
   isActive?: true
-  createdBy?: true
+  spotifyUri?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type MemberCountAggregateInputType = {
   id?: true
-  authId?: true
   email?: true
-  password?: true
-  githubId?: true
-  githubEmail?: true
   firstName?: true
+  middleName?: true
   lastName?: true
   avatar?: true
   coverImage?: true
   slug?: true
   dob?: true
   showDob?: true
+  showPhone?: true
+  showStudentId?: true
   bio?: true
   phone?: true
   studentId?: true
@@ -180,7 +175,7 @@ export type MemberCountAggregateInputType = {
   leftClubAt?: true
   webRole?: true
   isActive?: true
-  createdBy?: true
+  spotifyUri?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -260,18 +255,17 @@ export type MemberGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type MemberGroupByOutputType = {
   id: string
-  authId: string
   email: string
-  password: string | null
-  githubId: string | null
-  githubEmail: string | null
   firstName: string
+  middleName: string | null
   lastName: string
   avatar: string | null
   coverImage: string | null
   slug: string | null
   dob: Date | null
   showDob: boolean
+  showPhone: boolean
+  showStudentId: boolean
   bio: string | null
   phone: string | null
   studentId: string | null
@@ -280,7 +274,7 @@ export type MemberGroupByOutputType = {
   leftClubAt: Date | null
   webRole: $Enums.WebRole
   isActive: boolean
-  createdBy: string | null
+  spotifyUri: string | null
   createdAt: Date
   updatedAt: Date
   _count: MemberCountAggregateOutputType | null
@@ -308,18 +302,17 @@ export type MemberWhereInput = {
   OR?: Prisma.MemberWhereInput[]
   NOT?: Prisma.MemberWhereInput | Prisma.MemberWhereInput[]
   id?: Prisma.StringFilter<"Member"> | string
-  authId?: Prisma.StringFilter<"Member"> | string
   email?: Prisma.StringFilter<"Member"> | string
-  password?: Prisma.StringNullableFilter<"Member"> | string | null
-  githubId?: Prisma.StringNullableFilter<"Member"> | string | null
-  githubEmail?: Prisma.StringNullableFilter<"Member"> | string | null
   firstName?: Prisma.StringFilter<"Member"> | string
+  middleName?: Prisma.StringNullableFilter<"Member"> | string | null
   lastName?: Prisma.StringFilter<"Member"> | string
   avatar?: Prisma.StringNullableFilter<"Member"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Member"> | string | null
   slug?: Prisma.StringNullableFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   showDob?: Prisma.BoolFilter<"Member"> | boolean
+  showPhone?: Prisma.BoolFilter<"Member"> | boolean
+  showStudentId?: Prisma.BoolFilter<"Member"> | boolean
   bio?: Prisma.StringNullableFilter<"Member"> | string | null
   phone?: Prisma.StringNullableFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableFilter<"Member"> | string | null
@@ -328,33 +321,32 @@ export type MemberWhereInput = {
   leftClubAt?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   webRole?: Prisma.EnumWebRoleFilter<"Member"> | $Enums.WebRole
   isActive?: Prisma.BoolFilter<"Member"> | boolean
-  createdBy?: Prisma.StringNullableFilter<"Member"> | string | null
+  spotifyUri?: Prisma.StringNullableFilter<"Member"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Member"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Member"> | Date | string
   clubRoles?: Prisma.ClubRoleListRelationFilter
   authoredPosts?: Prisma.PostListRelationFilter
   reviewedPosts?: Prisma.PostListRelationFilter
   postRevisions?: Prisma.PostRevisionListRelationFilter
-  createdEvents?: Prisma.EventListRelationFilter
-  organizedEvents?: Prisma.EventOrganizerListRelationFilter
-  achievements?: Prisma.AchievementMemberListRelationFilter
+  eventOrganizerEntries?: Prisma.PostOrganizerListRelationFilter
+  achievementEntries?: Prisma.PostAchievementMemberListRelationFilter
   projects?: Prisma.ProjectMemberListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type MemberOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  authId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  password?: Prisma.SortOrderInput | Prisma.SortOrder
-  githubId?: Prisma.SortOrderInput | Prisma.SortOrder
-  githubEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   dob?: Prisma.SortOrderInput | Prisma.SortOrder
   showDob?: Prisma.SortOrder
+  showPhone?: Prisma.SortOrder
+  showStudentId?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -363,36 +355,35 @@ export type MemberOrderByWithRelationInput = {
   leftClubAt?: Prisma.SortOrderInput | Prisma.SortOrder
   webRole?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  spotifyUri?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clubRoles?: Prisma.ClubRoleOrderByRelationAggregateInput
   authoredPosts?: Prisma.PostOrderByRelationAggregateInput
   reviewedPosts?: Prisma.PostOrderByRelationAggregateInput
   postRevisions?: Prisma.PostRevisionOrderByRelationAggregateInput
-  createdEvents?: Prisma.EventOrderByRelationAggregateInput
-  organizedEvents?: Prisma.EventOrganizerOrderByRelationAggregateInput
-  achievements?: Prisma.AchievementMemberOrderByRelationAggregateInput
+  eventOrganizerEntries?: Prisma.PostOrganizerOrderByRelationAggregateInput
+  achievementEntries?: Prisma.PostAchievementMemberOrderByRelationAggregateInput
   projects?: Prisma.ProjectMemberOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type MemberWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  authId?: string
   email?: string
-  githubId?: string
-  githubEmail?: string
   slug?: string
   AND?: Prisma.MemberWhereInput | Prisma.MemberWhereInput[]
   OR?: Prisma.MemberWhereInput[]
   NOT?: Prisma.MemberWhereInput | Prisma.MemberWhereInput[]
-  password?: Prisma.StringNullableFilter<"Member"> | string | null
   firstName?: Prisma.StringFilter<"Member"> | string
+  middleName?: Prisma.StringNullableFilter<"Member"> | string | null
   lastName?: Prisma.StringFilter<"Member"> | string
   avatar?: Prisma.StringNullableFilter<"Member"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   showDob?: Prisma.BoolFilter<"Member"> | boolean
+  showPhone?: Prisma.BoolFilter<"Member"> | boolean
+  showStudentId?: Prisma.BoolFilter<"Member"> | boolean
   bio?: Prisma.StringNullableFilter<"Member"> | string | null
   phone?: Prisma.StringNullableFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableFilter<"Member"> | string | null
@@ -401,33 +392,32 @@ export type MemberWhereUniqueInput = Prisma.AtLeast<{
   leftClubAt?: Prisma.DateTimeNullableFilter<"Member"> | Date | string | null
   webRole?: Prisma.EnumWebRoleFilter<"Member"> | $Enums.WebRole
   isActive?: Prisma.BoolFilter<"Member"> | boolean
-  createdBy?: Prisma.StringNullableFilter<"Member"> | string | null
+  spotifyUri?: Prisma.StringNullableFilter<"Member"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Member"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Member"> | Date | string
   clubRoles?: Prisma.ClubRoleListRelationFilter
   authoredPosts?: Prisma.PostListRelationFilter
   reviewedPosts?: Prisma.PostListRelationFilter
   postRevisions?: Prisma.PostRevisionListRelationFilter
-  createdEvents?: Prisma.EventListRelationFilter
-  organizedEvents?: Prisma.EventOrganizerListRelationFilter
-  achievements?: Prisma.AchievementMemberListRelationFilter
+  eventOrganizerEntries?: Prisma.PostOrganizerListRelationFilter
+  achievementEntries?: Prisma.PostAchievementMemberListRelationFilter
   projects?: Prisma.ProjectMemberListRelationFilter
-}, "id" | "authId" | "email" | "githubId" | "githubEmail" | "slug">
+  notifications?: Prisma.NotificationListRelationFilter
+}, "id" | "email" | "slug">
 
 export type MemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  authId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  password?: Prisma.SortOrderInput | Prisma.SortOrder
-  githubId?: Prisma.SortOrderInput | Prisma.SortOrder
-  githubEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   dob?: Prisma.SortOrderInput | Prisma.SortOrder
   showDob?: Prisma.SortOrder
+  showPhone?: Prisma.SortOrder
+  showStudentId?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -436,7 +426,7 @@ export type MemberOrderByWithAggregationInput = {
   leftClubAt?: Prisma.SortOrderInput | Prisma.SortOrder
   webRole?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  spotifyUri?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MemberCountOrderByAggregateInput
@@ -449,18 +439,17 @@ export type MemberScalarWhereWithAggregatesInput = {
   OR?: Prisma.MemberScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MemberScalarWhereWithAggregatesInput | Prisma.MemberScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Member"> | string
-  authId?: Prisma.StringWithAggregatesFilter<"Member"> | string
   email?: Prisma.StringWithAggregatesFilter<"Member"> | string
-  password?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
-  githubId?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
-  githubEmail?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   firstName?: Prisma.StringWithAggregatesFilter<"Member"> | string
+  middleName?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   lastName?: Prisma.StringWithAggregatesFilter<"Member"> | string
   avatar?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   slug?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   dob?: Prisma.DateTimeNullableWithAggregatesFilter<"Member"> | Date | string | null
   showDob?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
+  showPhone?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
+  showStudentId?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
   bio?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   studentId?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
@@ -469,25 +458,24 @@ export type MemberScalarWhereWithAggregatesInput = {
   leftClubAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Member"> | Date | string | null
   webRole?: Prisma.EnumWebRoleWithAggregatesFilter<"Member"> | $Enums.WebRole
   isActive?: Prisma.BoolWithAggregatesFilter<"Member"> | boolean
-  createdBy?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
+  spotifyUri?: Prisma.StringNullableWithAggregatesFilter<"Member"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Member"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Member"> | Date | string
 }
 
 export type MemberCreateInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -496,33 +484,32 @@ export type MemberCreateInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -531,33 +518,32 @@ export type MemberUncheckedCreateInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -566,33 +552,32 @@ export type MemberUpdateInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -601,33 +586,32 @@ export type MemberUncheckedUpdateInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberCreateManyInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -636,25 +620,24 @@ export type MemberCreateManyInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type MemberUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -663,25 +646,24 @@ export type MemberUpdateManyMutationInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MemberUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -690,25 +672,24 @@ export type MemberUncheckedUpdateManyInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MemberCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  authId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  password?: Prisma.SortOrder
-  githubId?: Prisma.SortOrder
-  githubEmail?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
   showDob?: Prisma.SortOrder
+  showPhone?: Prisma.SortOrder
+  showStudentId?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -717,25 +698,24 @@ export type MemberCountOrderByAggregateInput = {
   leftClubAt?: Prisma.SortOrder
   webRole?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
+  spotifyUri?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type MemberMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  authId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  password?: Prisma.SortOrder
-  githubId?: Prisma.SortOrder
-  githubEmail?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
   showDob?: Prisma.SortOrder
+  showPhone?: Prisma.SortOrder
+  showStudentId?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -743,25 +723,24 @@ export type MemberMaxOrderByAggregateInput = {
   leftClubAt?: Prisma.SortOrder
   webRole?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
+  spotifyUri?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type MemberMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  authId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  password?: Prisma.SortOrder
-  githubId?: Prisma.SortOrder
-  githubEmail?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   dob?: Prisma.SortOrder
   showDob?: Prisma.SortOrder
+  showPhone?: Prisma.SortOrder
+  showStudentId?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -769,7 +748,7 @@ export type MemberMinOrderByAggregateInput = {
   leftClubAt?: Prisma.SortOrder
   webRole?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
+  spotifyUri?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -814,10 +793,12 @@ export type MemberCreateNestedOneWithoutReviewedPostsInput = {
   connect?: Prisma.MemberWhereUniqueInput
 }
 
-export type MemberUpdateOneRequiredWithoutAuthoredPostsNestedInput = {
+export type MemberUpdateOneWithoutAuthoredPostsNestedInput = {
   create?: Prisma.XOR<Prisma.MemberCreateWithoutAuthoredPostsInput, Prisma.MemberUncheckedCreateWithoutAuthoredPostsInput>
   connectOrCreate?: Prisma.MemberCreateOrConnectWithoutAuthoredPostsInput
   upsert?: Prisma.MemberUpsertWithoutAuthoredPostsInput
+  disconnect?: Prisma.MemberWhereInput | boolean
+  delete?: Prisma.MemberWhereInput | boolean
   connect?: Prisma.MemberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutAuthoredPostsInput, Prisma.MemberUpdateWithoutAuthoredPostsInput>, Prisma.MemberUncheckedUpdateWithoutAuthoredPostsInput>
 }
@@ -838,54 +819,42 @@ export type MemberCreateNestedOneWithoutPostRevisionsInput = {
   connect?: Prisma.MemberWhereUniqueInput
 }
 
-export type MemberUpdateOneRequiredWithoutPostRevisionsNestedInput = {
+export type MemberUpdateOneWithoutPostRevisionsNestedInput = {
   create?: Prisma.XOR<Prisma.MemberCreateWithoutPostRevisionsInput, Prisma.MemberUncheckedCreateWithoutPostRevisionsInput>
   connectOrCreate?: Prisma.MemberCreateOrConnectWithoutPostRevisionsInput
   upsert?: Prisma.MemberUpsertWithoutPostRevisionsInput
+  disconnect?: Prisma.MemberWhereInput | boolean
+  delete?: Prisma.MemberWhereInput | boolean
   connect?: Prisma.MemberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutPostRevisionsInput, Prisma.MemberUpdateWithoutPostRevisionsInput>, Prisma.MemberUncheckedUpdateWithoutPostRevisionsInput>
 }
 
-export type MemberCreateNestedOneWithoutCreatedEventsInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutCreatedEventsInput, Prisma.MemberUncheckedCreateWithoutCreatedEventsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutCreatedEventsInput
+export type MemberCreateNestedOneWithoutEventOrganizerEntriesInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedCreateWithoutEventOrganizerEntriesInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutEventOrganizerEntriesInput
   connect?: Prisma.MemberWhereUniqueInput
 }
 
-export type MemberUpdateOneRequiredWithoutCreatedEventsNestedInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutCreatedEventsInput, Prisma.MemberUncheckedCreateWithoutCreatedEventsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutCreatedEventsInput
-  upsert?: Prisma.MemberUpsertWithoutCreatedEventsInput
+export type MemberUpdateOneRequiredWithoutEventOrganizerEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedCreateWithoutEventOrganizerEntriesInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutEventOrganizerEntriesInput
+  upsert?: Prisma.MemberUpsertWithoutEventOrganizerEntriesInput
   connect?: Prisma.MemberWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutCreatedEventsInput, Prisma.MemberUpdateWithoutCreatedEventsInput>, Prisma.MemberUncheckedUpdateWithoutCreatedEventsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutEventOrganizerEntriesInput, Prisma.MemberUpdateWithoutEventOrganizerEntriesInput>, Prisma.MemberUncheckedUpdateWithoutEventOrganizerEntriesInput>
 }
 
-export type MemberCreateNestedOneWithoutOrganizedEventsInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutOrganizedEventsInput, Prisma.MemberUncheckedCreateWithoutOrganizedEventsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutOrganizedEventsInput
-  connect?: Prisma.MemberWhereUniqueInput
-}
-
-export type MemberUpdateOneRequiredWithoutOrganizedEventsNestedInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutOrganizedEventsInput, Prisma.MemberUncheckedCreateWithoutOrganizedEventsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutOrganizedEventsInput
-  upsert?: Prisma.MemberUpsertWithoutOrganizedEventsInput
-  connect?: Prisma.MemberWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutOrganizedEventsInput, Prisma.MemberUpdateWithoutOrganizedEventsInput>, Prisma.MemberUncheckedUpdateWithoutOrganizedEventsInput>
-}
-
-export type MemberCreateNestedOneWithoutAchievementsInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutAchievementsInput, Prisma.MemberUncheckedCreateWithoutAchievementsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutAchievementsInput
+export type MemberCreateNestedOneWithoutAchievementEntriesInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutAchievementEntriesInput, Prisma.MemberUncheckedCreateWithoutAchievementEntriesInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutAchievementEntriesInput
   connect?: Prisma.MemberWhereUniqueInput
 }
 
-export type MemberUpdateOneRequiredWithoutAchievementsNestedInput = {
-  create?: Prisma.XOR<Prisma.MemberCreateWithoutAchievementsInput, Prisma.MemberUncheckedCreateWithoutAchievementsInput>
-  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutAchievementsInput
-  upsert?: Prisma.MemberUpsertWithoutAchievementsInput
+export type MemberUpdateOneRequiredWithoutAchievementEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutAchievementEntriesInput, Prisma.MemberUncheckedCreateWithoutAchievementEntriesInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutAchievementEntriesInput
+  upsert?: Prisma.MemberUpsertWithoutAchievementEntriesInput
   connect?: Prisma.MemberWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutAchievementsInput, Prisma.MemberUpdateWithoutAchievementsInput>, Prisma.MemberUncheckedUpdateWithoutAchievementsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutAchievementEntriesInput, Prisma.MemberUpdateWithoutAchievementEntriesInput>, Prisma.MemberUncheckedUpdateWithoutAchievementEntriesInput>
 }
 
 export type MemberCreateNestedOneWithoutProjectsInput = {
@@ -902,20 +871,33 @@ export type MemberUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutProjectsInput, Prisma.MemberUpdateWithoutProjectsInput>, Prisma.MemberUncheckedUpdateWithoutProjectsInput>
 }
 
+export type MemberCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutNotificationsInput, Prisma.MemberUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.MemberWhereUniqueInput
+}
+
+export type MemberUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberCreateWithoutNotificationsInput, Prisma.MemberUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.MemberCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.MemberUpsertWithoutNotificationsInput
+  connect?: Prisma.MemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberUpdateToOneWithWhereWithoutNotificationsInput, Prisma.MemberUpdateWithoutNotificationsInput>, Prisma.MemberUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type MemberCreateWithoutClubRolesInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -924,32 +906,31 @@ export type MemberCreateWithoutClubRolesInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutClubRolesInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -958,16 +939,16 @@ export type MemberUncheckedCreateWithoutClubRolesInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutClubRolesInput = {
@@ -988,18 +969,17 @@ export type MemberUpdateToOneWithWhereWithoutClubRolesInput = {
 
 export type MemberUpdateWithoutClubRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1008,32 +988,31 @@ export type MemberUpdateWithoutClubRolesInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutClubRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1042,32 +1021,31 @@ export type MemberUncheckedUpdateWithoutClubRolesInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberCreateWithoutAuthoredPostsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1076,32 +1054,31 @@ export type MemberCreateWithoutAuthoredPostsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutAuthoredPostsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1110,16 +1087,16 @@ export type MemberUncheckedCreateWithoutAuthoredPostsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutAuthoredPostsInput = {
@@ -1128,19 +1105,18 @@ export type MemberCreateOrConnectWithoutAuthoredPostsInput = {
 }
 
 export type MemberCreateWithoutReviewedPostsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1149,32 +1125,31 @@ export type MemberCreateWithoutReviewedPostsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutReviewedPostsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1183,16 +1158,16 @@ export type MemberUncheckedCreateWithoutReviewedPostsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutReviewedPostsInput = {
@@ -1213,18 +1188,17 @@ export type MemberUpdateToOneWithWhereWithoutAuthoredPostsInput = {
 
 export type MemberUpdateWithoutAuthoredPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1233,32 +1207,31 @@ export type MemberUpdateWithoutAuthoredPostsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutAuthoredPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1267,16 +1240,16 @@ export type MemberUncheckedUpdateWithoutAuthoredPostsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUpsertWithoutReviewedPostsInput = {
@@ -1292,18 +1265,17 @@ export type MemberUpdateToOneWithWhereWithoutReviewedPostsInput = {
 
 export type MemberUpdateWithoutReviewedPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1312,32 +1284,31 @@ export type MemberUpdateWithoutReviewedPostsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutReviewedPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1346,32 +1317,31 @@ export type MemberUncheckedUpdateWithoutReviewedPostsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberCreateWithoutPostRevisionsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1380,32 +1350,31 @@ export type MemberCreateWithoutPostRevisionsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutPostRevisionsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1414,16 +1383,16 @@ export type MemberUncheckedCreateWithoutPostRevisionsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutPostRevisionsInput = {
@@ -1444,18 +1413,17 @@ export type MemberUpdateToOneWithWhereWithoutPostRevisionsInput = {
 
 export type MemberUpdateWithoutPostRevisionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1464,32 +1432,31 @@ export type MemberUpdateWithoutPostRevisionsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutPostRevisionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1498,32 +1465,31 @@ export type MemberUncheckedUpdateWithoutPostRevisionsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
-export type MemberCreateWithoutCreatedEventsInput = {
-  id?: string
-  authId: string
+export type MemberCreateWithoutEventOrganizerEntriesInput = {
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1532,32 +1498,31 @@ export type MemberCreateWithoutCreatedEventsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
-export type MemberUncheckedCreateWithoutCreatedEventsInput = {
-  id?: string
-  authId: string
+export type MemberUncheckedCreateWithoutEventOrganizerEntriesInput = {
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1566,48 +1531,47 @@ export type MemberUncheckedCreateWithoutCreatedEventsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
-export type MemberCreateOrConnectWithoutCreatedEventsInput = {
+export type MemberCreateOrConnectWithoutEventOrganizerEntriesInput = {
   where: Prisma.MemberWhereUniqueInput
-  create: Prisma.XOR<Prisma.MemberCreateWithoutCreatedEventsInput, Prisma.MemberUncheckedCreateWithoutCreatedEventsInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedCreateWithoutEventOrganizerEntriesInput>
 }
 
-export type MemberUpsertWithoutCreatedEventsInput = {
-  update: Prisma.XOR<Prisma.MemberUpdateWithoutCreatedEventsInput, Prisma.MemberUncheckedUpdateWithoutCreatedEventsInput>
-  create: Prisma.XOR<Prisma.MemberCreateWithoutCreatedEventsInput, Prisma.MemberUncheckedCreateWithoutCreatedEventsInput>
+export type MemberUpsertWithoutEventOrganizerEntriesInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedUpdateWithoutEventOrganizerEntriesInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedCreateWithoutEventOrganizerEntriesInput>
   where?: Prisma.MemberWhereInput
 }
 
-export type MemberUpdateToOneWithWhereWithoutCreatedEventsInput = {
+export type MemberUpdateToOneWithWhereWithoutEventOrganizerEntriesInput = {
   where?: Prisma.MemberWhereInput
-  data: Prisma.XOR<Prisma.MemberUpdateWithoutCreatedEventsInput, Prisma.MemberUncheckedUpdateWithoutCreatedEventsInput>
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutEventOrganizerEntriesInput, Prisma.MemberUncheckedUpdateWithoutEventOrganizerEntriesInput>
 }
 
-export type MemberUpdateWithoutCreatedEventsInput = {
+export type MemberUpdateWithoutEventOrganizerEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1616,32 +1580,31 @@ export type MemberUpdateWithoutCreatedEventsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
-export type MemberUncheckedUpdateWithoutCreatedEventsInput = {
+export type MemberUncheckedUpdateWithoutEventOrganizerEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1650,32 +1613,31 @@ export type MemberUncheckedUpdateWithoutCreatedEventsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
-export type MemberCreateWithoutOrganizedEventsInput = {
-  id?: string
-  authId: string
+export type MemberCreateWithoutAchievementEntriesInput = {
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1684,32 +1646,31 @@ export type MemberCreateWithoutOrganizedEventsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
-export type MemberUncheckedCreateWithoutOrganizedEventsInput = {
-  id?: string
-  authId: string
+export type MemberUncheckedCreateWithoutAchievementEntriesInput = {
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1718,48 +1679,47 @@ export type MemberUncheckedCreateWithoutOrganizedEventsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
   projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
-export type MemberCreateOrConnectWithoutOrganizedEventsInput = {
+export type MemberCreateOrConnectWithoutAchievementEntriesInput = {
   where: Prisma.MemberWhereUniqueInput
-  create: Prisma.XOR<Prisma.MemberCreateWithoutOrganizedEventsInput, Prisma.MemberUncheckedCreateWithoutOrganizedEventsInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutAchievementEntriesInput, Prisma.MemberUncheckedCreateWithoutAchievementEntriesInput>
 }
 
-export type MemberUpsertWithoutOrganizedEventsInput = {
-  update: Prisma.XOR<Prisma.MemberUpdateWithoutOrganizedEventsInput, Prisma.MemberUncheckedUpdateWithoutOrganizedEventsInput>
-  create: Prisma.XOR<Prisma.MemberCreateWithoutOrganizedEventsInput, Prisma.MemberUncheckedCreateWithoutOrganizedEventsInput>
+export type MemberUpsertWithoutAchievementEntriesInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutAchievementEntriesInput, Prisma.MemberUncheckedUpdateWithoutAchievementEntriesInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutAchievementEntriesInput, Prisma.MemberUncheckedCreateWithoutAchievementEntriesInput>
   where?: Prisma.MemberWhereInput
 }
 
-export type MemberUpdateToOneWithWhereWithoutOrganizedEventsInput = {
+export type MemberUpdateToOneWithWhereWithoutAchievementEntriesInput = {
   where?: Prisma.MemberWhereInput
-  data: Prisma.XOR<Prisma.MemberUpdateWithoutOrganizedEventsInput, Prisma.MemberUncheckedUpdateWithoutOrganizedEventsInput>
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutAchievementEntriesInput, Prisma.MemberUncheckedUpdateWithoutAchievementEntriesInput>
 }
 
-export type MemberUpdateWithoutOrganizedEventsInput = {
+export type MemberUpdateWithoutAchievementEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1768,32 +1728,31 @@ export type MemberUpdateWithoutOrganizedEventsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
-export type MemberUncheckedUpdateWithoutOrganizedEventsInput = {
+export type MemberUncheckedUpdateWithoutAchievementEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1802,184 +1761,31 @@ export type MemberUncheckedUpdateWithoutOrganizedEventsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
   projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
-}
-
-export type MemberCreateWithoutAchievementsInput = {
-  id?: string
-  authId: string
-  email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
-  firstName: string
-  lastName: string
-  avatar?: string | null
-  coverImage?: string | null
-  slug?: string | null
-  dob?: Date | string | null
-  showDob?: boolean
-  bio?: string | null
-  phone?: string | null
-  studentId?: string | null
-  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  joinedClubAt?: Date | string | null
-  leftClubAt?: Date | string | null
-  webRole?: $Enums.WebRole
-  isActive?: boolean
-  createdBy?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
-  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-  reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
-  postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
-}
-
-export type MemberUncheckedCreateWithoutAchievementsInput = {
-  id?: string
-  authId: string
-  email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
-  firstName: string
-  lastName: string
-  avatar?: string | null
-  coverImage?: string | null
-  slug?: string | null
-  dob?: Date | string | null
-  showDob?: boolean
-  bio?: string | null
-  phone?: string | null
-  studentId?: string | null
-  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  joinedClubAt?: Date | string | null
-  leftClubAt?: Date | string | null
-  webRole?: $Enums.WebRole
-  isActive?: boolean
-  createdBy?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
-  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-  reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
-  postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
-}
-
-export type MemberCreateOrConnectWithoutAchievementsInput = {
-  where: Prisma.MemberWhereUniqueInput
-  create: Prisma.XOR<Prisma.MemberCreateWithoutAchievementsInput, Prisma.MemberUncheckedCreateWithoutAchievementsInput>
-}
-
-export type MemberUpsertWithoutAchievementsInput = {
-  update: Prisma.XOR<Prisma.MemberUpdateWithoutAchievementsInput, Prisma.MemberUncheckedUpdateWithoutAchievementsInput>
-  create: Prisma.XOR<Prisma.MemberCreateWithoutAchievementsInput, Prisma.MemberUncheckedCreateWithoutAchievementsInput>
-  where?: Prisma.MemberWhereInput
-}
-
-export type MemberUpdateToOneWithWhereWithoutAchievementsInput = {
-  where?: Prisma.MemberWhereInput
-  data: Prisma.XOR<Prisma.MemberUpdateWithoutAchievementsInput, Prisma.MemberUncheckedUpdateWithoutAchievementsInput>
-}
-
-export type MemberUpdateWithoutAchievementsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  joinedClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
-  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-  reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
-  postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
-}
-
-export type MemberUncheckedUpdateWithoutAchievementsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  joinedClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
-  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-  reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
-  postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberCreateWithoutProjectsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -1988,32 +1794,31 @@ export type MemberCreateWithoutProjectsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMemberInput
 }
 
 export type MemberUncheckedCreateWithoutProjectsInput = {
-  id?: string
-  authId: string
+  id: string
   email: string
-  password?: string | null
-  githubId?: string | null
-  githubEmail?: string | null
   firstName: string
+  middleName?: string | null
   lastName: string
   avatar?: string | null
   coverImage?: string | null
   slug?: string | null
   dob?: Date | string | null
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: string | null
   phone?: string | null
   studentId?: string | null
@@ -2022,16 +1827,16 @@ export type MemberUncheckedCreateWithoutProjectsInput = {
   leftClubAt?: Date | string | null
   webRole?: $Enums.WebRole
   isActive?: boolean
-  createdBy?: string | null
+  spotifyUri?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
   authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
   postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
-  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedCreateNestedManyWithoutMemberInput
-  achievements?: Prisma.AchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type MemberCreateOrConnectWithoutProjectsInput = {
@@ -2052,18 +1857,17 @@ export type MemberUpdateToOneWithWhereWithoutProjectsInput = {
 
 export type MemberUpdateWithoutProjectsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2072,32 +1876,31 @@ export type MemberUpdateWithoutProjectsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMemberNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutProjectsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  authId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  githubEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2106,16 +1909,164 @@ export type MemberUncheckedUpdateWithoutProjectsInput = {
   leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
   authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
   postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
-  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
-  organizedEvents?: Prisma.EventOrganizerUncheckedUpdateManyWithoutMemberNestedInput
-  achievements?: Prisma.AchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberCreateWithoutNotificationsInput = {
+  id: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  avatar?: string | null
+  coverImage?: string | null
+  slug?: string | null
+  dob?: Date | string | null
+  showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
+  bio?: string | null
+  phone?: string | null
+  studentId?: string | null
+  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  joinedClubAt?: Date | string | null
+  leftClubAt?: Date | string | null
+  webRole?: $Enums.WebRole
+  isActive?: boolean
+  spotifyUri?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clubRoles?: Prisma.ClubRoleCreateNestedManyWithoutMemberInput
+  authoredPosts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  reviewedPosts?: Prisma.PostCreateNestedManyWithoutReviewerInput
+  postRevisions?: Prisma.PostRevisionCreateNestedManyWithoutEditorInput
+  eventOrganizerEntries?: Prisma.PostOrganizerCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberCreateNestedManyWithoutMemberInput
+  projects?: Prisma.ProjectMemberCreateNestedManyWithoutMemberInput
+}
+
+export type MemberUncheckedCreateWithoutNotificationsInput = {
+  id: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  avatar?: string | null
+  coverImage?: string | null
+  slug?: string | null
+  dob?: Date | string | null
+  showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
+  bio?: string | null
+  phone?: string | null
+  studentId?: string | null
+  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  joinedClubAt?: Date | string | null
+  leftClubAt?: Date | string | null
+  webRole?: $Enums.WebRole
+  isActive?: boolean
+  spotifyUri?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clubRoles?: Prisma.ClubRoleUncheckedCreateNestedManyWithoutMemberInput
+  authoredPosts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  reviewedPosts?: Prisma.PostUncheckedCreateNestedManyWithoutReviewerInput
+  postRevisions?: Prisma.PostRevisionUncheckedCreateNestedManyWithoutEditorInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedCreateNestedManyWithoutMemberInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedCreateNestedManyWithoutMemberInput
+  projects?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type MemberCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.MemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberCreateWithoutNotificationsInput, Prisma.MemberUncheckedCreateWithoutNotificationsInput>
+}
+
+export type MemberUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.MemberUpdateWithoutNotificationsInput, Prisma.MemberUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.MemberCreateWithoutNotificationsInput, Prisma.MemberUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.MemberWhereInput
+}
+
+export type MemberUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.MemberWhereInput
+  data: Prisma.XOR<Prisma.MemberUpdateWithoutNotificationsInput, Prisma.MemberUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type MemberUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  joinedClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clubRoles?: Prisma.ClubRoleUpdateManyWithoutMemberNestedInput
+  authoredPosts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  reviewedPosts?: Prisma.PostUpdateManyWithoutReviewerNestedInput
+  postRevisions?: Prisma.PostRevisionUpdateManyWithoutEditorNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUpdateManyWithoutMemberNestedInput
+  projects?: Prisma.ProjectMemberUpdateManyWithoutMemberNestedInput
+}
+
+export type MemberUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dob?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  showDob?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPhone?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showStudentId?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socials?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  joinedClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leftClubAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  webRole?: Prisma.EnumWebRoleFieldUpdateOperationsInput | $Enums.WebRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  spotifyUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clubRoles?: Prisma.ClubRoleUncheckedUpdateManyWithoutMemberNestedInput
+  authoredPosts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  reviewedPosts?: Prisma.PostUncheckedUpdateManyWithoutReviewerNestedInput
+  postRevisions?: Prisma.PostRevisionUncheckedUpdateManyWithoutEditorNestedInput
+  eventOrganizerEntries?: Prisma.PostOrganizerUncheckedUpdateManyWithoutMemberNestedInput
+  achievementEntries?: Prisma.PostAchievementMemberUncheckedUpdateManyWithoutMemberNestedInput
+  projects?: Prisma.ProjectMemberUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 
@@ -2128,10 +2079,10 @@ export type MemberCountOutputType = {
   authoredPosts: number
   reviewedPosts: number
   postRevisions: number
-  createdEvents: number
-  organizedEvents: number
-  achievements: number
+  eventOrganizerEntries: number
+  achievementEntries: number
   projects: number
+  notifications: number
 }
 
 export type MemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2139,10 +2090,10 @@ export type MemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   authoredPosts?: boolean | MemberCountOutputTypeCountAuthoredPostsArgs
   reviewedPosts?: boolean | MemberCountOutputTypeCountReviewedPostsArgs
   postRevisions?: boolean | MemberCountOutputTypeCountPostRevisionsArgs
-  createdEvents?: boolean | MemberCountOutputTypeCountCreatedEventsArgs
-  organizedEvents?: boolean | MemberCountOutputTypeCountOrganizedEventsArgs
-  achievements?: boolean | MemberCountOutputTypeCountAchievementsArgs
+  eventOrganizerEntries?: boolean | MemberCountOutputTypeCountEventOrganizerEntriesArgs
+  achievementEntries?: boolean | MemberCountOutputTypeCountAchievementEntriesArgs
   projects?: boolean | MemberCountOutputTypeCountProjectsArgs
+  notifications?: boolean | MemberCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -2186,22 +2137,15 @@ export type MemberCountOutputTypeCountPostRevisionsArgs<ExtArgs extends runtime.
 /**
  * MemberCountOutputType without action
  */
-export type MemberCountOutputTypeCountCreatedEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.EventWhereInput
+export type MemberCountOutputTypeCountEventOrganizerEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostOrganizerWhereInput
 }
 
 /**
  * MemberCountOutputType without action
  */
-export type MemberCountOutputTypeCountOrganizedEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.EventOrganizerWhereInput
-}
-
-/**
- * MemberCountOutputType without action
- */
-export type MemberCountOutputTypeCountAchievementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AchievementMemberWhereInput
+export type MemberCountOutputTypeCountAchievementEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostAchievementMemberWhereInput
 }
 
 /**
@@ -2211,21 +2155,27 @@ export type MemberCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ProjectMemberWhereInput
 }
 
+/**
+ * MemberCountOutputType without action
+ */
+export type MemberCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  authId?: boolean
   email?: boolean
-  password?: boolean
-  githubId?: boolean
-  githubEmail?: boolean
   firstName?: boolean
+  middleName?: boolean
   lastName?: boolean
   avatar?: boolean
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2234,34 +2184,33 @@ export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   leftClubAt?: boolean
   webRole?: boolean
   isActive?: boolean
-  createdBy?: boolean
+  spotifyUri?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   clubRoles?: boolean | Prisma.Member$clubRolesArgs<ExtArgs>
   authoredPosts?: boolean | Prisma.Member$authoredPostsArgs<ExtArgs>
   reviewedPosts?: boolean | Prisma.Member$reviewedPostsArgs<ExtArgs>
   postRevisions?: boolean | Prisma.Member$postRevisionsArgs<ExtArgs>
-  createdEvents?: boolean | Prisma.Member$createdEventsArgs<ExtArgs>
-  organizedEvents?: boolean | Prisma.Member$organizedEventsArgs<ExtArgs>
-  achievements?: boolean | Prisma.Member$achievementsArgs<ExtArgs>
+  eventOrganizerEntries?: boolean | Prisma.Member$eventOrganizerEntriesArgs<ExtArgs>
+  achievementEntries?: boolean | Prisma.Member$achievementEntriesArgs<ExtArgs>
   projects?: boolean | Prisma.Member$projectsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Member$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.MemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["member"]>
 
 export type MemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  authId?: boolean
   email?: boolean
-  password?: boolean
-  githubId?: boolean
-  githubEmail?: boolean
   firstName?: boolean
+  middleName?: boolean
   lastName?: boolean
   avatar?: boolean
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2270,25 +2219,24 @@ export type MemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   leftClubAt?: boolean
   webRole?: boolean
   isActive?: boolean
-  createdBy?: boolean
+  spotifyUri?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["member"]>
 
 export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  authId?: boolean
   email?: boolean
-  password?: boolean
-  githubId?: boolean
-  githubEmail?: boolean
   firstName?: boolean
+  middleName?: boolean
   lastName?: boolean
   avatar?: boolean
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2297,25 +2245,24 @@ export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   leftClubAt?: boolean
   webRole?: boolean
   isActive?: boolean
-  createdBy?: boolean
+  spotifyUri?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["member"]>
 
 export type MemberSelectScalar = {
   id?: boolean
-  authId?: boolean
   email?: boolean
-  password?: boolean
-  githubId?: boolean
-  githubEmail?: boolean
   firstName?: boolean
+  middleName?: boolean
   lastName?: boolean
   avatar?: boolean
   coverImage?: boolean
   slug?: boolean
   dob?: boolean
   showDob?: boolean
+  showPhone?: boolean
+  showStudentId?: boolean
   bio?: boolean
   phone?: boolean
   studentId?: boolean
@@ -2324,21 +2271,21 @@ export type MemberSelectScalar = {
   leftClubAt?: boolean
   webRole?: boolean
   isActive?: boolean
-  createdBy?: boolean
+  spotifyUri?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authId" | "email" | "password" | "githubId" | "githubEmail" | "firstName" | "lastName" | "avatar" | "coverImage" | "slug" | "dob" | "showDob" | "bio" | "phone" | "studentId" | "socials" | "joinedClubAt" | "leftClubAt" | "webRole" | "isActive" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["member"]>
+export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "avatar" | "coverImage" | "slug" | "dob" | "showDob" | "showPhone" | "showStudentId" | "bio" | "phone" | "studentId" | "socials" | "joinedClubAt" | "leftClubAt" | "webRole" | "isActive" | "spotifyUri" | "createdAt" | "updatedAt", ExtArgs["result"]["member"]>
 export type MemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clubRoles?: boolean | Prisma.Member$clubRolesArgs<ExtArgs>
   authoredPosts?: boolean | Prisma.Member$authoredPostsArgs<ExtArgs>
   reviewedPosts?: boolean | Prisma.Member$reviewedPostsArgs<ExtArgs>
   postRevisions?: boolean | Prisma.Member$postRevisionsArgs<ExtArgs>
-  createdEvents?: boolean | Prisma.Member$createdEventsArgs<ExtArgs>
-  organizedEvents?: boolean | Prisma.Member$organizedEventsArgs<ExtArgs>
-  achievements?: boolean | Prisma.Member$achievementsArgs<ExtArgs>
+  eventOrganizerEntries?: boolean | Prisma.Member$eventOrganizerEntriesArgs<ExtArgs>
+  achievementEntries?: boolean | Prisma.Member$achievementEntriesArgs<ExtArgs>
   projects?: boolean | Prisma.Member$projectsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Member$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.MemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2351,25 +2298,24 @@ export type $MemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     authoredPosts: Prisma.$PostPayload<ExtArgs>[]
     reviewedPosts: Prisma.$PostPayload<ExtArgs>[]
     postRevisions: Prisma.$PostRevisionPayload<ExtArgs>[]
-    createdEvents: Prisma.$EventPayload<ExtArgs>[]
-    organizedEvents: Prisma.$EventOrganizerPayload<ExtArgs>[]
-    achievements: Prisma.$AchievementMemberPayload<ExtArgs>[]
+    eventOrganizerEntries: Prisma.$PostOrganizerPayload<ExtArgs>[]
+    achievementEntries: Prisma.$PostAchievementMemberPayload<ExtArgs>[]
     projects: Prisma.$ProjectMemberPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    authId: string
     email: string
-    password: string | null
-    githubId: string | null
-    githubEmail: string | null
     firstName: string
+    middleName: string | null
     lastName: string
     avatar: string | null
     coverImage: string | null
     slug: string | null
     dob: Date | null
     showDob: boolean
+    showPhone: boolean
+    showStudentId: boolean
     bio: string | null
     phone: string | null
     studentId: string | null
@@ -2378,7 +2324,7 @@ export type $MemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     leftClubAt: Date | null
     webRole: $Enums.WebRole
     isActive: boolean
-    createdBy: string | null
+    spotifyUri: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["member"]>
@@ -2779,10 +2725,10 @@ export interface Prisma__MemberClient<T, Null = never, ExtArgs extends runtime.T
   authoredPosts<T extends Prisma.Member$authoredPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$authoredPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewedPosts<T extends Prisma.Member$reviewedPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$reviewedPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postRevisions<T extends Prisma.Member$postRevisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$postRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostRevisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdEvents<T extends Prisma.Member$createdEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$createdEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  organizedEvents<T extends Prisma.Member$organizedEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$organizedEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventOrganizerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  achievements<T extends Prisma.Member$achievementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AchievementMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventOrganizerEntries<T extends Prisma.Member$eventOrganizerEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$eventOrganizerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostOrganizerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  achievementEntries<T extends Prisma.Member$achievementEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$achievementEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostAchievementMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.Member$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Member$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Member$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2813,18 +2759,17 @@ export interface Prisma__MemberClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface MemberFieldRefs {
   readonly id: Prisma.FieldRef<"Member", 'String'>
-  readonly authId: Prisma.FieldRef<"Member", 'String'>
   readonly email: Prisma.FieldRef<"Member", 'String'>
-  readonly password: Prisma.FieldRef<"Member", 'String'>
-  readonly githubId: Prisma.FieldRef<"Member", 'String'>
-  readonly githubEmail: Prisma.FieldRef<"Member", 'String'>
   readonly firstName: Prisma.FieldRef<"Member", 'String'>
+  readonly middleName: Prisma.FieldRef<"Member", 'String'>
   readonly lastName: Prisma.FieldRef<"Member", 'String'>
   readonly avatar: Prisma.FieldRef<"Member", 'String'>
   readonly coverImage: Prisma.FieldRef<"Member", 'String'>
   readonly slug: Prisma.FieldRef<"Member", 'String'>
   readonly dob: Prisma.FieldRef<"Member", 'DateTime'>
   readonly showDob: Prisma.FieldRef<"Member", 'Boolean'>
+  readonly showPhone: Prisma.FieldRef<"Member", 'Boolean'>
+  readonly showStudentId: Prisma.FieldRef<"Member", 'Boolean'>
   readonly bio: Prisma.FieldRef<"Member", 'String'>
   readonly phone: Prisma.FieldRef<"Member", 'String'>
   readonly studentId: Prisma.FieldRef<"Member", 'String'>
@@ -2833,7 +2778,7 @@ export interface MemberFieldRefs {
   readonly leftClubAt: Prisma.FieldRef<"Member", 'DateTime'>
   readonly webRole: Prisma.FieldRef<"Member", 'WebRole'>
   readonly isActive: Prisma.FieldRef<"Member", 'Boolean'>
-  readonly createdBy: Prisma.FieldRef<"Member", 'String'>
+  readonly spotifyUri: Prisma.FieldRef<"Member", 'String'>
   readonly createdAt: Prisma.FieldRef<"Member", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Member", 'DateTime'>
 }
@@ -3320,75 +3265,51 @@ export type Member$postRevisionsArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * Member.createdEvents
+ * Member.eventOrganizerEntries
  */
-export type Member$createdEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Member$eventOrganizerEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Event
+   * Select specific fields to fetch from the PostOrganizer
    */
-  select?: Prisma.EventSelect<ExtArgs> | null
+  select?: Prisma.PostOrganizerSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Event
+   * Omit specific fields from the PostOrganizer
    */
-  omit?: Prisma.EventOmit<ExtArgs> | null
+  omit?: Prisma.PostOrganizerOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventInclude<ExtArgs> | null
-  where?: Prisma.EventWhereInput
-  orderBy?: Prisma.EventOrderByWithRelationInput | Prisma.EventOrderByWithRelationInput[]
-  cursor?: Prisma.EventWhereUniqueInput
+  include?: Prisma.PostOrganizerInclude<ExtArgs> | null
+  where?: Prisma.PostOrganizerWhereInput
+  orderBy?: Prisma.PostOrganizerOrderByWithRelationInput | Prisma.PostOrganizerOrderByWithRelationInput[]
+  cursor?: Prisma.PostOrganizerWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[]
+  distinct?: Prisma.PostOrganizerScalarFieldEnum | Prisma.PostOrganizerScalarFieldEnum[]
 }
 
 /**
- * Member.organizedEvents
+ * Member.achievementEntries
  */
-export type Member$organizedEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Member$achievementEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the EventOrganizer
+   * Select specific fields to fetch from the PostAchievementMember
    */
-  select?: Prisma.EventOrganizerSelect<ExtArgs> | null
+  select?: Prisma.PostAchievementMemberSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the EventOrganizer
+   * Omit specific fields from the PostAchievementMember
    */
-  omit?: Prisma.EventOrganizerOmit<ExtArgs> | null
+  omit?: Prisma.PostAchievementMemberOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventOrganizerInclude<ExtArgs> | null
-  where?: Prisma.EventOrganizerWhereInput
-  orderBy?: Prisma.EventOrganizerOrderByWithRelationInput | Prisma.EventOrganizerOrderByWithRelationInput[]
-  cursor?: Prisma.EventOrganizerWhereUniqueInput
+  include?: Prisma.PostAchievementMemberInclude<ExtArgs> | null
+  where?: Prisma.PostAchievementMemberWhereInput
+  orderBy?: Prisma.PostAchievementMemberOrderByWithRelationInput | Prisma.PostAchievementMemberOrderByWithRelationInput[]
+  cursor?: Prisma.PostAchievementMemberWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.EventOrganizerScalarFieldEnum | Prisma.EventOrganizerScalarFieldEnum[]
-}
-
-/**
- * Member.achievements
- */
-export type Member$achievementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AchievementMember
-   */
-  select?: Prisma.AchievementMemberSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AchievementMember
-   */
-  omit?: Prisma.AchievementMemberOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AchievementMemberInclude<ExtArgs> | null
-  where?: Prisma.AchievementMemberWhereInput
-  orderBy?: Prisma.AchievementMemberOrderByWithRelationInput | Prisma.AchievementMemberOrderByWithRelationInput[]
-  cursor?: Prisma.AchievementMemberWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AchievementMemberScalarFieldEnum | Prisma.AchievementMemberScalarFieldEnum[]
+  distinct?: Prisma.PostAchievementMemberScalarFieldEnum | Prisma.PostAchievementMemberScalarFieldEnum[]
 }
 
 /**
@@ -3413,6 +3334,30 @@ export type Member$projectsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ProjectMemberScalarFieldEnum | Prisma.ProjectMemberScalarFieldEnum[]
+}
+
+/**
+ * Member.notifications
+ */
+export type Member$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

@@ -14,8 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Category
- * Danh mục bài viết
- * VD: "Tin tức", "Hướng dẫn", "Chia sẻ kinh nghiệm", "Thông báo"
+ * Danh mục bài viết - chỉ áp dụng cho Post type=BLOG
  */
 export type CategoryModel = runtime.Types.Result.DefaultSelection<Prisma.$CategoryPayload>
 

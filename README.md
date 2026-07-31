@@ -19,24 +19,25 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 
 ### 🌐 Trang công khai
 
-- **Trang chủ** — Hero banner, thống kê CLB, giới thiệu, quyền lợi thành viên, ban chủ nhiệm, gallery ảnh, FAQ
+- **Trang chủ** — Hero banner, thống kê CLB, giới thiệu, quyền lợi thành viên, ban chủ nhiệm, gallery ảnh, FAQ, terminal tương tác (auto-typing + full-screen với 13 lệnh CLI)
 - **Hồ sơ thành viên** — Trang cá nhân với slug tùy chỉnh (`/members/:slug`)
+- **Sitemap động** — Tự động index bài viết, sự kiện, thành tựu, dự án, thành viên với alternates song ngữ vi/en
 - **Đa ngôn ngữ** — Tiếng Việt (mặc định) & English qua `next-intl`
 - **Light / Dark mode** — Chuyển đổi giao diện với `next-themes`
 - **API Docs** — Swagger UI tự động tại `/api-docs`
 
 ### 🔐 Khu vực thành viên
 
-- **Đăng nhập Google OAuth** qua Supabase Auth
+- **Xác thực cổng SSO tập trung (OIDC)** qua NestJS SSO với cơ chế PKCE và JWKS verification
 - **Chỉnh sửa hồ sơ** — Thông tin cá nhân, avatar, ảnh bìa, liên kết mạng xã hội, slug
 
 ### ⚙️ Quản trị (Admin Panel)
 
 | Module | Mô tả |
 |---|---|
-| **Thành viên** | CRUD, quản lý vai trò CLB, chức vụ theo kỳ, mạng xã hội, slug |
+| **Thành viên** | Đồng bộ tự động từ SSO qua Cronjob, chỉnh sửa thông tin portfolio bổ sung (slug, socials, cover image, spotifyUri, bio, avatar override) |
 | **Ban / Phòng** | Quản lý cơ cấu tổ chức CLB |
-| **Bài viết** | Quy trình duyệt bài (Draft → Review → Published), lịch sử chỉnh sửa |
+| **Bài viết** | Quy trình duyệt bài (Draft → Review → Published/Unlisted), lịch sử chỉnh sửa |
 | **Sự kiện** | Quản lý workshop, seminar, cuộc thi với đăng ký, gallery |
 | **Thành tựu** | Giải thưởng cá nhân, đội, CLB |
 | **Dự án** | Showcase dự án với GitHub, tech stack, thành viên |
@@ -45,7 +46,7 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 | **FAQ** | Câu hỏi thường gặp, hỗ trợ đa ngôn ngữ |
 | **Gallery** | Quản lý ảnh trang chủ |
 | **Homepage** | Tùy chỉnh nội dung hero, intro, stats |
-| **Cài đặt** | Cấu hình site (tên, mô tả, logo, …) |
+| **Cài đặt** | Cấu hình site (tên, mô tả, logo, favicon, màu), auth (domain, chặn guest), footer social |
 
 ---
 
@@ -56,11 +57,11 @@ Website quản lý và giới thiệu **Câu lạc bộ Lập trình Di động 
 | **Framework** | Next.js 16 (App Router, React Compiler, Turbopack) |
 | **UI** | Tailwind CSS 4, Shadcn UI, Radix Primitives, Lucide Icons |
 | **Database** | PostgreSQL (Supabase) + Prisma ORM 7 (pg adapter) |
-| **Auth** | Supabase Auth (Google OAuth) |
+| **Auth** | NestJS SSO (OIDC + PKCE + JWKS ES256) |
 | **Storage** | Supabase Storage (avatar, cover, gallery) |
 | **i18n** | next-intl (vi, en) |
 | **Data Table** | TanStack Table v8 |
-| **API Docs** | next-swagger-doc + swagger-ui-react |
+| **API Docs** | next-swagger-doc + swagger-ui CDN |
 | **Lint & Format** | Biome 2 + Ultracite, Husky, lint-staged, commitlint |
 | **Deploy** | Docker / Standalone build |
 
@@ -85,16 +86,7 @@ corepack enable pnpm
 
 # Cấu hình biến môi trường
 cp .env.example .env
-# → Điền SUPABASE_URL, SUPABASE_ANON_KEY, DATABASE_URL, DIRECT_URL
-
-# Cài dependencies
-pnpm i
-
-# Chạy migration & seed database
-pnpm dlx prisma migrate dev
-
-# Khởi động dev server (Turbopack)
-pnpm dev
+# → Điền các giá trị DATABASE_URL, DIRECT_URL và SSO Client Credential
 ```
 
 ### Biến môi trường
@@ -102,11 +94,18 @@ pnpm dev
 | Biến | Mô tả |
 |---|---|
 | `NEXT_PUBLIC_API_URL` | URL API (mặc định: `http://localhost:3000`) |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
+| `NEXT_PUBLIC_SITE_URL` | URL của Landing Page (mặc định: `http://localhost:3000`), dùng làm gốc cho Redirect URL (`{NEXT_PUBLIC_SITE_URL}/api/auth/callback`) |
+| `SSO_ISSUER` | Địa chỉ OIDC Issuer của SSO (mặc định: `https://auth.mpclub.dev`) |
+| `SSO_CLIENT_ID` | Client ID được SSO cấp để tích hợp OIDC |
+| `SSO_CLIENT_SECRET` | Client Secret tương ứng |
+| `SSO_SERVICE_API_KEY` | Key kết nối server-to-server lấy dữ liệu thành viên từ SSO |
+| `SESSION_SECRET` | Khóa mã hóa session cookie `mpc_session` tại landing page |
+| `CRON_SECRET` | Token bảo mật để kích hoạt API cron job đồng bộ thành viên |
 | `DATABASE_URL` | Connection pooler (port 6543) |
 | `DIRECT_URL` | Direct connection (port 5432) |
 | `ADMIN_ACCOUNT` | Email(s) root admin, JSON array |
+| `AUTH_ACCEPTED_DOMAINS` | Domain email cho phép đăng nhập (phân cách dấu phẩy), để trống = tất cả |
+| `AUTH_REQUIRE_MEMBER_ROLE` | `true` để chặn tài khoản GUEST đăng nhập |
 
 ---
 

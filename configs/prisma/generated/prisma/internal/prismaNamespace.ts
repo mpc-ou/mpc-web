@@ -398,17 +398,16 @@ export const ModelName = {
   Post: 'Post',
   PostRevision: 'PostRevision',
   PostTag: 'PostTag',
-  Event: 'Event',
-  EventOrganizer: 'EventOrganizer',
-  EventTag: 'EventTag',
-  EventGallery: 'EventGallery',
+  PostActivity: 'PostActivity',
+  PostOrganizer: 'PostOrganizer',
+  Image: 'Image',
+  PostAchievementMember: 'PostAchievementMember',
   Activity: 'Activity',
   Sponsor: 'Sponsor',
-  EventSponsorship: 'EventSponsorship',
-  Achievement: 'Achievement',
-  AchievementMember: 'AchievementMember',
+  PostSponsorship: 'PostSponsorship',
   Project: 'Project',
   ProjectMember: 'ProjectMember',
+  Notification: 'Notification',
   YearRecap: 'YearRecap'
 } as const
 
@@ -425,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "event" | "eventOrganizer" | "eventTag" | "eventGallery" | "activity" | "sponsor" | "eventSponsorship" | "achievement" | "achievementMember" | "project" | "projectMember" | "yearRecap"
+    modelProps: "siteSetting" | "announcement" | "homepageSection" | "faqItem" | "galleryImage" | "externalLink" | "member" | "department" | "clubRole" | "category" | "tag" | "post" | "postRevision" | "postTag" | "postActivity" | "postOrganizer" | "image" | "postAchievementMember" | "activity" | "sponsor" | "postSponsorship" | "project" | "projectMember" | "notification" | "yearRecap"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1465,299 +1464,299 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Event: {
-      payload: Prisma.$EventPayload<ExtArgs>
-      fields: Prisma.EventFieldRefs
+    PostActivity: {
+      payload: Prisma.$PostActivityPayload<ExtArgs>
+      fields: Prisma.PostActivityFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.EventFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload> | null
+          args: Prisma.PostActivityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.EventFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         findFirst: {
-          args: Prisma.EventFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload> | null
+          args: Prisma.PostActivityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.EventFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         findMany: {
-          args: Prisma.EventFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
+          args: Prisma.PostActivityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>[]
         }
         create: {
-          args: Prisma.EventCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         createMany: {
-          args: Prisma.EventCreateManyArgs<ExtArgs>
+          args: Prisma.PostActivityCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.EventCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
+          args: Prisma.PostActivityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>[]
         }
         delete: {
-          args: Prisma.EventDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         update: {
-          args: Prisma.EventUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         deleteMany: {
-          args: Prisma.EventDeleteManyArgs<ExtArgs>
+          args: Prisma.PostActivityDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.EventUpdateManyArgs<ExtArgs>
+          args: Prisma.PostActivityUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.EventUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
+          args: Prisma.PostActivityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>[]
         }
         upsert: {
-          args: Prisma.EventUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
+          args: Prisma.PostActivityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostActivityPayload>
         }
         aggregate: {
-          args: Prisma.EventAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEvent>
+          args: Prisma.PostActivityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostActivity>
         }
         groupBy: {
-          args: Prisma.EventGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventGroupByOutputType>[]
+          args: Prisma.PostActivityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostActivityGroupByOutputType>[]
         }
         count: {
-          args: Prisma.EventCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventCountAggregateOutputType> | number
+          args: Prisma.PostActivityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostActivityCountAggregateOutputType> | number
         }
       }
     }
-    EventOrganizer: {
-      payload: Prisma.$EventOrganizerPayload<ExtArgs>
-      fields: Prisma.EventOrganizerFieldRefs
+    PostOrganizer: {
+      payload: Prisma.$PostOrganizerPayload<ExtArgs>
+      fields: Prisma.PostOrganizerFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.EventOrganizerFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload> | null
+          args: Prisma.PostOrganizerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.EventOrganizerFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         findFirst: {
-          args: Prisma.EventOrganizerFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload> | null
+          args: Prisma.PostOrganizerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.EventOrganizerFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         findMany: {
-          args: Prisma.EventOrganizerFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>[]
+          args: Prisma.PostOrganizerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>[]
         }
         create: {
-          args: Prisma.EventOrganizerCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         createMany: {
-          args: Prisma.EventOrganizerCreateManyArgs<ExtArgs>
+          args: Prisma.PostOrganizerCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.EventOrganizerCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>[]
+          args: Prisma.PostOrganizerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>[]
         }
         delete: {
-          args: Prisma.EventOrganizerDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         update: {
-          args: Prisma.EventOrganizerUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         deleteMany: {
-          args: Prisma.EventOrganizerDeleteManyArgs<ExtArgs>
+          args: Prisma.PostOrganizerDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.EventOrganizerUpdateManyArgs<ExtArgs>
+          args: Prisma.PostOrganizerUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.EventOrganizerUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>[]
+          args: Prisma.PostOrganizerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>[]
         }
         upsert: {
-          args: Prisma.EventOrganizerUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventOrganizerPayload>
+          args: Prisma.PostOrganizerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostOrganizerPayload>
         }
         aggregate: {
-          args: Prisma.EventOrganizerAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEventOrganizer>
+          args: Prisma.PostOrganizerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostOrganizer>
         }
         groupBy: {
-          args: Prisma.EventOrganizerGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventOrganizerGroupByOutputType>[]
+          args: Prisma.PostOrganizerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostOrganizerGroupByOutputType>[]
         }
         count: {
-          args: Prisma.EventOrganizerCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventOrganizerCountAggregateOutputType> | number
+          args: Prisma.PostOrganizerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostOrganizerCountAggregateOutputType> | number
         }
       }
     }
-    EventTag: {
-      payload: Prisma.$EventTagPayload<ExtArgs>
-      fields: Prisma.EventTagFieldRefs
+    Image: {
+      payload: Prisma.$ImagePayload<ExtArgs>
+      fields: Prisma.ImageFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.EventTagFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload> | null
+          args: Prisma.ImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.EventTagFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         findFirst: {
-          args: Prisma.EventTagFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload> | null
+          args: Prisma.ImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.EventTagFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         findMany: {
-          args: Prisma.EventTagFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>[]
+          args: Prisma.ImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
         }
         create: {
-          args: Prisma.EventTagCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         createMany: {
-          args: Prisma.EventTagCreateManyArgs<ExtArgs>
+          args: Prisma.ImageCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.EventTagCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>[]
+          args: Prisma.ImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
         }
         delete: {
-          args: Prisma.EventTagDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         update: {
-          args: Prisma.EventTagUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         deleteMany: {
-          args: Prisma.EventTagDeleteManyArgs<ExtArgs>
+          args: Prisma.ImageDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.EventTagUpdateManyArgs<ExtArgs>
+          args: Prisma.ImageUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.EventTagUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>[]
+          args: Prisma.ImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
         }
         upsert: {
-          args: Prisma.EventTagUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventTagPayload>
+          args: Prisma.ImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
         }
         aggregate: {
-          args: Prisma.EventTagAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEventTag>
+          args: Prisma.ImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImage>
         }
         groupBy: {
-          args: Prisma.EventTagGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventTagGroupByOutputType>[]
+          args: Prisma.ImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImageGroupByOutputType>[]
         }
         count: {
-          args: Prisma.EventTagCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventTagCountAggregateOutputType> | number
+          args: Prisma.ImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImageCountAggregateOutputType> | number
         }
       }
     }
-    EventGallery: {
-      payload: Prisma.$EventGalleryPayload<ExtArgs>
-      fields: Prisma.EventGalleryFieldRefs
+    PostAchievementMember: {
+      payload: Prisma.$PostAchievementMemberPayload<ExtArgs>
+      fields: Prisma.PostAchievementMemberFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.EventGalleryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload> | null
+          args: Prisma.PostAchievementMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.EventGalleryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         findFirst: {
-          args: Prisma.EventGalleryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload> | null
+          args: Prisma.PostAchievementMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.EventGalleryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         findMany: {
-          args: Prisma.EventGalleryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>[]
+          args: Prisma.PostAchievementMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>[]
         }
         create: {
-          args: Prisma.EventGalleryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         createMany: {
-          args: Prisma.EventGalleryCreateManyArgs<ExtArgs>
+          args: Prisma.PostAchievementMemberCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.EventGalleryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>[]
+          args: Prisma.PostAchievementMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>[]
         }
         delete: {
-          args: Prisma.EventGalleryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         update: {
-          args: Prisma.EventGalleryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         deleteMany: {
-          args: Prisma.EventGalleryDeleteManyArgs<ExtArgs>
+          args: Prisma.PostAchievementMemberDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.EventGalleryUpdateManyArgs<ExtArgs>
+          args: Prisma.PostAchievementMemberUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.EventGalleryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>[]
+          args: Prisma.PostAchievementMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>[]
         }
         upsert: {
-          args: Prisma.EventGalleryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventGalleryPayload>
+          args: Prisma.PostAchievementMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostAchievementMemberPayload>
         }
         aggregate: {
-          args: Prisma.EventGalleryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEventGallery>
+          args: Prisma.PostAchievementMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostAchievementMember>
         }
         groupBy: {
-          args: Prisma.EventGalleryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventGalleryGroupByOutputType>[]
+          args: Prisma.PostAchievementMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostAchievementMemberGroupByOutputType>[]
         }
         count: {
-          args: Prisma.EventGalleryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventGalleryCountAggregateOutputType> | number
+          args: Prisma.PostAchievementMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostAchievementMemberCountAggregateOutputType> | number
         }
       }
     }
@@ -1909,225 +1908,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    EventSponsorship: {
-      payload: Prisma.$EventSponsorshipPayload<ExtArgs>
-      fields: Prisma.EventSponsorshipFieldRefs
+    PostSponsorship: {
+      payload: Prisma.$PostSponsorshipPayload<ExtArgs>
+      fields: Prisma.PostSponsorshipFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.EventSponsorshipFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload> | null
+          args: Prisma.PostSponsorshipFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.EventSponsorshipFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         findFirst: {
-          args: Prisma.EventSponsorshipFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload> | null
+          args: Prisma.PostSponsorshipFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.EventSponsorshipFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         findMany: {
-          args: Prisma.EventSponsorshipFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>[]
+          args: Prisma.PostSponsorshipFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>[]
         }
         create: {
-          args: Prisma.EventSponsorshipCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         createMany: {
-          args: Prisma.EventSponsorshipCreateManyArgs<ExtArgs>
+          args: Prisma.PostSponsorshipCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.EventSponsorshipCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>[]
+          args: Prisma.PostSponsorshipCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>[]
         }
         delete: {
-          args: Prisma.EventSponsorshipDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         update: {
-          args: Prisma.EventSponsorshipUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         deleteMany: {
-          args: Prisma.EventSponsorshipDeleteManyArgs<ExtArgs>
+          args: Prisma.PostSponsorshipDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.EventSponsorshipUpdateManyArgs<ExtArgs>
+          args: Prisma.PostSponsorshipUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.EventSponsorshipUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>[]
+          args: Prisma.PostSponsorshipUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>[]
         }
         upsert: {
-          args: Prisma.EventSponsorshipUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventSponsorshipPayload>
+          args: Prisma.PostSponsorshipUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostSponsorshipPayload>
         }
         aggregate: {
-          args: Prisma.EventSponsorshipAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEventSponsorship>
+          args: Prisma.PostSponsorshipAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostSponsorship>
         }
         groupBy: {
-          args: Prisma.EventSponsorshipGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventSponsorshipGroupByOutputType>[]
+          args: Prisma.PostSponsorshipGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostSponsorshipGroupByOutputType>[]
         }
         count: {
-          args: Prisma.EventSponsorshipCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventSponsorshipCountAggregateOutputType> | number
-        }
-      }
-    }
-    Achievement: {
-      payload: Prisma.$AchievementPayload<ExtArgs>
-      fields: Prisma.AchievementFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.AchievementFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.AchievementFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        findFirst: {
-          args: Prisma.AchievementFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.AchievementFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        findMany: {
-          args: Prisma.AchievementFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>[]
-        }
-        create: {
-          args: Prisma.AchievementCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        createMany: {
-          args: Prisma.AchievementCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.AchievementCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>[]
-        }
-        delete: {
-          args: Prisma.AchievementDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        update: {
-          args: Prisma.AchievementUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        deleteMany: {
-          args: Prisma.AchievementDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.AchievementUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.AchievementUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>[]
-        }
-        upsert: {
-          args: Prisma.AchievementUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementPayload>
-        }
-        aggregate: {
-          args: Prisma.AchievementAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateAchievement>
-        }
-        groupBy: {
-          args: Prisma.AchievementGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AchievementGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.AchievementCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AchievementCountAggregateOutputType> | number
-        }
-      }
-    }
-    AchievementMember: {
-      payload: Prisma.$AchievementMemberPayload<ExtArgs>
-      fields: Prisma.AchievementMemberFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.AchievementMemberFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.AchievementMemberFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        findFirst: {
-          args: Prisma.AchievementMemberFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.AchievementMemberFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        findMany: {
-          args: Prisma.AchievementMemberFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>[]
-        }
-        create: {
-          args: Prisma.AchievementMemberCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        createMany: {
-          args: Prisma.AchievementMemberCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.AchievementMemberCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>[]
-        }
-        delete: {
-          args: Prisma.AchievementMemberDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        update: {
-          args: Prisma.AchievementMemberUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        deleteMany: {
-          args: Prisma.AchievementMemberDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.AchievementMemberUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.AchievementMemberUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>[]
-        }
-        upsert: {
-          args: Prisma.AchievementMemberUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AchievementMemberPayload>
-        }
-        aggregate: {
-          args: Prisma.AchievementMemberAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateAchievementMember>
-        }
-        groupBy: {
-          args: Prisma.AchievementMemberGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AchievementMemberGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.AchievementMemberCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AchievementMemberCountAggregateOutputType> | number
+          args: Prisma.PostSponsorshipCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostSponsorshipCountAggregateOutputType> | number
         }
       }
     }
@@ -2279,6 +2130,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Notification: {
+      payload: Prisma.$NotificationPayload<ExtArgs>
+      fields: Prisma.NotificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        findFirst: {
+          args: Prisma.NotificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        findMany: {
+          args: Prisma.NotificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        create: {
+          args: Prisma.NotificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        createMany: {
+          args: Prisma.NotificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        delete: {
+          args: Prisma.NotificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        update: {
+          args: Prisma.NotificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.NotificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        aggregate: {
+          args: Prisma.NotificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotification>
+        }
+        groupBy: {
+          args: Prisma.NotificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationCountAggregateOutputType> | number
+        }
+      }
+    }
     YearRecap: {
       payload: Prisma.$YearRecapPayload<ExtArgs>
       fields: Prisma.YearRecapFieldRefs
@@ -2406,9 +2331,11 @@ export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[key
 
 export const AnnouncementScalarFieldEnum = {
   id: 'id',
-  content: 'content',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
   linkUrl: 'linkUrl',
-  linkLabel: 'linkLabel',
+  linkLabelVi: 'linkLabelVi',
+  linkLabelEn: 'linkLabelEn',
   bgColor: 'bgColor',
   isActive: 'isActive',
   startAt: 'startAt',
@@ -2440,6 +2367,7 @@ export const FaqItemScalarFieldEnum = {
   answerVi: 'answerVi',
   questionEn: 'questionEn',
   answerEn: 'answerEn',
+  target: 'target',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -2453,6 +2381,7 @@ export const GalleryImageScalarFieldEnum = {
   id: 'id',
   url: 'url',
   caption: 'caption',
+  type: 'type',
   order: 'order',
   isActive: 'isActive',
   createdAt: 'createdAt'
@@ -2476,18 +2405,17 @@ export type ExternalLinkScalarFieldEnum = (typeof ExternalLinkScalarFieldEnum)[k
 
 export const MemberScalarFieldEnum = {
   id: 'id',
-  authId: 'authId',
   email: 'email',
-  password: 'password',
-  githubId: 'githubId',
-  githubEmail: 'githubEmail',
   firstName: 'firstName',
+  middleName: 'middleName',
   lastName: 'lastName',
   avatar: 'avatar',
   coverImage: 'coverImage',
   slug: 'slug',
   dob: 'dob',
   showDob: 'showDob',
+  showPhone: 'showPhone',
+  showStudentId: 'showStudentId',
   bio: 'bio',
   phone: 'phone',
   studentId: 'studentId',
@@ -2496,7 +2424,7 @@ export const MemberScalarFieldEnum = {
   leftClubAt: 'leftClubAt',
   webRole: 'webRole',
   isActive: 'isActive',
-  createdBy: 'createdBy',
+  spotifyUri: 'spotifyUri',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2515,6 +2443,7 @@ export const DepartmentScalarFieldEnum = {
   descriptionEn: 'descriptionEn',
   missionsEn: 'missionsEn',
   linkLabelEn: 'linkLabelEn',
+  hyperlink: 'hyperlink',
   icon: 'icon',
   bgImage: 'bgImage',
   order: 'order',
@@ -2568,17 +2497,37 @@ export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagSca
 
 export const PostScalarFieldEnum = {
   id: 'id',
-  title: 'title',
+  type: 'type',
+  titleVi: 'titleVi',
+  titleEn: 'titleEn',
   slug: 'slug',
-  summary: 'summary',
-  content: 'content',
+  summaryVi: 'summaryVi',
+  summaryEn: 'summaryEn',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
+  sourceLanguage: 'sourceLanguage',
   thumbnail: 'thumbnail',
+  images: 'images',
   status: 'status',
   isPinned: 'isPinned',
   viewCount: 'viewCount',
   authorId: 'authorId',
   reviewerId: 'reviewerId',
   categoryId: 'categoryId',
+  activityId: 'activityId',
+  eventStatus: 'eventStatus',
+  eventType: 'eventType',
+  locationVi: 'locationVi',
+  locationEn: 'locationEn',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  maxAttendees: 'maxAttendees',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  achievementType: 'achievementType',
+  achievementDate: 'achievementDate',
+  isHighlight: 'isHighlight',
+  relatedUrl: 'relatedUrl',
   publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2591,9 +2540,12 @@ export const PostRevisionScalarFieldEnum = {
   id: 'id',
   postId: 'postId',
   editorId: 'editorId',
-  title: 'title',
-  summary: 'summary',
-  content: 'content',
+  titleVi: 'titleVi',
+  titleEn: 'titleEn',
+  summaryVi: 'summaryVi',
+  summaryEn: 'summaryEn',
+  contentVi: 'contentVi',
+  contentEn: 'contentEn',
   editNote: 'editNote',
   createdAt: 'createdAt'
 } as const
@@ -2609,66 +2561,63 @@ export const PostTagScalarFieldEnum = {
 export type PostTagScalarFieldEnum = (typeof PostTagScalarFieldEnum)[keyof typeof PostTagScalarFieldEnum]
 
 
-export const EventScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  slug: 'slug',
-  description: 'description',
-  content: 'content',
-  thumbnail: 'thumbnail',
-  images: 'images',
-  location: 'location',
-  maxAttendees: 'maxAttendees',
-  status: 'status',
-  type: 'type',
-  startAt: 'startAt',
-  endAt: 'endAt',
-  creatorId: 'creatorId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+export const PostActivityScalarFieldEnum = {
+  postId: 'postId',
+  activityId: 'activityId'
 } as const
 
-export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+export type PostActivityScalarFieldEnum = (typeof PostActivityScalarFieldEnum)[keyof typeof PostActivityScalarFieldEnum]
 
 
-export const EventOrganizerScalarFieldEnum = {
+export const PostOrganizerScalarFieldEnum = {
   id: 'id',
-  eventId: 'eventId',
+  postId: 'postId',
   memberId: 'memberId',
   role: 'role',
   createdAt: 'createdAt'
 } as const
 
-export type EventOrganizerScalarFieldEnum = (typeof EventOrganizerScalarFieldEnum)[keyof typeof EventOrganizerScalarFieldEnum]
+export type PostOrganizerScalarFieldEnum = (typeof PostOrganizerScalarFieldEnum)[keyof typeof PostOrganizerScalarFieldEnum]
 
 
-export const EventTagScalarFieldEnum = {
-  eventId: 'eventId',
-  tagId: 'tagId'
+export const ImageScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  url: 'url',
+  title: 'title',
+  caption: 'caption',
+  isTemp: 'isTemp',
+  type: 'type',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type EventTagScalarFieldEnum = (typeof EventTagScalarFieldEnum)[keyof typeof EventTagScalarFieldEnum]
+export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
 
 
-export const EventGalleryScalarFieldEnum = {
+export const PostAchievementMemberScalarFieldEnum = {
   id: 'id',
-  eventId: 'eventId',
-  url: 'url',
-  caption: 'caption',
-  order: 'order',
+  postId: 'postId',
+  memberId: 'memberId',
+  role: 'role',
+  prize: 'prize',
+  imageUrl: 'imageUrl',
   createdAt: 'createdAt'
 } as const
 
-export type EventGalleryScalarFieldEnum = (typeof EventGalleryScalarFieldEnum)[keyof typeof EventGalleryScalarFieldEnum]
+export type PostAchievementMemberScalarFieldEnum = (typeof PostAchievementMemberScalarFieldEnum)[keyof typeof PostAchievementMemberScalarFieldEnum]
 
 
 export const ActivityScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   titleVi: 'titleVi',
-  descriptionVi: 'descriptionVi',
   titleEn: 'titleEn',
+  descriptionVi: 'descriptionVi',
   descriptionEn: 'descriptionEn',
+  frequencyVi: 'frequencyVi',
+  frequencyEn: 'frequencyEn',
   hyperlink: 'hyperlink',
   thumbnail: 'thumbnail',
   images: 'images',
@@ -2685,12 +2634,18 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 export const SponsorScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  nameEn: 'nameEn',
   slug: 'slug',
+  descriptionVi: 'descriptionVi',
+  descriptionEn: 'descriptionEn',
   logo: 'logo',
   email: 'email',
   phone: 'phone',
   website: 'website',
-  description: 'description',
+  activityId: 'activityId',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  images: 'images',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2699,10 +2654,10 @@ export const SponsorScalarFieldEnum = {
 export type SponsorScalarFieldEnum = (typeof SponsorScalarFieldEnum)[keyof typeof SponsorScalarFieldEnum]
 
 
-export const EventSponsorshipScalarFieldEnum = {
+export const PostSponsorshipScalarFieldEnum = {
   id: 'id',
   sponsorId: 'sponsorId',
-  eventId: 'eventId',
+  postId: 'postId',
   title: 'title',
   content: 'content',
   tier: 'tier',
@@ -2713,44 +2668,18 @@ export const EventSponsorshipScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type EventSponsorshipScalarFieldEnum = (typeof EventSponsorshipScalarFieldEnum)[keyof typeof EventSponsorshipScalarFieldEnum]
-
-
-export const AchievementScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  slug: 'slug',
-  summary: 'summary',
-  content: 'content',
-  thumbnail: 'thumbnail',
-  images: 'images',
-  date: 'date',
-  type: 'type',
-  isHighlight: 'isHighlight',
-  relatedUrl: 'relatedUrl',
-  relatedPostId: 'relatedPostId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AchievementScalarFieldEnum = (typeof AchievementScalarFieldEnum)[keyof typeof AchievementScalarFieldEnum]
-
-
-export const AchievementMemberScalarFieldEnum = {
-  achievementId: 'achievementId',
-  memberId: 'memberId',
-  role: 'role'
-} as const
-
-export type AchievementMemberScalarFieldEnum = (typeof AchievementMemberScalarFieldEnum)[keyof typeof AchievementMemberScalarFieldEnum]
+export type PostSponsorshipScalarFieldEnum = (typeof PostSponsorshipScalarFieldEnum)[keyof typeof PostSponsorshipScalarFieldEnum]
 
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  titleEn: 'titleEn',
   slug: 'slug',
   description: 'description',
+  descriptionEn: 'descriptionEn',
   content: 'content',
+  contentEn: 'contentEn',
   thumbnail: 'thumbnail',
   images: 'images',
   githubUrl: 'githubUrl',
@@ -2774,6 +2703,21 @@ export const ProjectMemberScalarFieldEnum = {
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  type: 'type',
+  title: 'title',
+  content: 'content',
+  linkUrl: 'linkUrl',
+  isRead: 'isRead',
+  postId: 'postId',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const YearRecapScalarFieldEnum = {
@@ -2940,6 +2884,34 @@ export type ListEnumClubPositionFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'PostType'
+ */
+export type EnumPostTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostType'>
+    
+
+
+/**
+ * Reference to a field of type 'PostType[]'
+ */
+export type ListEnumPostTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PostLanguage'
+ */
+export type EnumPostLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostLanguage'>
+    
+
+
+/**
+ * Reference to a field of type 'PostLanguage[]'
+ */
+export type ListEnumPostLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostLanguage[]'>
+    
+
+
+/**
  * Reference to a field of type 'PostStatus'
  */
 export type EnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus'>
@@ -2982,16 +2954,16 @@ export type ListEnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
- * Reference to a field of type 'Decimal'
+ * Reference to a field of type 'Float'
  */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'Decimal[]'
+ * Reference to a field of type 'Float[]'
  */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -3010,16 +2982,30 @@ export type ListEnumAchievementTypeFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'Decimal'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'Decimal[]'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'NotificationType'
+ */
+export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
+    
+
+
+/**
+ * Reference to a field of type 'NotificationType[]'
+ */
+export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
     
 
 /**
@@ -3131,17 +3117,16 @@ export type GlobalOmitConfig = {
   post?: Prisma.PostOmit
   postRevision?: Prisma.PostRevisionOmit
   postTag?: Prisma.PostTagOmit
-  event?: Prisma.EventOmit
-  eventOrganizer?: Prisma.EventOrganizerOmit
-  eventTag?: Prisma.EventTagOmit
-  eventGallery?: Prisma.EventGalleryOmit
+  postActivity?: Prisma.PostActivityOmit
+  postOrganizer?: Prisma.PostOrganizerOmit
+  image?: Prisma.ImageOmit
+  postAchievementMember?: Prisma.PostAchievementMemberOmit
   activity?: Prisma.ActivityOmit
   sponsor?: Prisma.SponsorOmit
-  eventSponsorship?: Prisma.EventSponsorshipOmit
-  achievement?: Prisma.AchievementOmit
-  achievementMember?: Prisma.AchievementMemberOmit
+  postSponsorship?: Prisma.PostSponsorshipOmit
   project?: Prisma.ProjectOmit
   projectMember?: Prisma.ProjectMemberOmit
+  notification?: Prisma.NotificationOmit
   yearRecap?: Prisma.YearRecapOmit
 }
 

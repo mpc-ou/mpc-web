@@ -1,0 +1,19 @@
+{
+  "auth": {
+    "title": "Login",
+    "title2": "Who are you?",
+    "description": "Login to your account so we know who you are! ^^",
+    "ssoTitle": "SSO AUTHENTICATION",
+    "ssoButton": "Sign in with SSO",
+    "clubManagementSystem": "Club Management System",
+    "adminPlatform": "Administration Platform",
+    "membersActivities": "Members & Activities",
+    "descriptionLeft": "Internal management system for Mobile Programming Club (MPC) members, integrated with a synchronized SSO gateway.",
+    "copyright": "Mobile Programming Club",
+    "version": "Version 2.0.0",
+    "errorPageTitle": "Authentication Error",
+    "error": {
+      "title": "Login failed"
+    }
+  }
+}

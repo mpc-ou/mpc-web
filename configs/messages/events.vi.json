@@ -192,6 +192,17 @@
     "joinDesc": "Xem thêm chi tiết tại fanpage của chúng mình để biết thêm thông tin về thể lệ, cơ cấu giải thưởng và cách thức đăng ký tham gia.",
     "learnMoreBtn": "Tìm hiểu thêm",
     "followUpBtn": "Theo dõi ngay!",
-    "exhibitionTitle": "Các dự án tiêu biểu"
+    "exhibitionTitle": "Các dự án tiêu biểu",
+    "countdownTitle": "Đếm ngược đến ngày thi",
+    "countdownDays": "Ngày",
+    "countdownHours": "Giờ",
+    "countdownMinutes": "Phút",
+    "countdownSeconds": "Giây",
+    "heroBadge": "WebDesign Summit 2026",
+    "heroTagline": "Unleashing Creative",
+    "heroTaglineSub": "Brilliance",
+    "rulesBtn": "Xem thể lệ",
+    "registerBtn": "Đăng ký ngay",
+    "sponsorCtaBtn": "Hợp tác tài trợ ngay"
   }
 }

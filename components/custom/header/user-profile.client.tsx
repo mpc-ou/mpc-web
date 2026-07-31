@@ -1,6 +1,7 @@
 "use client";
 
 import { CreditCard, FileText, LogOut, Settings, Shield, User } from "lucide-react";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useRouter } from "@/configs/i18n/routing";
 import { _ROUTE_ADMIN, _ROUTE_AUTH, _ROUTE_MEMBER_CARD, _ROUTE_MEMBERS, _ROUTE_PROFILE } from "@/constants/route";
-import { type UserProfileData } from "@/types/common";
+import type { UserProfileData } from "@/types/common";
 
 type Props = {
   profile: UserProfileData;
@@ -33,7 +34,7 @@ const UserProfile = ({ profile }: Props) => {
   const t = useTranslations("common.nav");
   const tProfile = useTranslations("profile");
   const tUserMenu = useTranslations("userMenu");
-  const router = useRouter();
+  const _router = useRouter();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleLogout = () => {
@@ -93,10 +94,10 @@ const UserProfile = ({ profile }: Props) => {
 
           {profile.isAdmin && (
             <DropdownMenuItem asChild>
-              <Link href={_ROUTE_ADMIN}>
+              <NextLink href={_ROUTE_ADMIN}>
                 <Shield className='mr-2 h-4 w-4' />
                 {t("admin")}
-              </Link>
+              </NextLink>
             </DropdownMenuItem>
           )}
 
@@ -138,5 +139,4 @@ const UserProfile = ({ profile }: Props) => {
   );
 };
 
-export type { UserProfileData };
 export { UserProfile };

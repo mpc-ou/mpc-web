@@ -19,6 +19,7 @@ export type UpdateSsoProfileData = {
   avatar?: string | null;
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: SSO profile field update & sync
 export async function updateSsoProfile(data: UpdateSsoProfileData): Promise<{ success: boolean; error?: string }> {
   const session = await getSession();
   if (!session) {

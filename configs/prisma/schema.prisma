@@ -234,9 +234,9 @@ model Member {
   coverImage   String?
   slug         String?   @unique
   dob          DateTime?
-  showDob      Boolean   @default(true)
-  showPhone    Boolean   @default(true)
-  showStudentId Boolean   @default(true)
+  showDob      Boolean   @default(false)
+  showPhone    Boolean   @default(false)
+  showStudentId Boolean   @default(false)
   bio          String?
   phone        String?
   studentId    String?

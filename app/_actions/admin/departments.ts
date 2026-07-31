@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import { _CACHE_DEPARTMENTS } from "@/constants/cache";
-import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { requireAdmin } from "./helpers";
 
 export const adminGetDepartments = async () =>
   handleErrorServerWithAuth({

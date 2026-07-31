@@ -79,7 +79,7 @@ function loadSpotifyIframeApi(): Promise<SpotifyIframeApi> {
 export function SpotifyPlayer({ uri, autoplay = true }: SpotifyPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<SpotifyIframeController | null>(null);
-  const [isReady, setIsReady] = useState(false);
+  const [_isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<{

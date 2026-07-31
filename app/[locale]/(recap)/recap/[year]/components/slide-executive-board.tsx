@@ -55,6 +55,7 @@ export function SlideExecutiveBoard({ members }: { members: RecapData["executive
               }
             }}
           >
+            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: executive board member mapping */}
             {sorted.map((m) => {
               const fullName = getFullName(m.firstName, m.middleName, m.lastName, "vi");
               const borderColor = colorFromString(fullName);

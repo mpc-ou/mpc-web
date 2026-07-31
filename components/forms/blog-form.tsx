@@ -70,6 +70,7 @@ type Props = {
   showPublishedOption?: boolean;
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: BlogForm manages rich blog editor state
 export function BlogForm({
   post,
   onCreate,

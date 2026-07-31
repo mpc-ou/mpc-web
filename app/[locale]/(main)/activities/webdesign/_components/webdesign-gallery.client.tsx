@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
-import wdData from "@/configs/data/wd.json";
 import { GalleryMasonry } from "../../../_components/gallery-masonry.client";
 
 export function WebDesignGalleryClient({
@@ -18,7 +17,7 @@ export function WebDesignGalleryClient({
         <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm uppercase'>
           &gt; gallery
         </span>
-        <h2 className='mt-4 font-black text-3xl text-white uppercase tracking-tight sm:text-4xl'>
+        <h2 className='mt-4 font-black text-3xl text-foreground uppercase tracking-tight sm:text-4xl'>
           {t("galleryTitle")}
         </h2>
       </ScrollReveal>

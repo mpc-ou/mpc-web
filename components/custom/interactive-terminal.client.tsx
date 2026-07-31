@@ -376,7 +376,7 @@ export function InteractiveTerminal({ stats, tags = [] }: Props) {
         onClick={openInteractive}
         type='button'
       >
-        <div className='overflow-hidden rounded-xl border border-slate-700/50 bg-[#0D1117] shadow-xl transition-shadow duration-300 group-hover:border-orange-500/40 group-hover:shadow-[0_0_30px_rgba(249,115,22,0.15)]'>
+        <div className='overflow-hidden rounded-xl border border-border-subtle bg-card shadow-xl transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-glow-primary'>
           <div className='flex items-center gap-2 border-slate-700/50 border-b bg-slate-900/80 px-4 py-3'>
             <div className='h-3 w-3 rounded-full bg-red-500/80' />
             <div className='h-3 w-3 rounded-full bg-yellow-500/80' />

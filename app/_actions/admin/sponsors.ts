@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import { _CACHE_SPONSORS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { generateSlug, requireAdmin } from "./helpers";
 
 export const adminGetSponsors = async () =>
   handleErrorServerWithAuth({

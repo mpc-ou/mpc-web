@@ -13,17 +13,15 @@ export function WebDesignTimelineClient() {
         <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm uppercase'>
           &gt; timeline
         </span>
-        <h2 className='mt-4 font-black text-3xl text-white uppercase tracking-tight sm:text-4xl'>
+        <h2 className='mt-4 font-black text-3xl text-foreground uppercase tracking-tight sm:text-4xl'>
           {t("timelineTitle")}
         </h2>
       </ScrollReveal>
 
       <div className='relative mx-auto max-w-3xl pl-8 sm:pl-16'>
-        {/* Git Track Line */}
         <div className='absolute top-4 bottom-4 left-[18px] w-0.5 rounded-full bg-gradient-to-b from-orange-500 via-blue-500 to-emerald-500 sm:left-[35px]' />
 
         {[1, 2, 3, 4].map((phase, idx) => {
-          // Set different colors for git commit branch nodes
           const dotColors = [
             "bg-orange-500 ring-orange-500/20",
             "bg-blue-500 ring-blue-500/20",
@@ -46,27 +44,25 @@ export function WebDesignTimelineClient() {
               key={commitHash}
               variant='fade-up'
             >
-              {/* Git Commit Node Dot */}
               <div
-                className={`absolute top-6 left-[-26px] z-10 h-4 w-4 rounded-full border border-slate-950 transition-all duration-300 sm:left-[-53px] ${dotColors[idx]} group-hover:scale-125 group-hover:ring-4`}
+                className={`absolute top-6 left-[-26px] z-10 h-4 w-4 rounded-full border border-background transition-all duration-300 sm:left-[-53px] ${dotColors[idx]} group-hover:scale-125 group-hover:ring-4`}
               />
 
-              {/* Branch name label */}
               <div className='absolute top-12 left-[-26px] hidden origin-left rotate-90 pl-2 font-mono text-[9px] text-slate-500 opacity-50 transition-opacity group-hover:opacity-100 sm:left-[-53px] sm:block'>
                 git: branch_{idx + 1}
               </div>
 
-              <div className='rounded-2xl border border-white/5 bg-slate-900/40 p-6 shadow-lg backdrop-blur-xs transition-all duration-300 hover:border-white/15 hover:bg-slate-900/60 sm:p-8'>
+              <div className='rounded-2xl border border-slate-200/80 bg-white/90 p-6 shadow-slate-200/50 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-orange-500/40 sm:p-8 dark:border-white/10 dark:bg-slate-900/30 dark:shadow-none'>
                 <div className='mb-3 flex flex-wrap items-center justify-between gap-3'>
                   <div className='flex items-center gap-2'>
-                    <span className='rounded-md border border-white/5 bg-slate-950 px-2 py-0.5 font-mono font-semibold text-slate-400 text-xs'>
+                    <span className='rounded-md border border-border bg-muted/60 px-2 py-0.5 font-mono font-semibold text-slate-600 text-xs dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-400'>
                       commit {commitHash}
                     </span>
                     <span className='font-mono text-[10px] text-slate-500'>author: mpc-dev</span>
                   </div>
 
                   <Badge
-                    className='border-white/10 bg-white/5 font-semibold text-slate-300 text-xs tracking-wider'
+                    className='border-border bg-muted/40 font-semibold text-slate-700 text-xs tracking-wider dark:border-white/10 dark:bg-white/5 dark:text-slate-300'
                     variant='outline'
                   >
                     {t(`phase${phase}Title` as Parameters<typeof t>[0])}
@@ -74,11 +70,11 @@ export function WebDesignTimelineClient() {
                 </div>
 
                 <h3
-                  className={`bg-gradient-to-r bg-clip-text font-black text-transparent text-white text-xl uppercase tracking-tight ${textGradients[idx]}`}
+                  className={`bg-gradient-to-r bg-clip-text font-black text-transparent text-xl uppercase tracking-tight ${textGradients[idx]}`}
                 >
                   {t(`phase${phase}` as Parameters<typeof t>[0])}
                 </h3>
-                <p className='mt-2 border-white/10 border-l pl-4 text-slate-400 text-sm leading-relaxed transition-colors group-hover:border-white/20'>
+                <p className='mt-2 border-border border-l pl-4 text-slate-600 text-sm leading-relaxed transition-colors dark:border-white/10 dark:text-slate-400'>
                   {t(`phase${phase}Desc` as Parameters<typeof t>[0])}
                 </p>
               </div>

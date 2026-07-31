@@ -1,11 +1,9 @@
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Suspense } from "react";
 import { getProfile } from "@/app/_actions/profile/profile";
-import { LoadingComponent } from "@/components/custom/loading";
 import type { Member } from "@/configs/prisma/generated/prisma/client";
-import { FormClient, FormSkeleton } from "./form.client";
+import { FormClient } from "./form.client";
 
 type UserWithMember = SupabaseUser & {
   member?: Member | null;
@@ -63,9 +61,9 @@ export default async function Page({ params }: PageProps): Promise<React.ReactNo
     coverImage: user?.member?.coverImage || null,
     socials: socialsArray,
     spotifyUri: user?.member?.spotifyUri || "",
-    showDob: user?.member?.showDob ?? true,
-    showPhone: user?.member?.showPhone ?? true,
-    showStudentId: user?.member?.showStudentId ?? true
+    showDob: user?.member?.showDob ?? false,
+    showPhone: user?.member?.showPhone ?? false,
+    showStudentId: user?.member?.showStudentId ?? false
   };
 
   return (

@@ -32,9 +32,9 @@ export function FaqAccordion({ items, title, subtitle, badge = "faq", className 
             </span>
           )}
           {title && (
-            <h2 className='mt-4 font-black text-3xl text-white uppercase tracking-tight sm:text-4xl'>{title}</h2>
+            <h2 className='mt-4 font-black text-3xl text-foreground uppercase tracking-tight sm:text-4xl'>{title}</h2>
           )}
-          {subtitle && <p className='mx-auto mt-3 max-w-xl text-slate-400 text-sm'>{subtitle}</p>}
+          {subtitle && <p className='mx-auto mt-3 max-w-xl text-slate-600 text-sm dark:text-slate-400'>{subtitle}</p>}
         </ScrollReveal>
       )}
 
@@ -48,12 +48,12 @@ export function FaqAccordion({ items, title, subtitle, badge = "faq", className 
                 className={cn(
                   "overflow-hidden rounded-xl border transition-all duration-300",
                   isOpen
-                    ? "border-orange-500/30 bg-slate-900/80 shadow-lg shadow-orange-500/5"
-                    : "border-white/5 bg-slate-900/40 hover:border-white/10 hover:bg-slate-900/60"
+                    ? "border-orange-500/40 bg-white/90 shadow-lg shadow-orange-500/10 dark:bg-slate-900/80"
+                    : "border-slate-200/80 bg-white/80 shadow-md shadow-slate-200/40 backdrop-blur-xl hover:border-orange-500/30 hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:shadow-none dark:hover:bg-slate-900/60"
                 )}
               >
                 <button
-                  className='flex w-full select-none items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-white focus:outline-none'
+                  className='flex w-full select-none items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground focus:outline-none'
                   onClick={() => setOpenId(isOpen ? null : item.id)}
                   type='button'
                 >
@@ -61,15 +61,15 @@ export function FaqAccordion({ items, title, subtitle, badge = "faq", className 
                     <HelpCircle
                       className={cn(
                         "h-5 w-5 shrink-0 transition-colors duration-300",
-                        isOpen ? "text-orange-500" : "text-slate-500"
+                        isOpen ? "text-orange-500" : "text-slate-400 dark:text-slate-500"
                       )}
                     />
                     <span className='text-sm sm:text-base'>{item.question}</span>
                   </div>
                   <div
                     className={cn(
-                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/5 bg-slate-950/50 text-slate-400 transition-transform duration-300",
-                      isOpen && "rotate-180 border-orange-500/20 text-orange-400"
+                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-500 transition-transform duration-300 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-400",
+                      isOpen && "rotate-180 border-orange-500/20 text-orange-500 dark:text-orange-400"
                     )}
                   >
                     {isOpen ? <Minus className='h-3.5 w-3.5' /> : <Plus className='h-3.5 w-3.5' />}
@@ -82,7 +82,7 @@ export function FaqAccordion({ items, title, subtitle, badge = "faq", className 
                     isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                   )}
                 >
-                  <div className='border-white/5 border-t bg-slate-950/20 px-6 pt-1 pb-6 pl-[44px] font-sans text-slate-300 text-sm leading-relaxed sm:text-base'>
+                  <div className='border-slate-100 border-t bg-slate-50/50 px-6 pt-2 pb-6 pl-[44px] font-sans text-slate-700 text-sm leading-relaxed sm:text-base dark:border-white/5 dark:bg-slate-950/20 dark:text-slate-300'>
                     {item.answer}
                   </div>
                 </div>

@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_PROJECTS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { generateSlug, requireAdmin } from "./helpers";
 
 export const adminGetProjects = async () =>
   handleErrorServerWithAuth({

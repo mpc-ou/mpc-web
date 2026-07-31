@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox.client";
 import { cn } from "@/lib/utils";
@@ -61,6 +60,7 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
   const lastWheelRef = useRef(0);
   const rafRef = useRef<number>(0);
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: masonry column layout calculations
   const buildCols = useCallback(() => {
     const container = containerRef.current;
     if (!container || images.length === 0) {
@@ -112,7 +112,7 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
       `;
 
       for (let k = 0; k < copies; k++) {
-        seq.forEach((img) => {
+        for (const img of seq) {
           const h = getH(img);
           const card = document.createElement("div");
           card.style.cssText = `
@@ -168,7 +168,7 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
 
           card.appendChild(im);
           wrapper.appendChild(card);
-        });
+        }
       }
 
       container.appendChild(wrapper);
@@ -180,6 +180,7 @@ const GalleryMasonry = ({ images, className }: { images: GalleryImage[]; classNa
     }
 
     let lastTs = 0;
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: smooth canvas/DOM column animation loop
     const animate = (ts: number) => {
       const dt = lastTs ? Math.min(ts - lastTs, 32) : 16;
       lastTs = ts;

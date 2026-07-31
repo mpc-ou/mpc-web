@@ -26,7 +26,7 @@ import {
   Table,
   Undo2
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { adminRegisterTempImage } from "@/app/_actions/admin";
 import {
   DropdownMenu,
@@ -34,7 +34,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { STORAGE_BUCKET } from "@/constants/storage";
 import { UPLOAD_MAX_IMAGE_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
@@ -86,10 +85,10 @@ export const MarkdownEditor = ({
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
 
-  const updateHistoryState = () => {
+  const updateHistoryState = useCallback(() => {
     setCanUndo(historyIndexRef.current > 0);
     setCanRedo(historyIndexRef.current < historyRef.current.length - 1);
-  };
+  }, []);
 
   const handleChange = useCallback(
     (v: string, pushHistory = true) => {

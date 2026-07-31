@@ -48,5 +48,7 @@ function levelToRole(level: BlogPermissionLevel): WebRole {
       return "COLLABORATOR";
     case "ADMIN":
       return "ADMIN";
+    default:
+      return "GUEST";
   }
 }

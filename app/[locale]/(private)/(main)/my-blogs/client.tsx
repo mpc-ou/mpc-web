@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { getUserPosts } from "@/app/_actions/profile/user-blogs";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +60,7 @@ const STATUS_MAP: Record<string, { label: string; color: string; icon: React.Rea
 };
 
 export function MyBlogsClient() {
-  const router = useRouter();
+  const _router = useRouter();
   const [posts, setPosts] = useState<PostRow[]>([]);
   const [loading, setLoading] = useState(true);
 

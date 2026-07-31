@@ -300,6 +300,7 @@ export function LeadershipCarouselClient({ leaders }: { leaders: Leader[] }) {
       </div>
 
       <style
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Static Keyframe Animations
         dangerouslySetInnerHTML={{
           __html: `
             @keyframes progress {

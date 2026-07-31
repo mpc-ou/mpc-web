@@ -1,7 +1,5 @@
-import { Trophy } from "lucide-react";
 import type { Metadata } from "next";
 import { getAchievementsPageData } from "@/app/_actions/main";
-import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { generatePageSeo } from "@/utils/seo";
 import { GoldBoard } from "./_components/gold-board.client";
 import { LeadershipCarouselClient } from "./_components/leadership-carousel.client";

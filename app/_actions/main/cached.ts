@@ -135,11 +135,59 @@ export const getTerminalStatsCached = async () => {
     projects: projectCount,
     events: eventCount,
     achievements: achievementCount,
-    // Read the current year inside the cache boundary — under cacheComponents,
-    // `new Date()` isn't allowed in a plain Server Component that only reads
-    // cached data, so callers use this instead of calling new Date() directly.
     currentYear: new Date().getFullYear(),
     github: ABOUT_CLUB.contact.github,
     fanpage: ABOUT_CLUB.contact.facebook
   };
+};
+
+export const getSiteSettingsCached = async (keys: string[]) => {
+  "use cache";
+  cacheTag(_CACHE_SETTINGS);
+
+  const settings = await prisma.siteSetting.findMany({
+    where: { key: { in: keys } }
+  });
+
+  const settingsMap: Record<string, string> = {};
+  for (const s of settings) {
+    settingsMap[s.key] = s.value;
+  }
+  return settingsMap;
+};
+
+export const getSitemapDataCached = async () => {
+  "use cache";
+  cacheTag(_CACHE_POSTS);
+  cacheTag(_CACHE_PROJECTS);
+  cacheTag(_CACHE_MEMBERS);
+
+  const [events, blogs, achievements, projects, members] = await Promise.all([
+    prisma.post.findMany({
+      where: { type: "EVENT", status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true },
+      orderBy: { startAt: "desc" }
+    }),
+    prisma.post.findMany({
+      where: { type: "BLOG", status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true },
+      orderBy: { publishedAt: "desc" }
+    }),
+    prisma.post.findMany({
+      where: { type: "ACHIEVEMENT", status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true },
+      orderBy: { achievementDate: "desc" }
+    }),
+    prisma.project.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true },
+      orderBy: { createdAt: "desc" }
+    }),
+    prisma.member.findMany({
+      where: { isActive: true, webRole: { not: "GUEST" }, slug: { not: null } },
+      select: { slug: true, updatedAt: true }
+    })
+  ]);
+
+  return { events, blogs, achievements, projects, members };
 };

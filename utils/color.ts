@@ -8,7 +8,8 @@ const getRandomPastelColor = () => {
 export function colorFromString(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = str.charCodeAt(i) + hash * 31;
+    hash = Math.imul(hash, 1); // keep 32-bit int behavior if needed
   }
   const hue = Math.abs(hash) % 360;
   return `hsl(${hue}, 65%, 55%)`;
@@ -18,7 +19,8 @@ export function colorFromString(str: string): string {
 export function dimColorFromString(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = str.charCodeAt(i) + hash * 31;
+    hash = Math.imul(hash, 1);
   }
   const hue = Math.abs(hash) % 360;
   return `hsl(${hue}, 40%, 20%)`;

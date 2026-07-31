@@ -1,4 +1,6 @@
 export {
+  checkUserBlogCreationPermission,
+  checkUserIsAdmin,
   getBlogBySlug,
   getBlogBySlugForUser,
   getBlogsPageData,
@@ -11,6 +13,8 @@ export {
   getFaqItems,
   getFooterData,
   getGalleryImages,
+  getSitemapData,
+  getSiteSettings,
   getTerminalStats,
   getUpcomingEventsCount
 } from "./global";

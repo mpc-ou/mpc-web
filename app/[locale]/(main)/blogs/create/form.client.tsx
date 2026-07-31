@@ -6,7 +6,7 @@ import { type BlogFormData, type BlogFormPayload, BlogForm as SharedBlogForm } f
 
 export function UserBlogCreateForm({ post }: { post?: BlogFormData | null }) {
   const router = useRouter();
-  const isEdit = !!post;
+  const _isEdit = !!post;
 
   const handleCreate = async (payload: BlogFormPayload): Promise<string | undefined> => {
     const res = await userCreateBlog({

@@ -60,7 +60,7 @@ function CapabilityCard({
   image: string;
 }) {
   return (
-    <div className='group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card/60 backdrop-blur-xs transition-all duration-300 hover:-translate-y-2 hover:border-orange-500/50 hover:shadow-[0_0_30px_rgba(249,115,22,0.15)] dark:hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]'>
+    <div className='group relative flex flex-col overflow-hidden rounded-3xl border border-border-subtle bg-card/60 backdrop-blur-xs transition-all duration-300 hover:-translate-y-2 hover:border-primary/50 hover:shadow-glow-primary'>
       <div className='pointer-events-none absolute -inset-px bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-20' />
 
       <div className='relative aspect-video w-full overflow-hidden bg-muted'>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,8 @@ type Props = {
   getTags?: () => Promise<TagItem[]>;
 };
 
-async function defaultGetTags(): Promise<TagItem[]> {
-  return [];
+function defaultGetTags(): Promise<TagItem[]> {
+  return Promise.resolve([]);
 }
 
 export function TagInput({ selectedTags, onChange, getTags = defaultGetTags }: Props) {

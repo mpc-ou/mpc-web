@@ -6,6 +6,7 @@ import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS, _CACHE_POSTS, _CACHE_PROJECTS } from "@/constants/cache";
 import type { SearchIndexItem, SearchSection } from "@/types/search";
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: building search index items
 export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]> {
   "use cache";
   cacheTag(_CACHE_POSTS, _CACHE_PROJECTS, _CACHE_MEMBERS);

@@ -37,7 +37,7 @@ export function AchievementsClient({
   achievements,
   currentPage,
   totalPages,
-  locale
+  locale: _locale
 }: {
   achievements: Achievement[];
   currentPage: number;

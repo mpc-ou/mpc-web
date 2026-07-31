@@ -5,9 +5,9 @@ export async function createClientSsr() {
 
   return {
     auth: {
-      async getUser() {
+      getUser() {
         if (!session) {
-          return { data: { user: null }, error: null };
+          return Promise.resolve({ data: { user: null }, error: null });
         }
 
         const user = {
@@ -18,10 +18,10 @@ export async function createClientSsr() {
           }
         };
 
-        return { data: { user }, error: null };
+        return Promise.resolve({ data: { user }, error: null });
       },
-      async signOut() {
-        return { error: null };
+      signOut() {
+        return Promise.resolve({ error: null });
       }
     }
   };

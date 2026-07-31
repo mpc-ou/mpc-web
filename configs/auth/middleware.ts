@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { _LOCALES } from "@/constants/lang";
-import { _ROUTE_AUTH, _ROUTE_PRIVATES } from "@/constants/route";
+import { _ROUTE_ADMIN, _ROUTE_AUTH, _ROUTE_PRIVATES } from "@/constants/route";
 import { refreshAccessToken } from "@/services/sso";
 import { decrypt, encrypt } from "@/utils/session";
 
@@ -8,7 +8,11 @@ export async function updateSession(request: NextRequest, response: NextResponse
   const sessionCookie = request.cookies.get("mpc_session")?.value;
   let session = sessionCookie ? await decrypt(sessionCookie) : null;
 
-  const privateGroup: string[] = _LOCALES.flatMap((locale) => _ROUTE_PRIVATES.map((route) => `/${locale}${route}`));
+  const pathname = request.nextUrl.pathname;
+
+  const privateGroup: string[] = _LOCALES.flatMap((locale) =>
+    _ROUTE_PRIVATES.filter((route) => route !== _ROUTE_ADMIN).map((route) => `/${locale}${route}`)
+  );
   const authGroup: string[] = _LOCALES.map((locale) => `/${locale}${_ROUTE_AUTH}`);
 
   if (session && session.expiresAt <= Date.now()) {
@@ -44,13 +48,20 @@ export async function updateSession(request: NextRequest, response: NextResponse
     }
   }
 
-  if (!session && privateGroup.includes(request.nextUrl.pathname)) {
+  // /admin is locale-less and not covered by the localized private group above.
+  if (!session && (pathname === _ROUTE_ADMIN || pathname.startsWith(`${_ROUTE_ADMIN}/`))) {
     const url = request.nextUrl.clone();
     url.pathname = _ROUTE_AUTH;
     return NextResponse.redirect(url);
   }
 
-  if (session && authGroup.includes(request.nextUrl.pathname)) {
+  if (!session && privateGroup.includes(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = _ROUTE_AUTH;
+    return NextResponse.redirect(url);
+  }
+
+  if (session && authGroup.includes(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);

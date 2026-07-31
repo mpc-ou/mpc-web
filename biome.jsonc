@@ -1,5 +1,6 @@
 {
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
+  "extends": ["ultracite/biome/core", "ultracite/biome/next"],
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -49,7 +50,7 @@
       "recommended": true,
       "style": {
         "useConst": "off",
-        "useImportType": "off",
+        "useImportType": "warn",
         "useConsistentTypeDefinitions": {
           "level": "error",
           "options": {
@@ -58,8 +59,8 @@
         }
       },
       "correctness": {
-        "noUnusedVariables": "off",
-        "noUnusedImports": "off"
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn"
       },
       "performance": { "noBarrelFile": "off" },
       "nursery": { "noShadow": "off", "useSortedClasses": "info" }
@@ -72,6 +73,5 @@
         "rules": { "style": { "useFilenamingConvention": "off" } }
       }
     }
-  ],
-  "extends": ["ultracite/biome/core", "ultracite/biome/next"]
+  ]
 }

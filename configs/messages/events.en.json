@@ -192,6 +192,17 @@
     "joinDesc": "See more details on our fanpage for additional information about the rules, prize structure, and how to register to participate.",
     "learnMoreBtn": "Learn more",
     "followUpBtn": "Follow up",
-    "exhibitionTitle": "Featured Projects"
+    "exhibitionTitle": "Featured Projects",
+    "countdownTitle": "Countdown to contest day",
+    "countdownDays": "Days",
+    "countdownHours": "Hours",
+    "countdownMinutes": "Minutes",
+    "countdownSeconds": "Seconds",
+    "heroBadge": "WebDesign Summit 2026",
+    "heroTagline": "Unleashing Creative",
+    "heroTaglineSub": "Brilliance",
+    "rulesBtn": "View rules",
+    "registerBtn": "Register now",
+    "sponsorCtaBtn": "Become a sponsor"
   }
 }

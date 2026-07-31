@@ -2,7 +2,6 @@
 
 import { ImagePlus, Loader2, Search, X } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import { adminRegisterTempImage } from "@/app/_actions/admin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -87,8 +86,16 @@ function MemberImageUploadButton({ memberId, onUploaded }: { memberId: string; o
   );
 }
 
+const SELECTOR_LABELS = {
+  linkedMembers: "Linked Members",
+  removeLinkedMember: "Remove Linked Member",
+  searchMembersPlaceholder: "Search members...",
+  rolePlaceholder: "Select Role",
+  clearSelectedMember: "Clear Selected Member"
+};
+
 export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate }: MemberSelectorProps) {
-  const t = useTranslations("admin.form.selector");
+  const t = (key: keyof typeof SELECTOR_LABELS) => SELECTOR_LABELS[key];
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [roleInput, setRoleInput] = useState("");

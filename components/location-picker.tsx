@@ -2,15 +2,14 @@
 
 import type { DragEndEvent } from "leaflet";
 import { MapPin, Navigation, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMap, useMapEvents } from "react-leaflet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Map, MapMarker, MapSearchControl, MapTileLayer, MapZoomControl } from "@/components/ui/map";
+import { Map as MapContainer, MapMarker, MapSearchControl, MapTileLayer, MapZoomControl } from "@/components/ui/map";
 import type { PlaceFeature } from "@/components/ui/place-autocomplete";
-import { cn } from "@/lib/utils";
 
 export type LocationData = {
   lat: number;
@@ -281,7 +280,7 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
           </DialogHeader>
 
           <div className='flex-1 overflow-hidden rounded-lg border' style={{ height: "70vh" }}>
-            <Map center={tempPosition ?? [10.762_622, 106.660_172]} zoom={hasTempLocation ? 16 : 5}>
+            <MapContainer center={tempPosition ?? [10.762_622, 106.660_172]} zoom={hasTempLocation ? 16 : 5}>
               <MapTileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 darkUrl='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
@@ -312,7 +311,7 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
                   />
                 </>
               )}
-            </Map>
+            </MapContainer>
           </div>
 
           {}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Code2, Globe2 } from "lucide-react";
+import { ArrowRight, Code2 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";

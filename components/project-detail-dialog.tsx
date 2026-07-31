@@ -2,7 +2,6 @@
 
 import { Calendar, ExternalLink, Github, Globe, Play, Users } from "lucide-react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -62,11 +61,12 @@ function toEmbedUrl(url: string): string {
 }
 
 export function ProjectDetailDialog({ open, onOpenChange, project }: Props) {
+  const locale = "vi";
+
   if (!project) {
     return null;
   }
 
-  const locale = useLocale();
   const startFormatted = formatDate(project.startDate, locale);
   const endFormatted = formatDate(project.endDate, locale);
   const hasLinks = project.githubUrl || project.websiteUrl || project.videoUrl;

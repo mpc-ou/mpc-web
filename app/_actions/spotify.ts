@@ -5,6 +5,7 @@ const TRACK_TITLE_RE = /(.*?) - song (?:and lyrics )?by (.*)/i;
 const ALBUM_TITLE_RE = /(.*?) - album by (.*)/i;
 const PLAYLIST_TITLE_RE = /(.*?) - playlist by (.*)/i;
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Spotify URL parsing & metadata fetch
 export async function getSpotifyMetadata(uri: string) {
   try {
     if (!uri) {

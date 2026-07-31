@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangleIcon, ArrowLeft, HomeIcon, RefreshCwIcon } from "lucide-react";
+import { AlertTriangleIcon, ArrowLeft, Ban, Globe, Lock, RefreshCwIcon, Search, ServerCrash } from "lucide-react";
 import Link from "next/link";
 import { HeroBackground } from "@/components/custom/hero-background.client";
 import { Button } from "@/components/ui/button";
@@ -24,12 +24,12 @@ const STATUS_COLORS: Record<number, string> = {
   502: "text-purple-500"
 };
 
-const STATUS_ICONS: Record<number, string> = {
-  401: "🔐",
-  403: "🚫",
-  404: "🔍",
-  500: "💥",
-  502: "🌐"
+const STATUS_ICONS: Record<number, React.ComponentType<{ className?: string }>> = {
+  401: Lock,
+  403: Ban,
+  404: Search,
+  500: ServerCrash,
+  502: Globe
 };
 
 export function ErrorContent({
@@ -42,7 +42,7 @@ export function ErrorContent({
   redirect = "Về trang chủ",
   redirectHref = "/"
 }: ErrorContentProps) {
-  const icon = statusCode ? STATUS_ICONS[statusCode] : null;
+  const Icon = statusCode ? STATUS_ICONS[statusCode] : null;
   const colorClass = statusCode ? STATUS_COLORS[statusCode] : "text-red-500";
 
   return (
@@ -52,8 +52,8 @@ export function ErrorContent({
       <div className='relative z-10 flex w-full max-w-lg flex-col items-center text-center'>
         {/* Status code */}
         {statusCode && (
-          <div className='mb-2 flex items-center gap-2'>
-            {icon && <span className='text-3xl'>{icon}</span>}
+          <div className='mb-2 flex items-center gap-3'>
+            {Icon && <Icon className={`h-10 w-10 ${colorClass}`} />}
             <span className={`font-black text-7xl tracking-tighter ${colorClass} opacity-80 md:text-8xl`}>
               {statusCode}
             </span>

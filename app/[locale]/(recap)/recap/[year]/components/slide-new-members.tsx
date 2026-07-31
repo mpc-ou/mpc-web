@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Users } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RecapData } from "@/lib/recap-data";
 import { getFullName } from "@/lib/utils";
 import { colorFromString, dimColorFromString } from "@/utils/color";
@@ -82,6 +82,7 @@ function GravityBubbleField({ members }: { members: RecapData["newMembers"] }) {
       return;
     }
 
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: canvas bubble animation loop
     const loop = () => {
       const rect = container.getBoundingClientRect();
       const bubbles = bubblesRef.current;

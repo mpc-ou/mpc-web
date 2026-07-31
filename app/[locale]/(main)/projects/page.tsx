@@ -1,4 +1,3 @@
-import { Code2 } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getProjectsPageData } from "@/app/_actions/main";

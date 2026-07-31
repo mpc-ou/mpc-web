@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Sparkles, Terminal } from "lucide-react";
+import { Sparkles, Terminal } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";

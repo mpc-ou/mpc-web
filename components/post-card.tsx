@@ -204,6 +204,7 @@ function CardContent({ data }: { data: PostCardData }) {
   );
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: post metadata conditional rendering
 function renderMeta(data: PostCardData, locale: string, dateStr: string): React.ReactNode {
   // Blog: author + date
   if (data.variant === "blog") {

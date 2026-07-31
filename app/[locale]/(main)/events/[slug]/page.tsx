@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, Clock, MapPin, Star, UserCircle, Users } from "lucide-react";
+import { Calendar, ChevronLeft, Clock, MapPin, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { Prisma } from "@/configs/prisma/generated/prisma/client";
+import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -102,6 +102,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex page layout
 export default async function EventDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 

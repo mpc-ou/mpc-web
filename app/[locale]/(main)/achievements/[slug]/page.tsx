@@ -12,7 +12,6 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
 import { getFullName } from "@/lib/utils";
-import { getDiceBearUrl } from "@/utils/dicebear-avatar";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
 import { HonoredMembers } from "./_components/honored-members.client";
@@ -116,6 +115,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: achievement detail page layout
 export default async function AchievementDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 

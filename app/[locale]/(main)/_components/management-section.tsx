@@ -4,7 +4,7 @@ import { MemberHoverCard } from "@/components/custom/member-hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
-import { type ClubPosition } from "@/configs/prisma/generated/prisma/client";
+import type { ClubPosition } from "@/configs/prisma/generated/prisma/client";
 import { getFullName } from "@/lib/utils";
 
 const POSITION_ORDER = ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER"] as const;

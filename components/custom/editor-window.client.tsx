@@ -96,7 +96,7 @@ const EditorWindow = ({
                   className={cn(
                     "flex cursor-pointer items-center gap-1.5 rounded-t-md border-x border-t px-3 py-1.5 font-mono text-xs outline-hidden transition-colors",
                     isActive
-                      ? "border-border bg-slate-950/90 text-foreground"
+                      ? "border-border bg-background text-foreground"
                       : "border-transparent bg-transparent text-muted-foreground hover:bg-muted/30 hover:text-foreground"
                   )}
                   key={tab.name}
@@ -116,7 +116,7 @@ const EditorWindow = ({
         <div className='flex-1 self-stretch border-border border-b' />
       </div>
 
-      <div className='flex min-h-0 flex-grow bg-slate-950/40'>
+      <div className='flex min-h-0 flex-grow bg-card/50 dark:bg-slate-950/40'>
         {displayLineNumbers && activeLineCount > 0 && (
           <div className='hidden shrink-0 select-none overflow-y-hidden border-border border-r bg-muted/30 px-2 py-3 font-mono text-muted-foreground/40 text-xs leading-6 sm:block'>
             {Array.from({ length: activeLineCount }, (_, i) => (

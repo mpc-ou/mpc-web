@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, Calendar, FolderGit2, GitBranch, Trophy, UserPlus, Users } from "lucide-react";
+import { Calendar, GitBranch, Trophy, UserPlus, Users } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { RecapData } from "@/lib/recap-data";

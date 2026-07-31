@@ -2,7 +2,7 @@ import { Handshake } from "lucide-react";
 import type { Metadata } from "next";
 import { getSponsorsPageData } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
-import { Prisma } from "@/configs/prisma/generated/prisma/client";
+import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { generatePageSeo } from "@/utils/seo";
 import { SponsorsClient } from "./client";
 

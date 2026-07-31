@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { _CACHE_POSTS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { prisma } from "@/configs/prisma/db";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { generateSlug, requireAdmin } from "./helpers";
 
 const _CACHE_ACTIVITIES = "activities";
 const LEADING_SLASH_RE = /^\//;

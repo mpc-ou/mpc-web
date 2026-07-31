@@ -33,6 +33,18 @@
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
 
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-surface-hover: hsl(var(--surface-hover));
+  --color-surface-active: hsl(var(--surface-active));
+  --color-border-subtle: hsl(var(--border-subtle));
+  --color-border-strong: hsl(var(--border-strong));
+
   --color-chart-1: hsl(var(--chart-1));
   --color-chart-2: hsl(var(--chart-2));
   --color-chart-3: hsl(var(--chart-3));
@@ -51,6 +63,14 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --shadow-glow-primary: 0 0 25px -5px hsl(22 100% 50% / 0.4);
+  --shadow-glow-accent: 0 0 25px -5px hsl(187 85% 43% / 0.4);
+  --shadow-card-hover: 0 12px 30px -10px rgba(0, 0, 0, 0.15);
 
   --font-sans:
     var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -209,6 +229,12 @@
   }
 }
 
+@utility glass-panel {
+  background-color: hsl(var(--background) / 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.6);
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -311,6 +337,21 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --surface-hover: 30 20% 94%;
+    --surface-active: 30 20% 90%;
+
+    --border-subtle: 30 15% 92%;
+    --border-strong: 30 15% 75%;
+
     --ring: 22 100% 50%;
 
     --radius: 0.5rem;
@@ -342,13 +383,13 @@
     --muted: 220 8% 15%;
     --muted-foreground: 215 12% 65%;
 
-    --popover: 220 9% 10%;
+    --popover: 220 9% 15%;
     --popover-foreground: 210 20% 98%;
 
-    --border: 220 8% 19%;
-    --input: 220 8% 19%;
+    --border: 220 8% 26%;
+    --input: 220 8% 26%;
 
-    --card: 220 9% 10%;
+    --card: 220 9% 15%;
     --card-foreground: 210 20% 98%;
 
     --primary: 22 100% 50%;
@@ -362,6 +403,21 @@
 
     --destructive: 0 62% 40%;
     --destructive-foreground: 0 0% 100%;
+
+    --success: 142 70% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --surface-hover: 220 8% 13%;
+    --surface-active: 220 8% 18%;
+
+    --border-subtle: 220 8% 14%;
+    --border-strong: 220 8% 28%;
 
     --ring: 22 100% 50%;
 

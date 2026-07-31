@@ -34,7 +34,7 @@ export {
   adminUpsertHomepageSection,
   adminUpsertSetting
 } from "./content";
-export { adminGetDashboardStats } from "./dashboard";
+export { adminGetDashboardStats, adminGetLayoutData } from "./dashboard";
 export {
   adminCreateDepartment,
   adminDeleteDepartment,
@@ -48,8 +48,11 @@ export {
   adminBackupUserData,
   adminDeleteMember,
   adminGetMemberClubRoles,
+  adminGetMemberDetailForEdit,
+  adminGetMemberOptions,
   adminGetMembers,
   adminGetMembersPaginated,
+  adminReactivateAllSsoMembers,
   adminRemoveClubRole,
   adminSaveMemberFull,
   adminSyncMembersFromSso,
@@ -69,6 +72,7 @@ export {
   adminGetAchievements,
   adminGetBlogPosts,
   adminGetEvents,
+  adminGetPostById,
   adminGetPosts,
   adminGetPostsPaginated,
   adminGetTags,
@@ -109,3 +113,10 @@ export {
   adminGetSponsors,
   adminUpdateSponsor
 } from "./sponsors";
+export {
+  adminGetWebDesignConfig,
+  adminGetWebDesignExhibitions,
+  adminSaveWebDesignConfig,
+  adminSaveWebDesignExhibitions,
+  adminSeedWebDesignExhibitionsFromDefault
+} from "./webdesign";

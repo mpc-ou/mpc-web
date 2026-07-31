@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { prisma } from "@/configs/prisma/db";
-import { createClientSsr } from "@/configs/supabase/server";
+import { getUserPostById } from "@/app/_actions/profile/user-blogs";
 import { UserBlogEditForm } from "./form.client";
 
 export const metadata: Metadata = {
@@ -14,36 +13,31 @@ type Props = {
 
 export default async function EditBlogPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClientSsr();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
-  }
+  const res = await getUserPostById(id);
 
-  const member = await prisma.member.findUnique({
-    where: { id: user.id },
-    select: { id: true, webRole: true }
-  });
-  if (!member) {
-    redirect("/");
-  }
-
-  const post = await prisma.post.findUnique({
-    where: { id },
-    include: { tags: { include: { tag: true } } }
-  });
-  if (!post) {
+  if (res.error || !res.data?.payload) {
+    if (res.error) {
+      redirect("/login");
+    }
     notFound();
   }
-  if (post.authorId !== member.id && member.webRole !== "ADMIN") {
-    redirect("/my-blogs?error=forbidden");
-  }
-  if (post.status === "PUBLISHED" && member.webRole !== "ADMIN") {
-    redirect("/my-blogs?error=published");
-  }
+
+  const post = res.data.payload as {
+    id: string;
+    titleVi: string;
+    titleEn: string;
+    slug: string;
+    status: string;
+    summaryVi: string | null;
+    summaryEn: string | null;
+    contentVi: string;
+    contentEn: string;
+    sourceLanguage: string;
+    thumbnail: string | null;
+    images: string[];
+    tags: Array<{ tag: { id: string; name: string; slug: string } }>;
+  };
 
   const mappedPost = {
     id: post.id,
@@ -51,12 +45,12 @@ export default async function EditBlogPage({ params }: Props) {
     titleEn: post.titleEn,
     slug: post.slug,
     status: post.status,
-    type: post.type,
+    type: "BLOG" as const,
     summaryVi: post.summaryVi,
     summaryEn: post.summaryEn,
     contentVi: post.contentVi,
     contentEn: post.contentEn,
-    sourceLanguage: post.sourceLanguage as "VI" | "EN",
+    sourceLanguage: (post.sourceLanguage as "VI" | "EN") ?? "VI",
     thumbnail: post.thumbnail,
     images: post.images,
     tags: post.tags.map((t) => ({

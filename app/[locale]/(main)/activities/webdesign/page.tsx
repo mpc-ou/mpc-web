@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getFaqItems, getGalleryImages } from "@/app/_actions/main";
-import { FaqAccordion } from "@/components/custom/faq-accordion.client";
+import { getGalleryImages, getSiteSettings } from "@/app/_actions/main";
+import wdData from "@/configs/data/wd.json";
+import {
+  parseWebDesignConfig,
+  parseWebDesignExhibitions,
+  WEBDESIGN_CONFIG_KEY,
+  WEBDESIGN_EXHIBITIONS_KEY
+} from "@/types/webdesign";
 import { generatePageSeo } from "@/utils/seo";
+import { FaqSection } from "../../_components/faq-section";
+import { WebDesignBackground } from "./_components/webdesign-bg.client";
 import { WebDesignCriteriaClient } from "./_components/webdesign-criteria.client";
 import { WebDesignCtaClient } from "./_components/webdesign-cta.client";
 import { WebDesignExhibitionClient } from "./_components/webdesign-exhibition.client";
@@ -65,9 +73,9 @@ export default async function WebDesignPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("webdesign");
 
-  const [{ data: galleryRes }, { data: faqRes }, proposalUrl] = await Promise.all([
+  const [{ data: galleryRes }, { data: settingsRes }, fallbackProposalUrl] = await Promise.all([
     getGalleryImages("webdesign"),
-    getFaqItems(locale, "WEBDESIGN"),
+    getSiteSettings([WEBDESIGN_CONFIG_KEY, WEBDESIGN_EXHIBITIONS_KEY]),
     getLatestWebDesignProposalUrl()
   ]);
 
@@ -78,27 +86,25 @@ export default async function WebDesignPage({ params }: Props) {
     order: number;
   }>;
 
-  const dbFaq = (faqRes?.payload ?? []) as Array<{
-    id: string;
-    question: string;
-    answer: string;
-  }>;
+  const fallbackImages = (wdData.images ?? []).map((url: string, index: number) => ({
+    id: `fallback-${index}`,
+    url,
+    caption: `WebDesign Contest Gallery ${index + 1}`,
+    order: index + 1
+  }));
+
+  const galleryImages = dbImages.length > 0 ? dbImages : fallbackImages;
+
+  const settingsMap = (settingsRes?.payload ?? {}) as Record<string, string>;
+  const wdConfig = parseWebDesignConfig(settingsMap[WEBDESIGN_CONFIG_KEY]);
+  const wdExhibitions = parseWebDesignExhibitions(settingsMap[WEBDESIGN_EXHIBITIONS_KEY]);
+  const proposalUrl = wdConfig.proposalUrl || fallbackProposalUrl;
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-slate-950 pb-20 text-slate-100'>
-      <div
-        className='pointer-events-none absolute inset-0 z-0 opacity-30'
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(249, 115, 22, 0.15) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
-          backgroundSize: "32px 32px, 16px 16px"
-        }}
-      />
-      <div className='pointer-events-none absolute top-1/4 left-[10%] z-0 h-100 w-100 rounded-full bg-orange-500/10 blur-[120px]' />
-      <div className='pointer-events-none absolute top-1/2 right-[10%] z-0 h-125 w-125 rounded-full bg-blue-500/10 blur-[140px]' />
-      <div className='pointer-events-none absolute bottom-1/4 left-1/3 z-0 h-75 w-75 rounded-full bg-emerald-500/5 blur-[100px]' />
+    <div className='relative min-h-screen overflow-hidden bg-background pb-20 text-foreground transition-colors duration-300'>
+      <WebDesignBackground />
 
-      <WebDesignHeroClient subtitle={t("subtitle")} title={t("title")} />
+      <WebDesignHeroClient contestDate={wdConfig.contestDate} subtitle={t("subtitle")} title={t("title")} />
 
       <div className='container relative z-10 mx-auto mt-16 max-w-6xl space-y-28 px-4 sm:mt-24'>
         <WebDesignIntroClient />
@@ -109,19 +115,22 @@ export default async function WebDesignPage({ params }: Props) {
 
         <WebDesignCriteriaClient />
 
-        <WebDesignExhibitionClient />
+        <WebDesignExhibitionClient teams={wdExhibitions} />
 
-        <WebDesignGalleryClient images={dbImages} />
+        <WebDesignGalleryClient images={galleryImages} />
 
-        <WebDesignPrizesClient />
+        <WebDesignPrizesClient benefits={wdConfig.benefits} prizes={wdConfig.prizes} />
 
-        <WebDesignSponsorClient proposalUrl={proposalUrl} />
+        <WebDesignSponsorClient proposalUrl={proposalUrl} sponsorUrl={wdConfig.sponsorUrl} />
 
-        <WebDesignCtaClient />
+        <WebDesignCtaClient registerUrl={wdConfig.registerUrl} />
 
-        <section className='relative z-10 mb-20'>
-          <FaqAccordion badge='faq' items={dbFaq} title={t("faqSectionTitle")} />
-        </section>
+        <FaqSection
+          className='relative z-10 bg-transparent py-0'
+          locale={locale}
+          target='WEBDESIGN'
+          title={t("faqSectionTitle")}
+        />
       </div>
     </div>
   );

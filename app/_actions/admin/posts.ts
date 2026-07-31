@@ -2,9 +2,11 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import type { PostStatus, Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_ACHIEVEMENTS, _CACHE_EVENTS, _CACHE_POSTS } from "@/constants/cache";
-import { generateSlug, handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { generateSlug, requireAdmin } from "./helpers";
 
 // ════════════════════════════════════════════════════════════════
 // Shared helpers
@@ -1130,3 +1132,78 @@ export const syncPostImages = async (
     });
   }
 };
+
+export const adminGetPostById = async (id: string) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const post = await prisma.post.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          titleVi: true,
+          titleEn: true,
+          slug: true,
+          status: true,
+          type: true,
+          createdAt: true,
+          publishedAt: true,
+          summaryVi: true,
+          summaryEn: true,
+          contentVi: true,
+          contentEn: true,
+          sourceLanguage: true,
+          thumbnail: true,
+          locationVi: true,
+          locationEn: true,
+          latitude: true,
+          longitude: true,
+          startAt: true,
+          endAt: true,
+          eventStatus: true,
+          eventType: true,
+          achievementType: true,
+          achievementDate: true,
+          isHighlight: true,
+          relatedUrl: true,
+          images: true,
+          tags: { select: { tag: true } },
+          author: { select: { firstName: true, lastName: true } },
+          category: { select: { name: true } },
+          gallery: {
+            orderBy: { order: "asc" }
+          },
+          achievementMembers: {
+            include: {
+              member: {
+                select: { id: true, firstName: true, lastName: true, avatar: true }
+              }
+            }
+          }
+        }
+      });
+
+      if (!post) {
+        throw new Error("Không tìm thấy bài viết");
+      }
+
+      return {
+        ...post,
+        title: post.titleVi,
+        titleVi: post.titleVi,
+        titleEn: post.titleEn,
+        summary: post.summaryVi,
+        summaryVi: post.summaryVi,
+        summaryEn: post.summaryEn,
+        content: post.contentVi,
+        contentVi: post.contentVi,
+        contentEn: post.contentEn,
+        sourceLanguage: post.sourceLanguage,
+        startAt: post.startAt?.toISOString() ?? null,
+        endAt: post.endAt?.toISOString() ?? null,
+        achievementDate: post.achievementDate?.toISOString() ?? null,
+        members: post.achievementMembers,
+        tags: post.tags
+      };
+    }
+  });

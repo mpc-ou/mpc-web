@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  BadgeCheck,
-  Calendar,
-  DoorOpen,
-  ExternalLink,
-  Globe,
-  Hash,
-  LogOut,
-  Mail,
-  Phone,
-  Trophy,
-  User
-} from "lucide-react";
+import { AlertTriangle, BadgeCheck, Calendar, DoorOpen, Globe, Hash, Mail, Phone, Trophy, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -24,11 +11,10 @@ import { SpotifyPlayer } from "@/components/custom/spotify-player";
 import { PostCard } from "@/components/post-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BadgeData } from "@/configs/badges";
 import { SOCIAL_COLLECTION } from "@/constants/common";
-import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { buildSocialHref, getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 
@@ -147,6 +133,106 @@ export type Member = {
   }[];
 };
 
+type MemberHeaderProps = {
+  member: Member;
+  fullName: string;
+  initials: string;
+  activeRole: Member["clubRoles"][number] | undefined;
+  isGuest: boolean;
+  hasLeftClub: boolean;
+  activeBadges: ReturnType<typeof getActiveBadges>;
+  tm: (key: string) => string;
+  tPos: (key: string) => string;
+};
+
+function MemberProfileHeader({
+  member,
+  fullName,
+  initials,
+  activeRole,
+  isGuest,
+  hasLeftClub,
+  activeBadges,
+  tm,
+  tPos
+}: MemberHeaderProps) {
+  return (
+    <div className='mx-auto max-w-6xl px-4'>
+      <div className='relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end'>
+        <div className='shrink-0'>
+          <Avatar className='h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40'>
+            <AvatarImage src={member.avatar ?? undefined} />
+            <AvatarFallback className='bg-primary/10 font-bold text-4xl text-primary'>{initials}</AvatarFallback>
+          </Avatar>
+        </div>
+
+        <div className='flex flex-1 flex-col gap-2 pb-4'>
+          <div className='flex flex-col gap-2'>
+            <div className='flex flex-wrap items-center gap-2'>
+              <h1 className='font-bold text-3xl text-foreground'>
+                {fullName}
+                {isGuest && (
+                  <span title={tm("guestNotice")}>
+                    <AlertTriangle className='ml-1.5 inline-block h-5 w-5 text-amber-500' />
+                  </span>
+                )}
+                {!(isGuest || hasLeftClub) && (
+                  <span title={tm("activeMember")}>
+                    <BadgeCheck className='ml-1.5 inline-block h-5 w-5 text-green-500' />
+                  </span>
+                )}
+                {hasLeftClub && (
+                  <span title={tm("leftClub")}>
+                    <DoorOpen className='ml-1.5 inline-block h-5 w-5 text-muted-foreground' />
+                  </span>
+                )}
+              </h1>
+              {activeRole && (
+                <Badge className='text-sm' variant='default'>
+                  {tPos(activeRole.position as Parameters<typeof tPos>[0]) || activeRole.position}
+                  {activeRole.department ? ` · ${activeRole.department.nameVi}` : ""}
+                </Badge>
+              )}
+              {hasLeftClub && (
+                <Badge className='text-sm' variant='outline'>
+                  {tm("leftClub")}
+                </Badge>
+              )}
+              {isGuest && (
+                <Badge className='text-sm' variant='outline'>
+                  Guest
+                </Badge>
+              )}
+            </div>
+
+            {!isGuest && (
+              <div className='flex flex-wrap items-center gap-2'>
+                {activeBadges.map(({ def, result }) => (
+                  <BadgeIcon def={def} key={def.id} result={result} />
+                ))}
+              </div>
+            )}
+
+            {isGuest && (
+              <div className='flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-amber-600 text-xs'>
+                <AlertTriangle className='h-4 w-4 shrink-0' />
+                <span>{tm("guestNotice")}</span>
+              </div>
+            )}
+            {hasLeftClub && (
+              <div className='flex items-center gap-2 rounded-lg border border-muted-foreground/20 bg-muted/30 px-3 py-2 text-muted-foreground text-xs'>
+                <DoorOpen className='h-4 w-4 shrink-0' />
+                <span>{tm("leftClubNotice")}</span>
+              </div>
+            )}
+          </div>
+          {member.bio && <p className='max-w-2xl text-muted-foreground text-sm'>{member.bio}</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ProfilePageClient({ member }: { member: Member }) {
   const [activeTab, setActiveTab] = useState("about");
   const locale = useLocale();
@@ -154,7 +240,6 @@ export function ProfilePageClient({ member }: { member: Member }) {
   const tm = useTranslations("header.member");
   const te = useTranslations("events");
   const tPos = useTranslations("userMenu.positions");
-  // useTransparentHeader();
   const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
   const initials = `${member.firstName[0]}${member.lastName[0]}`;
   const socials = Array.isArray(member.socials) ? member.socials : [];
@@ -208,116 +293,54 @@ export function ProfilePageClient({ member }: { member: Member }) {
         )}
       </CoverParallax>
 
-      {/* === PROFILE HEADER === */}
-      <div className='mx-auto max-w-6xl px-4'>
-        <div className='relative -mt-16 flex flex-col gap-4 md:-mt-20 md:flex-row md:items-end'>
-          <div className='shrink-0'>
-            <Avatar className='h-32 w-32 border-4 border-background shadow-xl md:h-40 md:w-40'>
-              <AvatarImage src={member.avatar ?? undefined} />
-              <AvatarFallback className='bg-primary/10 font-bold text-4xl text-primary'>{initials}</AvatarFallback>
-            </Avatar>
-          </div>
+      <ScrollReveal once threshold={0} variant='fade-up'>
+        <MemberProfileHeader
+          activeBadges={activeBadges}
+          activeRole={activeRole}
+          fullName={fullName}
+          hasLeftClub={hasLeftClub}
+          initials={initials}
+          isGuest={isGuest}
+          member={member}
+          tm={tm}
+          tPos={tPos}
+        />
+      </ScrollReveal>
 
-          {/* Name + role + socials */}
-          <div className='flex flex-1 flex-col gap-2 pb-4'>
-            <div className='flex flex-col gap-2'>
-              <div className='flex flex-wrap items-center gap-2'>
-                <h1 className='font-bold text-3xl text-foreground'>
-                  {fullName}
-                  {isGuest && (
-                    <span title={tm("guestNotice")}>
-                      <AlertTriangle className='ml-1.5 inline-block h-5 w-5 text-amber-500' />
-                    </span>
-                  )}
-                  {!(isGuest || hasLeftClub) && (
-                    <span title={tm("activeMember")}>
-                      <BadgeCheck className='ml-1.5 inline-block h-5 w-5 text-green-500' />
-                    </span>
-                  )}
-                  {hasLeftClub && (
-                    <span title={tm("leftClub")}>
-                      <DoorOpen className='ml-1.5 inline-block h-5 w-5 text-muted-foreground' />
-                    </span>
-                  )}
-                </h1>
-                {activeRole && (
-                  <Badge className='text-sm' variant='default'>
-                    {tPos(activeRole.position as Parameters<typeof tPos>[0]) || activeRole.position}
-                    {activeRole.department ? ` · ${activeRole.department.nameVi}` : ""}
-                  </Badge>
-                )}
-                {hasLeftClub && (
-                  <Badge className='text-sm' variant='outline'>
-                    {tm("leftClub")}
-                  </Badge>
-                )}
-                {isGuest && (
-                  <Badge className='text-sm' variant='outline'>
-                    Guest
-                  </Badge>
-                )}
-              </div>
+      {/* Divider */}
+      <div className='mt-2 border-border border-t' />
 
-              {/* Activity Badges */}
-              {!isGuest && (
-                <div className='flex flex-wrap items-center gap-2'>
-                  {activeBadges.map(({ def, result }) => (
-                    <BadgeIcon def={def} key={def.id} result={result} />
-                  ))}
-                </div>
-              )}
+      {/* === TABS === */}
+      <Tabs className='mx-auto mt-4 max-w-6xl px-4' onValueChange={setActiveTab} value={activeTab}>
+        <TabsList className='h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0'>
+          {[
+            { value: "about", label: t("member.tabs.about") },
+            {
+              value: "posts",
+              label: `${t("member.tabs.posts")} (${member.authoredPosts.length})`
+            },
+            {
+              value: "projects",
+              label: `${t("member.tabs.projects")} (${member.projects.length})`
+            }
+          ].map((tab) => (
+            <TabsTrigger
+              className='rounded-none border-transparent border-b-2 px-6 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary'
+              key={tab.value}
+              value={tab.value}
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-              {/* Alert notices */}
-              {isGuest && (
-                <div className='flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-amber-600 text-xs'>
-                  <AlertTriangle className='h-4 w-4 shrink-0' />
-                  <span>{tm("guestNotice")}</span>
-                </div>
-              )}
-              {hasLeftClub && (
-                <div className='flex items-center gap-2 rounded-lg border border-muted-foreground/20 bg-muted/30 px-3 py-2 text-muted-foreground text-xs'>
-                  <DoorOpen className='h-4 w-4 shrink-0' />
-                  <span>{tm("leftClubNotice")}</span>
-                </div>
-              )}
-            </div>
-            {member.bio && <p className='max-w-2xl text-muted-foreground text-sm'>{member.bio}</p>}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className='mt-2 border-border border-t' />
-
-        {/* === TABS === */}
-        <Tabs className='mt-4' onValueChange={setActiveTab} value={activeTab}>
-          <TabsList className='h-auto w-full justify-start gap-1 rounded-none border-border border-b bg-transparent p-0'>
-            {[
-              { value: "about", label: t("member.tabs.about") },
-              {
-                value: "posts",
-                label: `${t("member.tabs.posts")} (${member.authoredPosts.length})`
-              },
-              {
-                value: "projects",
-                label: `${t("member.tabs.projects")} (${member.projects.length})`
-              }
-            ].map((tab) => (
-              <TabsTrigger
-                className='rounded-none border-transparent border-b-2 px-6 py-3 text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary'
-                key={tab.value}
-                value={tab.value}
-              >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {/* ABOUT */}
-          <TabsContent className='py-8' value='about'>
-            <div className='flex flex-col gap-8 lg:flex-row'>
-              {/* Left Column */}
-              <div className='w-full space-y-8 lg:w-3/4'>
-                {/* Basic Info */}
+        {/* ABOUT */}
+        <TabsContent className='py-8' value='about'>
+          <div className='flex flex-col gap-8 lg:flex-row'>
+            {/* Left Column */}
+            <div className='w-full space-y-8 lg:w-3/4'>
+              {/* Basic Info */}
+              <ScrollReveal variant='fade-up'>
                 <div className='rounded-xl border bg-card p-5 shadow-sm'>
                   <div className='grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2'>
                     <div className='flex items-center gap-3'>
@@ -388,8 +411,10 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     </div>
                   )}
                 </div>
+              </ScrollReveal>
 
-                {/* Achievements Timeline */}
+              {/* Achievements Timeline */}
+              <ScrollReveal variant='fade-up'>
                 <div>
                   <h3 className='mb-6 flex items-center gap-2 font-bold text-xl'>
                     <Trophy className='h-5 w-5 text-amber-500' /> {te("recap.timeline.achievement")}
@@ -457,10 +482,12 @@ export function ProfilePageClient({ member }: { member: Member }) {
                     </div>
                   )}
                 </div>
-              </div>
+              </ScrollReveal>
+            </div>
 
-              {/* Right Column: Roles History */}
-              <div className='w-full lg:w-1/4'>
+            {/* Right Column: Roles History */}
+            <ScrollReveal className='w-full lg:w-1/4' variant='fade-left'>
+              <div>
                 <h3 className='mb-6 border-border border-b pb-2 font-bold text-lg'>{t("member.roleHistory")}</h3>
                 {member.clubRoles.length === 0 ? (
                   <p className='text-muted-foreground text-sm italic'>{t("member.noRoles")}</p>
@@ -497,16 +524,18 @@ export function ProfilePageClient({ member }: { member: Member }) {
                   </div>
                 )}
               </div>
-            </div>
-          </TabsContent>
+            </ScrollReveal>
+          </div>
+        </TabsContent>
 
-          {/* POSTS */}
-          <TabsContent className='py-8' value='posts'>
-            {member.authoredPosts.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>{t("member.noPosts")}</p>
-            ) : (
-              <div className='grid gap-6 sm:grid-cols-2'>
-                {member.authoredPosts.map((post) => (
+        {/* POSTS */}
+        <TabsContent className='py-8' value='posts'>
+          {member.authoredPosts.length === 0 ? (
+            <p className='py-8 text-center text-muted-foreground'>{t("member.noPosts")}</p>
+          ) : (
+            <div className='grid gap-6 sm:grid-cols-2'>
+              {member.authoredPosts.map((post, idx) => (
+                <ScrollReveal delay={(idx % 8) * 60} key={post.id} variant='fade-up'>
                   <PostCard
                     data={{
                       id: post.id,
@@ -520,19 +549,20 @@ export function ProfilePageClient({ member }: { member: Member }) {
                       date: post.publishedAt,
                       href: `/blogs/${post.slug}`
                     }}
-                    key={post.id}
                   />
-                ))}
-              </div>
-            )}
-          </TabsContent>
+                </ScrollReveal>
+              ))}
+            </div>
+          )}
+        </TabsContent>
 
-          <TabsContent className='py-6' value='projects'>
-            {member.projects.length === 0 ? (
-              <p className='py-8 text-center text-muted-foreground'>{t("member.noProjects")}</p>
-            ) : (
-              <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                {member.projects.map(({ project, role }) => (
+        <TabsContent className='py-6' value='projects'>
+          {member.projects.length === 0 ? (
+            <p className='py-8 text-center text-muted-foreground'>{t("member.noProjects")}</p>
+          ) : (
+            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+              {member.projects.map(({ project, role }, idx) => (
+                <ScrollReveal delay={(idx % 8) * 60} key={project.id} variant='fade-up'>
                   <PostCard
                     data={{
                       id: project.id,
@@ -557,14 +587,13 @@ export function ProfilePageClient({ member }: { member: Member }) {
                         })) ?? [],
                       href: `/projects/${project.slug}`
                     }}
-                    key={project.id}
                   />
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

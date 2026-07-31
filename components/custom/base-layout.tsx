@@ -1,16 +1,17 @@
 import { Roboto } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { ReactNode } from "react";
-import { _LOCALES } from "@/constants/lang";
+import { getSiteSettings } from "@/app/_actions/main";
 import { TransparentHeaderProvider } from "@/hooks/use-transparent-header";
 import { cn } from "@/lib/utils";
 import type { locale } from "@/types/global";
 import { ThemeProvider } from "../theme-provider";
 import { Toaster } from "../ui/toaster";
 import { TooltipProvider } from "../ui/tooltip";
+import { PageTransition } from "./page-transition.client";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -19,8 +20,6 @@ const roboto = Roboto({
   variable: "--font-roboto",
   style: ["italic", "normal"]
 });
-
-import { prisma } from "@/configs/prisma/db";
 
 function hexToHslValues(hex: string): string {
   let cleanHex = hex.replace("#", "");
@@ -53,6 +52,8 @@ function hexToHslValues(hex: string): string {
       case b:
         h = (r - g) / d + 4;
         break;
+      default:
+        break;
     }
     h /= 6;
   }
@@ -67,21 +68,24 @@ function hexToHslValues(hex: string): string {
 type BaseLayoutType = { children: ReactNode; locale: locale };
 
 export async function BaseLayout({ children, locale }: BaseLayoutType) {
-  const [messages, primaryColorSetting, faviconSetting] = await Promise.all([
+  const [messages, { data: settingsRes }] = await Promise.all([
     getMessages(),
-    prisma.siteSetting.findUnique({ where: { key: "site_primary_color" } }),
-    prisma.siteSetting.findUnique({ where: { key: "site_favicon" } })
+    getSiteSettings(["site_primary_color", "site_favicon"])
   ]);
 
-  const faviconUrl = faviconSetting?.value || "/favicon.ico";
-  const primaryColorHex = primaryColorSetting?.value || "#f97316";
+  const settingsMap = (settingsRes?.payload as Record<string, string>) ?? {};
+
+  const faviconUrl = settingsMap.site_favicon || "/favicon.ico";
+  const primaryColorHex = settingsMap.site_primary_color || "#f97316";
   const primaryColorHsl = hexToHslValues(primaryColorHex);
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      {/* biome-ignore lint/style/noHeadElement: Next.js App Router root layout */}
       <head>
         <link href={faviconUrl} rel='icon' />
         <style
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Dynamic CSS theme variables
           dangerouslySetInnerHTML={{
             __html: `
             :root, .dark {
@@ -108,7 +112,9 @@ export async function BaseLayout({ children, locale }: BaseLayoutType) {
             />
             <TooltipProvider>
               <NextIntlClientProvider messages={messages}>
-                <TransparentHeaderProvider>{children}</TransparentHeaderProvider>
+                <TransparentHeaderProvider>
+                  <PageTransition>{children}</PageTransition>
+                </TransparentHeaderProvider>
               </NextIntlClientProvider>
             </TooltipProvider>
             <Toaster />

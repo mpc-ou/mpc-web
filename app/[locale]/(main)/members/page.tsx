@@ -1,4 +1,3 @@
-import { Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getMembersGroupedByYear } from "@/app/_actions/main";

@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getBlogsPageData } from "@/app/_actions/main";
+import { checkUserBlogCreationPermission, getBlogsPageData } from "@/app/_actions/main";
 import { PageHero } from "@/components/custom/page-hero.client";
-import { prisma } from "@/configs/prisma/db";
-import { createClientSsr } from "@/configs/supabase/server";
-import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { generatePageSeo } from "@/utils/seo";
 import { BlogsClient } from "./client";
 
@@ -32,30 +29,13 @@ export default async function BlogsPage({ params, searchParams }: Props): Promis
 
   const take = 12;
 
-  const [{ data }, t, permissionLevel] = await Promise.all([
+  const [{ data }, t, { data: canCreatePermission }] = await Promise.all([
     getBlogsPageData(validPage, take, locale),
     getTranslations({ locale, namespace: "blogs" }),
-    getBlogPermissionLevel()
+    checkUserBlogCreationPermission()
   ]);
 
-  let canCreate = false;
-  try {
-    const supabase = await createClientSsr();
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-    if (user) {
-      const member = await prisma.member.findUnique({
-        where: { id: user.id },
-        select: { webRole: true }
-      });
-      if (member) {
-        canCreate = hasBlogCreationPermission(member.webRole, permissionLevel);
-      }
-    }
-  } catch {
-    // Not logged in → can't create
-  }
+  const canCreate = Boolean(canCreatePermission?.payload);
 
   const payload = data?.payload as
     | {

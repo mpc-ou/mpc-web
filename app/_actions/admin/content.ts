@@ -2,9 +2,11 @@
 
 import { translate } from "bing-translate-api";
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import { _CACHE_FAQ, _CACHE_GALLERY, _CACHE_HOMEPAGE, _CACHE_SETTINGS } from "@/constants/cache";
 import { translateTextWithDeepseek } from "@/services/deepseek";
-import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { requireAdmin } from "./helpers";
 
 export const adminGetFaqItems = async () =>
   handleErrorServerWithAuth({

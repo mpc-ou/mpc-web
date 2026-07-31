@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import type { Member, Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { adminUpdateSsoUser } from "@/services/sso";
 import { isRootAdmin } from "@/utils/admin";
-import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { requireAdmin } from "./helpers";
 
 const SLUG_REGEX = /^[a-z0-9_-]+$/;
 const SEARCH_SPLIT_REGEX = /\s+/;
@@ -35,7 +37,6 @@ export const adminGetMembers = async () =>
         dob: m.dob ? m.dob.toISOString() : null,
         leftClubAt: m.leftClubAt ? m.leftClubAt.toISOString() : null,
         joinedClubAt: m.joinedClubAt ? m.joinedClubAt.toISOString() : null,
-        isActive: !m.leftClubAt,
         clubRoles: m.clubRoles.map((cr) => ({
           ...cr,
           createdAt: cr.createdAt.toISOString(),
@@ -94,7 +95,6 @@ export const adminBackupUserData = async () =>
           joinedClubAt: m.joinedClubAt ? m.joinedClubAt.toISOString() : null,
           leftClubAt: m.leftClubAt ? m.leftClubAt.toISOString() : null,
           webRole: m.webRole,
-          isActive: !m.leftClubAt,
           spotifyUri: m.spotifyUri,
           createdAt: m.createdAt.toISOString(),
           updatedAt: m.updatedAt.toISOString(),
@@ -248,7 +248,6 @@ export const adminGetMembersPaginated = async ({
         dob: m.dob ? m.dob.toISOString() : null,
         leftClubAt: m.leftClubAt ? m.leftClubAt.toISOString() : null,
         joinedClubAt: m.joinedClubAt ? m.joinedClubAt.toISOString() : null,
-        isActive: !m.leftClubAt,
         clubRoles: m.clubRoles.map((cr) => ({
           ...cr,
           createdAt: cr.createdAt.toISOString(),
@@ -294,7 +293,7 @@ export const adminUpdateMemberRole = async (memberId: string, webRole: "ADMIN" |
 export const adminDeleteMember = async (memberId: string) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
-      const admin = await requireAdmin(user);
+      const _admin = await requireAdmin(user);
       const target = await prisma.member.findUnique({
         where: { id: memberId }
       });
@@ -353,6 +352,7 @@ type AdminUpdateMemberInput = {
   leftClubAt?: string | null;
   joinedClubAt?: string | null;
   spotifyUri?: string | null;
+  isActive?: boolean;
 };
 
 function buildMemberProfileUpdateData(data: AdminUpdateMemberInput): Prisma.MemberUpdateInput {
@@ -367,7 +367,8 @@ function buildMemberProfileUpdateData(data: AdminUpdateMemberInput): Prisma.Memb
     ...(data.coverImage !== undefined && { coverImage: data.coverImage || null }),
     ...(data.socials !== undefined && { socials: data.socials ? JSON.parse(data.socials) : {} }),
     ...(data.slug !== undefined && { slug: data.slug.trim() }),
-    ...(data.spotifyUri !== undefined && { spotifyUri: data.spotifyUri || null })
+    ...(data.spotifyUri !== undefined && { spotifyUri: data.spotifyUri || null }),
+    ...(data.isActive !== undefined && { isActive: data.isActive })
   };
 }
 
@@ -425,40 +426,6 @@ export const adminGetMemberClubRoles = async (memberId: string) =>
     }
   });
 
-async function syncMemberActiveStatus(memberId: string) {
-  const roles = await prisma.clubRole.findMany({
-    where: { memberId }
-  });
-  const activeRole = roles.find((r) => r.endAt === null);
-  if (activeRole) {
-    await prisma.member.update({
-      where: { id: memberId },
-      data: {
-        leftClubAt: null,
-        isActive: true
-      }
-    });
-  } else if (roles.length > 0) {
-    const endDates = roles.map((r) => r.endAt).filter((d): d is Date => d !== null);
-    const latestEndAt = endDates.length > 0 ? new Date(Math.max(...endDates.map((d) => d.getTime()))) : new Date();
-    await prisma.member.update({
-      where: { id: memberId },
-      data: {
-        leftClubAt: latestEndAt,
-        isActive: false
-      }
-    });
-  } else {
-    await prisma.member.update({
-      where: { id: memberId },
-      data: {
-        leftClubAt: null,
-        isActive: true
-      }
-    });
-  }
-}
-
 export const adminAddClubRole = async (
   memberId: string,
   data: {
@@ -484,7 +451,6 @@ export const adminAddClubRole = async (
           note: data.note || null
         }
       });
-      await syncMemberActiveStatus(memberId);
       revalidateTag(_CACHE_MEMBERS, "default");
       return role;
     }
@@ -515,7 +481,6 @@ export const adminUpdateClubRole = async (
           note: data.note || null
         }
       });
-      await syncMemberActiveStatus(role.memberId);
       revalidateTag(_CACHE_MEMBERS, "default");
       return role;
     }
@@ -531,7 +496,6 @@ export const adminRemoveClubRole = async (roleId: string) =>
       });
       if (role) {
         await prisma.clubRole.delete({ where: { id: roleId } });
-        await syncMemberActiveStatus(role.memberId);
       }
       revalidateTag(_CACHE_MEMBERS, "default");
       return { success: true };
@@ -557,6 +521,7 @@ type AdminSaveMemberProfileInput = {
   showDob?: boolean;
   showPhone?: boolean;
   showStudentId?: boolean;
+  isActive?: boolean;
 };
 
 type AdminSaveMemberClubRoleInput = {
@@ -593,7 +558,8 @@ function buildFullMemberUpdateData(
     spotifyUri: profile.spotifyUri || null,
     ...(profile.showDob !== undefined && { showDob: profile.showDob }),
     ...(profile.showPhone !== undefined && { showPhone: profile.showPhone }),
-    ...(profile.showStudentId !== undefined && { showStudentId: profile.showStudentId })
+    ...(profile.showStudentId !== undefined && { showStudentId: profile.showStudentId }),
+    ...(profile.isActive !== undefined && { isActive: profile.isActive })
   };
 }
 
@@ -681,7 +647,6 @@ export const adminSaveMemberFull = async (
         throw new Error("Vui lòng thêm thành viên mới tại trang quản lý SSO (auth.mpclub.dev)");
       }
 
-      await syncMemberActiveStatus(member.id);
       revalidateTag(_CACHE_MEMBERS, "default");
       return member;
     }
@@ -695,5 +660,81 @@ export const adminSyncMembersFromSso = async () =>
       await syncFromSso();
       revalidateTag(_CACHE_MEMBERS, "default");
       return { success: true };
+    }
+  });
+
+export const adminReactivateAllSsoMembers = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const { reactivateAllSyncedMembers } = await import("@/services/sso");
+      const result = await reactivateAllSyncedMembers();
+      revalidateTag(_CACHE_MEMBERS, "default");
+      return result;
+    }
+  });
+
+export const adminGetMemberOptions = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      return prisma.member.findMany({
+        orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+          studentId: true,
+          webRole: true
+        }
+      });
+    }
+  });
+
+export const adminGetMemberDetailForEdit = async (id: string) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      const memberData = await prisma.member.findUnique({
+        where: { id },
+        include: {
+          clubRoles: {
+            include: { department: true }
+          }
+        }
+      });
+      if (!memberData) {
+        throw new Error("Không tìm thấy thành viên");
+      }
+      const departmentsData = await prisma.department.findMany({
+        where: { isActive: true },
+        orderBy: { nameVi: "asc" }
+      });
+
+      const member = {
+        ...memberData,
+        createdAt: memberData.createdAt.toISOString(),
+        updatedAt: memberData.updatedAt.toISOString(),
+        dob: memberData.dob ? memberData.dob.toISOString() : null,
+        leftClubAt: memberData.leftClubAt ? memberData.leftClubAt.toISOString() : null,
+        joinedClubAt: memberData.joinedClubAt ? memberData.joinedClubAt.toISOString() : null,
+        clubRoles: memberData.clubRoles.map((cr) => ({
+          ...cr,
+          createdAt: cr.createdAt.toISOString(),
+          updatedAt: cr.updatedAt.toISOString(),
+          startAt: cr.startAt.toISOString(),
+          endAt: cr.endAt ? cr.endAt.toISOString() : null
+        }))
+      };
+
+      const departments = departmentsData.map((d) => ({
+        id: d.id,
+        nameVi: d.nameVi,
+        nameEn: d.nameEn,
+        slug: d.slug
+      }));
+
+      return { member, departments };
     }
   });

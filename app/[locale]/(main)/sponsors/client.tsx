@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ExternalLink, Globe, Mail, Phone, X } from "lucide-react";
+import { Calendar, Globe, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";

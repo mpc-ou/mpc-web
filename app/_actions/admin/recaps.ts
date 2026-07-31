@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { prisma } from "@/configs/prisma/db";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_RECAPS } from "@/constants/cache";
 import type { RecapData, RecapTimelineItem } from "@/lib/recap-data";
-import { handleErrorServerWithAuth, prisma, requireAdmin } from "./helpers";
+import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { requireAdmin } from "./helpers";
 
 // ── List all recaps ──
 export const adminGetRecaps = async () =>
@@ -299,6 +301,7 @@ export const adminBuildRecapData = async (
   selectedProjectIds: string[]
 ) =>
   handleErrorServerWithAuth({
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: admin recap generator payload building
     cb: async ({ user }) => {
       await requireAdmin(user);
 

@@ -15,8 +15,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
-import { ImageLightbox } from "@/components/image-lightbox.client";
+import { checkUserIsAdmin, getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { Badge } from "@/components/ui/badge";
@@ -24,8 +23,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { prisma } from "@/configs/prisma/db";
-import { createClientSsr } from "@/configs/supabase/server";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -123,6 +120,7 @@ function fmtDateShort(iso: string | null, locale = "vi") {
   return formatLocalDate(iso, locale, "dd/MM/yyyy");
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: blog detail page layout
 export default async function BlogDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
@@ -196,24 +194,8 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
   const galleryData = hasStoredGallery ? storedGallery : galleryImages;
   const hasGallery = galleryData.length > 0;
 
-  let canEdit = false;
-  try {
-    const supabase = await createClientSsr();
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-    if (user) {
-      const member = await prisma.member.findUnique({
-        where: { id: user.id },
-        select: { webRole: true }
-      });
-      if (member && member.webRole === "ADMIN") {
-        canEdit = true;
-      }
-    }
-  } catch {
-    // Not logged in
-  }
+  const { data: isAdminData } = await checkUserIsAdmin();
+  const canEdit = isAdminData?.payload ?? false;
 
   let backHref = "/blogs";
   let backLabel = t("backToBlogs");
@@ -227,7 +209,7 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
 
   const eventTypeKey = blog.eventType?.toLowerCase();
   const achievementTypeKey = blog.achievementType?.toLowerCase();
-  const eventStatusKey = blog.eventStatus?.toLowerCase();
+  const _eventStatusKey = blog.eventStatus?.toLowerCase();
 
   let typeBadge = t("badgeBlog");
   if (isEvent) {

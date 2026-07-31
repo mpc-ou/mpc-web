@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { TypewriterHeroText } from "./typewriter-hero-text.client";
 

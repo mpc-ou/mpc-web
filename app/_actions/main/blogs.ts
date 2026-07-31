@@ -2,6 +2,7 @@
 
 import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
 // Cache tag for blogs
@@ -333,5 +334,37 @@ export const getRelatedPosts = async (postId: string, tagIds: string[], type: st
         description: isEn && p.summaryEn ? p.summaryEn : p.summaryVi,
         publishedAt: (p.publishedAt || p.createdAt).toISOString()
       }));
+    }
+  });
+
+export const checkUserBlogCreationPermission = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      if (!user) {
+        return false;
+      }
+      const member = await prisma.member.findUnique({
+        where: { id: user.id },
+        select: { webRole: true }
+      });
+      if (!member) {
+        return false;
+      }
+      const level = await getBlogPermissionLevel();
+      return hasBlogCreationPermission(member.webRole, level);
+    }
+  });
+
+export const checkUserIsAdmin = async () =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      if (!user) {
+        return false;
+      }
+      const member = await prisma.member.findUnique({
+        where: { id: user.id },
+        select: { webRole: true }
+      });
+      return member?.webRole === "ADMIN";
     }
   });

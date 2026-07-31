@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getGoldBoardMembers, getOtherProjects, getProjectDetail } from "@/app/_actions/main";
+import { getOtherProjects, getProjectDetail } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
 import type { PostCardData } from "@/components/post-card";
 import { PostCard } from "@/components/post-card";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { Prisma } from "@/configs/prisma/generated/prisma/client";
+import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { getFullName, pickLang } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -42,16 +42,6 @@ type ProjectDetail = Prisma.ProjectGetPayload<{
 // Mirrors the `select` used in getOtherProjects
 type OtherProject = ProjectSummaryWithI18n;
 
-// Mirrors the `select` used in getGoldBoardMembers
-type GoldBoardMember = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  middleName: string | null;
-  avatar: string | null;
-  slug: string;
-};
-
 export async function generateMetadata({
   params
 }: {
@@ -77,6 +67,78 @@ export async function generateMetadata({
   });
 }
 
+function extractProjectGalleryImages(project: ProjectDetail): string[] {
+  const thumbnail = project.thumbnail ? [project.thumbnail] : [];
+  const contentImages: string[] = [];
+  const imgRegex = /!\[.*?\]\((.*?)\)/g;
+  let match = imgRegex.exec(project.content || "");
+  while (match !== null) {
+    if (match[1]) {
+      contentImages.push(match[1]);
+    }
+    match = imgRegex.exec(project.content || "");
+  }
+  const projectImages = Array.isArray(project.images) ? project.images : [];
+  return Array.from(new Set([...thumbnail, ...contentImages, ...projectImages])).filter(Boolean);
+}
+
+function ProjectSidebar({
+  hasGallery,
+  allImages,
+  members,
+  locale,
+  t
+}: {
+  hasGallery: boolean;
+  allImages: string[];
+  members?: ProjectDetail["members"];
+  locale: string;
+  t: (key: string) => string;
+}) {
+  return (
+    <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
+      {hasGallery && <PostGalleryPanel images={allImages} title={`${t("galleryTitle")} (${allImages.length})`} />}
+
+      {members && members.length > 0 && (
+        <section>
+          <h2 className='mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl'>
+            <Users className='h-5 w-5 text-primary' /> {t("teamTitle")}
+          </h2>
+          <div className='flex flex-col gap-3'>
+            {members.map((m) => (
+              <div className='flex items-center gap-3' key={m.member.id}>
+                {m.member.avatar ? (
+                  <Image
+                    alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
+                    className='shrink-0 rounded-full object-cover ring-2 ring-border'
+                    height={40}
+                    src={m.member.avatar}
+                    width={40}
+                  />
+                ) : (
+                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
+                    <UserCircle className='h-6 w-6 text-muted-foreground' />
+                  </div>
+                )}
+                <div className='min-w-0'>
+                  <Link
+                    className='block truncate font-medium text-sm hover:text-primary hover:underline'
+                    href={`/members/${m.member.slug || m.member.id}`}
+                  >
+                    {getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
+                  </Link>
+                  {m.role && <p className='truncate text-muted-foreground text-xs'>{m.role}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </aside>
+  );
+}
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: project detail page layout
 export default async function ProjectDetailPage({
   params
 }: {
@@ -84,10 +146,9 @@ export default async function ProjectDetailPage({
 }): Promise<React.ReactNode> {
   const { slug, locale } = await params;
   const lang = locale as "en" | "vi";
-  const [{ data }, { data: otherData }, { data: goldData }, t] = await Promise.all([
+  const [{ data }, { data: otherData }, t] = await Promise.all([
     getProjectDetail(slug),
     getOtherProjects(slug),
-    getGoldBoardMembers(),
     getTranslations({ locale, namespace: "projects" })
   ]);
   const project = (data?.payload as { project: ProjectDetail | null } | undefined)?.project;
@@ -97,24 +158,9 @@ export default async function ProjectDetailPage({
   }
 
   const otherProjects = (otherData?.payload as { projects: OtherProject[] } | undefined)?.projects ?? [];
-  const goldMembers = (goldData?.payload as { members: GoldBoardMember[] } | undefined)?.members ?? [];
-
   const techs = Array.isArray(project.technologies) ? (project.technologies as string[]) : [];
 
-  // Build gallery: thumbnail + content images + project images
-  const thumbnail = project.thumbnail ? [project.thumbnail] : [];
-  const contentImages: string[] = [];
-  const imgRegex = /!\[.*?\]\((.*?)\)/g;
-  imgRegex.lastIndex = 0;
-  let match = imgRegex.exec(project.content || "");
-  while (match !== null) {
-    if (match[1]) {
-      contentImages.push(match[1]);
-    }
-    match = imgRegex.exec(project.content || "");
-  }
-  const projectImages = Array.isArray(project.images) ? project.images : [];
-  const allImages = Array.from(new Set([...thumbnail, ...contentImages, ...projectImages])).filter(Boolean);
+  const allImages = extractProjectGalleryImages(project);
   const hasGallery = allImages.length > 0;
   const hasSidebar = hasGallery || (project.members && project.members.length > 0);
 
@@ -145,7 +191,6 @@ export default async function ProjectDetailPage({
 
   return (
     <div className='min-h-screen bg-background'>
-      {/* ── HERO IMAGE ─────────────────────────────────────────────── */}
       {project.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
           <Image alt={project.title} className='object-cover' fill priority sizes='100vw' src={project.thumbnail} />
@@ -155,9 +200,7 @@ export default async function ProjectDetailPage({
         <div className='h-24 sm:h-32' />
       )}
 
-      {/* ── ARTICLE ────────────────────────────────────────────────── */}
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        {/* Back link */}
         <div className='py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href='/projects'>
@@ -167,7 +210,6 @@ export default async function ProjectDetailPage({
           </Button>
         </div>
 
-        {/* Tags */}
         <ScrollReveal>
           {techs.length > 0 && (
             <div className='mb-4 flex flex-wrap items-center gap-2'>
@@ -179,19 +221,16 @@ export default async function ProjectDetailPage({
             </div>
           )}
 
-          {/* Title */}
           <h1 className='mb-5 font-bold text-3xl leading-tight tracking-tight sm:text-4xl'>
             {pickLang(lang, project.title, project.titleEn)}
           </h1>
 
-          {/* Short Description */}
           {(project.description || project.descriptionEn) && (
             <p className='mb-6 text-lg text-muted-foreground md:text-xl'>
               {pickLang(lang, project.description, project.descriptionEn) || project.description}
             </p>
           )}
 
-          {/* Byline — date & action links */}
           <div className='mb-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-foreground text-sm'>
             {startDateLabel && (
               <span className='flex items-center gap-1.5 font-medium'>
@@ -228,10 +267,8 @@ export default async function ProjectDetailPage({
 
         <Separator className='mb-10' />
 
-        {/* ── BODY + SIDEBAR ── */}
         <div className={`flex flex-col gap-10 ${hasSidebar ? "lg:flex-row lg:gap-12" : ""}`}>
           <div className={`min-w-0 ${hasSidebar ? "flex-1" : "w-full"}`}>
-            {/* Markdown content */}
             {project.content || project.contentEn ? (
               <ScrollReveal delay={100} variant='fade-up'>
                 <MarkdownContent
@@ -243,49 +280,14 @@ export default async function ProjectDetailPage({
             )}
           </div>
 
-          {/* Sidebar: Gallery + Members */}
           {hasSidebar && (
-            <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
-              {hasGallery && (
-                <PostGalleryPanel images={allImages} title={`${t("galleryTitle")} (${allImages.length})`} />
-              )}
-
-              {project.members && project.members.length > 0 && (
-                <section>
-                  <h2 className='mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl'>
-                    <Users className='h-5 w-5 text-primary' /> {t("teamTitle")}
-                  </h2>
-                  <div className='flex flex-col gap-3'>
-                    {project.members.map((m) => (
-                      <div className='flex items-center gap-3' key={m.member.id}>
-                        {m.member.avatar ? (
-                          <Image
-                            alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                            className='shrink-0 rounded-full object-cover ring-2 ring-border'
-                            height={40}
-                            src={m.member.avatar}
-                            width={40}
-                          />
-                        ) : (
-                          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
-                            <UserCircle className='h-6 w-6 text-muted-foreground' />
-                          </div>
-                        )}
-                        <div className='min-w-0'>
-                          <Link
-                            className='block truncate font-medium text-sm hover:text-primary hover:underline'
-                            href={`/members/${m.member.slug || m.member.id}`}
-                          >
-                            {getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                          </Link>
-                          {m.role && <p className='truncate text-muted-foreground text-xs'>{m.role}</p>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-            </aside>
+            <ProjectSidebar
+              allImages={allImages}
+              hasGallery={hasGallery}
+              locale={locale}
+              members={project.members}
+              t={t}
+            />
           )}
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Calendar, FolderGit2, Hexagon, Trophy, UserPlus } from "lucide-react";
+import { Calendar, FolderGit2, Hexagon, Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 // ── Cyberpunk Glowing Orbs (orange + cyan) ──
@@ -135,7 +135,7 @@ export function CountUpNumber({
   className?: string;
 }) {
   const count = useMotionValue(0);
-  const rounded = useTransform(count, (v) => Math.round(v));
+  const _rounded = useTransform(count, (v) => Math.round(v));
   const [display, setDisplay] = useState("0");
 
   useEffect(() => {
@@ -260,7 +260,7 @@ export function DonutChart({
         />
         {segments.map((seg) => {
           const segLen = (seg.value / total) * circumference;
-          const dash = animated ? segLen : 0;
+          const _dash = animated ? segLen : 0;
           const dashOffset = -offset;
           offset += segLen;
           return (

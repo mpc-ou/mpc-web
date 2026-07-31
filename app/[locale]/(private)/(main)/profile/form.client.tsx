@@ -4,28 +4,21 @@ import { motion } from "framer-motion";
 import {
   AtSign,
   Baby,
-  Building2,
   Camera,
-  ExternalLink,
-  Github,
   Globe,
   Hash,
   ImagePlus,
   Link2,
   Loader2,
-  Lock,
   Music2,
-  PencilLine,
   Plus,
   Quote,
   Save,
-  ShieldCheck,
   Smartphone,
   Trash2,
   Upload,
   UserCircle,
-  UserPen,
-  X
+  UserPen
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -269,6 +262,34 @@ const FormClient = ({ initialData }: Props) => {
     }));
   };
 
+  function parseSpotifyUri(input: string): string | null {
+    if (!input) {
+      return null;
+    }
+    const trimmed = input.trim();
+    if (trimmed.startsWith("spotify:")) {
+      const parts = trimmed.split(":");
+      return parts.length >= 3 ? `spotify:${parts[1]}:${parts[2]}` : trimmed;
+    }
+    try {
+      const urlString = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+      const url = new URL(urlString);
+      if (url.hostname.includes("spotify.com")) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        if (parts.length >= 2) {
+          return `spotify:${parts[0]}:${parts[1]}`;
+        }
+      }
+    } catch {
+      const match = trimmed.match(SPOTIFY_URL_RE);
+      if (match) {
+        return `spotify:${match[1]}:${match[2]}`;
+      }
+    }
+    return trimmed;
+  }
+
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handleSubmit profile validation & update
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!(formData.firstName && formData.lastName)) {
@@ -292,38 +313,8 @@ const FormClient = ({ initialData }: Props) => {
     }
     setSlugError(null);
 
-    function parseSpotifyUri(input: string): string | null {
-      if (!input) {
-        return null;
-      }
-      const trimmed = input.trim();
-      if (trimmed.startsWith("spotify:")) {
-        const parts = trimmed.split(":");
-        if (parts.length >= 3) {
-          return `spotify:${parts[1]}:${parts[2]}`;
-        }
-        return trimmed;
-      }
-      try {
-        const urlString = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
-        const url = new URL(urlString);
-        if (url.hostname.includes("spotify.com")) {
-          const parts = url.pathname.split("/").filter(Boolean);
-          if (parts.length >= 2) {
-            return `spotify:${parts[0]}:${parts[1]}`;
-          }
-        }
-      } catch {
-        const match = trimmed.match(SPOTIFY_URL_RE);
-        if (match) {
-          return `spotify:${match[1]}:${match[2]}`;
-        }
-      }
-      return trimmed;
-    }
-
     const parsedSpotifyUri = formData.spotifyUri ? parseSpotifyUri(formData.spotifyUri) : "";
-    const payload = {
+    const _payload = {
       ...formData,
       slug,
       dob: formData.dob ? new Date(formData.dob) : undefined,

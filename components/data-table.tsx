@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { Settings2 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
-import * as React from "react";
+import { type Dispatch, type ReactNode, type SetStateAction, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,11 +35,11 @@ type DataTableProps<TData, TValue> = {
   data: TData[];
   searchKey?: string;
   searchPlaceholder?: string;
-  filterComponent?: React.ReactNode;
+  filterComponent?: ReactNode;
   columnVisibility?: VisibilityState;
-  onColumnVisibilityChange?: React.Dispatch<React.SetStateAction<VisibilityState>>;
+  onColumnVisibilityChange?: Dispatch<SetStateAction<VisibilityState>>;
   rowSelection?: Record<string, boolean>;
-  onRowSelectionChange?: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  onRowSelectionChange?: Dispatch<SetStateAction<Record<string, boolean>>>;
   hideToolbar?: boolean;
   pageCount?: number;
 };
@@ -60,10 +60,10 @@ export function DataTable<TData, TValue>({
   const [page, setPage] = useQueryState("page", parseAsInteger.withOptions({ shallow: false }).withDefault(1));
   const [limit, setLimit] = useQueryState("limit", parseAsInteger.withOptions({ shallow: false }).withDefault(10));
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [internalColumnVisibility, setInternalColumnVisibility] = React.useState<VisibilityState>({});
-  const [internalRowSelection, setInternalRowSelection] = React.useState<Record<string, boolean>>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>({});
+  const [internalRowSelection, setInternalRowSelection] = useState<Record<string, boolean>>({});
 
   const rowSelection = externalRowSelection ?? internalRowSelection;
   const setRowSelection = externalOnRowSelectionChange ?? setInternalRowSelection;
@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
   const activeColumnVisibility = columnVisibility ?? internalColumnVisibility;
   const activeOnColumnVisibilityChange = onColumnVisibilityChange ?? setInternalColumnVisibility;
 
-  const pagination = React.useMemo(
+  const pagination = useMemo(
     () => ({
       pageIndex: page - 1,
       pageSize: limit
@@ -79,7 +79,7 @@ export function DataTable<TData, TValue>({
     [page, limit]
   );
 
-  const handlePaginationChange = React.useCallback(
+  const handlePaginationChange = useCallback(
     (updater: Updater<PaginationState>) => {
       const nextValue = typeof updater === "function" ? updater(pagination) : updater;
 

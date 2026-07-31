@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { prisma } from "@/configs/prisma/db";
-import { createClientSsr } from "@/configs/supabase/server";
-import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
+import { checkUserBlogCreationPermission } from "@/app/_actions/main";
 import { UserBlogCreateForm } from "./form.client";
 
 export const metadata: Metadata = {
@@ -11,26 +8,15 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateBlogPage() {
-  const supabase = await createClientSsr();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { data: canCreateData, error } = await checkUserBlogCreationPermission();
 
-  if (!user) {
+  if (error) {
     redirect("/login");
   }
 
-  const member = await prisma.member.findUnique({
-    where: { id: user.id },
-    select: { webRole: true }
-  });
+  const canCreate = canCreateData?.payload ?? false;
 
-  if (!member) {
-    redirect("/?error=need-member");
-  }
-
-  const level = await getBlogPermissionLevel();
-  if (!hasBlogCreationPermission(member.webRole, level)) {
+  if (!canCreate) {
     redirect("/blogs?error=no-permission");
   }
 

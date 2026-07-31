@@ -132,11 +132,12 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
 ];
 
 function calcYears(roleYears: number[], joinedAt: string | null): number {
-  const oldest =
-    roleYears.length > 0
-      ? Math.min(...roleYears)
-      : joinedAt
-        ? new Date(joinedAt).getFullYear()
-        : new Date().getFullYear();
-  return Math.max(1, new Date().getFullYear() - oldest);
+  const currentYear = new Date().getFullYear();
+  if (roleYears.length > 0) {
+    return Math.max(1, currentYear - Math.min(...roleYears));
+  }
+  if (joinedAt) {
+    return Math.max(1, currentYear - new Date(joinedAt).getFullYear());
+  }
+  return 1;
 }

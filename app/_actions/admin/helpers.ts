@@ -1,5 +1,4 @@
 import { prisma } from "@/configs/prisma/db";
-import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 import type { UserSession } from "@/utils/session";
 
 export async function requireAdmin(user?: UserSession) {
@@ -47,5 +46,3 @@ export async function generateUniqueSlug(email: string): Promise<string> {
   }
   return `${base}${Date.now().toString().slice(-6)}`;
 }
-
-export { prisma, handleErrorServerWithAuth };

@@ -39,3 +39,13 @@ export const getTerminalStats = async () =>
   handleErrorServerNoAuth({
     cb: getTerminalStatsCached
   });
+
+export const getSiteSettings = async (keys: string[]) =>
+  handleErrorServerNoAuth({
+    cb: () => import("./cached").then((m) => m.getSiteSettingsCached(keys))
+  });
+
+export const getSitemapData = async () =>
+  handleErrorServerNoAuth({
+    cb: () => import("./cached").then((m) => m.getSitemapDataCached())
+  });

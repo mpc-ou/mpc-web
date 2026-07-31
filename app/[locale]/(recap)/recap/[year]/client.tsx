@@ -122,7 +122,9 @@ export function RecapSlideViewer({
   // Start audio on first interaction
   const startAudio = () => {
     if (audioRef.current?.paused) {
-      audioRef.current.play().catch(() => {});
+      audioRef.current.play().catch(() => {
+        /* Browser autoplay block catch */
+      });
     }
   };
 
@@ -376,6 +378,7 @@ export function RecapSlideViewer({
 
       {/* Global animations & styles */}
       <style
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Global Keyframe Animations
         dangerouslySetInnerHTML={{
           __html: `
             @keyframes fade-in-up {

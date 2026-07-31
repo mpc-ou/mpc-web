@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Hexagon } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ConfettiEffect, FloatingShapes, GlowingOrbs, GridBackground } from "./animations";
+import { ConfettiEffect, FloatingShapes, GridBackground } from "./animations";
 
 const containerVariants = {
   hidden: {},
@@ -77,7 +77,8 @@ export function SlideThankYou({ endImage, year }: { endImage: string | null; yea
           className='mb-6 font-mono text-cyan-400/70 text-sm uppercase tracking-[0.3em]'
           variants={itemVariants}
         >
-          // {year}
+          {"// "}
+          {year}
         </motion.p>
 
         {/* Dramatic two-line title */}

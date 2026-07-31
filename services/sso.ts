@@ -211,7 +211,9 @@ async function generateUniqueSlug(email: string): Promise<string> {
   for (let i = 0; i < 20; i++) {
     const suffix = Math.floor(Math.random() * 900 + 100).toString();
     const candidate = `${base}${suffix}`;
-    const exists = await prisma.member.findUnique({ where: { slug: candidate } });
+    const exists = await prisma.member.findUnique({
+      where: { slug: candidate }
+    });
     if (!exists) {
       return candidate;
     }
@@ -219,42 +221,61 @@ async function generateUniqueSlug(email: string): Promise<string> {
   return `${base}${Date.now().toString().slice(-6)}`;
 }
 
-export async function syncFromSso() {
-  if (!apiKey) {
-    throw new Error("Missing SSO_SERVICE_API_KEY environment variable");
-  }
+async function syncSsoAdminDepartments(adminSecret: string) {
+  try {
+    const deptRes = await fetch(`${issuer}/admin/departments`, {
+      headers: { "X-Admin-Secret": adminSecret }
+    });
+    if (deptRes.ok) {
+      const deptJson = await deptRes.json();
+      const ssoDeptList: Array<{ id: string; name: string; code?: string }> = Array.isArray(deptJson)
+        ? deptJson
+        : (deptJson?.items ?? deptJson?.data ?? []);
 
-  const adminSecret = process.env.SSO_ADMIN_SECRET || "";
-
-  if (adminSecret) {
-    try {
-      const deptRes = await fetch(`${issuer}/admin/departments`, {
-        headers: { "X-Admin-Secret": adminSecret }
-      });
-      if (deptRes.ok) {
-        const deptJson = await deptRes.json();
-        const ssoDeptList: Array<{ id: string; name: string; code?: string }> = Array.isArray(deptJson)
-          ? deptJson
-          : (deptJson?.items ?? deptJson?.data ?? []);
-
-        for (const d of ssoDeptList) {
-          if (!d.id) {
-            continue;
-          }
-          const existing = await prisma.department.findUnique({ where: { id: d.id } });
-          if (!existing) {
-            const slug = d.code ? d.code.toLowerCase() : `dept-${d.id}`;
-            await prisma.department.create({
-              data: { id: d.id, slug, nameVi: d.name || "", nameEn: d.name || "", isActive: true }
-            });
-          }
+      for (const d of ssoDeptList) {
+        if (!d.id) {
+          continue;
+        }
+        const existing = await prisma.department.findUnique({
+          where: { id: d.id }
+        });
+        if (!existing) {
+          const slug = d.code ? d.code.toLowerCase() : `dept-${d.id}`;
+          await prisma.department.create({
+            data: {
+              id: d.id,
+              slug,
+              nameVi: d.name || "",
+              nameEn: d.name || "",
+              isActive: true
+            }
+          });
         }
       }
-    } catch {
-      // Non-fatal: fall through to member-based sync
     }
+  } catch {
+    // Non-fatal: fall through to member-based sync
   }
+}
 
+function extractSsoBatch(resJson: unknown): SsoMember[] {
+  if (Array.isArray(resJson)) {
+    return resJson;
+  }
+  const obj = resJson as Record<string, unknown> | null;
+  if (obj?.data && Array.isArray(obj.data)) {
+    return obj.data;
+  }
+  if (obj?.items && Array.isArray(obj.items)) {
+    return obj.items;
+  }
+  if (obj?.payload && Array.isArray(obj.payload)) {
+    return obj.payload;
+  }
+  return [];
+}
+
+async function fetchSsoMemberList(apiKey: string): Promise<SsoMember[]> {
   let page = 1;
   const limit = 100;
   let ssoList: SsoMember[] = [];
@@ -262,9 +283,7 @@ export async function syncFromSso() {
 
   while (hasMore) {
     const response = await fetch(`${issuer}/api/members?page=${page}&limit=${limit}`, {
-      headers: {
-        "X-Service-Key": apiKey
-      }
+      headers: { "X-Service-Key": apiKey }
     });
 
     if (!response.ok) {
@@ -275,16 +294,7 @@ export async function syncFromSso() {
     }
 
     const resJson = await response.json();
-    let currentBatch: SsoMember[] = [];
-    if (Array.isArray(resJson)) {
-      currentBatch = resJson;
-    } else if (resJson && Array.isArray(resJson.data)) {
-      currentBatch = resJson.data;
-    } else if (resJson && Array.isArray(resJson.items)) {
-      currentBatch = resJson.items;
-    } else if (resJson && Array.isArray(resJson.payload)) {
-      currentBatch = resJson.payload;
-    }
+    const currentBatch = extractSsoBatch(resJson);
 
     if (currentBatch.length === 0) {
       hasMore = false;
@@ -297,7 +307,10 @@ export async function syncFromSso() {
       }
     }
   }
+  return ssoList;
+}
 
+async function syncSsoMemberDepartments(ssoList: SsoMember[]) {
   const ssoDepartments = new Map<string, NonNullable<SsoMemberRole["department"]>>();
   for (const ssoUser of ssoList) {
     if (ssoUser.roles && Array.isArray(ssoUser.roles)) {
@@ -315,12 +328,6 @@ export async function syncFromSso() {
   for (const [deptId, ssoDept] of ssoDepartments.entries()) {
     const existing = localDeptMap.get(deptId);
     const slug = ssoDept.code ? ssoDept.code.toLowerCase() : `dept-${ssoDept.id}`;
-    const data = {
-      slug,
-      nameVi: ssoDept.name || "",
-      nameEn: ssoDept.name || "",
-      isActive: true
-    };
 
     if (!existing) {
       await prisma.department.create({
@@ -334,6 +341,97 @@ export async function syncFromSso() {
       });
     }
   }
+}
+
+function buildSsoUserRoles(ssoUser: SsoMember): Prisma.ClubRoleCreateManyInput[] {
+  const userRoles: Prisma.ClubRoleCreateManyInput[] = [];
+  if (ssoUser.roles && Array.isArray(ssoUser.roles)) {
+    for (const ssoRole of ssoUser.roles) {
+      userRoles.push({
+        memberId: ssoUser.id,
+        departmentId: ssoRole.department?.id || null,
+        position: ssoRole.position as ClubPosition,
+        term: ssoRole.term || null,
+        note: ssoRole.note || null,
+        startAt: ssoRole.startAt ? new Date(ssoRole.startAt) : new Date(),
+        endAt: ssoRole.endAt && ssoRole.endAt !== "" ? new Date(ssoRole.endAt) : null
+      });
+    }
+  }
+  return userRoles;
+}
+
+function buildSsoMemberData(ssoUser: SsoMember, userRoles: Prisma.ClubRoleCreateManyInput[]) {
+  const joinedClubAt =
+    userRoles.length > 0 ? new Date(Math.min(...userRoles.map((r) => new Date(r.startAt).getTime()))) : null;
+
+  let leftClubAt: Date | null = null;
+  if (ssoUser.isAlumni) {
+    const endDates = userRoles.map((r) => r.endAt).filter((d): d is Date | string => d !== null && d !== undefined);
+    leftClubAt = endDates.length > 0 ? new Date(Math.max(...endDates.map((d) => new Date(d).getTime()))) : new Date();
+  }
+
+  return {
+    email: ssoUser.email,
+    firstName: ssoUser.firstName || "",
+    middleName: ssoUser.middleName || null,
+    lastName: ssoUser.lastName || "",
+    dob: ssoUser.dob ? new Date(ssoUser.dob) : null,
+    phone: ssoUser.phone || null,
+    studentId: ssoUser.mssv || null,
+    webRole: ssoUser.webRole,
+    joinedClubAt,
+    leftClubAt,
+    avatar: ssoUser.avatar || null,
+    bio: ssoUser.bio || null
+  };
+}
+
+async function syncSingleSsoUser(
+  ssoUser: SsoMember,
+  localMemberMap: Map<string, unknown>,
+  localMemberEmailMap: Map<string, { id: string; email: string }>
+): Promise<Prisma.ClubRoleCreateManyInput[]> {
+  const localByEmail = localMemberEmailMap.get(ssoUser.email);
+  if (localByEmail && localByEmail.id !== ssoUser.id) {
+    await linkAndMigrateMember(localByEmail.id, ssoUser.id, ssoUser.email);
+  }
+
+  const userRoles = buildSsoUserRoles(ssoUser);
+  const memberData = buildSsoMemberData(ssoUser, userRoles);
+
+  const localMember = localMemberMap.get(ssoUser.id);
+  if (localMember) {
+    await prisma.member.update({
+      where: { id: ssoUser.id },
+      data: memberData
+    });
+  } else {
+    const slug = await generateUniqueSlug(ssoUser.email);
+    await prisma.member.create({
+      data: {
+        id: ssoUser.id,
+        slug,
+        ...memberData
+      }
+    });
+  }
+
+  return userRoles;
+}
+
+export async function syncFromSso() {
+  if (!apiKey) {
+    throw new Error("Missing SSO_SERVICE_API_KEY environment variable");
+  }
+
+  const adminSecret = process.env.SSO_ADMIN_SECRET || "";
+  if (adminSecret) {
+    await syncSsoAdminDepartments(adminSecret);
+  }
+
+  const ssoList = await fetchSsoMemberList(apiKey);
+  await syncSsoMemberDepartments(ssoList);
 
   const allLocalMembers = await prisma.member.findMany();
   const localMemberMap = new Map(allLocalMembers.map((m) => [m.id, m]));
@@ -349,72 +447,8 @@ export async function syncFromSso() {
     }
 
     syncedIds.add(ssoUser.id);
-
-    const localByEmail = localMemberEmailMap.get(ssoUser.email);
-    if (localByEmail && localByEmail.id !== ssoUser.id) {
-      await linkAndMigrateMember(localByEmail.id, ssoUser.id, ssoUser.email);
-    }
-
-    const localMember = localMemberMap.get(ssoUser.id);
-    const mappedFirstName = ssoUser.firstName || "";
-    const mappedMiddleName = ssoUser.middleName || null;
-    const mappedLastName = ssoUser.lastName || "";
-
-    if (ssoUser.roles && Array.isArray(ssoUser.roles)) {
-      for (const ssoRole of ssoUser.roles) {
-        rolesToCreate.push({
-          memberId: ssoUser.id,
-          departmentId: ssoRole.department?.id || null,
-          position: ssoRole.position as ClubPosition,
-          term: ssoRole.term || null,
-          note: ssoRole.note || null,
-          startAt: ssoRole.startAt ? new Date(ssoRole.startAt) : new Date(),
-          endAt: ssoRole.endAt && ssoRole.endAt !== "" ? new Date(ssoRole.endAt) : null
-        });
-      }
-    }
-
-    const userRoles = rolesToCreate.filter((r) => r.memberId === ssoUser.id);
-    const joinedClubAt =
-      userRoles.length > 0 ? new Date(Math.min(...userRoles.map((r) => new Date(r.startAt).getTime()))) : null;
-
-    let leftClubAt: Date | null = null;
-    if (ssoUser.isAlumni) {
-      const endDates = userRoles.map((r) => r.endAt).filter((d): d is Date | string => d !== null && d !== undefined);
-      leftClubAt = endDates.length > 0 ? new Date(Math.max(...endDates.map((d) => new Date(d).getTime()))) : new Date();
-    }
-
-    const memberData = {
-      email: ssoUser.email,
-      firstName: mappedFirstName,
-      middleName: mappedMiddleName,
-      lastName: mappedLastName,
-      dob: ssoUser.dob ? new Date(ssoUser.dob) : null,
-      phone: ssoUser.phone || null,
-      studentId: ssoUser.mssv || null,
-      webRole: ssoUser.webRole,
-      isActive: !ssoUser.isAlumni,
-      joinedClubAt,
-      leftClubAt,
-      avatar: ssoUser.avatar || null,
-      bio: ssoUser.bio || null
-    };
-
-    if (localMember) {
-      await prisma.member.update({
-        where: { id: ssoUser.id },
-        data: memberData
-      });
-    } else {
-      const slug = await generateUniqueSlug(ssoUser.email);
-      await prisma.member.create({
-        data: {
-          id: ssoUser.id,
-          slug,
-          ...memberData
-        }
-      });
-    }
+    const userRoles = await syncSingleSsoUser(ssoUser, localMemberMap, localMemberEmailMap);
+    rolesToCreate.push(...userRoles);
   }
 
   for (const localMem of allLocalMembers) {
@@ -435,6 +469,26 @@ export async function syncFromSso() {
       data: rolesToCreate
     });
   }
+}
+
+export async function reactivateAllSyncedMembers() {
+  if (!apiKey) {
+    throw new Error("Missing SSO_SERVICE_API_KEY environment variable");
+  }
+
+  const ssoList = await fetchSsoMemberList(apiKey);
+  const ssoIds = ssoList.filter((u) => u?.id && u.email).map((u) => u.id);
+
+  if (ssoIds.length === 0) {
+    return { count: 0 };
+  }
+
+  const result = await prisma.member.updateMany({
+    where: { id: { in: ssoIds }, isActive: false },
+    data: { isActive: true }
+  });
+
+  return { count: result.count };
 }
 
 export async function adminUpdateSsoUser(

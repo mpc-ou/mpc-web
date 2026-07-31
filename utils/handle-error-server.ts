@@ -13,12 +13,35 @@ function isInternalCancelError(error: unknown): boolean {
   return false;
 }
 
+function isNextError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  const err = error as { name?: string; digest?: unknown };
+
+  if (err.name === "DynamicServerError") {
+    return true;
+  }
+
+  if (
+    typeof err.digest === "string" &&
+    (err.digest.startsWith("NEXT_") ||
+      err.digest === "HANGING_PROMISE_REJECTION" ||
+      err.digest.startsWith("DYNAMIC_SERVER_USAGE"))
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 const handleErrorServerNoAuth = async <T>({ cb }: HandleErrorServerType<T>): Promise<ResponseType> => {
   try {
     const res = await cb({});
     return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
-    if (isInternalCancelError(error)) {
+    if (isInternalCancelError(error) || isNextError(error)) {
       throw error;
     }
     // Errors here get converted into a plain ErrorResponse, which callers
@@ -44,7 +67,7 @@ const handleErrorServerWithAuth = async <T>({ cb }: HandleErrorServerType<T>): P
     const res = await cb({ user: session });
     return SuccessResponse({ payload: res as SuccessResponseType["payload"] });
   } catch (error) {
-    if (isInternalCancelError(error)) {
+    if (isInternalCancelError(error) || isNextError(error)) {
       throw error;
     }
     console.error("[handleErrorServerWithAuth]", error);

@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import { getSiteSettings } from "@/app/_actions/main";
 import { TransparentHeaderProvider } from "@/hooks/use-transparent-header";
 import { cn } from "@/lib/utils";
@@ -113,7 +113,9 @@ export async function BaseLayout({ children, locale }: BaseLayoutType) {
             <TooltipProvider>
               <NextIntlClientProvider messages={messages}>
                 <TransparentHeaderProvider>
-                  <PageTransition>{children}</PageTransition>
+                  <Suspense>
+                    <PageTransition>{children}</PageTransition>
+                  </Suspense>
                 </TransparentHeaderProvider>
               </NextIntlClientProvider>
             </TooltipProvider>

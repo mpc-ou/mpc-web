@@ -46,3 +46,7 @@ next-env.d.ts
 !.devcontainer/.env
 .agent/
 .agents/
+.gemini
+.cursor
+.claudebackups/
+backups/

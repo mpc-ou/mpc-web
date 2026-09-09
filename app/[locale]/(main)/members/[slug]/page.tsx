@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { getMemberBySlug, getMemberSlugByAuthId } from "@/app/_actions/main/member-detail";
 import { createClientSsr } from "@/configs/supabase/server";
-import { generatePageSeo } from "@/utils/seo";
-import { getMemberBySlug, getMemberSlugByAuthId } from "./actions";
-import { ProfilePageClient } from "./profile-client";
 import { getFullName } from "@/lib/utils";
+import { generatePageSeo } from "@/utils/seo";
+import type { Member } from "./profile-client";
+import { ProfilePageClient } from "./profile-client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -14,29 +15,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Trang cá nhân" };
   }
   const { data } = await getMemberBySlug(slug);
-  const member = (data?.payload as any)?.member;
+  const member = (data?.payload as { member: Member | null } | undefined)?.member;
 
   if (!member) {
     return { title: "Không tìm thấy" };
   }
   return generatePageSeo({
     page: "memberDetail",
-    title: getFullName(member.firstName, member.lastName, locale),
+    title: getFullName(member.firstName, member.middleName, member.lastName, locale),
     description: member.bio || undefined,
     locale: locale || "vi",
     pathname: `/members/${slug}`,
-    image: member.avatar || undefined,
+    image: member.avatar || undefined
   });
 }
 
 export default async function MemberProfilePage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
-  // Handle /members/me → redirect to user's slug
   if (slug === "me") {
     const supabase = await createClientSsr();
     const {
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -44,7 +44,7 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
     }
 
     const { data } = await getMemberSlugByAuthId();
-    const authSlug = (data?.payload as any)?.slug;
+    const authSlug = (data?.payload as { slug: string | null } | undefined)?.slug;
 
     if (!authSlug) {
       redirect(`/${locale}/profile`);
@@ -54,17 +54,11 @@ export default async function MemberProfilePage({ params }: Props): Promise<Reac
   }
 
   const { data } = await getMemberBySlug(slug);
-  const member = (data?.payload as any)?.member;
+  const member = (data?.payload as { member: Member | null } | undefined)?.member;
 
   if (!member) {
     notFound();
   }
 
-  return (
-    <ProfilePageClient
-      member={
-        member as unknown as Parameters<typeof ProfilePageClient>[0]["member"]
-      }
-    />
-  );
+  return <ProfilePageClient member={member} />;
 }

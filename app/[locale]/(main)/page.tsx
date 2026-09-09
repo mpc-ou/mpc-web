@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
-import { LoadingComponent } from "@/components/custom/Loading";
+import { getTerminalStats } from "@/app/_actions/main";
+import { LoadingComponent } from "@/components/custom/loading";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 import type { locale } from "@/types/global";
 import { generatePageSeo } from "@/utils/seo";
-import { BenefitsSection } from "./benefits-section";
-import { FaqSection } from "./faq-section";
-import { GallerySection } from "./gallery-section";
-import { HeroSection } from "./hero-section";
-import { IntroSection } from "./intro-section";
-import { ManagementSection } from "./management-section";
-import { RecentEventsSection } from "./recent-events";
-import { StatsSection } from "./stats-section";
+import { BenefitsSection } from "./_components/benefits-section";
+import { FaqSection } from "./_components/faq-section";
+import { GallerySection } from "./_components/gallery-section";
+import { HeroSection } from "./_components/hero-section";
+import { IntroSection } from "./_components/intro-section";
+import { ManagementSection } from "./_components/management-section";
+import { RecentEventsSection } from "./_components/recent-events";
+import { StatsSection } from "./_components/stats-section";
 
 type PageType = {
   params: Promise<{ locale: locale }>;
@@ -31,11 +32,26 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
   const { locale } = await params;
   setRequestLocale(locale as locale);
 
+  const statsRes = await getTerminalStats();
+  const stats =
+    (statsRes.data?.payload as
+      | {
+          members: number;
+          posts: number;
+          projects: number;
+          events: number;
+          achievements: number;
+          currentYear: number;
+          github: string;
+          fanpage: string;
+        }
+      | undefined) ?? null;
+
   return (
     <div className='flex flex-col'>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
-      <HeroSection />
+      <HeroSection stats={stats} />
 
       <IntroSection locale={locale} />
 

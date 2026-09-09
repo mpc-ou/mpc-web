@@ -15,7 +15,6 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model YearRecap
  * Tổng kết hoạt động CLB theo năm
- * Dữ liệu recap được lưu dạng JSON tổng hợp từ Events, Achievements, Projects
  */
 export type YearRecapModel = runtime.Types.Result.DefaultSelection<Prisma.$YearRecapPayload>
 

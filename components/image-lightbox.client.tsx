@@ -1,12 +1,14 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 type ImageItem = {
   id: string;
   url: string;
+  title?: string | null;
   caption?: string | null;
 };
 
@@ -69,7 +71,7 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
   const current = images.at(currentIndex);
 
   const content = (
-    <div className='fixed inset-0 z-9999 flex items-center justify-center'>
+    <div className='fixed inset-0 z-9999 flex select-none items-center justify-center'>
       {/* Backdrop */}
       <button
         aria-label='Close lightbox'
@@ -101,19 +103,29 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose }: Props) => {
       )}
 
       {/* Image */}
-      <div className='relative z-10 flex max-h-[90vh] max-w-[90vw] flex-col items-center'>
-        <img
-          alt={current?.caption ?? "Gallery image"}
-          className='max-h-[80vh] max-w-[90vw] rounded-lg object-contain'
-          src={current?.url}
-        />
-        {current?.caption && <p className='mt-3 text-center text-sm text-white/80'>{current.caption}</p>}
-        <p className='mt-1 text-white/50 text-xs'>
+      <div className='relative z-10 flex max-h-[90vh] max-w-[95vw] flex-col items-center'>
+        <div className='relative h-[75vh] w-[90vw]'>
+          <Image
+            alt={current?.title || current?.caption || "Gallery image"}
+            className='rounded-lg border border-zinc-800 object-contain shadow-2xl'
+            fill
+            sizes='90vw'
+            src={current?.url ?? ""}
+          />
+        </div>
+        {(current?.title || current?.caption) && (
+          <div className='mt-4 max-w-[80vw] rounded-xl border border-zinc-800/50 bg-zinc-950/80 px-4 py-2 text-center shadow-lg backdrop-blur-md'>
+            {current?.title && (
+              <h4 className='mb-1 font-bold text-sm text-zinc-100 uppercase tracking-wide'>{current.title}</h4>
+            )}
+            {current?.caption && <p className='font-medium text-xs text-zinc-400'>{current.caption}</p>}
+          </div>
+        )}
+        <p className='mt-2 rounded-full bg-zinc-900/60 px-2 py-0.5 font-mono text-white/50 text-xs'>
           {currentIndex + 1} / {images.length}
         </p>
       </div>
 
-      {/* Next button */}
       {images.length > 1 && (
         <button
           aria-label='Next image'

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { formatLocalDate } from "@/utils/handle-datetime";
 import { sanitizeHtml } from "@/utils/sanitize-html";
 
 export type ProjectDetail = {
@@ -35,15 +36,11 @@ type Props = {
   project: ProjectDetail | null;
 };
 
-function formatDate(dateStr: string | null) {
+function formatDate(dateStr: string | null, locale: string) {
   if (!dateStr) {
     return null;
   }
-  return new Date(dateStr).toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
+  return formatLocalDate(dateStr, locale, "d MMMM, yyyy");
 }
 
 /** Convert a YouTube URL to an embeddable URL */
@@ -64,12 +61,14 @@ function toEmbedUrl(url: string): string {
 }
 
 export function ProjectDetailDialog({ open, onOpenChange, project }: Props) {
+  const locale = "vi";
+
   if (!project) {
     return null;
   }
 
-  const startFormatted = formatDate(project.startDate);
-  const endFormatted = formatDate(project.endDate);
+  const startFormatted = formatDate(project.startDate, locale);
+  const endFormatted = formatDate(project.endDate, locale);
   const hasLinks = project.githubUrl || project.websiteUrl || project.videoUrl;
   const hasMembers = project.members && project.members.length > 0;
 

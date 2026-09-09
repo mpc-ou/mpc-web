@@ -14,8 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Sponsor
- * Nhà tài trợ / Đối tác / Nhà đồng hành
- * Lưu thông tin cơ bản của đơn vị tài trợ
+ * Nhà tài trợ / Đối tác
  */
 export type SponsorModel = runtime.Types.Result.DefaultSelection<Prisma.$SponsorPayload>
 
@@ -28,12 +27,17 @@ export type AggregateSponsor = {
 export type SponsorMinAggregateOutputType = {
   id: string | null
   name: string | null
+  nameEn: string | null
   slug: string | null
+  descriptionVi: string | null
+  descriptionEn: string | null
   logo: string | null
   email: string | null
   phone: string | null
   website: string | null
-  description: string | null
+  activityId: string | null
+  startAt: Date | null
+  endAt: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -42,12 +46,17 @@ export type SponsorMinAggregateOutputType = {
 export type SponsorMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  nameEn: string | null
   slug: string | null
+  descriptionVi: string | null
+  descriptionEn: string | null
   logo: string | null
   email: string | null
   phone: string | null
   website: string | null
-  description: string | null
+  activityId: string | null
+  startAt: Date | null
+  endAt: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,12 +65,18 @@ export type SponsorMaxAggregateOutputType = {
 export type SponsorCountAggregateOutputType = {
   id: number
   name: number
+  nameEn: number
   slug: number
+  descriptionVi: number
+  descriptionEn: number
   logo: number
   email: number
   phone: number
   website: number
-  description: number
+  activityId: number
+  startAt: number
+  endAt: number
+  images: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -72,12 +87,17 @@ export type SponsorCountAggregateOutputType = {
 export type SponsorMinAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
   slug?: true
+  descriptionVi?: true
+  descriptionEn?: true
   logo?: true
   email?: true
   phone?: true
   website?: true
-  description?: true
+  activityId?: true
+  startAt?: true
+  endAt?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -86,12 +106,17 @@ export type SponsorMinAggregateInputType = {
 export type SponsorMaxAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
   slug?: true
+  descriptionVi?: true
+  descriptionEn?: true
   logo?: true
   email?: true
   phone?: true
   website?: true
-  description?: true
+  activityId?: true
+  startAt?: true
+  endAt?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -100,12 +125,18 @@ export type SponsorMaxAggregateInputType = {
 export type SponsorCountAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
   slug?: true
+  descriptionVi?: true
+  descriptionEn?: true
   logo?: true
   email?: true
   phone?: true
   website?: true
-  description?: true
+  activityId?: true
+  startAt?: true
+  endAt?: true
+  images?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -187,12 +218,18 @@ export type SponsorGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type SponsorGroupByOutputType = {
   id: string
   name: string
+  nameEn: string
   slug: string
+  descriptionVi: string | null
+  descriptionEn: string | null
   logo: string | null
   email: string | null
   phone: string | null
   website: string | null
-  description: string | null
+  activityId: string | null
+  startAt: Date | null
+  endAt: Date | null
+  images: string[]
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -222,31 +259,45 @@ export type SponsorWhereInput = {
   NOT?: Prisma.SponsorWhereInput | Prisma.SponsorWhereInput[]
   id?: Prisma.StringFilter<"Sponsor"> | string
   name?: Prisma.StringFilter<"Sponsor"> | string
+  nameEn?: Prisma.StringFilter<"Sponsor"> | string
   slug?: Prisma.StringFilter<"Sponsor"> | string
+  descriptionVi?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  descriptionEn?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   logo?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   email?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   phone?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   website?: Prisma.StringNullableFilter<"Sponsor"> | string | null
-  description?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  startAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  images?: Prisma.StringNullableListFilter<"Sponsor">
   isActive?: Prisma.BoolFilter<"Sponsor"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
-  sponsorships?: Prisma.EventSponsorshipListRelationFilter
+  activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
+  sponsorships?: Prisma.PostSponsorshipListRelationFilter
 }
 
 export type SponsorOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  activityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  sponsorships?: Prisma.EventSponsorshipOrderByRelationAggregateInput
+  activity?: Prisma.ActivityOrderByWithRelationInput
+  sponsorships?: Prisma.PostSponsorshipOrderByRelationAggregateInput
 }
 
 export type SponsorWhereUniqueInput = Prisma.AtLeast<{
@@ -256,26 +307,39 @@ export type SponsorWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SponsorWhereInput[]
   NOT?: Prisma.SponsorWhereInput | Prisma.SponsorWhereInput[]
   name?: Prisma.StringFilter<"Sponsor"> | string
+  nameEn?: Prisma.StringFilter<"Sponsor"> | string
+  descriptionVi?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  descriptionEn?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   logo?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   email?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   phone?: Prisma.StringNullableFilter<"Sponsor"> | string | null
   website?: Prisma.StringNullableFilter<"Sponsor"> | string | null
-  description?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  startAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  images?: Prisma.StringNullableListFilter<"Sponsor">
   isActive?: Prisma.BoolFilter<"Sponsor"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
-  sponsorships?: Prisma.EventSponsorshipListRelationFilter
+  activity?: Prisma.XOR<Prisma.ActivityNullableScalarRelationFilter, Prisma.ActivityWhereInput> | null
+  sponsorships?: Prisma.PostSponsorshipListRelationFilter
 }, "id" | "slug">
 
 export type SponsorOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  activityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -290,12 +354,18 @@ export type SponsorScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SponsorScalarWhereWithAggregatesInput | Prisma.SponsorScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Sponsor"> | string
   name?: Prisma.StringWithAggregatesFilter<"Sponsor"> | string
+  nameEn?: Prisma.StringWithAggregatesFilter<"Sponsor"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Sponsor"> | string
+  descriptionVi?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
+  descriptionEn?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
   logo?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
-  description?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
+  activityId?: Prisma.StringNullableWithAggregatesFilter<"Sponsor"> | string | null
+  startAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Sponsor"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Sponsor"> | Date | string | null
+  images?: Prisma.StringNullableListFilter<"Sponsor">
   isActive?: Prisma.BoolWithAggregatesFilter<"Sponsor"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Sponsor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Sponsor"> | Date | string
@@ -304,72 +374,102 @@ export type SponsorScalarWhereWithAggregatesInput = {
 export type SponsorCreateInput = {
   id?: string
   name: string
+  nameEn?: string
   slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
   logo?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
-  description?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sponsorships?: Prisma.EventSponsorshipCreateNestedManyWithoutSponsorInput
+  activity?: Prisma.ActivityCreateNestedOneWithoutSponsorsInput
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutSponsorInput
 }
 
 export type SponsorUncheckedCreateInput = {
   id?: string
   name: string
+  nameEn?: string
   slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
   logo?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
-  description?: string | null
+  activityId?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sponsorships?: Prisma.EventSponsorshipUncheckedCreateNestedManyWithoutSponsorInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutSponsorInput
 }
 
 export type SponsorUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sponsorships?: Prisma.EventSponsorshipUpdateManyWithoutSponsorNestedInput
+  activity?: Prisma.ActivityUpdateOneWithoutSponsorsNestedInput
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutSponsorNestedInput
 }
 
 export type SponsorUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sponsorships?: Prisma.EventSponsorshipUncheckedUpdateManyWithoutSponsorNestedInput
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutSponsorNestedInput
 }
 
 export type SponsorCreateManyInput = {
   id?: string
   name: string
+  nameEn?: string
   slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
   logo?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
-  description?: string | null
+  activityId?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -378,12 +478,17 @@ export type SponsorCreateManyInput = {
 export type SponsorUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,26 +497,48 @@ export type SponsorUpdateManyMutationInput = {
 export type SponsorUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type SponsorListRelationFilter = {
+  every?: Prisma.SponsorWhereInput
+  some?: Prisma.SponsorWhereInput
+  none?: Prisma.SponsorWhereInput
+}
+
+export type SponsorOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type SponsorCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -420,12 +547,17 @@ export type SponsorCountOrderByAggregateInput = {
 export type SponsorMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -434,12 +566,17 @@ export type SponsorMaxOrderByAggregateInput = {
 export type SponsorMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  activityId?: Prisma.SortOrder
+  startAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -448,6 +585,57 @@ export type SponsorMinOrderByAggregateInput = {
 export type SponsorScalarRelationFilter = {
   is?: Prisma.SponsorWhereInput
   isNot?: Prisma.SponsorWhereInput
+}
+
+export type SponsorCreateNestedManyWithoutActivityInput = {
+  create?: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput> | Prisma.SponsorCreateWithoutActivityInput[] | Prisma.SponsorUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.SponsorCreateOrConnectWithoutActivityInput | Prisma.SponsorCreateOrConnectWithoutActivityInput[]
+  createMany?: Prisma.SponsorCreateManyActivityInputEnvelope
+  connect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+}
+
+export type SponsorUncheckedCreateNestedManyWithoutActivityInput = {
+  create?: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput> | Prisma.SponsorCreateWithoutActivityInput[] | Prisma.SponsorUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.SponsorCreateOrConnectWithoutActivityInput | Prisma.SponsorCreateOrConnectWithoutActivityInput[]
+  createMany?: Prisma.SponsorCreateManyActivityInputEnvelope
+  connect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+}
+
+export type SponsorUpdateManyWithoutActivityNestedInput = {
+  create?: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput> | Prisma.SponsorCreateWithoutActivityInput[] | Prisma.SponsorUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.SponsorCreateOrConnectWithoutActivityInput | Prisma.SponsorCreateOrConnectWithoutActivityInput[]
+  upsert?: Prisma.SponsorUpsertWithWhereUniqueWithoutActivityInput | Prisma.SponsorUpsertWithWhereUniqueWithoutActivityInput[]
+  createMany?: Prisma.SponsorCreateManyActivityInputEnvelope
+  set?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  disconnect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  delete?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  connect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  update?: Prisma.SponsorUpdateWithWhereUniqueWithoutActivityInput | Prisma.SponsorUpdateWithWhereUniqueWithoutActivityInput[]
+  updateMany?: Prisma.SponsorUpdateManyWithWhereWithoutActivityInput | Prisma.SponsorUpdateManyWithWhereWithoutActivityInput[]
+  deleteMany?: Prisma.SponsorScalarWhereInput | Prisma.SponsorScalarWhereInput[]
+}
+
+export type SponsorUncheckedUpdateManyWithoutActivityNestedInput = {
+  create?: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput> | Prisma.SponsorCreateWithoutActivityInput[] | Prisma.SponsorUncheckedCreateWithoutActivityInput[]
+  connectOrCreate?: Prisma.SponsorCreateOrConnectWithoutActivityInput | Prisma.SponsorCreateOrConnectWithoutActivityInput[]
+  upsert?: Prisma.SponsorUpsertWithWhereUniqueWithoutActivityInput | Prisma.SponsorUpsertWithWhereUniqueWithoutActivityInput[]
+  createMany?: Prisma.SponsorCreateManyActivityInputEnvelope
+  set?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  disconnect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  delete?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  connect?: Prisma.SponsorWhereUniqueInput | Prisma.SponsorWhereUniqueInput[]
+  update?: Prisma.SponsorUpdateWithWhereUniqueWithoutActivityInput | Prisma.SponsorUpdateWithWhereUniqueWithoutActivityInput[]
+  updateMany?: Prisma.SponsorUpdateManyWithWhereWithoutActivityInput | Prisma.SponsorUpdateManyWithWhereWithoutActivityInput[]
+  deleteMany?: Prisma.SponsorScalarWhereInput | Prisma.SponsorScalarWhereInput[]
+}
+
+export type SponsorCreateimagesInput = {
+  set: string[]
+}
+
+export type SponsorUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type SponsorCreateNestedOneWithoutSponsorshipsInput = {
@@ -464,29 +652,130 @@ export type SponsorUpdateOneRequiredWithoutSponsorshipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SponsorUpdateToOneWithWhereWithoutSponsorshipsInput, Prisma.SponsorUpdateWithoutSponsorshipsInput>, Prisma.SponsorUncheckedUpdateWithoutSponsorshipsInput>
 }
 
-export type SponsorCreateWithoutSponsorshipsInput = {
+export type SponsorCreateWithoutActivityInput = {
   id?: string
   name: string
+  nameEn?: string
   slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
   logo?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
-  description?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sponsorships?: Prisma.PostSponsorshipCreateNestedManyWithoutSponsorInput
+}
+
+export type SponsorUncheckedCreateWithoutActivityInput = {
+  id?: string
+  name: string
+  nameEn?: string
+  slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
+  logo?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sponsorships?: Prisma.PostSponsorshipUncheckedCreateNestedManyWithoutSponsorInput
+}
+
+export type SponsorCreateOrConnectWithoutActivityInput = {
+  where: Prisma.SponsorWhereUniqueInput
+  create: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput>
+}
+
+export type SponsorCreateManyActivityInputEnvelope = {
+  data: Prisma.SponsorCreateManyActivityInput | Prisma.SponsorCreateManyActivityInput[]
+  skipDuplicates?: boolean
+}
+
+export type SponsorUpsertWithWhereUniqueWithoutActivityInput = {
+  where: Prisma.SponsorWhereUniqueInput
+  update: Prisma.XOR<Prisma.SponsorUpdateWithoutActivityInput, Prisma.SponsorUncheckedUpdateWithoutActivityInput>
+  create: Prisma.XOR<Prisma.SponsorCreateWithoutActivityInput, Prisma.SponsorUncheckedCreateWithoutActivityInput>
+}
+
+export type SponsorUpdateWithWhereUniqueWithoutActivityInput = {
+  where: Prisma.SponsorWhereUniqueInput
+  data: Prisma.XOR<Prisma.SponsorUpdateWithoutActivityInput, Prisma.SponsorUncheckedUpdateWithoutActivityInput>
+}
+
+export type SponsorUpdateManyWithWhereWithoutActivityInput = {
+  where: Prisma.SponsorScalarWhereInput
+  data: Prisma.XOR<Prisma.SponsorUpdateManyMutationInput, Prisma.SponsorUncheckedUpdateManyWithoutActivityInput>
+}
+
+export type SponsorScalarWhereInput = {
+  AND?: Prisma.SponsorScalarWhereInput | Prisma.SponsorScalarWhereInput[]
+  OR?: Prisma.SponsorScalarWhereInput[]
+  NOT?: Prisma.SponsorScalarWhereInput | Prisma.SponsorScalarWhereInput[]
+  id?: Prisma.StringFilter<"Sponsor"> | string
+  name?: Prisma.StringFilter<"Sponsor"> | string
+  nameEn?: Prisma.StringFilter<"Sponsor"> | string
+  slug?: Prisma.StringFilter<"Sponsor"> | string
+  descriptionVi?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  descriptionEn?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  logo?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  email?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  phone?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  website?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  activityId?: Prisma.StringNullableFilter<"Sponsor"> | string | null
+  startAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  endAt?: Prisma.DateTimeNullableFilter<"Sponsor"> | Date | string | null
+  images?: Prisma.StringNullableListFilter<"Sponsor">
+  isActive?: Prisma.BoolFilter<"Sponsor"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Sponsor"> | Date | string
+}
+
+export type SponsorCreateWithoutSponsorshipsInput = {
+  id?: string
+  name: string
+  nameEn?: string
+  slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
+  logo?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  activity?: Prisma.ActivityCreateNestedOneWithoutSponsorsInput
 }
 
 export type SponsorUncheckedCreateWithoutSponsorshipsInput = {
   id?: string
   name: string
+  nameEn?: string
   slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
   logo?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
-  description?: string | null
+  activityId?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -511,26 +800,116 @@ export type SponsorUpdateToOneWithWhereWithoutSponsorshipsInput = {
 export type SponsorUpdateWithoutSponsorshipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activity?: Prisma.ActivityUpdateOneWithoutSponsorsNestedInput
 }
 
 export type SponsorUncheckedUpdateWithoutSponsorshipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SponsorCreateManyActivityInput = {
+  id?: string
+  name: string
+  nameEn?: string
+  slug: string
+  descriptionVi?: string | null
+  descriptionEn?: string | null
+  logo?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  startAt?: Date | string | null
+  endAt?: Date | string | null
+  images?: Prisma.SponsorCreateimagesInput | string[]
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SponsorUpdateWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sponsorships?: Prisma.PostSponsorshipUpdateManyWithoutSponsorNestedInput
+}
+
+export type SponsorUncheckedUpdateWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sponsorships?: Prisma.PostSponsorshipUncheckedUpdateManyWithoutSponsorNestedInput
+}
+
+export type SponsorUncheckedUpdateManyWithoutActivityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.SponsorUpdateimagesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -563,22 +942,29 @@ export type SponsorCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  * SponsorCountOutputType without action
  */
 export type SponsorCountOutputTypeCountSponsorshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.EventSponsorshipWhereInput
+  where?: Prisma.PostSponsorshipWhereInput
 }
 
 
 export type SponsorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
   slug?: boolean
+  descriptionVi?: boolean
+  descriptionEn?: boolean
   logo?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
-  description?: boolean
+  activityId?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  images?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
   sponsorships?: boolean | Prisma.Sponsor$sponsorshipsArgs<ExtArgs>
   _count?: boolean | Prisma.SponsorCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sponsor"]>
@@ -586,67 +972,99 @@ export type SponsorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type SponsorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
   slug?: boolean
+  descriptionVi?: boolean
+  descriptionEn?: boolean
   logo?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
-  description?: boolean
+  activityId?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  images?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
 }, ExtArgs["result"]["sponsor"]>
 
 export type SponsorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
   slug?: boolean
+  descriptionVi?: boolean
+  descriptionEn?: boolean
   logo?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
-  description?: boolean
+  activityId?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  images?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
 }, ExtArgs["result"]["sponsor"]>
 
 export type SponsorSelectScalar = {
   id?: boolean
   name?: boolean
+  nameEn?: boolean
   slug?: boolean
+  descriptionVi?: boolean
+  descriptionEn?: boolean
   logo?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
-  description?: boolean
+  activityId?: boolean
+  startAt?: boolean
+  endAt?: boolean
+  images?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SponsorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "email" | "phone" | "website" | "description" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["sponsor"]>
+export type SponsorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "nameEn" | "slug" | "descriptionVi" | "descriptionEn" | "logo" | "email" | "phone" | "website" | "activityId" | "startAt" | "endAt" | "images" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["sponsor"]>
 export type SponsorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
   sponsorships?: boolean | Prisma.Sponsor$sponsorshipsArgs<ExtArgs>
   _count?: boolean | Prisma.SponsorCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type SponsorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type SponsorIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type SponsorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
+}
+export type SponsorIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  activity?: boolean | Prisma.Sponsor$activityArgs<ExtArgs>
+}
 
 export type $SponsorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Sponsor"
   objects: {
-    sponsorships: Prisma.$EventSponsorshipPayload<ExtArgs>[]
+    activity: Prisma.$ActivityPayload<ExtArgs> | null
+    sponsorships: Prisma.$PostSponsorshipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    nameEn: string
     slug: string
+    descriptionVi: string | null
+    descriptionEn: string | null
     logo: string | null
     email: string | null
     phone: string | null
     website: string | null
-    description: string | null
+    activityId: string | null
+    startAt: Date | null
+    endAt: Date | null
+    images: string[]
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1044,7 +1462,8 @@ readonly fields: SponsorFieldRefs;
  */
 export interface Prisma__SponsorClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  sponsorships<T extends Prisma.Sponsor$sponsorshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sponsor$sponsorshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventSponsorshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activity<T extends Prisma.Sponsor$activityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sponsor$activityArgs<ExtArgs>>): Prisma.Prisma__ActivityClient<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  sponsorships<T extends Prisma.Sponsor$sponsorshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sponsor$sponsorshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostSponsorshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1076,12 +1495,18 @@ export interface Prisma__SponsorClient<T, Null = never, ExtArgs extends runtime.
 export interface SponsorFieldRefs {
   readonly id: Prisma.FieldRef<"Sponsor", 'String'>
   readonly name: Prisma.FieldRef<"Sponsor", 'String'>
+  readonly nameEn: Prisma.FieldRef<"Sponsor", 'String'>
   readonly slug: Prisma.FieldRef<"Sponsor", 'String'>
+  readonly descriptionVi: Prisma.FieldRef<"Sponsor", 'String'>
+  readonly descriptionEn: Prisma.FieldRef<"Sponsor", 'String'>
   readonly logo: Prisma.FieldRef<"Sponsor", 'String'>
   readonly email: Prisma.FieldRef<"Sponsor", 'String'>
   readonly phone: Prisma.FieldRef<"Sponsor", 'String'>
   readonly website: Prisma.FieldRef<"Sponsor", 'String'>
-  readonly description: Prisma.FieldRef<"Sponsor", 'String'>
+  readonly activityId: Prisma.FieldRef<"Sponsor", 'String'>
+  readonly startAt: Prisma.FieldRef<"Sponsor", 'DateTime'>
+  readonly endAt: Prisma.FieldRef<"Sponsor", 'DateTime'>
+  readonly images: Prisma.FieldRef<"Sponsor", 'String[]'>
   readonly isActive: Prisma.FieldRef<"Sponsor", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Sponsor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Sponsor", 'DateTime'>
@@ -1334,6 +1759,10 @@ export type SponsorCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.SponsorCreateManyInput | Prisma.SponsorCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SponsorIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1404,6 +1833,10 @@ export type SponsorUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Sponsors to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SponsorIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1473,27 +1906,46 @@ export type SponsorDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Sponsor.activity
+ */
+export type Sponsor$activityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Activity
+   */
+  select?: Prisma.ActivitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Activity
+   */
+  omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  where?: Prisma.ActivityWhereInput
+}
+
+/**
  * Sponsor.sponsorships
  */
 export type Sponsor$sponsorshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the EventSponsorship
+   * Select specific fields to fetch from the PostSponsorship
    */
-  select?: Prisma.EventSponsorshipSelect<ExtArgs> | null
+  select?: Prisma.PostSponsorshipSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the EventSponsorship
+   * Omit specific fields from the PostSponsorship
    */
-  omit?: Prisma.EventSponsorshipOmit<ExtArgs> | null
+  omit?: Prisma.PostSponsorshipOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventSponsorshipInclude<ExtArgs> | null
-  where?: Prisma.EventSponsorshipWhereInput
-  orderBy?: Prisma.EventSponsorshipOrderByWithRelationInput | Prisma.EventSponsorshipOrderByWithRelationInput[]
-  cursor?: Prisma.EventSponsorshipWhereUniqueInput
+  include?: Prisma.PostSponsorshipInclude<ExtArgs> | null
+  where?: Prisma.PostSponsorshipWhereInput
+  orderBy?: Prisma.PostSponsorshipOrderByWithRelationInput | Prisma.PostSponsorshipOrderByWithRelationInput[]
+  cursor?: Prisma.PostSponsorshipWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.EventSponsorshipScalarFieldEnum | Prisma.EventSponsorshipScalarFieldEnum[]
+  distinct?: Prisma.PostSponsorshipScalarFieldEnum | Prisma.PostSponsorshipScalarFieldEnum[]
 }
 
 /**

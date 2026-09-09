@@ -14,8 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Activity
- * Hoạt động CLB (Thay thế cho events.json data)
- * Gồm các loại hoạt động/chương trình của CLB
+ * Hoạt động CLB - các chương trình/hoạt động định kỳ
  */
 export type ActivityModel = runtime.Types.Result.DefaultSelection<Prisma.$ActivityPayload>
 
@@ -39,9 +38,11 @@ export type ActivityMinAggregateOutputType = {
   id: string | null
   slug: string | null
   titleVi: string | null
-  descriptionVi: string | null
   titleEn: string | null
+  descriptionVi: string | null
   descriptionEn: string | null
+  frequencyVi: string | null
+  frequencyEn: string | null
   hyperlink: string | null
   thumbnail: string | null
   isInternal: boolean | null
@@ -55,9 +56,11 @@ export type ActivityMaxAggregateOutputType = {
   id: string | null
   slug: string | null
   titleVi: string | null
-  descriptionVi: string | null
   titleEn: string | null
+  descriptionVi: string | null
   descriptionEn: string | null
+  frequencyVi: string | null
+  frequencyEn: string | null
   hyperlink: string | null
   thumbnail: string | null
   isInternal: boolean | null
@@ -71,9 +74,11 @@ export type ActivityCountAggregateOutputType = {
   id: number
   slug: number
   titleVi: number
-  descriptionVi: number
   titleEn: number
+  descriptionVi: number
   descriptionEn: number
+  frequencyVi: number
+  frequencyEn: number
   hyperlink: number
   thumbnail: number
   images: number
@@ -98,9 +103,11 @@ export type ActivityMinAggregateInputType = {
   id?: true
   slug?: true
   titleVi?: true
-  descriptionVi?: true
   titleEn?: true
+  descriptionVi?: true
   descriptionEn?: true
+  frequencyVi?: true
+  frequencyEn?: true
   hyperlink?: true
   thumbnail?: true
   isInternal?: true
@@ -114,9 +121,11 @@ export type ActivityMaxAggregateInputType = {
   id?: true
   slug?: true
   titleVi?: true
-  descriptionVi?: true
   titleEn?: true
+  descriptionVi?: true
   descriptionEn?: true
+  frequencyVi?: true
+  frequencyEn?: true
   hyperlink?: true
   thumbnail?: true
   isInternal?: true
@@ -130,9 +139,11 @@ export type ActivityCountAggregateInputType = {
   id?: true
   slug?: true
   titleVi?: true
-  descriptionVi?: true
   titleEn?: true
+  descriptionVi?: true
   descriptionEn?: true
+  frequencyVi?: true
+  frequencyEn?: true
   hyperlink?: true
   thumbnail?: true
   images?: true
@@ -234,9 +245,11 @@ export type ActivityGroupByOutputType = {
   id: string
   slug: string
   titleVi: string
-  descriptionVi: string | null
-  titleEn: string | null
-  descriptionEn: string | null
+  titleEn: string
+  descriptionVi: string
+  descriptionEn: string
+  frequencyVi: string | null
+  frequencyEn: string | null
   hyperlink: string | null
   thumbnail: string | null
   images: string[]
@@ -274,9 +287,11 @@ export type ActivityWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   slug?: Prisma.StringFilter<"Activity"> | string
   titleVi?: Prisma.StringFilter<"Activity"> | string
-  descriptionVi?: Prisma.StringNullableFilter<"Activity"> | string | null
-  titleEn?: Prisma.StringNullableFilter<"Activity"> | string | null
-  descriptionEn?: Prisma.StringNullableFilter<"Activity"> | string | null
+  titleEn?: Prisma.StringFilter<"Activity"> | string
+  descriptionVi?: Prisma.StringFilter<"Activity"> | string
+  descriptionEn?: Prisma.StringFilter<"Activity"> | string
+  frequencyVi?: Prisma.StringNullableFilter<"Activity"> | string | null
+  frequencyEn?: Prisma.StringNullableFilter<"Activity"> | string | null
   hyperlink?: Prisma.StringNullableFilter<"Activity"> | string | null
   thumbnail?: Prisma.StringNullableFilter<"Activity"> | string | null
   images?: Prisma.StringNullableListFilter<"Activity">
@@ -285,15 +300,20 @@ export type ActivityWhereInput = {
   order?: Prisma.IntFilter<"Activity"> | number
   createdAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
+  eventPosts?: Prisma.PostActivityListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  sponsors?: Prisma.SponsorListRelationFilter
 }
 
 export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   titleVi?: Prisma.SortOrder
-  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
-  titleEn?: Prisma.SortOrderInput | Prisma.SortOrder
-  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
+  frequencyVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  frequencyEn?: Prisma.SortOrderInput | Prisma.SortOrder
   hyperlink?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
@@ -302,6 +322,9 @@ export type ActivityOrderByWithRelationInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  eventPosts?: Prisma.PostActivityOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
+  sponsors?: Prisma.SponsorOrderByRelationAggregateInput
 }
 
 export type ActivityWhereUniqueInput = Prisma.AtLeast<{
@@ -311,9 +334,11 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ActivityWhereInput[]
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   titleVi?: Prisma.StringFilter<"Activity"> | string
-  descriptionVi?: Prisma.StringNullableFilter<"Activity"> | string | null
-  titleEn?: Prisma.StringNullableFilter<"Activity"> | string | null
-  descriptionEn?: Prisma.StringNullableFilter<"Activity"> | string | null
+  titleEn?: Prisma.StringFilter<"Activity"> | string
+  descriptionVi?: Prisma.StringFilter<"Activity"> | string
+  descriptionEn?: Prisma.StringFilter<"Activity"> | string
+  frequencyVi?: Prisma.StringNullableFilter<"Activity"> | string | null
+  frequencyEn?: Prisma.StringNullableFilter<"Activity"> | string | null
   hyperlink?: Prisma.StringNullableFilter<"Activity"> | string | null
   thumbnail?: Prisma.StringNullableFilter<"Activity"> | string | null
   images?: Prisma.StringNullableListFilter<"Activity">
@@ -322,15 +347,20 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   order?: Prisma.IntFilter<"Activity"> | number
   createdAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
+  eventPosts?: Prisma.PostActivityListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  sponsors?: Prisma.SponsorListRelationFilter
 }, "id" | "slug">
 
 export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   titleVi?: Prisma.SortOrder
-  descriptionVi?: Prisma.SortOrderInput | Prisma.SortOrder
-  titleEn?: Prisma.SortOrderInput | Prisma.SortOrder
-  descriptionEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  titleEn?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
+  descriptionEn?: Prisma.SortOrder
+  frequencyVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  frequencyEn?: Prisma.SortOrderInput | Prisma.SortOrder
   hyperlink?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
@@ -353,9 +383,11 @@ export type ActivityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   titleVi?: Prisma.StringWithAggregatesFilter<"Activity"> | string
-  descriptionVi?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
-  titleEn?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
-  descriptionEn?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
+  titleEn?: Prisma.StringWithAggregatesFilter<"Activity"> | string
+  descriptionVi?: Prisma.StringWithAggregatesFilter<"Activity"> | string
+  descriptionEn?: Prisma.StringWithAggregatesFilter<"Activity"> | string
+  frequencyVi?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
+  frequencyEn?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   hyperlink?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   images?: Prisma.StringNullableListFilter<"Activity">
@@ -370,9 +402,11 @@ export type ActivityCreateInput = {
   id?: string
   slug: string
   titleVi: string
-  descriptionVi?: string | null
-  titleEn?: string | null
-  descriptionEn?: string | null
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
   hyperlink?: string | null
   thumbnail?: string | null
   images?: Prisma.ActivityCreateimagesInput | string[]
@@ -381,15 +415,20 @@ export type ActivityCreateInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityCreateNestedManyWithoutActivityInput
+  posts?: Prisma.PostCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUncheckedCreateInput = {
   id?: string
   slug: string
   titleVi: string
-  descriptionVi?: string | null
-  titleEn?: string | null
-  descriptionEn?: string | null
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
   hyperlink?: string | null
   thumbnail?: string | null
   images?: Prisma.ActivityCreateimagesInput | string[]
@@ -398,15 +437,20 @@ export type ActivityUncheckedCreateInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityUncheckedCreateNestedManyWithoutActivityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorUncheckedCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   titleVi?: Prisma.StringFieldUpdateOperationsInput | string
-  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ActivityUpdateimagesInput | string[]
@@ -415,15 +459,20 @@ export type ActivityUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUpdateManyWithoutActivityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   titleVi?: Prisma.StringFieldUpdateOperationsInput | string
-  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ActivityUpdateimagesInput | string[]
@@ -432,15 +481,20 @@ export type ActivityUncheckedUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUncheckedUpdateManyWithoutActivityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUncheckedUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityCreateManyInput = {
   id?: string
   slug: string
   titleVi: string
-  descriptionVi?: string | null
-  titleEn?: string | null
-  descriptionEn?: string | null
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
   hyperlink?: string | null
   thumbnail?: string | null
   images?: Prisma.ActivityCreateimagesInput | string[]
@@ -455,9 +509,11 @@ export type ActivityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   titleVi?: Prisma.StringFieldUpdateOperationsInput | string
-  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ActivityUpdateimagesInput | string[]
@@ -472,9 +528,11 @@ export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   titleVi?: Prisma.StringFieldUpdateOperationsInput | string
-  descriptionVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ActivityUpdateimagesInput | string[]
@@ -485,13 +543,25 @@ export type ActivityUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type ActivityNullableScalarRelationFilter = {
+  is?: Prisma.ActivityWhereInput | null
+  isNot?: Prisma.ActivityWhereInput | null
+}
+
+export type ActivityScalarRelationFilter = {
+  is?: Prisma.ActivityWhereInput
+  isNot?: Prisma.ActivityWhereInput
+}
+
 export type ActivityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   titleVi?: Prisma.SortOrder
-  descriptionVi?: Prisma.SortOrder
   titleEn?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
   descriptionEn?: Prisma.SortOrder
+  frequencyVi?: Prisma.SortOrder
+  frequencyEn?: Prisma.SortOrder
   hyperlink?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   images?: Prisma.SortOrder
@@ -510,9 +580,11 @@ export type ActivityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   titleVi?: Prisma.SortOrder
-  descriptionVi?: Prisma.SortOrder
   titleEn?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
   descriptionEn?: Prisma.SortOrder
+  frequencyVi?: Prisma.SortOrder
+  frequencyEn?: Prisma.SortOrder
   hyperlink?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
@@ -526,9 +598,11 @@ export type ActivityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   titleVi?: Prisma.SortOrder
-  descriptionVi?: Prisma.SortOrder
   titleEn?: Prisma.SortOrder
+  descriptionVi?: Prisma.SortOrder
   descriptionEn?: Prisma.SortOrder
+  frequencyVi?: Prisma.SortOrder
+  frequencyEn?: Prisma.SortOrder
   hyperlink?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
@@ -542,6 +616,36 @@ export type ActivitySumOrderByAggregateInput = {
   order?: Prisma.SortOrder
 }
 
+export type ActivityCreateNestedOneWithoutPostsInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutPostsInput, Prisma.ActivityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutPostsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+}
+
+export type ActivityUpdateOneWithoutPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutPostsInput, Prisma.ActivityUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutPostsInput
+  upsert?: Prisma.ActivityUpsertWithoutPostsInput
+  disconnect?: Prisma.ActivityWhereInput | boolean
+  delete?: Prisma.ActivityWhereInput | boolean
+  connect?: Prisma.ActivityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutPostsInput, Prisma.ActivityUpdateWithoutPostsInput>, Prisma.ActivityUncheckedUpdateWithoutPostsInput>
+}
+
+export type ActivityCreateNestedOneWithoutEventPostsInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutEventPostsInput, Prisma.ActivityUncheckedCreateWithoutEventPostsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutEventPostsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+}
+
+export type ActivityUpdateOneRequiredWithoutEventPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutEventPostsInput, Prisma.ActivityUncheckedCreateWithoutEventPostsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutEventPostsInput
+  upsert?: Prisma.ActivityUpsertWithoutEventPostsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutEventPostsInput, Prisma.ActivityUpdateWithoutEventPostsInput>, Prisma.ActivityUncheckedUpdateWithoutEventPostsInput>
+}
+
 export type ActivityCreateimagesInput = {
   set: string[]
 }
@@ -551,15 +655,380 @@ export type ActivityUpdateimagesInput = {
   push?: string | string[]
 }
 
+export type ActivityCreateNestedOneWithoutSponsorsInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutSponsorsInput, Prisma.ActivityUncheckedCreateWithoutSponsorsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutSponsorsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+}
+
+export type ActivityUpdateOneWithoutSponsorsNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutSponsorsInput, Prisma.ActivityUncheckedCreateWithoutSponsorsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutSponsorsInput
+  upsert?: Prisma.ActivityUpsertWithoutSponsorsInput
+  disconnect?: Prisma.ActivityWhereInput | boolean
+  delete?: Prisma.ActivityWhereInput | boolean
+  connect?: Prisma.ActivityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutSponsorsInput, Prisma.ActivityUpdateWithoutSponsorsInput>, Prisma.ActivityUncheckedUpdateWithoutSponsorsInput>
+}
+
+export type ActivityCreateWithoutPostsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityUncheckedCreateWithoutPostsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityUncheckedCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorUncheckedCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityCreateOrConnectWithoutPostsInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutPostsInput, Prisma.ActivityUncheckedCreateWithoutPostsInput>
+}
+
+export type ActivityUpsertWithoutPostsInput = {
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutPostsInput, Prisma.ActivityUncheckedUpdateWithoutPostsInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutPostsInput, Prisma.ActivityUncheckedCreateWithoutPostsInput>
+  where?: Prisma.ActivityWhereInput
+}
+
+export type ActivityUpdateToOneWithWhereWithoutPostsInput = {
+  where?: Prisma.ActivityWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutPostsInput, Prisma.ActivityUncheckedUpdateWithoutPostsInput>
+}
+
+export type ActivityUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityUncheckedUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUncheckedUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUncheckedUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityCreateWithoutEventPostsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  posts?: Prisma.PostCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityUncheckedCreateWithoutEventPostsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutActivityInput
+  sponsors?: Prisma.SponsorUncheckedCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityCreateOrConnectWithoutEventPostsInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutEventPostsInput, Prisma.ActivityUncheckedCreateWithoutEventPostsInput>
+}
+
+export type ActivityUpsertWithoutEventPostsInput = {
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutEventPostsInput, Prisma.ActivityUncheckedUpdateWithoutEventPostsInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutEventPostsInput, Prisma.ActivityUncheckedCreateWithoutEventPostsInput>
+  where?: Prisma.ActivityWhereInput
+}
+
+export type ActivityUpdateToOneWithWhereWithoutEventPostsInput = {
+  where?: Prisma.ActivityWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutEventPostsInput, Prisma.ActivityUncheckedUpdateWithoutEventPostsInput>
+}
+
+export type ActivityUpdateWithoutEventPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  posts?: Prisma.PostUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityUncheckedUpdateWithoutEventPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  posts?: Prisma.PostUncheckedUpdateManyWithoutActivityNestedInput
+  sponsors?: Prisma.SponsorUncheckedUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityCreateWithoutSponsorsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityCreateNestedManyWithoutActivityInput
+  posts?: Prisma.PostCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityUncheckedCreateWithoutSponsorsInput = {
+  id?: string
+  slug: string
+  titleVi: string
+  titleEn?: string
+  descriptionVi?: string
+  descriptionEn?: string
+  frequencyVi?: string | null
+  frequencyEn?: string | null
+  hyperlink?: string | null
+  thumbnail?: string | null
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  isInternal?: boolean
+  isActive?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventPosts?: Prisma.PostActivityUncheckedCreateNestedManyWithoutActivityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityCreateOrConnectWithoutSponsorsInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutSponsorsInput, Prisma.ActivityUncheckedCreateWithoutSponsorsInput>
+}
+
+export type ActivityUpsertWithoutSponsorsInput = {
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutSponsorsInput, Prisma.ActivityUncheckedUpdateWithoutSponsorsInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutSponsorsInput, Prisma.ActivityUncheckedCreateWithoutSponsorsInput>
+  where?: Prisma.ActivityWhereInput
+}
+
+export type ActivityUpdateToOneWithWhereWithoutSponsorsInput = {
+  where?: Prisma.ActivityWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutSponsorsInput, Prisma.ActivityUncheckedUpdateWithoutSponsorsInput>
+}
+
+export type ActivityUpdateWithoutSponsorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUpdateManyWithoutActivityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityUncheckedUpdateWithoutSponsorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleVi?: Prisma.StringFieldUpdateOperationsInput | string
+  titleEn?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionVi?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptionEn?: Prisma.StringFieldUpdateOperationsInput | string
+  frequencyVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frequencyEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hyperlink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventPosts?: Prisma.PostActivityUncheckedUpdateManyWithoutActivityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutActivityNestedInput
+}
+
+
+/**
+ * Count Type ActivityCountOutputType
+ */
+
+export type ActivityCountOutputType = {
+  eventPosts: number
+  posts: number
+  sponsors: number
+}
+
+export type ActivityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  eventPosts?: boolean | ActivityCountOutputTypeCountEventPostsArgs
+  posts?: boolean | ActivityCountOutputTypeCountPostsArgs
+  sponsors?: boolean | ActivityCountOutputTypeCountSponsorsArgs
+}
+
+/**
+ * ActivityCountOutputType without action
+ */
+export type ActivityCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityCountOutputType
+   */
+  select?: Prisma.ActivityCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ActivityCountOutputType without action
+ */
+export type ActivityCountOutputTypeCountEventPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostActivityWhereInput
+}
+
+/**
+ * ActivityCountOutputType without action
+ */
+export type ActivityCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
+}
+
+/**
+ * ActivityCountOutputType without action
+ */
+export type ActivityCountOutputTypeCountSponsorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SponsorWhereInput
+}
 
 
 export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   slug?: boolean
   titleVi?: boolean
-  descriptionVi?: boolean
   titleEn?: boolean
+  descriptionVi?: boolean
   descriptionEn?: boolean
+  frequencyVi?: boolean
+  frequencyEn?: boolean
   hyperlink?: boolean
   thumbnail?: boolean
   images?: boolean
@@ -568,15 +1037,21 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  eventPosts?: boolean | Prisma.Activity$eventPostsArgs<ExtArgs>
+  posts?: boolean | Prisma.Activity$postsArgs<ExtArgs>
+  sponsors?: boolean | Prisma.Activity$sponsorsArgs<ExtArgs>
+  _count?: boolean | Prisma.ActivityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   slug?: boolean
   titleVi?: boolean
-  descriptionVi?: boolean
   titleEn?: boolean
+  descriptionVi?: boolean
   descriptionEn?: boolean
+  frequencyVi?: boolean
+  frequencyEn?: boolean
   hyperlink?: boolean
   thumbnail?: boolean
   images?: boolean
@@ -591,9 +1066,11 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   slug?: boolean
   titleVi?: boolean
-  descriptionVi?: boolean
   titleEn?: boolean
+  descriptionVi?: boolean
   descriptionEn?: boolean
+  frequencyVi?: boolean
+  frequencyEn?: boolean
   hyperlink?: boolean
   thumbnail?: boolean
   images?: boolean
@@ -608,9 +1085,11 @@ export type ActivitySelectScalar = {
   id?: boolean
   slug?: boolean
   titleVi?: boolean
-  descriptionVi?: boolean
   titleEn?: boolean
+  descriptionVi?: boolean
   descriptionEn?: boolean
+  frequencyVi?: boolean
+  frequencyEn?: boolean
   hyperlink?: boolean
   thumbnail?: boolean
   images?: boolean
@@ -621,18 +1100,32 @@ export type ActivitySelectScalar = {
   updatedAt?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "titleVi" | "descriptionVi" | "titleEn" | "descriptionEn" | "hyperlink" | "thumbnail" | "images" | "isInternal" | "isActive" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "titleVi" | "titleEn" | "descriptionVi" | "descriptionEn" | "frequencyVi" | "frequencyEn" | "hyperlink" | "thumbnail" | "images" | "isInternal" | "isActive" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["activity"]>
+export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  eventPosts?: boolean | Prisma.Activity$eventPostsArgs<ExtArgs>
+  posts?: boolean | Prisma.Activity$postsArgs<ExtArgs>
+  sponsors?: boolean | Prisma.Activity$sponsorsArgs<ExtArgs>
+  _count?: boolean | Prisma.ActivityCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type ActivityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Activity"
-  objects: {}
+  objects: {
+    eventPosts: Prisma.$PostActivityPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
+    sponsors: Prisma.$SponsorPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     slug: string
     titleVi: string
-    descriptionVi: string | null
-    titleEn: string | null
-    descriptionEn: string | null
+    titleEn: string
+    descriptionVi: string
+    descriptionEn: string
+    frequencyVi: string | null
+    frequencyEn: string | null
     hyperlink: string | null
     thumbnail: string | null
     images: string[]
@@ -1035,6 +1528,9 @@ readonly fields: ActivityFieldRefs;
  */
 export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  eventPosts<T extends Prisma.Activity$eventPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$eventPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Activity$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sponsors<T extends Prisma.Activity$sponsorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$sponsorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SponsorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1067,9 +1563,11 @@ export interface ActivityFieldRefs {
   readonly id: Prisma.FieldRef<"Activity", 'String'>
   readonly slug: Prisma.FieldRef<"Activity", 'String'>
   readonly titleVi: Prisma.FieldRef<"Activity", 'String'>
-  readonly descriptionVi: Prisma.FieldRef<"Activity", 'String'>
   readonly titleEn: Prisma.FieldRef<"Activity", 'String'>
+  readonly descriptionVi: Prisma.FieldRef<"Activity", 'String'>
   readonly descriptionEn: Prisma.FieldRef<"Activity", 'String'>
+  readonly frequencyVi: Prisma.FieldRef<"Activity", 'String'>
+  readonly frequencyEn: Prisma.FieldRef<"Activity", 'String'>
   readonly hyperlink: Prisma.FieldRef<"Activity", 'String'>
   readonly thumbnail: Prisma.FieldRef<"Activity", 'String'>
   readonly images: Prisma.FieldRef<"Activity", 'String[]'>
@@ -1095,6 +1593,10 @@ export type ActivityFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activity to fetch.
    */
   where: Prisma.ActivityWhereUniqueInput
@@ -1113,6 +1615,10 @@ export type ActivityFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activity to fetch.
    */
   where: Prisma.ActivityWhereUniqueInput
@@ -1130,6 +1636,10 @@ export type ActivityFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * Filter, which Activity to fetch.
    */
@@ -1179,6 +1689,10 @@ export type ActivityFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activity to fetch.
    */
   where?: Prisma.ActivityWhereInput
@@ -1227,6 +1741,10 @@ export type ActivityFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activities to fetch.
    */
   where?: Prisma.ActivityWhereInput
@@ -1269,6 +1787,10 @@ export type ActivityCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * The data needed to create a Activity.
    */
@@ -1317,6 +1839,10 @@ export type ActivityUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * The data needed to update a Activity.
    */
@@ -1384,6 +1910,10 @@ export type ActivityUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * The filter to search for the Activity to update in case it exists.
    */
   where: Prisma.ActivityWhereUniqueInput
@@ -1410,6 +1940,10 @@ export type ActivityDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter which Activity to delete.
    */
   where: Prisma.ActivityWhereUniqueInput
@@ -1430,6 +1964,78 @@ export type ActivityDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * Activity.eventPosts
+ */
+export type Activity$eventPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostActivity
+   */
+  select?: Prisma.PostActivitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostActivity
+   */
+  omit?: Prisma.PostActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostActivityInclude<ExtArgs> | null
+  where?: Prisma.PostActivityWhereInput
+  orderBy?: Prisma.PostActivityOrderByWithRelationInput | Prisma.PostActivityOrderByWithRelationInput[]
+  cursor?: Prisma.PostActivityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostActivityScalarFieldEnum | Prisma.PostActivityScalarFieldEnum[]
+}
+
+/**
+ * Activity.posts
+ */
+export type Activity$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Post
+   */
+  select?: Prisma.PostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Post
+   */
+  omit?: Prisma.PostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * Activity.sponsors
+ */
+export type Activity$sponsorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Sponsor
+   */
+  select?: Prisma.SponsorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Sponsor
+   */
+  omit?: Prisma.SponsorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SponsorInclude<ExtArgs> | null
+  where?: Prisma.SponsorWhereInput
+  orderBy?: Prisma.SponsorOrderByWithRelationInput | Prisma.SponsorOrderByWithRelationInput[]
+  cursor?: Prisma.SponsorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SponsorScalarFieldEnum | Prisma.SponsorScalarFieldEnum[]
+}
+
+/**
  * Activity without action
  */
 export type ActivityDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1441,4 +2047,8 @@ export type ActivityDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
 }

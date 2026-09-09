@@ -15,7 +15,6 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model Announcement
  * Thông báo hiển thị trên AnnouncementBar
- * Hỗ trợ thời hạn (startAt/endAt), nút CTA tuỳ chỉnh, màu nền tuỳ chỉnh
  */
 export type AnnouncementModel = runtime.Types.Result.DefaultSelection<Prisma.$AnnouncementPayload>
 
@@ -27,9 +26,11 @@ export type AggregateAnnouncement = {
 
 export type AnnouncementMinAggregateOutputType = {
   id: string | null
-  content: string | null
+  contentVi: string | null
+  contentEn: string | null
   linkUrl: string | null
-  linkLabel: string | null
+  linkLabelVi: string | null
+  linkLabelEn: string | null
   bgColor: string | null
   isActive: boolean | null
   startAt: Date | null
@@ -40,9 +41,11 @@ export type AnnouncementMinAggregateOutputType = {
 
 export type AnnouncementMaxAggregateOutputType = {
   id: string | null
-  content: string | null
+  contentVi: string | null
+  contentEn: string | null
   linkUrl: string | null
-  linkLabel: string | null
+  linkLabelVi: string | null
+  linkLabelEn: string | null
   bgColor: string | null
   isActive: boolean | null
   startAt: Date | null
@@ -53,9 +56,11 @@ export type AnnouncementMaxAggregateOutputType = {
 
 export type AnnouncementCountAggregateOutputType = {
   id: number
-  content: number
+  contentVi: number
+  contentEn: number
   linkUrl: number
-  linkLabel: number
+  linkLabelVi: number
+  linkLabelEn: number
   bgColor: number
   isActive: number
   startAt: number
@@ -68,9 +73,11 @@ export type AnnouncementCountAggregateOutputType = {
 
 export type AnnouncementMinAggregateInputType = {
   id?: true
-  content?: true
+  contentVi?: true
+  contentEn?: true
   linkUrl?: true
-  linkLabel?: true
+  linkLabelVi?: true
+  linkLabelEn?: true
   bgColor?: true
   isActive?: true
   startAt?: true
@@ -81,9 +88,11 @@ export type AnnouncementMinAggregateInputType = {
 
 export type AnnouncementMaxAggregateInputType = {
   id?: true
-  content?: true
+  contentVi?: true
+  contentEn?: true
   linkUrl?: true
-  linkLabel?: true
+  linkLabelVi?: true
+  linkLabelEn?: true
   bgColor?: true
   isActive?: true
   startAt?: true
@@ -94,9 +103,11 @@ export type AnnouncementMaxAggregateInputType = {
 
 export type AnnouncementCountAggregateInputType = {
   id?: true
-  content?: true
+  contentVi?: true
+  contentEn?: true
   linkUrl?: true
-  linkLabel?: true
+  linkLabelVi?: true
+  linkLabelEn?: true
   bgColor?: true
   isActive?: true
   startAt?: true
@@ -180,9 +191,11 @@ export type AnnouncementGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type AnnouncementGroupByOutputType = {
   id: string
-  content: string
+  contentVi: string
+  contentEn: string
   linkUrl: string | null
-  linkLabel: string | null
+  linkLabelVi: string | null
+  linkLabelEn: string | null
   bgColor: string | null
   isActive: boolean
   startAt: Date
@@ -214,9 +227,11 @@ export type AnnouncementWhereInput = {
   OR?: Prisma.AnnouncementWhereInput[]
   NOT?: Prisma.AnnouncementWhereInput | Prisma.AnnouncementWhereInput[]
   id?: Prisma.StringFilter<"Announcement"> | string
-  content?: Prisma.StringFilter<"Announcement"> | string
+  contentVi?: Prisma.StringFilter<"Announcement"> | string
+  contentEn?: Prisma.StringFilter<"Announcement"> | string
   linkUrl?: Prisma.StringNullableFilter<"Announcement"> | string | null
-  linkLabel?: Prisma.StringNullableFilter<"Announcement"> | string | null
+  linkLabelVi?: Prisma.StringNullableFilter<"Announcement"> | string | null
+  linkLabelEn?: Prisma.StringNullableFilter<"Announcement"> | string | null
   bgColor?: Prisma.StringNullableFilter<"Announcement"> | string | null
   isActive?: Prisma.BoolFilter<"Announcement"> | boolean
   startAt?: Prisma.DateTimeFilter<"Announcement"> | Date | string
@@ -227,9 +242,11 @@ export type AnnouncementWhereInput = {
 
 export type AnnouncementOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  linkLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
   bgColor?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
@@ -243,9 +260,11 @@ export type AnnouncementWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AnnouncementWhereInput | Prisma.AnnouncementWhereInput[]
   OR?: Prisma.AnnouncementWhereInput[]
   NOT?: Prisma.AnnouncementWhereInput | Prisma.AnnouncementWhereInput[]
-  content?: Prisma.StringFilter<"Announcement"> | string
+  contentVi?: Prisma.StringFilter<"Announcement"> | string
+  contentEn?: Prisma.StringFilter<"Announcement"> | string
   linkUrl?: Prisma.StringNullableFilter<"Announcement"> | string | null
-  linkLabel?: Prisma.StringNullableFilter<"Announcement"> | string | null
+  linkLabelVi?: Prisma.StringNullableFilter<"Announcement"> | string | null
+  linkLabelEn?: Prisma.StringNullableFilter<"Announcement"> | string | null
   bgColor?: Prisma.StringNullableFilter<"Announcement"> | string | null
   isActive?: Prisma.BoolFilter<"Announcement"> | boolean
   startAt?: Prisma.DateTimeFilter<"Announcement"> | Date | string
@@ -256,9 +275,11 @@ export type AnnouncementWhereUniqueInput = Prisma.AtLeast<{
 
 export type AnnouncementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  linkLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
   bgColor?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
@@ -275,9 +296,11 @@ export type AnnouncementScalarWhereWithAggregatesInput = {
   OR?: Prisma.AnnouncementScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AnnouncementScalarWhereWithAggregatesInput | Prisma.AnnouncementScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Announcement"> | string
-  content?: Prisma.StringWithAggregatesFilter<"Announcement"> | string
+  contentVi?: Prisma.StringWithAggregatesFilter<"Announcement"> | string
+  contentEn?: Prisma.StringWithAggregatesFilter<"Announcement"> | string
   linkUrl?: Prisma.StringNullableWithAggregatesFilter<"Announcement"> | string | null
-  linkLabel?: Prisma.StringNullableWithAggregatesFilter<"Announcement"> | string | null
+  linkLabelVi?: Prisma.StringNullableWithAggregatesFilter<"Announcement"> | string | null
+  linkLabelEn?: Prisma.StringNullableWithAggregatesFilter<"Announcement"> | string | null
   bgColor?: Prisma.StringNullableWithAggregatesFilter<"Announcement"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Announcement"> | boolean
   startAt?: Prisma.DateTimeWithAggregatesFilter<"Announcement"> | Date | string
@@ -288,9 +311,11 @@ export type AnnouncementScalarWhereWithAggregatesInput = {
 
 export type AnnouncementCreateInput = {
   id?: string
-  content: string
+  contentVi: string
+  contentEn: string
   linkUrl?: string | null
-  linkLabel?: string | null
+  linkLabelVi?: string | null
+  linkLabelEn?: string | null
   bgColor?: string | null
   isActive?: boolean
   startAt?: Date | string
@@ -301,9 +326,11 @@ export type AnnouncementCreateInput = {
 
 export type AnnouncementUncheckedCreateInput = {
   id?: string
-  content: string
+  contentVi: string
+  contentEn: string
   linkUrl?: string | null
-  linkLabel?: string | null
+  linkLabelVi?: string | null
+  linkLabelEn?: string | null
   bgColor?: string | null
   isActive?: boolean
   startAt?: Date | string
@@ -314,9 +341,11 @@ export type AnnouncementUncheckedCreateInput = {
 
 export type AnnouncementUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linkLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -327,9 +356,11 @@ export type AnnouncementUpdateInput = {
 
 export type AnnouncementUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linkLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,9 +371,11 @@ export type AnnouncementUncheckedUpdateInput = {
 
 export type AnnouncementCreateManyInput = {
   id?: string
-  content: string
+  contentVi: string
+  contentEn: string
   linkUrl?: string | null
-  linkLabel?: string | null
+  linkLabelVi?: string | null
+  linkLabelEn?: string | null
   bgColor?: string | null
   isActive?: boolean
   startAt?: Date | string
@@ -353,9 +386,11 @@ export type AnnouncementCreateManyInput = {
 
 export type AnnouncementUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linkLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -366,9 +401,11 @@ export type AnnouncementUpdateManyMutationInput = {
 
 export type AnnouncementUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
+  contentVi?: Prisma.StringFieldUpdateOperationsInput | string
+  contentEn?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linkLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelVi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -379,9 +416,11 @@ export type AnnouncementUncheckedUpdateManyInput = {
 
 export type AnnouncementCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
-  linkLabel?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
   bgColor?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
@@ -392,9 +431,11 @@ export type AnnouncementCountOrderByAggregateInput = {
 
 export type AnnouncementMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
-  linkLabel?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
   bgColor?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
@@ -405,9 +446,11 @@ export type AnnouncementMaxOrderByAggregateInput = {
 
 export type AnnouncementMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  contentVi?: Prisma.SortOrder
+  contentEn?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
-  linkLabel?: Prisma.SortOrder
+  linkLabelVi?: Prisma.SortOrder
+  linkLabelEn?: Prisma.SortOrder
   bgColor?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
@@ -428,9 +471,11 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 
 export type AnnouncementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   linkUrl?: boolean
-  linkLabel?: boolean
+  linkLabelVi?: boolean
+  linkLabelEn?: boolean
   bgColor?: boolean
   isActive?: boolean
   startAt?: boolean
@@ -441,9 +486,11 @@ export type AnnouncementSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type AnnouncementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   linkUrl?: boolean
-  linkLabel?: boolean
+  linkLabelVi?: boolean
+  linkLabelEn?: boolean
   bgColor?: boolean
   isActive?: boolean
   startAt?: boolean
@@ -454,9 +501,11 @@ export type AnnouncementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type AnnouncementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   linkUrl?: boolean
-  linkLabel?: boolean
+  linkLabelVi?: boolean
+  linkLabelEn?: boolean
   bgColor?: boolean
   isActive?: boolean
   startAt?: boolean
@@ -467,9 +516,11 @@ export type AnnouncementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type AnnouncementSelectScalar = {
   id?: boolean
-  content?: boolean
+  contentVi?: boolean
+  contentEn?: boolean
   linkUrl?: boolean
-  linkLabel?: boolean
+  linkLabelVi?: boolean
+  linkLabelEn?: boolean
   bgColor?: boolean
   isActive?: boolean
   startAt?: boolean
@@ -478,16 +529,18 @@ export type AnnouncementSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AnnouncementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "linkUrl" | "linkLabel" | "bgColor" | "isActive" | "startAt" | "endAt" | "createdAt" | "updatedAt", ExtArgs["result"]["announcement"]>
+export type AnnouncementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "contentVi" | "contentEn" | "linkUrl" | "linkLabelVi" | "linkLabelEn" | "bgColor" | "isActive" | "startAt" | "endAt" | "createdAt" | "updatedAt", ExtArgs["result"]["announcement"]>
 
 export type $AnnouncementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Announcement"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    content: string
+    contentVi: string
+    contentEn: string
     linkUrl: string | null
-    linkLabel: string | null
+    linkLabelVi: string | null
+    linkLabelEn: string | null
     bgColor: string | null
     isActive: boolean
     startAt: Date
@@ -918,9 +971,11 @@ export interface Prisma__AnnouncementClient<T, Null = never, ExtArgs extends run
  */
 export interface AnnouncementFieldRefs {
   readonly id: Prisma.FieldRef<"Announcement", 'String'>
-  readonly content: Prisma.FieldRef<"Announcement", 'String'>
+  readonly contentVi: Prisma.FieldRef<"Announcement", 'String'>
+  readonly contentEn: Prisma.FieldRef<"Announcement", 'String'>
   readonly linkUrl: Prisma.FieldRef<"Announcement", 'String'>
-  readonly linkLabel: Prisma.FieldRef<"Announcement", 'String'>
+  readonly linkLabelVi: Prisma.FieldRef<"Announcement", 'String'>
+  readonly linkLabelEn: Prisma.FieldRef<"Announcement", 'String'>
   readonly bgColor: Prisma.FieldRef<"Announcement", 'String'>
   readonly isActive: Prisma.FieldRef<"Announcement", 'Boolean'>
   readonly startAt: Prisma.FieldRef<"Announcement", 'DateTime'>

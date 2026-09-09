@@ -2,8 +2,8 @@ import "@/app/globals.css";
 import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { type ReactNode } from "react";
-import { BaseLayout } from "@/components/custom/BaseLayout";
+import type { ReactNode } from "react";
+import { BaseLayout } from "@/components/custom/base-layout";
 
 import { routing } from "@/configs/i18n/routing";
 import { _LOCALES } from "@/constants/lang";

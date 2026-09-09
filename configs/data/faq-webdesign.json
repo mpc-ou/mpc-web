@@ -1,0 +1,145 @@
+[
+  {
+    "id": "fee",
+    "question": {
+      "vi": "Tham gia cuộc thi có mất lệ phí không?",
+      "en": "Is there a registration fee to participate?"
+    },
+    "answer": {
+      "vi": "Cuộc thi hoàn toàn miễn phí. Hơn thế nữa, các bạn tham gia còn nhận được điểm rèn luyện (theo Điều 1) cùng cơ hội tranh tài để giành lấy các giải thưởng công nghệ giá trị.",
+      "en": "The competition is completely free. Furthermore, participants will receive training points (under Article 1) and have the opportunity to compete for valuable technology prizes."
+    }
+  },
+  {
+    "id": "team-matching",
+    "question": {
+      "vi": "Tôi chưa có đội nhóm thì có thể tham gia được không?",
+      "en": "Can I participate if I don't have a team yet?"
+    },
+    "answer": {
+      "vi": "Hoàn toàn được! BTC sẽ hỗ trợ ghép đội cho các thí sinh đăng ký đơn lẻ. Tuy nhiên, BTC vẫn ưu tiên các bạn tự chủ động tìm kiếm và ghép đội trước để đảm bảo sự ăn ý và chất lượng bài thi tốt nhất.",
+      "en": "Absolutely! The organizing committee will support team matching for individual registrants. However, we highly encourage finding and forming your own teams beforehand to ensure coordination and the best project quality."
+    }
+  },
+  {
+    "id": "theme",
+    "question": {
+      "vi": "Chủ đề của cuộc thi là gì?",
+      "en": "What is the theme of the competition?"
+    },
+    "answer": {
+      "vi": "Mỗi năm tổ chức sẽ có một chủ đề đặc thù riêng biệt (ví dụ: Về Mái trường, Kỷ niệm trường, các Ngày lễ lớn, v.v.). Các đội thi sẽ cần lên ý tưởng thiết kế và triển khai website bám sát theo chủ đề được công bố.",
+      "en": "Each year will have a specific theme (e.g., School anniversary, School memories, major Holidays, etc.). Teams will need to brainstorm, design, and develop their website around the announced theme."
+    }
+  },
+  {
+    "id": "tech-limit",
+    "question": {
+      "vi": "Cuộc thi có giới hạn công nghệ hay ngôn ngữ lập trình không?",
+      "en": "Are there any technology or programming language limitations?"
+    },
+    "answer": {
+      "vi": "Không giới hạn công nghệ. Yêu cầu tối thiểu là xây dựng được trang web chạy được với HTML, CSS và JS cơ bản. Không yêu cầu tích hợp cơ sở dữ liệu hay lập trình Backend phức tạp.",
+      "en": "No technology limitations. The minimum requirement is a functional website built with basic HTML, CSS, and JS. Database integration or complex Backend programming is not required."
+    }
+  },
+  {
+    "id": "need-backend",
+    "question": {
+      "vi": "Website dự thi có cần phần Backend không?",
+      "en": "Does the competition website require a Backend?"
+    },
+    "answer": {
+      "vi": "Không. Đây là cuộc thi tập trung thuần về giao diện (Frontend) và trải nghiệm người dùng (UI/UX). Nếu có bất kỳ thay đổi hoặc yêu cầu tích hợp Backend nào khác, BTC sẽ có thông báo chính thức rõ ràng về sau.",
+      "en": "No. This competition is focused purely on interface (Frontend) and user experience (UI/UX). If there are any changes or additional backend requirements, the committee will announce them officially later."
+    }
+  },
+  {
+    "id": "use-template",
+    "question": {
+      "vi": "Đội thi có được phép sử dụng các template có sẵn không?",
+      "en": "Are teams allowed to use pre-built templates?"
+    },
+    "answer": {
+      "vi": "Có được phép dùng template có sẵn ở mức độ tham khảo hoặc kế thừa khung cấu trúc cơ bản. Tuy nhiên, BTC và Hội đồng chuyên môn cực kỳ đề cao tính độc đáo, tự thiết kế và óc sáng tạo riêng biệt của các bạn sinh viên.",
+      "en": "Yes, using pre-built templates as references or inheriting basic layouts is allowed. However, the committee and judges highly value originality, custom design, and the creative spirit of students."
+    }
+  },
+  {
+    "id": "use-ai",
+    "question": {
+      "vi": "Có được sử dụng các công cụ AI trong kỳ thi không?",
+      "en": "Is the use of AI tools permitted during the competition?"
+    },
+    "answer": {
+      "vi": "Cho phép hỗ trợ viết code để tăng tốc độ phát triển nhưng đi đôi với việc thành viên phải thực sự hiểu rõ mã nguồn của mình. Không được sử dụng AI tạo sinh để tạo ra toàn bộ hình ảnh hay sao chép nội dung thô trực tiếp mà không qua kiểm duyệt chỉnh sửa.",
+      "en": "AI tools for coding are permitted to accelerate development, provided that team members fully understand their own codebase. Generative AI should not be used to create entire images or copy raw text directly without curation and refinement."
+    }
+  },
+  {
+    "id": "qualifying-round",
+    "question": {
+      "vi": "Vòng loại của cuộc thi gồm những hoạt động gì?",
+      "en": "What does the Qualifying Round involve?"
+    },
+    "answer": {
+      "vi": "Ở Vòng loại, các đội sẽ tập trung lên ý tưởng và phác thảo sơ bộ giao diện web (wireframe/mockup) bằng các công cụ như Figma, Canva. Hội đồng chuyên môn sẽ góp ý, duyệt ý tưởng, và hỏi trước về định hướng công nghệ các bạn sẽ triển khai.",
+      "en": "In the Qualifying Round, teams will focus on conceptualizing and designing drafts of their web interface (wireframes/mockups) using tools like Figma or Canva. The committee will review, provide feedback, and verify the intended tech stack."
+    }
+  },
+  {
+    "id": "implementation-round",
+    "question": {
+      "vi": "Vòng triển khai sẽ diễn ra như thế nào?",
+      "en": "How does the Implementation Round work?"
+    },
+    "answer": {
+      "vi": "Sau khi vượt qua vòng loại, các đội sẽ có 2-3 tuần để bắt tay vào viết code và hoàn thiện website thực tế. Trước thềm chung kết, BTC sẽ duyệt kiểm tra sản phẩm thêm một lần nữa để đánh giá điều kiện bước vào Đêm Chung kết.",
+      "en": "After passing the qualifying round, teams will have 2-3 weeks to write code and build the actual website. Prior to the finals, the committee will conduct a review to check if the project meets the standards for the Final Pitch."
+    }
+  },
+  {
+    "id": "final-round",
+    "question": {
+      "vi": "Đêm Chung kết sẽ diễn ra như thế nào?",
+      "en": "What happens during the Final Pitch?"
+    },
+    "answer": {
+      "vi": "Các đội xuất sắc nhất (TOP đội thi) sẽ lên sân khấu trình bày sản phẩm trước Hội đồng Giám khảo và khách mời. Mỗi đội có 10-15 phút thuyết trình (dùng Slide + Website thực tế) và 15-20 phút trả lời câu hỏi phản biện. Điểm số và các giải thưởng sẽ được công bố ngay trong đêm chung kết.",
+      "en": "The top finalist teams will present their projects on stage to the Judges and guests. Each team has 10-15 minutes to pitch (using Slides + Live Website) followed by 15-20 minutes of Q&A. Scores and winners will be announced on the same night."
+    }
+  },
+  {
+    "id": "git-management",
+    "question": {
+      "vi": "Mã nguồn của bài thi được quản lý như thế nào?",
+      "en": "How should the project source code be managed?"
+    },
+    "answer": {
+      "vi": "Các đội bắt buộc phải sử dụng kho lưu trữ GitHub chung. Các thành viên trong đội đều phải tham gia đóng góp mã nguồn. BTC sẽ căn cứ vào lịch sử commit trên GitHub làm minh chứng ghi nhận sự đóng góp và làm việc nhóm của từng cá nhân.",
+      "en": "Teams are required to use a shared GitHub repository. All team members must contribute to the codebase. The committee will use GitHub commit history as evidence of individual contribution and teamwork."
+    }
+  },
+  {
+    "id": "final-products",
+    "question": {
+      "vi": "Sản phẩm cuối cùng cần bàn giao cho BTC gồm những gì?",
+      "en": "What are the final deliverables to submit?"
+    },
+    "answer": {
+      "vi": "Sản phẩm cuối cùng bao gồm: Một trang web đã được triển khai chạy thực tế trên internet (sử dụng Vercel, GitHub Pages,...), liên kết mã nguồn GitHub công khai (public) và file Slide trình bày (dành cho vòng chung kết).",
+      "en": "The final deliverables consist of: A live deployed website link (via Vercel, GitHub Pages, etc.), a public GitHub repository link, and a presentation Slide file (for the final round)."
+    }
+  },
+  {
+    "id": "spectator-perks",
+    "question": {
+      "vi": "Khán giả đi cổ vũ cuộc thi có quyền lợi gì không?",
+      "en": "What perks do spectators get for attending and cheering?"
+    },
+    "answer": {
+      "vi": "Khán giả tham dự cổ vũ trực tiếp sẽ được cộng Điểm rèn luyện theo quy chế (+2 DRL) và nhận vé tham gia vòng quay may mắn (Lucky Draw) với cơ hội trúng các phần quà công nghệ hấp dẫn từ các nhà tài trợ.",
+      "en": "Spectators attending in person will receive training points under the regulations (+2 DRL) and get a ticket to participate in the Lucky Draw, with opportunities to win cool tech gadgets from our sponsors."
+    }
+  }
+]

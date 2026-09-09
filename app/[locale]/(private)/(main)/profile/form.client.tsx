@@ -1,30 +1,54 @@
 "use client";
 
-import { Globe, ImagePlus, Loader2, Plus, Trash2, Upload, UserCircle, X } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  AtSign,
+  Baby,
+  Camera,
+  Globe,
+  Hash,
+  ImagePlus,
+  Link2,
+  Loader2,
+  Music2,
+  Plus,
+  Quote,
+  Save,
+  Smartphone,
+  Trash2,
+  Upload,
+  UserCircle,
+  UserPen
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
-import {
-  linkGithubIdentity,
-  unlinkGithubIdentity,
-  updatePassword as updatePasswordAction
-} from "@/app/[locale]/actions/auth";
+import { updateProfile } from "@/app/_actions/profile/profile";
+import { updateSsoProfile } from "@/app/_actions/profile/update-sso-profile";
 import { ImageCropperModal, readFileAsDataURL } from "@/components/image-cropper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PLATFORMS } from "@/constants/common";
+import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
+import { UPLOAD_MAX_AVATAR_SIZE, UPLOAD_MAX_COVER_SIZE } from "@/constants/upload";
 import { useHandleError } from "@/hooks/use-handle-error";
 import { useToast } from "@/hooks/use-toast";
-import { uploadToStorage } from "@/utils/supabase-upload";
-import { updateProfile } from "./actions";
+import { uploadToStorage } from "@/services/supabase-upload";
+
+const SLUG_RE = /^[a-z0-9-_]+$/;
+const SPOTIFY_URL_RE = /spotify\.com\/(track|playlist|album|artist)\/([a-zA-Z0-9]+)/;
+
+// ── Types ──
 
 type FormClientType = {
   firstName: string;
+  middleName: string;
   lastName: string;
   bio: string;
   phone: string;
@@ -34,72 +58,104 @@ type FormClientType = {
   avatar: string | null;
   coverImage: string | null;
   socials: { id?: string; platform: string; url: string }[];
+  spotifyUri?: string | null;
+  showDob: boolean;
+  showPhone: boolean;
+  showStudentId: boolean;
 };
-
-const PLATFORMS = [
-  {
-    value: "Facebook",
-    label: "Facebook",
-    icon: "/images/icons/facebook-icon.svg"
-  },
-  { value: "GitHub", label: "GitHub", icon: "/images/icons/github-icon.svg" },
-  {
-    value: "LinkedIn",
-    label: "LinkedIn",
-    icon: "/images/icons/linkedin-icon.svg"
-  },
-  {
-    value: "X (Twitter)",
-    label: "X (Twitter)",
-    icon: "/images/icons/x-icon.svg"
-  },
-  {
-    value: "Instagram",
-    label: "Instagram",
-    icon: "/images/icons/instagram-icon.svg"
-  },
-  { value: "TikTok", label: "TikTok", icon: "/images/icons/tiktok-icon.svg" },
-  {
-    value: "YouTube",
-    label: "YouTube",
-    icon: "/images/icons/youtube-icon.svg"
-  },
-  {
-    value: "Discord",
-    label: "Discord",
-    icon: "/images/icons/discord-icon.svg"
-  },
-  { value: "Email", label: "Email", icon: "/images/icons/email-icon.svg" },
-  {
-    value: "Website",
-    label: "Website / Khác",
-    icon: "/images/icons/website-icon.svg"
-  }
-];
 
 type Props = {
   initialData: FormClientType;
-  linkedProviders: string[];
 };
 
-const FormClient = ({ initialData, linkedProviders }: Props) => {
+// ── Skeleton Loader ──
+
+function FormSkeleton() {
+  return (
+    <div className='flex flex-col gap-6'>
+      {[1, 2, 3].map((i) => (
+        <div className='overflow-hidden rounded-2xl border border-border/50 bg-card' key={i}>
+          <div className='space-y-3 border-border/50 border-b px-6 py-5'>
+            <Skeleton className='h-5 w-48' />
+            <Skeleton className='h-4 w-72' />
+          </div>
+          <div className='space-y-4 p-6'>
+            <Skeleton className='h-10 w-full' />
+            <div className='flex gap-4'>
+              <Skeleton className='h-10 flex-1' />
+              <Skeleton className='h-10 flex-1' />
+            </div>
+            <Skeleton className='h-10 w-full' />
+            <Skeleton className='h-24 w-full' />
+          </div>
+        </div>
+      ))}
+      <div className='flex justify-end'>
+        <Skeleton className='h-11 w-32' />
+      </div>
+    </div>
+  );
+}
+
+// ── Section Header ──
+
+function SectionHeader({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className='flex items-start gap-4 border-border/50 border-b px-6 py-5'>
+      <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+        {icon}
+      </div>
+      <div>
+        <h3 className='font-semibold text-base'>{title}</h3>
+        <p className='mt-0.5 text-muted-foreground text-sm'>{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Field Wrapper ──
+
+function Field({
+  label,
+  required,
+  children,
+  error,
+  hint
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+  error?: string | null;
+  hint?: string;
+}) {
+  return (
+    <div className='space-y-2'>
+      <Label>
+        {label}
+        {required && <span className='ml-1 text-destructive'>*</span>}
+      </Label>
+      {children}
+      {error && <p className='text-[13px] text-destructive'>{error}</p>}
+      {hint && !error && <p className='text-[13px] text-muted-foreground'>{hint}</p>}
+    </div>
+  );
+}
+
+const FormClient = ({ initialData }: Props) => {
   const router = useRouter();
   const t = useTranslations("profile.form");
   const { toast } = useToast();
   const { handleErrorClient } = useHandleError();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     ...initialData,
-    socials: initialData.socials.map((s: any) => ({
+    socials: initialData.socials.map((s): { id: string; platform: string; url: string } => ({
       ...s,
       id: s.id || Math.random().toString(36).substring(2)
     }))
   });
   const [slugError, setSlugError] = useState<string | null>(null);
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-  const [isLinkingGithub, setIsLinkingGithub] = useState(false);
 
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
@@ -113,11 +169,11 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
 
   const processAvatarFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      window.alert("Chỉ chấp nhận file ảnh");
+      toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
       return;
     }
-    if (file.size > 3 * 1024 * 1024) {
-      window.alert("Ảnh tối đa 3MB");
+    if (file.size > UPLOAD_MAX_AVATAR_SIZE) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 3MB" });
       return;
     }
     try {
@@ -125,7 +181,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       setAvatarCropSrc(src);
       setIsAvatarCropOpen(true);
     } catch {
-      window.alert("Không thể đọc file ảnh");
+      toast({ variant: "destructive", description: "Không thể đọc file ảnh" });
     } finally {
       if (avatarInputRef.current) {
         avatarInputRef.current.value = "";
@@ -139,16 +195,16 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       const file = new File([croppedBlob], "avatar-cropped.jpg", {
         type: "image/jpeg"
       });
-      const url = await uploadToStorage(file, "media", "avatars");
+      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.avatars);
       setFormData((prev) => ({ ...prev, avatar: url }));
     } catch {
-      window.alert("Upload avatar thất bại");
+      toast({ variant: "destructive", description: "Upload avatar thất bại" });
     } finally {
       setAvatarUploading(false);
     }
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       processAvatarFile(file);
@@ -157,19 +213,19 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
 
   const processCoverFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      window.alert("Chỉ nhận file ảnh");
+      toast({ variant: "destructive", description: "Chỉ nhận file ảnh" });
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      window.alert("Ảnh tối đa 5MB");
+    if (file.size > UPLOAD_MAX_COVER_SIZE) {
+      toast({ variant: "destructive", description: "Ảnh tối đa 5MB" });
       return;
     }
     setCoverUploading(true);
     try {
-      const url = await uploadToStorage(file, "media", "covers");
+      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.covers);
       setFormData((prev) => ({ ...prev, coverImage: url }));
     } catch {
-      window.alert("Upload cover thất bại");
+      toast({ variant: "destructive", description: "Upload cover thất bại" });
     } finally {
       setCoverUploading(false);
       if (coverInputRef.current) {
@@ -178,7 +234,7 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }
   };
 
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       processCoverFile(file);
@@ -206,64 +262,42 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
     }));
   };
 
-  const handleUpdatePassword = async () => {
-    if (!password) {
-      return;
+  function parseSpotifyUri(input: string): string | null {
+    if (!input) {
+      return null;
     }
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        description: "Mật khẩu xác nhận không khớp!"
-      });
-      return;
+    const trimmed = input.trim();
+    if (trimmed.startsWith("spotify:")) {
+      const parts = trimmed.split(":");
+      return parts.length >= 3 ? `spotify:${parts[1]}:${parts[2]}` : trimmed;
     }
-    setIsUpdatingPassword(true);
-    await handleErrorClient({
-      cb: async () => await updatePasswordAction(password),
-      withSuccessNotify: true
-    });
-    setIsUpdatingPassword(false);
-    setPassword("");
-    setConfirmPassword("");
-  };
-
-  const handleLinkGithub = async () => {
-    setIsLinkingGithub(true);
-    await handleErrorClient({
-      cb: async () => await linkGithubIdentity(window.location.href),
-      onSuccess: ({ data }) => {
-        if ((data as any)?.payload?.url) {
-          window.location.href = (data as any).payload.url;
+    try {
+      const urlString = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+      const url = new URL(urlString);
+      if (url.hostname.includes("spotify.com")) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        if (parts.length >= 2) {
+          return `spotify:${parts[0]}:${parts[1]}`;
         }
-      },
-      withSuccessNotify: false
-    });
-    setIsLinkingGithub(false);
-  };
+      }
+    } catch {
+      const match = trimmed.match(SPOTIFY_URL_RE);
+      if (match) {
+        return `spotify:${match[1]}:${match[2]}`;
+      }
+    }
+    return trimmed;
+  }
 
-  const handleUnlinkGithub = async () => {
-    setIsLinkingGithub(true);
-    await handleErrorClient({
-      cb: async () => await unlinkGithubIdentity(),
-      onSuccess: () => {
-        router.refresh();
-      },
-      withSuccessNotify: true
-    });
-    setIsLinkingGithub(false);
-  };
-
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handleSubmit profile validation & update
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!(formData.firstName && formData.lastName)) {
       return;
     }
 
-    // Slug validation
     let slug = formData.slug.trim();
     if (!slug) {
-      // Auto-generate from first name + random suffix
       slug = `${formData.firstName.toLowerCase().replace(/\s+/g, "").slice(0, 12)}${Math.random().toString(36).slice(2, 6)}`;
       setFormData((prev) => ({ ...prev, slug }));
       setSlugError(`Slug đã được tạo tự động: "${slug}". Kiểm tra lại rồi lưu.`);
@@ -273,51 +307,91 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
       setSlugError('Slug không được là "me", vui lòng chọn slug khác.');
       return;
     }
-    if (!/^[a-z0-9-_]+$/.test(slug)) {
+    if (!SLUG_RE.test(slug)) {
       setSlugError("Slug chỉ được chứa chữ thường, số, dấu gạch ngang và gạch dưới.");
       return;
     }
     setSlugError(null);
 
-    const payload = {
+    const parsedSpotifyUri = formData.spotifyUri ? parseSpotifyUri(formData.spotifyUri) : "";
+    const _payload = {
       ...formData,
       slug,
       dob: formData.dob ? new Date(formData.dob) : undefined,
-      socials: formData.socials.map(({ id, ...rest }) => rest)
+      socials: formData.socials.map(({ id: _id, ...rest }) => rest),
+      spotifyUri: parsedSpotifyUri || null
     };
 
+    setIsSubmitting(true);
+
+    const ssoResult = await updateSsoProfile({
+      firstName: formData.firstName,
+      middleName: formData.middleName || null,
+      lastName: formData.lastName,
+      dob: formData.dob || null,
+      mssv: formData.studentId || null,
+      phone: formData.phone || null
+    });
+
+    if (!ssoResult.success) {
+      toast({ description: ssoResult.error || "Không thể cập nhật thông tin lên SSO", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+
     await handleErrorClient({
-      cb: async () => updateProfile(payload as any),
+      cb: () =>
+        updateProfile({
+          slug,
+          bio: formData.bio,
+          spotifyUri: parsedSpotifyUri ?? undefined,
+          socials: formData.socials.map(({ id: _id, ...rest }) => rest),
+          showDob: formData.showDob,
+          showPhone: formData.showPhone,
+          showStudentId: formData.showStudentId
+        }),
       withSuccessNotify: true
     });
+    setIsSubmitting(false);
   };
 
   return (
-    <div className='flex flex-col space-y-6'>
-      <Card>
-        <CardHeader>
-          <CardTitle>Ảnh đại diện & Ảnh bìa</CardTitle>
-          <CardDescription>Cập nhật hình ảnh cá nhân của bạn.</CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-6'>
-          {/* Cover Photo */}
-          <div className='space-y-2'>
-            <Label>Ảnh bìa (Cover Photo)</Label>
+    <motion.div
+      animate={{ opacity: 1 }}
+      className='flex flex-col gap-6'
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* ── Images Card ── */}
+      <div className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'>
+        <SectionHeader desc={t("avatarDesc")} icon={<Camera className='h-5 w-5' />} title={t("avatarTitle")} />
+        <div className='space-y-6 p-6'>
+          {/* Cover */}
+          <div>
+            <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
+              <ImagePlus className='h-4 w-4 text-primary' />
+              {t("coverLabel")}
+            </Label>
             {formData.coverImage ? (
-              <div className='relative aspect-[3/1] w-full overflow-hidden rounded-lg border bg-muted'>
-                <img alt='Cover' className='h-full w-full object-cover' src={formData.coverImage} />
+              <div className='group relative aspect-3/1 w-full overflow-hidden rounded-xl border bg-muted'>
+                <Image alt='Cover' className='object-cover' fill sizes='800px' src={formData.coverImage} />
+                <div className='absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/30' />
                 <button
-                  className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white transition-colors hover:bg-black/80'
+                  className='absolute top-3 right-3 z-10 rounded-full bg-black/60 p-2 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all hover:bg-black/80 group-hover:opacity-100'
                   onClick={() => setFormData((prev) => ({ ...prev, coverImage: null }))}
                   title='Xóa ảnh bìa'
                   type='button'
                 >
-                  <X className='h-4 w-4' />
+                  <Trash2 className='h-4 w-4' />
                 </button>
               </div>
             ) : (
               <button
-                className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${isCoverDragOver ? "border-primary bg-primary/10" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}
+                className={`flex h-36 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed transition-all ${
+                  isCoverDragOver
+                    ? "border-primary bg-primary/10"
+                    : "border-muted-foreground/20 bg-muted/20 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
+                }`}
                 disabled={coverUploading}
                 onClick={() => coverInputRef.current?.click()}
                 onDragLeave={(e) => {
@@ -339,95 +413,106 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
               >
                 {coverUploading ? (
                   <>
-                    <Loader2 className='h-6 w-6 animate-spin' />
-                    <span className='text-sm'>Đang upload...</span>
+                    <Loader2 className='h-7 w-7 animate-spin text-primary' />
+                    <span className='font-medium text-sm'>{t("linkingGithub")}</span>
                   </>
                 ) : (
                   <>
-                    <ImagePlus className='h-8 w-8' />
-                    <span className='text-sm'>Upload ảnh bìa (max 5MB)</span>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10'>
+                      <ImagePlus className='h-6 w-6 text-primary' />
+                    </div>
+                    <span className='font-medium text-sm'>{t("addCover")}</span>
+                    <span className='text-muted-foreground text-xs'>{t("coverHint")}</span>
                   </>
                 )}
               </button>
             )}
-            <input
-              accept='image/*'
-              className='hidden'
-              onChange={handleCoverUpload}
-              ref={coverInputRef}
-              title='Chọn ảnh bìa'
-              type='file'
-            />
+            <input accept='image/*' className='hidden' onChange={handleCoverUpload} ref={coverInputRef} type='file' />
           </div>
-
-          <Separator />
 
           {/* Avatar */}
-          <div
-            className={`flex items-center gap-6 rounded-xl border-2 border-dashed p-4 transition-colors ${isAvatarDragOver ? "border-primary bg-primary/10" : "border-transparent"}`}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(false);
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(true);
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsAvatarDragOver(false);
-              if (e.dataTransfer.files?.[0]) {
-                processAvatarFile(e.dataTransfer.files[0]);
-              }
-            }}
-          >
-            <div className='relative'>
-              <Avatar className='h-24 w-24 border-2 shadow-sm'>
-                <AvatarImage src={formData.avatar ?? undefined} />
-                <AvatarFallback className='bg-primary/10 text-3xl text-primary'>
-                  {avatarUploading ? (
-                    <Loader2 className='h-8 w-8 animate-spin' />
-                  ) : (
-                    <UserCircle className='h-12 w-12' />
+          <div>
+            <Label className='mb-2 flex items-center gap-2 font-medium text-sm'>
+              <UserCircle className='h-4 w-4 text-primary' />
+              {t("avatarLabel")}
+            </Label>
+            {/* biome-ignore lint/a11y/noStaticElementInteractions: optional drag-and-drop target layered on the already-keyboard-accessible upload button below */}
+            {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: same as above */}
+            <div
+              className={`flex flex-col items-center gap-5 rounded-xl border-2 border-dashed p-5 transition-colors sm:flex-row ${
+                isAvatarDragOver ? "border-primary bg-primary/10" : "border-muted-foreground/20"
+              }`}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(false);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(true);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsAvatarDragOver(false);
+                if (e.dataTransfer.files?.[0]) {
+                  processAvatarFile(e.dataTransfer.files[0]);
+                }
+              }}
+            >
+              <div className='relative'>
+                <Avatar className='h-24 w-24 border-2 shadow-md ring-4 ring-background'>
+                  <AvatarImage src={formData.avatar ?? undefined} />
+                  <AvatarFallback className='bg-primary/5 text-4xl text-primary/40'>
+                    {avatarUploading ? (
+                      <Loader2 className='h-8 w-8 animate-spin' />
+                    ) : (
+                      <UserCircle className='h-14 w-14' />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                {avatarUploading && (
+                  <div className='absolute inset-0 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-[2px]'>
+                    <Loader2 className='h-6 w-6 animate-spin text-white' />
+                  </div>
+                )}
+              </div>
+              <div className='flex flex-col items-center gap-2 sm:items-start'>
+                <div className='flex gap-2'>
+                  <Button
+                    disabled={avatarUploading}
+                    onClick={() => avatarInputRef.current?.click()}
+                    size='sm'
+                    type='button'
+                    variant='outline'
+                  >
+                    <Upload className='mr-1.5 h-3.5 w-3.5' />
+                    {avatarUploading ? t("linkingGithub") : t("changeAvatar")}
+                  </Button>
+                  {formData.avatar && (
+                    <Button
+                      className='text-destructive'
+                      onClick={() => setFormData((prev) => ({ ...prev, avatar: null }))}
+                      size='sm'
+                      type='button'
+                      variant='ghost'
+                    >
+                      <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                      {t("removeAvatar")}
+                    </Button>
                   )}
-                </AvatarFallback>
-              </Avatar>
+                </div>
+                <span className='text-muted-foreground text-xs'>{t("avatarHint")}</span>
+              </div>
+              <input
+                accept='image/*'
+                className='hidden'
+                onChange={handleAvatarUpload}
+                ref={avatarInputRef}
+                type='file'
+              />
             </div>
-            <div className='flex flex-col gap-2'>
-              <Button
-                disabled={avatarUploading}
-                onClick={() => avatarInputRef.current?.click()}
-                size='sm'
-                type='button'
-                variant='outline'
-              >
-                <Upload className='mr-2 h-4 w-4' />
-                {avatarUploading ? "Đang upload..." : "Đổi avatar"}
-              </Button>
-              {formData.avatar && (
-                <Button
-                  className='text-destructive'
-                  onClick={() => setFormData((prev) => ({ ...prev, avatar: null }))}
-                  size='sm'
-                  type='button'
-                  variant='ghost'
-                >
-                  Xóa ảnh
-                </Button>
-              )}
-              <span className='mt-1 text-muted-foreground text-xs'>JPG, PNG, WebP · max 3MB</span>
-            </div>
-            <input
-              accept='image/*'
-              className='hidden'
-              onChange={handleAvatarUpload}
-              ref={avatarInputRef}
-              title='Chọn ảnh đại diện'
-              type='file'
-            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <ImageCropperModal
         aspect={1}
@@ -436,138 +521,262 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
         onConfirm={handleAvatarCropConfirm}
         onOpenChange={setIsAvatarCropOpen}
       />
-      <form className='flex flex-col space-y-6' onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Thông tin cá nhân</CardTitle>
-            <CardDescription>Cập nhật thông tin chi tiết.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='flex flex-col gap-4 sm:flex-row sm:space-x-4'>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='firstName'>{t("firstName")} *</Label>
-                <Input
-                  id='firstName'
-                  name='firstName'
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      firstName: e.target.value
-                    }))
-                  }
-                  placeholder={t("firstName")}
-                  required
-                  value={formData.firstName}
-                />
-              </div>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='lastName'>{t("lastName")} *</Label>
+
+      {/* ── Form ── */}
+      <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+        {/* Personal Info */}
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+        >
+          <SectionHeader
+            desc={t("personalInfoDesc")}
+            icon={<UserPen className='h-5 w-5' />}
+            title={t("personalInfoTitle")}
+          />
+          <div className='space-y-5 p-6'>
+            <div className='rounded-lg border border-blue-500/20 bg-blue-500/10 p-3 text-blue-700 text-xs dark:text-blue-400'>
+              {t("ssoSyncNote")}
+            </div>
+
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+              <Field label={t("lastName")} required>
                 <Input
                   id='lastName'
-                  name='lastName'
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
                       lastName: e.target.value
                     }))
                   }
-                  placeholder={t("lastName")}
+                  placeholder='Nguyễn'
                   required
                   value={formData.lastName}
                 />
-              </div>
-            </div>
-
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <div className='space-y-2'>
-                <Label htmlFor='slug'>Slug (Đường dẫn trang cá nhân) *</Label>
+              </Field>
+              <Field label={t("middleName")}>
                 <Input
-                  id='slug'
-                  name='slug'
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, slug: e.target.value }));
-                    setSlugError(null);
-                  }}
-                  placeholder='ví dụ: trieukon1011'
-                  value={formData.slug}
-                />
-                {slugError && <p className='text-destructive text-xs'>{slugError}</p>}
-                <p className='text-muted-foreground text-xs'>
-                  Không được để trống, không được dùng "me". Chỉ chữ thường, số, -, _.
-                </p>
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='dob'>Ngày sinh</Label>
-                <Input
-                  id='dob'
-                  name='dob'
-                  onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
-                  type='date'
-                  value={formData.dob ?? ""}
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='phone'>Số điện thoại</Label>
-                <Input
-                  id='phone'
-                  name='phone'
-                  onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                  placeholder='Số điện thoại cá nhân'
-                  value={formData.phone}
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='studentId'>Mã sinh viên</Label>
-                <Input
-                  id='studentId'
-                  name='studentId'
+                  id='middleName'
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      studentId: e.target.value
+                      middleName: e.target.value
                     }))
                   }
-                  placeholder='Mã số sinh viên'
-                  value={formData.studentId}
+                  placeholder={t("middleName")}
+                  value={formData.middleName}
                 />
+              </Field>
+              <Field label={t("firstName")} required>
+                <Input
+                  id='firstName'
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      firstName: e.target.value
+                    }))
+                  }
+                  placeholder='An'
+                  required
+                  value={formData.firstName}
+                />
+              </Field>
+            </div>
+
+            <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
+              <Field error={slugError} hint={t("slugHint")} label={t("slug")} required>
+                <div className='relative'>
+                  <AtSign className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                  <Input
+                    className='pl-9'
+                    id='slug'
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        slug: e.target.value
+                      }));
+                      setSlugError(null);
+                    }}
+                    placeholder='trieukon1011'
+                    value={formData.slug}
+                  />
+                </div>
+              </Field>
+
+              <div className='space-y-2'>
+                <Field label={t("dob")}>
+                  <div className='relative'>
+                    <Baby className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='dob'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          dob: e.target.value
+                        }))
+                      }
+                      type='date'
+                      value={formData.dob ?? ""}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showDob}
+                    id='showDob'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showDob: !!checked }))}
+                  />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showDob'
+                  >
+                    {t("showDob")}
+                  </Label>
+                </div>
+              </div>
+
+              <div className='space-y-2'>
+                <Field label={t("phone")}>
+                  <div className='relative'>
+                    <Smartphone className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='phone'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          phone: e.target.value
+                        }))
+                      }
+                      placeholder={t("phonePlaceholder")}
+                      value={formData.phone}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showPhone}
+                    id='showPhone'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showPhone: !!checked }))}
+                  />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showPhone'
+                  >
+                    {t("showPhone")}
+                  </Label>
+                </div>
+              </div>
+
+              <div className='space-y-2'>
+                <Field label={t("studentId")}>
+                  <div className='relative'>
+                    <Hash className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      className='pl-9'
+                      id='studentId'
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          studentId: e.target.value
+                        }))
+                      }
+                      placeholder={t("studentIdPlaceholder")}
+                      value={formData.studentId}
+                    />
+                  </div>
+                </Field>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    checked={formData.showStudentId}
+                    id='showStudentId'
+                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, showStudentId: !!checked }))}
+                  />
+                  <Label
+                    className='cursor-pointer select-none font-normal text-muted-foreground text-xs'
+                    htmlFor='showStudentId'
+                  >
+                    {t("showStudentId")}
+                  </Label>
+                </div>
               </div>
             </div>
 
-            <div className='space-y-2'>
-              <Label htmlFor='bio'>{t("bio")}</Label>
-              <textarea
-                className='flex min-h-25 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
-                id='bio'
-                name='bio'
-                onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
-                placeholder={t("bio")}
-                value={formData.bio}
-              />
-            </div>
-          </CardContent>
-        </Card>
+            <Field label={t("spotifyUri")}>
+              <div className='relative'>
+                <Music2 className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                <Input
+                  className='pl-9'
+                  id='spotifyUri'
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      spotifyUri: e.target.value
+                    }))
+                  }
+                  placeholder={t("spotifyPlaceholder")}
+                  value={formData.spotifyUri ?? ""}
+                />
+              </div>
+            </Field>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Liên kết mạng xã hội</CardTitle>
-            <CardDescription>Các liên kết sẽ được hiển thị trên trang profile public của bạn.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            {formData.socials.map((social) => (
-              <div className='flex flex-col items-start gap-3 sm:flex-row sm:items-center' key={social.id}>
-                <div className='w-full shrink-0 sm:w-55'>
+            <Field label={t("bio")}>
+              <div className='relative'>
+                <Quote className='absolute top-3 left-3 h-4 w-4 text-muted-foreground' />
+                <textarea
+                  className='flex min-h-28 w-full rounded-xl border border-input bg-background px-3 py-2.5 pl-9 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  id='bio'
+                  onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
+                  placeholder={t("bioPlaceholder")}
+                  value={formData.bio}
+                />
+              </div>
+            </Field>
+          </div>
+        </motion.div>
+
+        {/* Social Links */}
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className='overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm'
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <SectionHeader desc={t("socialsDesc")} icon={<Link2 className='h-5 w-5' />} title={t("socialsTitle")} />
+          <div className='space-y-4 p-6'>
+            {formData.socials.length === 0 && (
+              <div className='flex flex-col items-center gap-3 py-6 text-center'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-muted'>
+                  <Globe className='h-6 w-6 text-muted-foreground/50' />
+                </div>
+                <p className='text-muted-foreground text-sm'>{t("linkGithubDesc")}</p>
+              </div>
+            )}
+            {formData.socials.map((social, idx) => (
+              <motion.div
+                animate={{ opacity: 1, x: 0 }}
+                className='flex flex-col gap-3 rounded-xl border border-border/50 bg-muted/20 p-4 sm:flex-row sm:items-center'
+                initial={{ opacity: 0, x: -10 }}
+                key={social.id}
+                transition={{ duration: 0.25, delay: idx * 0.03 }}
+              >
+                <div className='w-full shrink-0 sm:w-48'>
                   <Select
-                    onValueChange={(val) => handleUpdateSocial(social.id!, "platform", val)}
+                    onValueChange={(val) => handleUpdateSocial(social.id, "platform", val)}
                     value={social.platform || undefined}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Chọn nền tảng' />
+                      <SelectValue placeholder={t("platform")} />
                     </SelectTrigger>
                     <SelectContent>
                       {PLATFORMS.map((p) => (
                         <SelectItem key={p.value} value={p.value}>
                           <span className='flex items-center gap-2'>
-                            <img alt={p.label} className='h-4 w-4 object-contain' src={p.icon} /> <span>{p.label}</span>
+                            <Image alt={p.label} className='object-contain' height={16} src={p.icon} width={16} />
+                            <span>{p.label}</span>
                           </span>
                         </SelectItem>
                       ))}
@@ -576,13 +785,13 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                 </div>
                 <div className='flex w-full flex-1 items-center gap-2'>
                   <Input
-                    onChange={(e) => handleUpdateSocial(social.id!, "url", e.target.value)}
-                    placeholder='Link hoặc Username'
+                    onChange={(e) => handleUpdateSocial(social.id, "url", e.target.value)}
+                    placeholder={t("urlPlaceholder")}
                     value={social.url}
                   />
                   <Button
-                    className='shrink-0 text-destructive'
-                    onClick={() => handleRemoveSocial(social.id!)}
+                    className='shrink-0 text-muted-foreground hover:text-destructive'
+                    onClick={() => handleRemoveSocial(social.id)}
                     size='icon'
                     type='button'
                     variant='ghost'
@@ -590,98 +799,41 @@ const FormClient = ({ initialData, linkedProviders }: Props) => {
                     <Trash2 className='h-4 w-4' />
                   </Button>
                 </div>
-              </div>
+              </motion.div>
             ))}
-
-            <Button
-              className='mt-2 w-full sm:w-auto'
-              onClick={handleAddSocial}
-              size='sm'
-              type='button'
-              variant='outline'
-            >
-              <Plus className='mr-2 h-4 w-4' /> Thêm liên kết mới
+            <Button className='mt-1' onClick={handleAddSocial} size='sm' type='button' variant='outline'>
+              <Plus className='mr-1.5 h-4 w-4' />
+              {t("addSocial")}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tài khoản & Bảo mật</CardTitle>
-            <CardDescription>Liên kết tài khoản GitHub hoặc cập nhật mật khẩu đăng nhập của bạn.</CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-6'>
-            <div className='flex flex-col gap-4 sm:flex-row sm:items-end'>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='newPassword'>Mật khẩu mới (Tùy chọn)</Label>
-                <Input
-                  id='newPassword'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder='Nhập mật khẩu mới'
-                  type='password'
-                  value={password}
-                />
-              </div>
-              <div className='flex-1 space-y-2'>
-                <Label htmlFor='confirmPassword'>Xác nhận mật khẩu</Label>
-                <Input
-                  id='confirmPassword'
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder='Nhập lại mật khẩu'
-                  type='password'
-                  value={confirmPassword}
-                />
-              </div>
-              <Button
-                className='shrink-0'
-                disabled={!password || password !== confirmPassword || isUpdatingPassword}
-                onClick={handleUpdatePassword}
-                type='button'
-              >
-                {isUpdatingPassword ? "Đang cập nhật..." : "Cập nhật mật khẩu"}
-              </Button>
-            </div>
-
-            <Separator />
-
-            <div className='space-y-2'>
-              <Label>Liên kết & Xác thực</Label>
-              <div className='flex items-center gap-4'>
-                <Button
-                  disabled={isLinkingGithub}
-                  onClick={() => {
-                    if (linkedProviders.includes("github")) {
-                      handleUnlinkGithub();
-                    } else {
-                      handleLinkGithub();
-                    }
-                  }}
-                  type='button'
-                  variant={linkedProviders.includes("github") ? "destructive" : "default"}
-                >
-                  <img alt='GitHub' className='mr-2 h-5 w-5' src='/images/icons/github-icon.svg' />
-                  {isLinkingGithub
-                    ? t("linkingGithub")
-                    : linkedProviders.includes("github")
-                      ? t("linkedGithub")
-                      : t("linkGithub")}
-                </Button>
-                <p className='text-muted-foreground text-xs'>
-                  {linkedProviders.includes("github") ? t("linkedGithubDesc") : t("linkGithubDesc")}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className='flex justify-end'>
-          <Button size='lg' type='submit'>
-            {t("submit")}
+        {/* Submit */}
+        <motion.div
+          animate={{ opacity: 1 }}
+          className='flex items-center justify-end gap-3'
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <Button disabled={isSubmitting} onClick={() => router.refresh()} type='button' variant='ghost'>
+            {t("cancel")}
           </Button>
-        </div>
+          <Button disabled={isSubmitting} size='lg' type='submit'>
+            {isSubmitting ? (
+              <>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' /> {t("submitting")}
+              </>
+            ) : (
+              <>
+                <Save className='mr-2 h-4 w-4' /> {t("submit")}
+              </>
+            )}
+          </Button>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 
 export { FormClient };
+export { FormSkeleton };

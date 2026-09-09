@@ -1,17 +1,21 @@
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/configs/i18n/routing";
-import { updateSession } from "./configs/supabase/middleware";
+import { updateSession } from "./configs/auth/middleware";
 
 const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
-  const response = handleI18nRouting(request);
+  // /admin is a standalone, locale-less area — skip next-intl's locale
+  // detection/redirect for it, but still run the auth/session middleware.
+  const isAdminRoute = request.nextUrl.pathname === "/admin" || request.nextUrl.pathname.startsWith("/admin/");
+  const response = isAdminRoute ? NextResponse.next() : handleI18nRouting(request);
   return await updateSession(request, response);
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|images|favicon.ico|apple-touch-icon.png|favicon.svg|icons|manifest|sitemap.xml|robots.txt|models).*)"
+    "/((?!api|og|_next/static|_next/image|images|favicon.ico|apple-touch-icon.png|favicon.svg|icons|manifest|sitemap.xml|robots.txt|models).*)"
   ]
 };

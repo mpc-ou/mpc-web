@@ -1,0 +1,592 @@
+{
+  "home": {
+    "title": "Trang chủ – CLB MPC",
+    "hero": {
+      "title": "CLB Lập trình trên thiết bị di động",
+      "subtitle": "Ở đâu có bug, ở đó có MPC!",
+      "cta": "Tìm hiểu thêm",
+      "ctaJoin": "Tham gia ngay",
+      "terminal": {
+        "whoamiResponse": "Mobile Programming Club",
+        "missionResponse": "\"Ở đâu có bug, ở đó có MPC!\"",
+        "activitiesResponse": "Workshop  |  Web Design  |  Robocode  |  Teambuilding  |  Seminar",
+        "membersResponse": "50+",
+        "achievementsResponse1": "[INFO] 10+ năm hoạt động",
+        "achievementsResponse2": "[INFO] 30+ sự kiện đã tổ chức",
+        "achievementsResponse3": "[INFO] 10+ dự án thực tế",
+        "departmentsResponse": "Lập trình/  Sự kiện/  Truyền thông/ ",
+        "joinResponse": "Đang mở đơn... truy cập fanpage MPC"
+      }
+    },
+    "intro": {
+      "title": "Giới thiệu",
+      "description": "Câu lạc bộ Lập trình trên thiết bị di động (Mobile Programming Club – MPC) là một trong những câu lạc bộ hoạt động năng động, sôi nổi và đầy sáng tạo của Khoa Công nghệ thông tin – Trường Đại học Mở Tp.HCM. MPC được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình.",
+      "learnMore": "Tìm hiểu thêm",
+      "viewMembers": "Xem thành viên"
+    },
+    "stats": {
+      "title": "Những con số ấn tượng",
+      "members": "Thành viên",
+      "events": "Sự kiện tổ chức",
+      "years": "Năm hoạt động",
+      "projects": "Dự án hoàn thành"
+    },
+    "benefits": {
+      "title": "Lợi ích khi tham gia CLB",
+      "subtitle": "Không chỉ là một CLB — đây là nơi bạn thực chiến với dự án thật, gặp mentor tận tâm và build portfolio từ năm nhất.",
+      "skills": {
+        "title": "Phát triển kỹ năng",
+        "desc": "Học và thực hành các công nghệ mới nhất trong lĩnh vực Web, App và AI thông qua các workshop, dự án thực tế."
+      },
+      "network": {
+        "title": "Mạng lưới kết nối",
+        "desc": "Gặp gỡ và làm việc với những người có cùng đam mê và định hướng. Xây dựng mối quan hệ lâu dài trong cộng đồng tech."
+      },
+      "opportunity": {
+        "title": "Cơ hội tham gia",
+        "desc": "Tham gia các dự án thực tế, cuộc thi lập trình và sự kiện công nghệ. Tích lũy kinh nghiệm cho hành trình sự nghiệp."
+      },
+      "community": {
+        "title": "Cộng đồng thân thiện",
+        "desc": "Môi trường học tập tích cực, hỗ trợ lẫn nhau và luôn sẵn sàng giúp đỡ các thành viên mới."
+      }
+    },
+    "team": {
+      "title": "Tổ chức CLB",
+      "subtitle": "Đội ngũ điều hành nhiệt huyết và tận tâm",
+      "president": "Ban Chủ nhiệm",
+      "staff": "Ban Cán sự",
+      "viewAll": "Xem tất cả thành viên",
+      "noLeadership": "Chưa có thông tin.",
+      "executiveDept": "Phân ban điều hành",
+      "viewProfile": "Xem hồ sơ",
+      "departmentMember": "Thành viên ban"
+    },
+    "activities": {
+      "title": "Hoạt động nổi bật",
+      "subtitle": "Những sự kiện và dự án tiêu biểu của CLB MPC"
+    },
+    "gallery": {
+      "title": "Khoảnh khắc MPC",
+      "subtitle": "Những kỷ niệm đáng nhớ cùng MPC"
+    },
+    "faq": {
+      "title": "Giải đáp thắc mắc",
+      "subtitle": "Những câu hỏi thường gặp về CLB MPC",
+      "items": [
+        {
+          "q": "MPC là gì?",
+          "a": "MPC (Mobile Programming Club) là CLB Lập trình trên thiết bị di động thuộc Khoa Công nghệ thông tin – Trường Đại học Mở TP.HCM. CLB được thành lập nhằm tạo ra môi trường học tập và phát triển công nghệ cho sinh viên."
+        },
+        {
+          "q": "Tôi có cần kỹ năng lập trình để tham gia không?",
+          "a": "Không bắt buộc! CLB chào đón tất cả sinh viên có đam mê với công nghệ, từ người mới bắt đầu đến đã có kinh nghiệm. Quan trọng nhất là tinh thần học hỏi và sự nhiệt huyết."
+        },
+        {
+          "q": "CLB hoạt động như thế nào?",
+          "a": "CLB tổ chức các workshop kỹ năng lập trình, seminar công nghệ, cuộc thi như Web Design, Robocode và nhiều hoạt động teambuilding hàng tháng. Ngoài ra còn có các dự án thực tế để thành viên thực hành."
+        },
+        {
+          "q": "Làm sao để tham gia MPC?",
+          "a": "Theo dõi fanpage Facebook của MPC để cập nhật thông tin tuyển thành viên theo từng học kỳ. Khi có đợt tuyển, bạn có thể đăng ký qua form online và tham gia vòng phỏng vấn."
+        },
+        {
+          "q": "CLB có những ban nào?",
+          "a": "CLB MPC gồm nhiều ban chức năng: Ban Lập trình, Ban Sự kiện & Hậu cần, Ban Truyền thông, Ban Học thuật... Mỗi ban phụ trách các hoạt động khác nhau và bạn có thể chọn ban phù hợp với sở thích."
+        },
+        {
+          "q": "Sinh viên ngoài Khoa CNTT có tham gia được không?",
+          "a": "CLB ưu tiên sinh viên Khoa CNTT nhưng cũng rất hoan nghênh các bạn sinh viên đến từ các khoa khác có đam mê với lập trình và công nghệ."
+        }
+      ]
+    },
+    "members": {
+      "title": "Thành viên CLB",
+      "description": "Danh sách tất cả thành viên đang hoạt động của CLB. Để cập nhật hồ sơ của bạn, vui lòng truy cập"
+    }
+  },
+  "profile": {
+    "title": "Trang cá nhân",
+    "pageTitle": "Trang cá nhân",
+    "pageDesc": "Quản lý hồ sơ công khai và các liên kết mạng xã hội của bạn.",
+    "description": "Thông tin hiện tại của bạn.",
+    "loginWith": "Đăng nhập bằng",
+    "form": {
+      "submit": "Lưu thay đổi",
+      "submitting": "Đang lưu...",
+      "firstName": "Tên",
+      "middleName": "Tên đệm",
+      "lastName": "Họ",
+      "bio": "Giới thiệu bản thân",
+      "bioPlaceholder": "Đôi nét về bản thân...",
+      "spotifyUri": "Spotify Link / URI (Nhạc yêu thích)",
+      "spotifyPlaceholder": "Ví dụ: https://open.spotify.com/track/...",
+      "linkGithub": "Liên kết Github",
+      "linkedGithub": "Hủy liên kết Github",
+      "linkingGithub": "Đang thao tác...",
+      "linkGithubDesc": "Liên kết tài khoản Github để đăng nhập nhanh hơn.",
+      "linkedGithubDesc": "Tài khoản Github của bạn đã được liên kết thành công để đăng nhập.",
+      "ssoSyncNote": "Thông tin cá nhân được đồng bộ tự động với cổng SSO.",
+      "dob": "Ngày sinh",
+      "showDob": "Hiển thị ngày sinh trên hồ sơ công khai",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "0901234567",
+      "showPhone": "Hiển thị số điện thoại trên hồ sơ công khai",
+      "studentId": "Mã số sinh viên",
+      "studentIdPlaceholder": "22110xxx",
+      "showStudentId": "Hiển thị MSSV trên hồ sơ công khai",
+      "slug": "Slug (URL cá nhân)",
+      "slugHint": "Chữ thường, số, -, _. Không dùng \"me\".",
+      "slugPlaceholder": "ten-cua-ban",
+      "personalInfoTitle": "Thông tin cá nhân",
+      "personalInfoDesc": "Họ tên, slug, và các thông tin cơ bản.",
+      "avatarTitle": "Ảnh đại diện & Ảnh bìa",
+      "avatarDesc": "Ảnh đại diện và ảnh bìa hiển thị trên trang hồ sơ của bạn.",
+      "avatarLabel": "Ảnh đại diện",
+      "coverLabel": "Ảnh bìa",
+      "avatarHint": "JPG, PNG, WebP · max 3MB · Khung hình vuông",
+      "coverHint": "JPG, PNG, WebP · max 5MB",
+      "removeAvatar": "Xóa",
+      "removeCover": "Xóa",
+      "changeAvatar": "Đổi ảnh",
+      "changeCover": "Đổi ảnh bìa",
+      "addCover": "Thêm ảnh bìa",
+      "saveSsoField": "Lưu thông tin",
+      "ssoUpdateSuccess": "Đã cập nhật thành công",
+      "ssoUpdateError": "Không thể cập nhật thông tin lên SSO",
+      "cancel": "Hủy",
+      "socialsTitle": "Mạng xã hội",
+      "socialsDesc": "Các liên kết mạng xã hội và trang cá nhân.",
+      "addSocial": "Thêm liên kết",
+      "platform": "Nền tảng",
+      "url": "URL hoặc username",
+      "urlPlaceholder": "URL hoặc username",
+      "securityTitle": "Bảo mật & Liên kết",
+      "securityDesc": "Quản lý phương thức đăng nhập và bảo mật tài khoản.",
+      "manageOnSso": "Quản lý trên cổng SSO",
+      "manageOnSsoDesc": "Đổi mật khẩu, xác thực 2 bước và các cài đặt bảo mật khác.",
+      "clubRoleTitle": "Vai trò trong CLB",
+      "clubRoleDesc": "Các vai trò và nhiệm kỳ của bạn trong câu lạc bộ."
+    },
+    "memberCard": {
+      "title": "Thẻ của tôi",
+      "downloadFront": "Tải mặt trước",
+      "downloadBack": "Tải mặt sau",
+      "front": "Mặt trước",
+      "back": "Mặt sau",
+      "orientation": "Chiều dọc",
+      "clubName": "Mobile Programing Club",
+      "cardTitle": "Thẻ Thành Viên",
+      "faculty": "Khoa",
+      "IT": "Công nghệ thông tin",
+      "unknownRole": "Thành viên",
+      "studentId": "MSSV",
+      "joinedYear": "Tham gia năm",
+      "notAuthorized": "Bạn phải là thành viên CLB để xem thẻ này."
+    }
+  },
+  "clubUniform": {
+    "badge": "Đồng phục",
+    "title": "Áo Câu Lạc Bộ",
+    "description": "Thiết kế áo đồng phục chính thức của câu lạc bộ. Lấy cảm hứng từ sự năng động và nhiệt huyết của tuổi trẻ. Tương tác 3D để thu phóng và xoay thiết kế."
+  },
+  "achievements": {
+    "title": "Thành tựu",
+    "description": "Những thành tựu, giải thưởng và cột mốc đáng tự hào trong suốt chặng đường phát triển của câu lạc bộ.",
+    "hallOfFame": "Bảng vàng thành tích",
+    "hallOfFameTitle": "Danh sách bảng vàng",
+    "hallOfFameDesc": "Bảng vàng thành tích — xếp theo số thành tựu",
+    "articlesTitle": "Bài viết thành tích",
+    "highlight": "⭐ Nổi bật",
+    "individual": "Cá nhân",
+    "team": "Nhóm",
+    "collective": "Tập thể",
+    "emptyData": "Chưa có thành tựu nào được cập nhật.",
+    "backToList": "Trở lại bảng vàng",
+    "galleryTitle": "Hình ảnh",
+    "infoTitle": "Thông tin thành tựu",
+    "recognizedDate": "Ngày ghi nhận",
+    "typeLabel": "Phân loại",
+    "evidenceLink": "Liên kết minh chứng",
+    "otherAchievements": "Thành tựu khác",
+    "club": "Toàn CLB",
+    "badgeLabel": "Thành tựu",
+    "leadership": {
+      "emptyData": "Chưa có dữ liệu thành viên ban điều hành.",
+      "leader": "Lãnh đạo",
+      "termHistory": "> LỊCH SỬ NHIỆM KỲ",
+      "present": "Hiện tại",
+      "viewProfile": "TRUY XUẤT HỒ SƠ",
+      "achievementsCount": "Thành tựu",
+      "projectsCount": "Dự án",
+      "positions": {
+        "PRESIDENT": "Chủ nhiệm CLB",
+        "VICE_PRESIDENT": "Phó chủ nhiệm",
+        "DEPARTMENT_LEADER": "Trưởng ban",
+        "DEPARTMENT_VICE_LEADER": "Phó ban",
+        "ADVISOR": "Cố vấn"
+      }
+    },
+    "honoredMembers": "Thành viên vinh danh",
+    "noHonorImage": "Chưa có hình ảnh vinh danh"
+  },
+  "trainingPage": {
+    "hero": {
+      "badge": "EDUCATION & DEVELOPMENT",
+      "title": "TRAINING",
+      "description": "Mô hình đào tạo nội bộ bài bản, kết hợp học thuật và thực chiến, giúp sinh viên làm chủ công nghệ và tự tin kiến tạo sản phẩm."
+    },
+    "featuredProjects": {
+      "title": "Dự án nổi bật",
+      "description": "Sản phẩm thực tế do chính các thành viên Câu lạc bộ nghiên cứu và phát triển",
+      "viewAll": "Xem tất cả dự án",
+      "noDescription": "Chưa có mô tả."
+    },
+    "roadmapTitle": "Lộ Trình Đào Tạo Chi Tiết",
+    "roadmapDesc": "Lộ trình được thiết kế tối ưu hóa qua từng học kỳ, bám sát chương trình đào tạo của Khoa và nhu cầu thực tiễn.",
+    "phases": {
+      "phase1": {
+        "title": "KĨ THUẬT LẬP TRÌNH",
+        "subtitle": "Học kỳ 1 - 2",
+        "description": "Ôn tập kiến thức cơ bản, tư duy logic, cấu trúc dữ liệu và giải thuật căn bản."
+      },
+      "phase2": {
+        "title": "LẬP TRÌNH WEB",
+        "subtitle": "Học kỳ 3",
+        "description": "Đào tạo các kiến thức liên quan đến phát triển giao diện Web từ cơ bản đến nâng cao."
+      },
+      "phase3": {
+        "title": "LẬP TRÌNH OOP",
+        "subtitle": "Học kỳ 4",
+        "description": "Thấu hiểu và áp dụng mô hình lập trình hướng đối tượng, nền tảng của các hệ thống lớn."
+      },
+      "phase4": {
+        "title": "ỨNG DỤNG & DỰ ÁN",
+        "subtitle": "Học kỳ 5",
+        "description": "Hiện thực hóa ý tưởng thành sản phẩm hoàn chỉnh, triển khai thực tế và làm việc nhóm chuyên nghiệp."
+      }
+    },
+    "methodologyTitle": "Các phương pháp chính",
+    "methodologyDesc": "Môi trường học tập chủ động, thực tiễn và liên tục cập nhật để phù hợp với yêu cầu thực tế của doanh nghiệp.",
+    "pillars": {
+      "peer": {
+        "title": "Sinh viên peer Sinh viên",
+        "description": "Mô hình Mentorship kèm cặp 1-1. Đội ngũ Mentor là các khóa trước giàu kinh nghiệm hỗ trợ Mentee vượt qua các rào cản học thuật và kỹ năng lập trình."
+      },
+      "project": {
+        "title": "Học qua làm dự án",
+        "description": "Vận dụng lý thuyết vào thực chiến. Xây dựng các sản phẩm thực tế của CLB, rèn luyện tư duy thiết kế hệ thống, quản lý công việc và phối hợp Git/GitHub."
+      },
+      "seminar": {
+        "title": "Hội thảo chuyên đề",
+        "description": "Các buổi Seminar chia sẻ tri thức định kỳ. Ôn thi môn học trên lớp, giới thiệu công nghệ mới nổi và rèn luyện kỹ năng mềm thuyết trình trước đám đông."
+      }
+    },
+    "mentorsTitle": "Mentor & Ban Cố Vấn",
+    "mentorsDesc": "Những người đồng hành, hỗ trợ và cố vấn chuyên môn trực tiếp cho các hoạt động học tập tại CLB.",
+    "mentorsPlaceholderTitle": "Đang cập nhật danh sách Mentor",
+    "mentorsPlaceholderDesc": "Ban Học thuật đang chuẩn bị đội ngũ Mentor, Ban cố vấn và Cựu thành viên xuất sắc cho kỳ tuyển sinh đào tạo mới. Danh sách chi tiết sẽ sớm được công bố tại đây!",
+    "resourcesTitle": "Tài Nguyên Học Tập",
+    "resourcesSub": "Hệ thống tài liệu nội bộ",
+    "resourcesCardTitle": "Kho Học Tập Trực Tuyến",
+    "resourcesCardDesc": "Truy cập hệ thống tài nguyên học tập, slide bài giảng, đề thi mẫu và tài liệu lập trình do Ban Học thuật MPC tổng hợp và biên soạn kỹ lưỡng.",
+    "resourcesBtn": "Truy cập Kho tài liệu",
+    "ctaTitle": "Đồng hành cùng MPC",
+    "ctaHeading": "Tham Gia Trở Thành Mentor Hoặc Đăng Ký Host Seminar",
+    "ctaDesc": "Nếu bạn muốn đóng góp cho sự phát triển của cộng đồng sinh viên công nghệ, chia sẻ kiến thức của bản thân hoặc đăng ký một chuyên đề seminar, hãy kết nối ngay với chúng tôi.",
+    "ctaRegNow": "Đăng ký ngay",
+    "ctaContactEmail": "Liên hệ qua Email",
+    "ctaContactEmailBtn": "Gửi Email liên hệ",
+    "ctaClosedMsg": "* Hiện tại Form đăng ký online đang đóng. Vui lòng liên hệ trực tiếp qua Email của CLB."
+  },
+  "aboutPage": {
+    "hero": {
+      "badge": "about_mpc",
+      "title": "Câu Lạc Bộ Lập Trình Trên Thiết Bị Di Động",
+      "subtitle": "OU Mobile Programming Club (MPC) trực thuộc",
+      "facultyName": "Khoa Công Nghệ Thông Tin - Đại Học Mở TP.HCM"
+    },
+    "mission": {
+      "title": "Sứ mệnh & Mục đích",
+      "description": "Chúng tôi hướng tới việc xây dựng một cộng đồng học thuật năng động, thực tế và gắn kết, nơi sinh viên có thể chia sẻ kiến thức, rèn luyện kỹ năng và chuẩn bị vững vàng cho sự nghiệp.",
+      "cards": [
+        {
+          "title": "Hội thảo học thuật",
+          "desc": "Tổ chức các buổi Hội thảo chia sẻ tri thức nhằm ôn tập kiến thức các môn Lập trình cơ bản cho sinh viên."
+        },
+        {
+          "title": "Mô hình cố vấn",
+          "desc": "Thành lập các nhóm học tập dưới dạng mô hình \"Sinh viên là cố vấn học tập\", thường xuyên tổ chức các buổi họp nhóm, nhằm giúp đỡ các bạn học chưa tốt theo kịp các môn học lập trình cơ bản."
+        },
+        {
+          "title": "Đào tạo di động & Web",
+          "desc": "Tổ chức training cho thành viên về lập trình trên các thiết bị di động, bao gồm lập trình web, web app, lập trình android."
+        },
+        {
+          "title": "Cuộc thi & Ngoại khóa",
+          "desc": "Tổ chức các Cuộc thi học thuật ứng dụng kiến thức chuyên môn, kết hợp các hoạt động ngoại khóa, tạo động lực cho sinh viên học lập trình như Web design, ROBOCODE, …"
+        }
+      ],
+      "fanpage": "Fanpage",
+      "email": "Email",
+      "github": "GitHub"
+    },
+    "fields": {
+      "badge": "training",
+      "title": "Lĩnh vực hoạt động",
+      "description": "Câu lạc bộ thường xuyên tổ chức các buổi đào tạo chuyên sâu về các công nghệ hiện đại và thuật toán căn bản.",
+      "web": {
+        "title": "Web / WebApp",
+        "desc": "Phát triển Web hiện đại, tối ưu hóa giao diện (UI/UX) và trải nghiệm Frontend/Backend hoàn chỉnh với React, Next.js, Node.js."
+      },
+      "dsa": {
+        "title": "Thuật toán DSA",
+        "desc": "Rèn luyện kỹ năng tư duy lập trình chuyên sâu, tối ưu cấu trúc dữ liệu, giải thuật thi đấu thuật toán và lập trình hướng đối tượng."
+      },
+      "ai": {
+        "title": "Ứng dụng AI",
+        "desc": "Khám phá và ứng dụng Trí tuệ nhân tạo, Machine Learning và xử lý dữ liệu vào các dự án thực tế."
+      },
+      "android": {
+        "title": "Lập trình Android",
+        "desc": "Xây dựng ứng dụng di động native cho Android và các nền tảng cross-platform, tối ưu hóa phần cứng và trải nghiệm người dùng."
+      }
+    },
+    "topMembers": {
+      "badge": "top_members",
+      "title": "Những thành viên nhiều thành tựu nhất",
+      "viewDetail": "Xem chi tiết",
+      "member": "Thành viên"
+    },
+    "recentEvents": {
+      "badge": "recent_events",
+      "title": "Sự kiện mới nhất",
+      "description": "Cập nhật những hoạt động nổi bật của câu lạc bộ.",
+      "viewAll": "Xem tất cả sự kiện",
+      "viewDetail": "Xem chi tiết",
+      "noDescription": "Chưa có mô tả ngắn về sự kiện này.",
+      "status": {
+        "UPCOMING": "Sắp diễn ra",
+        "ONGOING": "Đang diễn ra",
+        "COMPLETED": "Đã diễn ra"
+      }
+    },
+    "leadership": {
+      "button": "Mở gia phả Ban Điều Hành",
+      "dialogTitle": "Lịch sử Ban Điều Hành",
+      "term": "Nhiệm kỳ {year}",
+      "empty": "Chưa có dữ liệu lịch sử."
+    },
+    "departments": {
+      "badge": "Department",
+      "missionsLabel": "Nhiệm vụ chính"
+    }
+  },
+  "membersPage": {
+    "hero": {
+      "badge": "MPC ACTIVE NETWORK",
+      "title": "Thành viên",
+      "description": "Danh sách các thành viên đã và đang đồng hành cùng sự phát triển của câu lạc bộ qua từng năm."
+    },
+    "membersCount": "{count} thành viên",
+    "empty": "Chưa có dữ liệu thành viên.",
+    "viewDetail": "Xem chi tiết"
+  },
+  "userMenu": {
+    "myBlogs": "Bài viết của tôi",
+    "logoutDialog": {
+      "title": "Xác nhận đăng xuất",
+      "description": "Bạn có chắc muốn đăng xuất khỏi tài khoản không?",
+      "cancel": "Huỷ",
+      "confirm": "Đăng xuất"
+    },
+    "roles": {
+      "ADMIN": "Quản trị viên",
+      "COLLABORATOR": "Cộng tác viên",
+      "MEMBER": "Thành viên",
+      "GUEST": "Khách"
+    },
+    "positions": {
+      "PRESIDENT": "Chủ nhiệm CLB",
+      "VICE_PRESIDENT": "Phó chủ nhiệm",
+      "DEPARTMENT_LEADER": "Trưởng ban",
+      "DEPARTMENT_VICE_LEADER": "Phó ban",
+      "DEPARTMENT_MEMBER": "Thành viên ban",
+      "COLLABORATOR": "Cộng tác viên",
+      "ADVISOR": "Cố vấn"
+    }
+  },
+  "projects": {
+    "badge": "PORTFOLIO & PRODUCTS",
+    "title": "Dự án của chúng tôi",
+    "description": "Tuyển tập các sản phẩm, ứng dụng thực tế do chính các thành viên Câu lạc bộ nghiên cứu và phát triển.",
+    "footerTitle": "Bạn muốn tham gia dự án cùng chúng tôi?",
+    "footerDesc": "Chúng tôi luôn chào đón những thành viên đam mê lập trình, thiết kế và sáng tạo. Hãy kết nối để cùng nhau xây dựng những sản phẩm tuyệt vời!",
+    "contactFacebook": "Liên hệ qua Facebook",
+    "exploreGithub": "Khám phá thêm trên GitHub",
+    "emptyData": "Chưa có dự án nào được đăng tải.",
+    "noDescription": "Chưa có mô tả.",
+    "backToList": "Trở lại danh sách dự án",
+    "galleryTitle": "Hình ảnh",
+    "sourceCode": "Mã nguồn",
+    "viewWebsite": "Xem Website",
+    "viewVideo": "Xem Video",
+    "noDetail": "Chưa có thông tin chi tiết về dự án này.",
+    "teamTitle": "Đội ngũ phát triển",
+    "present": "Hiện tại",
+    "otherProjects": {
+      "badge": "dự_án_khác",
+      "title": "Dự án khác",
+      "subtitle": "Khám phá thêm các dự án khác của CLB"
+    },
+    "goldBoard": {
+      "badge": "bảng_vàng",
+      "title": "Bảng vàng thành tích",
+      "subtitle": "Những thành viên xuất sắc với nhiều thành tựu nhất",
+      "achievements": "thành tựu",
+      "projects": "dự án",
+      "viewProfile": "Xem trang cá nhân",
+      "modalTitle": "Thành tựu của",
+      "noAchievements": "Chưa có thành tựu nào."
+    }
+  },
+  "blogs": {
+    "badge": "GÓC CHIA SẺ & KIẾN THỨC",
+    "title": "Góc chia sẻ",
+    "description": "Góc chia sẻ kiến thức lập trình, kinh nghiệm thực chiến và tin tức công nghệ từ các thành viên MPC.",
+    "emptyData": "Chưa có bài viết nào được đăng tải.",
+    "noDescription": "Chưa có nội dung mô tả ngắn cho bài viết này.",
+    "readMore": "Đọc tiếp",
+    "backToBlogs": "Trở lại góc chia sẻ",
+    "backToEvents": "Trở lại sự kiện",
+    "backToAchievements": "Trở lại thành tích",
+    "noThumbnail": "Không có ảnh bìa",
+    "relatedBlogsTitle": "Gợi ý đọc thêm",
+    "eventInfo": "Thông tin sự kiện",
+    "achievementInfo": "Thông tin thành tựu",
+    "dateRecorded": "Ngày ghi nhận",
+    "typeLabel": "Loại",
+    "relatedLink": "Liên kết tham khảo",
+    "honoredMembers": "Thành viên được vinh danh",
+    "badgeBlog": "Bài viết",
+    "badgeEvent": "Sự kiện",
+    "badgeAchievement": "Thành tựu",
+    "highlighted": "Nổi bật",
+    "eventStatus": {
+      "upcoming": "Sắp diễn ra",
+      "ongoing": "Đang diễn ra",
+      "completed": "Đã kết thúc",
+      "cancelled": "Đã hủy"
+    },
+    "eventType": {
+      "academic": "Cuộc thi học thuật",
+      "member_activity": "Hoạt động thành viên",
+      "volunteer": "Hoạt động tình nguyện",
+      "seminar": "Hội thảo / Seminar",
+      "other": "Khác"
+    },
+    "achievementType": {
+      "individual": "Cá nhân",
+      "team": "Nhóm",
+      "club": "Toàn CLB"
+    }
+  },
+  "seo": {
+    "home": {
+      "title": "Trang chủ – CLB MPC",
+      "description": "Câu lạc bộ Lập trình trên Thiết bị Di động — Khoa CNTT, Trường Đại học Mở TP.HCM"
+    },
+    "about": {
+      "title": "Về chúng tôi",
+      "description": "Tìm hiểu về Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) — Sứ mệnh, lĩnh vực hoạt động và đội ngũ"
+    },
+    "events": {
+      "title": "Sự kiện",
+      "description": "Các sự kiện sắp tới và đã diễn ra của câu lạc bộ MPClub"
+    },
+    "eventDetail": {
+      "title": "Sự kiện",
+      "description": "Sự kiện của câu lạc bộ MPC"
+    },
+    "projects": {
+      "title": "Dự án",
+      "description": "Những dự án thực tế do chính sinh viên MPClub thực hiện"
+    },
+    "projectDetail": {
+      "title": "Dự án",
+      "description": "Dự án của câu lạc bộ MPC"
+    },
+    "members": {
+      "title": "Thành viên",
+      "description": "Danh sách thành viên câu lạc bộ MPClub, những người đã và đang cùng nhau xây dựng cộng đồng"
+    },
+    "memberDetail": {
+      "title": "Thành viên",
+      "description": "Hồ sơ thành viên MPClub"
+    },
+    "achievements": {
+      "title": "Thành tựu",
+      "description": "Những thành tựu, giải thưởng và cột mốc đáng tự hào của câu lạc bộ MPClub"
+    },
+    "sponsors": {
+      "title": "Nhà tài trợ",
+      "description": "Những đối tác và nhà tài trợ đồng hành cùng sự phát triển của MPClub"
+    },
+    "training": {
+      "title": "Đào tạo",
+      "description": "Hướng dẫn cơ bản, nhập môn lập trình, ôn tập các kiến thức liên quan đến ngành trong suốt quá trình học tập"
+    },
+    "activities": {
+      "title": "Hoạt động",
+      "description": "Các hoạt động nội bộ và đối ngoại của câu lạc bộ MPClub"
+    },
+    "blogs": {
+      "title": "Góc chia sẻ",
+      "description": "Tin tức công nghệ, kinh nghiệm lập trình từ các thành viên MPC"
+    },
+    "blogDetail": {
+      "title": "Bài viết",
+      "description": "Chi tiết bài viết"
+    },
+    "search": {
+      "title": "Tìm kiếm",
+      "description": "Tìm kiếm bài viết, sự kiện, dự án và thành viên của MPClub"
+    },
+    "departments-new": {
+      "title": "Thêm ban mới",
+      "description": "Tạo ban/phòng mới trong CLB MPC"
+    },
+    "departments-edit": {
+      "title": "Chỉnh sửa ban",
+      "description": "Cập nhật thông tin ban/phòng CLB MPC"
+    },
+    "activities-admin": {
+      "title": "Quản lý hoạt động",
+      "description": "Quản lý các hoạt động của CLB MPC"
+    },
+    "activities-new": {
+      "title": "Thêm hoạt động",
+      "description": "Tạo hoạt động mới cho CLB MPC"
+    },
+    "activities-edit": {
+      "title": "Chỉnh sửa hoạt động",
+      "description": "Cập nhật thông tin hoạt động CLB MPC"
+    },
+    "sponsors-edit": {
+      "title": "Chỉnh sửa nhà tài trợ",
+      "description": "Cập nhật thông tin nhà tài trợ CLB MPC"
+    },
+    "sponsors-new": {
+      "title": "Thêm nhà tài trợ",
+      "description": "Thêm nhà tài trợ mới cho CLB MPC"
+    },
+    "notFound": {
+      "event": "Không tìm thấy sự kiện",
+      "project": "Không tìm thấy dự án",
+      "member": "Không tìm thấy",
+      "profile": "Trang cá nhân",
+      "blog": "Không tìm thấy bài viết",
+      "achievement": "Không tìm thấy thành tích"
+    }
+  }
+}

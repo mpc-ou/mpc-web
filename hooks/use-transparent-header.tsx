@@ -42,8 +42,12 @@ type TransparentHeaderCtx = TransparentHeaderState & {
 const TransparentHeaderContext = createContext<TransparentHeaderCtx>({
   enabled: false,
   options: DEFAULT_OPTIONS,
-  enable: () => {},
-  disable: () => {}
+  enable: () => {
+    /* noop default */
+  },
+  disable: () => {
+    /* noop default */
+  }
 });
 
 /**

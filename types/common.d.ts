@@ -12,8 +12,25 @@ import type { Project } from "@/configs/prisma/generated/prisma/models";
 
 export type ProjectSummary = Pick<
   Project,
-  "id" | "title" | "slug" | "description" | "thumbnail" | "technologies"
->;
+  | "id"
+  | "title"
+  | "slug"
+  | "description"
+  | "thumbnail"
+  | "technologies"
+  | "startDate"
+  | "endDate"
+> & {
+  members?: Array<{
+    member: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      avatar: string | null;
+      slug: string;
+    };
+  }>;
+};
 
 export type SocialItem = {
   icon: string;

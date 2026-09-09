@@ -14,13 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model ClubRole
- * Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ theo thời gian)
- * Mỗi record = 1 giai đoạn giữ chức vụ. endAt = null nghĩa là đang đảm nhiệm.
- * 
- * VD: Nguyễn Triều từng là:
- * - Thành viên ban Lập trình (2022-2023)
- * - Trưởng ban Lập trình (2023-2024)  
- * - Chủ nhiệm CLB nhiệm kỳ 2024 (2024-now)
+ * Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ)
  */
 export type ClubRoleModel = runtime.Types.Result.DefaultSelection<Prisma.$ClubRolePayload>
 

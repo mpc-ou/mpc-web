@@ -1,82 +1,244 @@
-[
-  {
-    "vi": {
-      "q": "Lịch sử hình thành CLB MPC?",
-      "a": "CLB Lập trình trên thiết bị di động (Mobile Programming Club - MPC) được thành lập vào năm 2015. Ban đầu, CLB được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app,... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình."
+{
+  "_README": "FAQ mẫu cho website MPC — dùng KEY viết hoa làm target. Các dev/AI agent có thể sửa trực tiếp file này rồi bấm 'Ghi đè FAQ' trong Admin.",
+
+  "GENERAL": [
+    {
+      "vi": {
+        "q": "Khi nào CLB tổ chức tuyển thành viên?",
+        "a": "Dự kiến là trong HKI mỗi năm, tụi mình sẽ tổ chức tuyển thành viên nè! Bạn vui lòng truy cập vào Trang Facebook của CLB và theo dõi để cập nhật thông tin sớm nhất nhé!"
+      },
+      "en": {
+        "q": "When does the club recruit new members?",
+        "a": "We plan to recruit new members during the first semester of each year! Please visit our official Facebook page and follow us to get the latest updates!"
+      }
     },
-    "en": {
-      "q": "What is the history of MPC?",
-      "a": "The Mobile Programming Club (MPC) was established in 2015. Initially, the club was founded with the goal of creating an environment for learning, researching, and developing information technology — not only on mobile devices such as web, mobile apps, etc., but also in many other popular fields for IT students, as well as anyone who is passionate about programming."
-    }
-  },
-  {
-    "vi": {
-      "q": "Mục tiêu của CLB?",
-      "a": "Tổ chức các buổi Hội thảo chia sẻ tri thức nhằm ôn tập kiến thức các môn Lập trình cơ bản cho sinh viên. Thành lập các nhóm học tập dưới dạng mô hình \"Sinh viên là cố vấn học tập\", thường xuyên tổ chức các buổi họp nhóm, nhằm giúp đỡ các bạn học chưa tốt theo kịp các môn học lập trình cơ bản. Tổ chức training cho thành viên về lập trình trên các thiết bị di động, bao gồm lập trình web, web app, lập trình android. Tổ chức các Cuộc thi học thuật ứng dụng kiến thức chuyên môn, kết hợp các hoạt động ngoại khóa, tạo động lực cho sinh viên học lập trình như ROBOCODE, ..."
+    {
+      "vi": {
+        "q": "Không học CNTT có được tham gia CLB không?",
+        "a": "MPC là mái nhà chung của những sinh viên có đam mê lập trình, đến từ các ngành học kỹ thuật trong trường như: Công nghệ thông tin, An toàn hệ thống thông tin, Khoa học máy tính, Trí tuệ nhân tạo,... Ngoài ra, các bạn theo học khối ngành khác cũng sẽ có cơ hội tham gia vào MPC nếu có những kỹ năng về thiết kế đồ họa, truyền thông và tổ chức sự kiện."
+      },
+      "en": {
+        "q": "Can non-IT students join the club?",
+        "a": "MPC is a home for students passionate about programming, coming from various technical majors such as Information Technology, Information Security, Computer Science, Artificial Intelligence, etc. Additionally, students from other majors also have the opportunity to join MPC if they have skills in graphic design, media, and event organization."
+      }
     },
-    "en": {
-      "q": "What are the goals of the club?",
-      "a": "Organize knowledge-sharing workshops to review fundamental programming courses for students. Establish study groups under the \"Students as Academic Advisors\" model, regularly holding group meetings to help underperforming students keep up with basic programming courses. Provide training for members on mobile device programming, including web development, web apps, and Android development. Organize academic competitions applying specialized knowledge, combined with extracurricular activities, to motivate students to learn programming, such as ROBOCODE, etc."
-    }
-  },
-  {
-    "vi": {
-      "q": "Khi nào CLB tổ chức tuyển thành viên?",
-      "a": "Dự kiến là trong HKI mỗi năm, tụi mình sẽ tổ chức tuyển thành viên nè! Bạn vui lòng truy cập vào Trang Facebook của CLB và theo dõi để cập nhật thông tin sớm nhất nhé!"
+    {
+      "vi": {
+        "q": "Chưa biết gì về CNTT có thể tham gia vào CLB được không?",
+        "a": "Được chứ! MPC không yêu cầu thành viên phải có kiến thức chuyên môn về lập trình. Mục tiêu của CLB là tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin cho tất cả mọi người yêu thích lập trình."
+      },
+      "en": {
+        "q": "Can I join the club without any IT knowledge?",
+        "a": "Of course! MPC does not require members to have specialized programming knowledge. The club's goal is to create an environment for learning, researching, and developing information technology for everyone who is passionate about programming."
+      }
     },
-    "en": {
-      "q": "When does the club recruit new members?",
-      "a": "We plan to recruit new members during the first semester of each year! Please visit our official Facebook page and follow us to get the latest updates!"
+    {
+      "vi": {
+        "q": "Làm thế nào để có thể tham gia vào CLB?",
+        "a": "Mỗi năm CLB sẽ tổ chức buổi tuyển thành viên trên Page Facebook chính thức cũng như trên website của CLB. Bạn chỉ cần tham gia buổi tuyển thành viên, tham gia các hoạt động của CLB, thể hiện tinh thần học tập, sáng tạo, đam mê lập trình, bạn sẽ có cơ hội trở thành thành viên chính thức của CLB."
+      },
+      "en": {
+        "q": "How can I join the club?",
+        "a": "Each year, the club organizes member recruitment on its official Facebook page as well as on the club's website. You just need to participate in the recruitment event, engage in club activities, and demonstrate a spirit of learning, creativity, and passion for programming, and you will have the opportunity to become an official member of the club."
+      }
     }
-  },
-  {
-    "vi": {
-      "q": "Không học CNTT có được tham gia CLB không?",
-      "a": "MPC là mái nhà chung của những sinh viên có đam mê lập trình, đến từ các ngành học kỹ thuật trong trường như: Công nghệ thông tin, An toàn hệ thống thông tin, Khoa học máy tính, Trí tuệ nhân tạo,... Ngoài ra, các bạn theo học khối ngành khác cũng sẽ có cơ hội tham gia vào MPC nếu có những kỹ năng về thiết kế đồ họa, truyền thông và tổ chức sự kiện."
+  ],
+
+  "ABOUT": [
+    {
+      "vi": {
+        "q": "Lịch sử hình thành CLB MPC?",
+        "a": "CLB Lập trình trên thiết bị di động (Mobile Programming Club - MPC) được thành lập vào năm 2015. Ban đầu, CLB được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app,... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT."
+      },
+      "en": {
+        "q": "What is the history of MPC?",
+        "a": "The Mobile Programming Club (MPC) was established in 2015. Initially, the club was founded with the goal of creating an environment for learning, researching, and developing information technology — not only on mobile devices such as web, mobile apps, etc., but also in many other popular fields for IT students."
+      }
     },
-    "en": {
-      "q": "Can non-IT students join the club?",
-      "a": "MPC is a home for students passionate about programming, coming from various technical majors such as Information Technology, Information Security, Computer Science, Artificial Intelligence, etc. Additionally, students from other majors also have the opportunity to join MPC if they have skills in graphic design, media, and event organization."
-    }
-  },
-  {
-    "vi": {
-      "q": "Chưa biết gì về CNTT có thể tham gia vào CLB được không?",
-      "a": "Được chứ! MPC không yêu cầu thành viên phải có kiến thức chuyên môn về lập trình. Mục tiêu của CLB là tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app,... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình."
+    {
+      "vi": {
+        "q": "Mục tiêu của CLB?",
+        "a": "Tổ chức các buổi Hội thảo chia sẻ tri thức nhằm ôn tập kiến thức các môn Lập trình cơ bản cho sinh viên. Thành lập các nhóm học tập dưới dạng mô hình \"Sinh viên là cố vấn học tập\". Tổ chức training cho thành viên về lập trình trên các thiết bị di động. Tổ chức các Cuộc thi học thuật ứng dụng kiến thức chuyên môn như ROBOCODE."
+      },
+      "en": {
+        "q": "What are the goals of the club?",
+        "a": "Organize knowledge-sharing workshops to review fundamental programming courses for students. Establish study groups under the \"Students as Academic Advisors\" model. Provide training for members on mobile device programming. Organize academic competitions applying specialized knowledge, such as ROBOCODE."
+      }
     },
-    "en": {
-      "q": "Can I join the club without any IT knowledge?",
-      "a": "Of course! MPC does not require members to have specialized programming knowledge. The club's goal is to create an environment for learning, researching, and developing information technology — not only on mobile devices such as web, mobile apps, etc., but also in many other popular fields for IT students, as well as anyone who is passionate about programming."
-    }
-  },
-  {
-    "vi": {
-      "q": "Đến hiện tại, CLB đã và đang có bao nhiêu thành viên?",
-      "a": "Hiện tại, CLB MPC có khoảng 50 thành viên chính thức, trong đó nhóm khoa CNTT chiếm đa số."
+    {
+      "vi": {
+        "q": "Mô hình tổ chức của CLB?",
+        "a": "CLB hiện tại đang chia thành 4 ban chính bao gồm: Ban Chủ nhiệm: Quản lý mọi hoạt động trong CLB. Ban Hậu cần: Quản lý, tổ chức các hoạt động, trang trí, tài chính, vận động tài trợ. Ban Lập trình: Tổ chức các buổi training, học tập, thực hành lập trình. Ban Truyền thông: Quản lý các hoạt động truyền thông, PR, thiết kế, quay phim, chụp ảnh."
+      },
+      "en": {
+        "q": "What is the organizational structure of the club?",
+        "a": "The club is currently divided into 4 main departments: Executive Board: Manages all club activities. Logistics Department: Manages and organizes activities, decorations, finances, and sponsorship outreach. Programming Department: Organizes training sessions, study groups, and programming practice. Communications Department: Manages media activities, PR, design, filming, and photography."
+      }
     },
-    "en": {
-      "q": "How many members does the club currently have?",
-      "a": "Currently, MPC has approximately 50 official members, with the majority being from the IT faculty."
+    {
+      "vi": {
+        "q": "Đến hiện tại, CLB đã và đang có bao nhiêu thành viên?",
+        "a": "Hiện tại, CLB MPC có khoảng 50 thành viên chính thức, trong đó nhóm khoa CNTT chiếm đa số."
+      },
+      "en": {
+        "q": "How many members does the club currently have?",
+        "a": "Currently, MPC has approximately 50 official members, with the majority being from the IT faculty."
+      }
     }
-  },
-  {
-    "vi": {
-      "q": "Mô hình tổ chức của CLB?",
-      "a": "CLB hiện tại đang chia thành 4 ban chính bao gồm: Ban Chủ nhiệm: Quản lý mọi hoạt động trong CLB. Ban Hậu cần: Quản lý, tổ chức các hoạt động, trang trí, tài chính, vận động tài trợ. Ban Lập trình: Tổ chức các buổi training, học tập, thực hành lập trình. Ban Truyền thông: Quản lý các hoạt động truyền thông, PR, thiết kế, quay phim, chụp ảnh."
+  ],
+
+  "TRAINING": [
+    {
+      "vi": {
+        "q": "CLB đào tạo những gì?",
+        "a": "MPC tổ chức training cho thành viên về nhiều mảng công nghệ: lập trình web (HTML/CSS, JavaScript, React, Next.js), lập trình di động (Flutter, React Native), DevOps cơ bản, UI/UX Design, và các kỹ năng mềm cần thiết cho lập trình viên."
+      },
+      "en": {
+        "q": "What does the club train?",
+        "a": "MPC organizes training for members across many technology areas: web development (HTML/CSS, JavaScript, React, Next.js), mobile development (Flutter, React Native), basic DevOps, UI/UX Design, and essential soft skills for developers."
+      }
     },
-    "en": {
-      "q": "What is the organizational structure of the club?",
-      "a": "The club is currently divided into 4 main departments: Executive Board: Manages all club activities. Logistics Department: Manages and organizes activities, decorations, finances, and sponsorship outreach. Programming Department: Organizes training sessions, study groups, and programming practice. Communications Department: Manages media activities, PR, design, filming, and photography."
-    }
-  },
-  {
-    "vi": {
-      "q": "Làm thế nào để có thể tham gia vào CLB?",
-      "a": "Mỗi năm CLB sẽ tổ chức buổi tuyển thành viên trên Page Facebook chính thức cũng như trên website của CLB. Bạn chỉ cần tham gia buổi tuyển thành viên, tham gia các hoạt động của CLB, thể hiện tinh thần học tập, sáng tạo, đam mê lập trình, bạn sẽ có cơ hội trở thành thành viên chính thức của CLB."
+    {
+      "vi": {
+        "q": "Lộ trình đào tạo có dài không?",
+        "a": "Lộ trình training thường kéo dài từ 8-12 tuần với các buổi học vào cuối tuần. Mỗi buổi kéo dài khoảng 2-3 tiếng, kết hợp lý thuyết và thực hành trực tiếp trên dự án."
+      },
+      "en": {
+        "q": "How long is the training roadmap?",
+        "a": "The training roadmap typically lasts 8-12 weeks with sessions on weekends. Each session lasts about 2-3 hours, combining theory and hands-on practice on real projects."
+      }
     },
-    "en": {
-      "q": "How can I join the club?",
-      "a": "Each year, the club organizes member recruitment on its official Facebook page as well as on the club's website. You just need to participate in the recruitment event, engage in club activities, and demonstrate a spirit of learning, creativity, and passion for programming, and you will have the opportunity to become an official member of the club."
+    {
+      "vi": {
+        "q": "Mentor hướng dẫn là ai?",
+        "a": "Mentor hướng dẫn là các thành viên cốt cán, cựu thành viên CLB đã có kinh nghiệm làm việc thực tế trong ngành IT hoặc các giảng viên được mời từ Khoa CNTT Trường Đại học Mở TP.HCM."
+      },
+      "en": {
+        "q": "Who are the mentors?",
+        "a": "Mentors are core members, alumni who have practical experience working in the IT industry, or lecturers invited from the Faculty of Information Technology at Ho Chi Minh City Open University."
+      }
     }
-  }
-]
+  ],
+
+  "WEBDESIGN": [
+    {
+      "vi": {
+        "q": "Cuộc thi WebDesign Competition là gì?",
+        "a": "WebDesign Competition là cuộc thi thiết kế và lập trình website thường niên do CLB MPC tổ chức, dành cho sinh viên toàn trường. Cuộc thi tạo sân chơi để sinh viên thể hiện kỹ năng lập trình web, thiết kế giao diện, tư duy sáng tạo và khả năng làm việc nhóm."
+      },
+      "en": {
+        "q": "What is the WebDesign Competition?",
+        "a": "WebDesign Competition is an annual web design and development contest organized by MPC club, open to all university students. The competition creates a playground for students to showcase their web programming skills, UI design, creative thinking, and teamwork abilities."
+      }
+    },
+    {
+      "vi": {
+        "q": "Ai có thể tham gia cuộc thi WebDesign?",
+        "a": "Tất cả sinh viên đang theo học tại Trường Đại học Mở TP.HCM đều có thể đăng ký tham gia. Mỗi đội gồm 2-4 thành viên, có thể đến từ các khoa khác nhau."
+      },
+      "en": {
+        "q": "Who can participate in the WebDesign competition?",
+        "a": "All students currently enrolled at Ho Chi Minh City Open University can register to participate. Each team consists of 2-4 members, who can come from different faculties."
+      }
+    },
+    {
+      "vi": {
+        "q": "Tiêu chí chấm điểm cuộc thi WebDesign?",
+        "a": "Tiêu chí chấm điểm bao gồm: Thiết kế giao diện (UI/UX), tính năng và hoàn thiện sản phẩm, sáng tạo và ý tưởng, khả năng responsive, hiệu suất tải trang, và phần thuyết trình bảo vệ sản phẩm trước ban giám khảo."
+      },
+      "en": {
+        "q": "What are the judging criteria for the WebDesign competition?",
+        "a": "Judging criteria include: UI/UX design, features and product completeness, creativity and ideas, responsiveness, page load performance, and the product defense presentation before the judges."
+      }
+    }
+  ],
+
+  "SPONSOR": [
+    {
+      "vi": {
+        "q": "Làm thế nào để trở thành nhà tài trợ của MPC?",
+        "a": "Doanh nghiệp và tổ chức có thể liên hệ trực tiếp qua email hoặc fanpage chính thức của CLB. Ban Chủ nhiệm sẽ gửi bản đề xuất tài trợ chi tiết bao gồm quyền lợi và các gói hợp tác phù hợp."
+      },
+      "en": {
+        "q": "How can I become a sponsor of MPC?",
+        "a": "Businesses and organizations can contact us directly via email or our official fanpage. The Executive Board will send a detailed sponsorship proposal including benefits and suitable partnership packages."
+      }
+    },
+    {
+      "vi": {
+        "q": "Nhà tài trợ được quyền lợi gì?",
+        "a": "Nhà tài trợ sẽ được quảng bá thương hiệu trên các kênh truyền thông của CLB (website, fanpage, ấn phẩm sự kiện), logo trên backdrop và banner sự kiện, quyền tuyển dụng ưu tiên thành viên CLB, cùng các quyền lợi khác tùy thuộc vào gói tài trợ."
+      },
+      "en": {
+        "q": "What benefits do sponsors receive?",
+        "a": "Sponsors receive brand promotion across the club's media channels (website, fanpage, event publications), logo placement on event backdrops and banners, priority recruitment access to club members, and other benefits depending on the sponsorship package."
+      }
+    }
+  ],
+
+  "ACTIVITIES": [
+    {
+      "vi": {
+        "q": "CLB có những hoạt động ngoại khóa nào?",
+        "a": "Ngoài các hoạt động chuyên môn, CLB còn tổ chức nhiều hoạt động ngoại khóa như: Sinh nhật CLB, Team building, Hoạt động tình nguyện, Offline giao lưu giữa các thành viên, và các sự kiện kết hợp với các CLB bạn trong trường."
+      },
+      "en": {
+        "q": "What extracurricular activities does the club have?",
+        "a": "Besides professional activities, the club also organizes many extracurricular activities such as: Club birthday celebrations, Team building events, Volunteering activities, Member meetups, and collaborative events with partner clubs at the university."
+      }
+    },
+    {
+      "vi": {
+        "q": "Có phải đóng phí sinh hoạt CLB không?",
+        "a": "CLB có thu một khoản phí sinh hoạt nhỏ hằng năm để duy trì các hoạt động chung. Mức phí sẽ được thông báo cụ thể vào đầu mỗi năm học và phụ thuộc vào kế hoạch hoạt động của năm đó."
+      },
+      "en": {
+        "q": "Is there a club membership fee?",
+        "a": "The club collects a small annual activity fee to maintain general operations. The fee amount will be announced at the beginning of each academic year and depends on that year's activity plan."
+      }
+    },
+    {
+      "vi": {
+        "q": "CLB có tổ chức Robocode không?",
+        "a": "Có! Robocode là cuộc thi lập trình robot ảo thường niên do MPC tổ chức. Đây là sân chơi giúp sinh viên rèn luyện tư duy logic, thuật toán và chiến thuật thông qua việc lập trình các robot tham gia đấu trường ảo."
+      },
+      "en": {
+        "q": "Does the club organize Robocode?",
+        "a": "Yes! Robocode is an annual virtual robot programming competition organized by MPC. It's a playground that helps students practice logical thinking, algorithms, and strategy through programming robots that compete in a virtual arena."
+      }
+    }
+  ],
+
+  "PROJECTS": [
+    {
+      "vi": {
+        "q": "Làm thế nào để tôi có thể đăng ký tham gia phát triển dự án của CLB?",
+        "a": "Các thành viên CLB có thể đăng ký tham gia các dự án thực tế bằng cách liên hệ Ban Chủ nhiệm hoặc theo dõi các đợt tuyển quân phát triển sản phẩm của Ban Lập trình. Các bạn sẽ được phỏng vấn nhẹ để chọn vị trí phù hợp (Frontend, Backend, Design, Tester)."
+      },
+      "en": {
+        "q": "How can I register to participate in developing the club's projects?",
+        "a": "Club members can register to participate in real projects by contacting the Executive Board or following the recruitment calls for product development from the Programming Department. You will have a light interview to select the right position (Frontend, Backend, Design, Tester)."
+      }
+    },
+    {
+      "vi": {
+        "q": "Tôi có được hỗ trợ hay đào tạo gì khi tham gia làm dự án không?",
+        "a": "Có! Khi tham gia dự án, bạn sẽ được hướng dẫn trực tiếp từ các anh chị khóa trước có kinh nghiệm (Mentors). Bạn cũng sẽ được tiếp cận với quy trình làm việc chuyên nghiệp (Git, Scrum/Agile) và các công nghệ hiện đại."
+      },
+      "en": {
+        "q": "Will I receive support or training when participating in projects?",
+        "a": "Yes! When joining a project, you will be directly guided by experienced senior members (Mentors). You will also get access to professional workflows (Git, Scrum/Agile) and modern technologies."
+      }
+    },
+    {
+      "vi": {
+        "q": "Các sản phẩm của CLB có được phát hành rộng rãi không?",
+        "a": "Có, hầu hết các ứng dụng hữu ích (như Portal CLB, Extension hỗ trợ học tập) đều được triển khai sử dụng thực tế cho sinh viên trong trường hoặc đưa lên GitHub dưới dạng mã nguồn mở."
+      },
+      "en": {
+        "q": "Are the club's products widely released?",
+        "a": "Yes, most useful applications (such as the Club Portal, Academic Support Extension) are deployed for practical use by students in the school or put on GitHub as open source."
+      }
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "siteName": "MPC"
+  },
+  "common": {
+    "locale": {
+      "en": "Tiếng Anh",
+      "vi": "Tiếng Việt",
+      "select": "Chọn ngôn ngữ"
+    },
+    "theme": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống",
+      "toggle": "Đổi chủ đề"
+    },
+    "nav": {
+      "login": "Đăng nhập",
+      "logout": "Đăng xuất",
+      "home": "Trang chủ",
+      "profile": "Trang cá nhân",
+      "settings": "Cài đặt cá nhân",
+      "admin": "Quản trị"
+    },
+    "text": {
+      "loading": "Đang tải...",
+      "loginWith": "Đăng nhập với",
+      "here": "ở đây"
+    },
+    "notify": {
+      "success": {
+        "title": "Thành công",
+        "message": "Thao tác thành công."
+      },
+      "error": {
+        "title": "Lỗi",
+        "message": "Thao tác thất bại.",
+        "unknownError": "Lỗi không xác định. Vui lòng liên hệ quản trị viên."
+      }
+    }
+  },
+  "header": {
+    "logoName": "MPC",
+    "clubFullName": "CLB Lập trình trên thiết bị di động",
+    "apiDocs": "API Docs",
+    "nav": {
+      "home": "Trang chủ",
+      "activities": "Hoạt động",
+      "news": "Tin tức",
+      "events": "Sự kiện",
+      "blogs": "Góc chia sẻ",
+      "achievements": "Thành tích",
+      "projects": "Dự án",
+      "about": "Về CLB",
+      "introduction": "Giới thiệu",
+      "members": "Thành viên",
+      "recap": "Recap",
+      "webdesign": "Cuộc thi Web Design",
+      "training": "Đào tạo",
+      "search": "Tìm kiếm"
+    },
+    "announcement": "🎉 CLB MPC đang tuyển thành viên mới! Đừng bỏ lỡ cơ hội phát triển kỹ năng lập trình.",
+    "registerNow": "Đăng ký ngay",
+    "dismiss": "Đóng",
+    "feedback": "Hòm thư góp ý",
+    "searchPlaceholder": "Tìm kiếm bài viết, sự kiện, dự án...",
+    "searchHint": "Nhập từ khóa và nhấn Enter để tìm kiếm bài viết, sự kiện, dự án và thành viên.",
+    "searchResultsFor": "Kết quả tìm kiếm cho",
+    "searchComingSoon": "Tìm kiếm toàn văn đang được phát triển. Kết quả sẽ bao gồm bài viết, sự kiện, thành tích, dự án và thành viên.",
+    "searchSections": {
+      "member": "Thành viên",
+      "blog": "Bài viết",
+      "event": "Sự kiện",
+      "achievement": "Thành tựu",
+      "project": "Dự án"
+    },
+    "searchNoResults": "Không tìm thấy kết quả nào.",
+    "searchLoading": "Đang tải dữ liệu...",
+    "searchError": "Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại sau.",
+    "searchViewAll": "Xem tất cả kết quả cho",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu",
+    "member": {
+      "tabs": {
+        "about": "Giới thiệu",
+        "posts": "Bài viết",
+        "projects": "Dự án"
+      },
+      "noPosts": "Chưa có bài viết nào",
+      "noProjects": "Chưa có dự án nào",
+      "roleHistory": "Lịch sử chức vụ",
+      "noRoles": "Chưa ghi nhận chức vụ.",
+      "leftClub": "Đã rời CLB",
+      "noAchievements": "Chưa có thành tựu nào được ghi nhận.",
+      "highlight": "⭐ Nổi bật",
+      "role": "Vai trò:",
+      "activeMember": "Thành viên đang hoạt động",
+      "leftClubNotice": "Thành viên này đã rời CLB.",
+      "guestNotice": "Đây là tài khoản khách — không phải thành viên CLB."
+    }
+  },
+  "badges": {
+    "member": "Thành viên CLB",
+    "alumni": "Cựu thành viên",
+    "left": "Đã rời CLB",
+    "admin": "Quản trị viên",
+    "mod": "Cộng tác viên",
+    "writer": "Người sôi nổi",
+    "talented": "Người tài ba",
+    "builder": "Người xây dựng",
+    "cadre": "Cán bộ CLB",
+    "tier": {
+      "bronze": "Đồng",
+      "silver": "Bạc",
+      "gold": "Vàng",
+      "diamond": "Kim cương"
+    },
+    "suffix": {
+      "years": "năm",
+      "posts": "bài viết",
+      "achievements": "thành tựu",
+      "projects": "dự án"
+    }
+  },
+  "footer": {
+    "description": "Câu lạc bộ Lập trình trên thiết bị di động (MPC) – nơi học hỏi, phát triển và chia sẻ kiến thức về công nghệ.",
+    "quickLinks": "Liên kết nhanh",
+    "home": "Trang chủ",
+    "activities": "Hoạt động",
+    "achievements": "Thành tích",
+    "aboutUs": "Về chúng tôi",
+    "resources": "Tài nguyên",
+    "sponsors": "Nhà tài trợ",
+    "qa": "Q&A",
+    "externalLinks": "Liên kết ngoài",
+    "facultyLink": "Khoa CNTT – Trường ĐH Mở TP.HCM",
+    "universityLink": "Trường ĐH Mở TP.HCM",
+    "contact": "Liên hệ",
+    "copyright": "© 2025 CLB MPC – Câu lạc bộ Lập trình trên thiết bị di động. Bảo lưu mọi quyền."
+  },
+  "defaultPage": {
+    "error": {
+      "title": "Đã có lỗi xảy ra!",
+      "description": "Một lỗi nho nhỏ do Server!",
+      "reminder": "Vui lòng thông báo đến quản trị viên!",
+      "tryAgain": "Thử lại",
+      "redirect": "Quay về trang chủ"
+    },
+    "notFound": {
+      "title": "Trang không tồn tại!",
+      "description": "Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm. Nó có thể đã bị di chuyển hoặc không tồn tại.",
+      "redirect": "Quay về trang chủ"
+    },
+    "unauthorized": {
+      "title": "Bạn chưa đăng nhập!",
+      "description": "Vui lòng đăng nhập để truy cập trang này.",
+      "reminder": "Sau khi đăng nhập, bạn sẽ được chuyển hướng về trang yêu cầu.",
+      "redirect": "Đăng nhập",
+      "home": "Về trang chủ"
+    },
+    "forbidden": {
+      "title": "Bạn không có quyền truy cập!",
+      "description": "Tài khoản của bạn không được phép truy cập vào trang này.",
+      "reminder": "Nếu bạn nghĩ đây là nhầm lẫn, vui lòng liên hệ quản trị viên.",
+      "redirect": "Về trang chủ"
+    },
+    "serverError": {
+      "title": "Lỗi máy chủ nội bộ",
+      "description": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau ít phút.",
+      "reminder": "Đội ngũ kỹ thuật đã được thông báo về sự cố này.",
+      "redirect": "Về trang chủ"
+    },
+    "badGateway": {
+      "title": "Máy chủ đang bảo trì",
+      "description": "Dịch vụ tạm thời không khả dụng. Chúng tôi đang thực hiện bảo trì hoặc nâng cấp hệ thống.",
+      "reminder": "Vui lòng quay lại sau vài phút. Cảm ơn bạn đã kiên nhẫn.",
+      "redirect": "Về trang chủ"
+    }
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "activities": {
+    "title": "Các hoạt động",
+    "subtitle": "Các hoạt động của CLB rất đa dạng và được tổ chức thường xuyên, bao gồm các buổi đào tạo, workshop, hợp tác dự án và các sự kiện xã hội. Những hoạt động này nhằm mục đích xây dựng một cộng đồng sôi động, nâng cao kỹ năng của các thành viên và tạo cơ hội kết nối cũng như phát triển bản thân.",
+    "projectsTitle": "Dự án tiêu biểu",
+    "projectsDesc": "Một số sản phẩm được xây dựng bởi các thành viên CLB trong quá trình học tập và hoạt động.",
+    "viewAllProjects": "Xem tất cả dự án"
+  },
+  "events": {
+    "title": "Sự Kiện",
+    "subtitle": "CLB thường sẽ có các sự kiện lớn nhỏ, được tổ chức giúp gắn kết các thành viên trong CLB cũng như mở rộng các mối quan hệ bên ngoài CLB. Các sự kiện tổ chức ra cũng là để mọi người giải trí sau những giờ học trên trường cũng như ở CLB.",
+    "internalMenu": "Nội bộ",
+    "externalMenu": "Đối ngoại",
+    "emptyData": "Chưa có sự kiện nào được đăng tải.",
+    "noDescription": "Chưa có mô tả ngắn về sự kiện này.",
+    "viewDetails": "Xem chi tiết",
+    "backToList": "Trở lại danh sách sự kiện",
+    "galleryTitle": "Hình ảnh",
+    "badgeLabel": "Sự kiện",
+    "infoTitle": "Thông tin sự kiện",
+    "locationLabel": "Địa điểm",
+    "viewOnMap": "Xem trên bản đồ",
+    "timeLabel": "Thời gian",
+    "organizersTitle": "Ban tổ chức",
+    "sponsorsTitle": "Nhà tài trợ",
+    "otherEventsTitle": "Sự kiện khác",
+    "noThumbnail": "Không có ảnh bìa",
+    "status": {
+      "upcoming": "Sắp diễn ra",
+      "ongoing": "Đang diễn ra",
+      "completed": "Đã kết thúc",
+      "cancelled": "Đã hủy"
+    },
+    "internal": {
+      "title": "Các hoạt động nội bộ của CLB",
+      "desc": "CLB thường tổ chức một số hoạt động, sự kiện nội bộ như: offline, sinh nhật, học nhóm,... với mục đích gắn kết các thành viên, tạo môi trường học tập và làm việc thoải mái."
+    },
+    "external": {
+      "title": "Các hoạt động sự kiện đối ngoại của CLB",
+      "desc": "Tổ chức một số sự kiện của đoàn trường, các cuộc thi học thuật như WebDesign, RoboCode,... mở rộng mối quan hệ với các CLB khác, mang lại cơ hội thể hiện bản thân."
+    },
+    "internalEvents": [
+      {
+        "title": "Offline",
+        "desc": "Offline là một hoạt động mà các thành viên trong CLB sẽ tụ tập ở một địa điểm nào đó để gặp mặt, trò chuyện, giao lưu, chia sẻ kiến thức, kinh nghiệm, cũng như tạo mối quan hệ với nhau."
+      },
+      {
+        "title": "Sinh nhật",
+        "desc": "CLB hằng năm sẽ tổ chức sinh nhật cho CLB, đây là dịp để mọi người gặp mặt, chúc mừng, chia sẻ niềm vui cùng nhau."
+      },
+      {
+        "title": "Tổ chức sự kiện",
+        "desc": "Các thành viên trong CLB thường hỗ trợ nhau trong việc tổ chức các sự kiện, giúp mọi người hiểu rõ hơn về công việc tổ chức sự kiện, cũng như tạo dịp các thành viên gặp mặt, gần gũi với nhau hơn."
+      },
+      {
+        "title": "Học nhóm",
+        "desc": "CLB thường tổ chức học nhóm để các thành viên cùng nhau học tập, trao đổi kiến thức, kinh nghiệm, giúp mọi người hiểu rõ hơn về môn học, cũng như tạo môi trường học tập thoải mái và hiệu quả."
+      }
+    ],
+    "externalEvents": [
+      {
+        "title": "WebDesign",
+        "desc": "Web Design là cuộc thi lập trình giao diện Website được tổ chức thường niên, mang đến cho người tham gia một sân chơi học thuật đầy ý nghĩa."
+      },
+      {
+        "title": "Robocode",
+        "desc": "Nhằm bồi dưỡng kiến thức chuyên ngành, kỹ năng mềm, phát huy khả năng sáng tạo của sinh viên."
+      },
+      {
+        "title": "Hoạt động chào đón Tân sinh viên",
+        "desc": "Hoạt động này góp phần định hướng, giúp Tân sinh viên nhanh chóng hoà nhập, hiểu rõ môi trường đại học cũng như vai trò của Đoàn - Hội - CLB Đội Nhóm."
+      },
+      {
+        "title": "Các buổi chia sẻ kiến thức",
+        "desc": "Tổ chức các buổi chia sẻ kiến thức, kinh nghiệm từ các thành viên trong CLB, cũng như các chuyên gia trong ngành."
+      },
+      {
+        "title": "The Open Clubs",
+        "desc": "Sự kiện giao lưu, trình diễn, giới thiệu về CLB cho sinh viên toàn trường do Đoàn trường tổ chức."
+      }
+    ],
+    "types": {
+      "ACADEMIC": "Cuộc thi học thuật",
+      "MEMBER_ACTIVITY": "Hoạt động thành viên",
+      "VOLUNTEER": "Hoạt động tình nguyện",
+      "SEMINAR": "Hội thảo / Seminar",
+      "OTHER": "Chi tiết - Khác"
+    },
+    "learnMore": "Tìm hiểu thêm",
+    "recap": {
+      "title": "Year Recap",
+      "subtitle": "Nhìn lại hành trình hoạt động của CLB qua từng năm",
+      "selectYear": "Chọn năm",
+      "noRecaps": "Chưa có recap nào được xuất bản.",
+      "home": "Trang chủ",
+      "slideshow": "Slideshow",
+      "coverSlide": "Trang bìa",
+      "statsSlide": "Tình hình hoạt động",
+      "newMembersSlide": "Thế hệ tiếp nối",
+      "execBoardSlide": "Ban điều hành",
+      "thankYouSlide": "Lời tri ân",
+      "statsTitle": "Một năm nhìn lại",
+      "totalEvents": "Sự kiện",
+      "totalAchievements": "Thành tựu",
+      "totalProjects": "Dự án",
+      "membersBefore": "Thành viên trước",
+      "newMembers": "Thành viên mới",
+      "newMembersTitle": "Chào mừng thành viên mới",
+      "newMembersTag": "Thế hệ tiếp nối",
+      "newMembersDesc": "Những gương mặt mới đã gia nhập và mang đến làn gió mới cho đại gia đình MPC trong năm nay.",
+      "newMemberBadge": "Thành viên mới",
+      "executiveBoardTitle": "Ban Điều Hành",
+      "eventType": {
+        "ACADEMIC": "Học thuật",
+        "MEMBER_ACTIVITY": "Thành viên",
+        "VOLUNTEER": "Tình nguyện",
+        "SEMINAR": "Hội thảo",
+        "OTHER": "Khác"
+      },
+      "timeline": {
+        "event": "Sự kiện",
+        "achievement": "Thành tựu",
+        "project": "Dự án",
+        "achievementMembers": "Thành viên tuyên dương",
+        "projectMembers": "Thành viên tham gia"
+      },
+      "thankYou": "Cảm ơn bạn!",
+      "thankYouMessage": "Một năm {year} đầy tự hào vì có sự đồng hành của bạn tại MPC.",
+      "thankYouCTA": "Tiếp Tục Tham Gia & Lan Tỏa",
+      "autoPlay": "Tự động chạy",
+      "pause": "Tạm dừng tự động",
+      "volumeOn": "Tắt nhạc",
+      "volumeOff": "Bật nhạc",
+      "exit": "Thoát"
+    }
+  },
+  "webdesign": {
+    "title": "Cuộc thi học thuật \nWeb Design",
+    "subtitle": "Web Design là một cuộc thi lập trình giao diện Website được tổ chức thường niên bởi Câu lạc bộ Lập Trình Trên Thiết Bị Di Động với mong muốn mang đến một sân chơi đầy ý nghĩa và sáng tạo.",
+    "tag": "Sự kiện",
+    "heading": "Cuộc thi Web Design",
+    "purpose": "Mục đích tổ chức",
+    "purposeDesc": "Web Design ra đời với mục đích tạo ra một sân chơi học thuật lành mạnh, giúp sinh viên có cơ hội áp dụng trực tiếp các kiến thức đã học vào thực tế. Qua đó giúp các đội thi phát triển kỹ năng làm việc nhóm, kỹ năng quản lý thời gian, thiết kế UI/UX và lập trình Frontend. Cuộc thi không chỉ nhấn mạnh vào kỹ năng lập trình mà còn đề cao tính tiện dụng, thẩm mỹ của sản phẩm.",
+    "rulesTitle": "Thể thức",
+    "rules1": "Thi theo đội",
+    "rules1Desc": "Các thi sinh đăng ký tạo thành đội gồm tối đa 3 thành viên",
+    "rules2": "Đăng ký",
+    "rules2Desc": "Thí sinh đại diện điền vào form đăng ký của BTC",
+    "rules3": "Khán giả",
+    "rules3Desc": "Khán giả theo dõi và tham gia mini game tại chung kết",
+    "timelineTitle": "Giai đoạn diễn ra",
+    "phase1Title": "Giai đoạn 1",
+    "phase1": "Mở đăng ký & Truyền thông",
+    "phase1Desc": "Mở cổng đăng ký trực tuyến, công bố thể lệ chính thức và chủ đề trọng tâm của năm.",
+    "phase2Title": "Giai đoạn 2",
+    "phase2": "Vòng loại",
+    "phase2Desc": "Các đội phác thảo giao diện trên Figma/Canva, Hội đồng duyệt ý tưởng và định hướng công nghệ.",
+    "phase3Title": "Giai đoạn 3",
+    "phase3": "Triển khai",
+    "phase3Desc": "Các đội thi thực hiện lập trình hoàn thiện website trong 2-3 tuần và kiểm tra điều kiện chung kết.",
+    "phase4Title": "Giai đoạn 4",
+    "phase4": "Chung kết",
+    "phase4Desc": "Top các đội thi xuất sắc nhất sẽ thuyết trình Slide + Demo Website và trả lời phản biện trước Hội đồng.",
+    "criteriaTitle": "Các tiêu chí",
+    "criteria1": "Giao diện",
+    "criteria1Desc": "Bố cục minh bạch, màu sắc hài hòa, đáp ứng responsive",
+    "criteria2": "Trải nghiệm",
+    "criteria2Desc": "Dễ sử dụng, thao tác thuận lợi, loading nhanh chóng",
+    "criteria3": "Sáng tạo",
+    "criteria3Desc": "Tính độc đáo về mặt ý tưởng, UX đột phá",
+    "criteria4": "Phù hợp",
+    "criteria4Desc": "Đúng chủ đề cuộc thi, thực tiễn và có khả năng sử dụng",
+    "galleryTitle": "Một số hình ảnh",
+    "prizesTitle": "Giải thưởng & Quyền lợi",
+    "prize1": "Giải nhất",
+    "prize1Desc": "Trị giá hơn <b>1.000.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "prize2": "Giải nhì",
+    "prize2Desc": "Trị giá hơn <b>700.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "prize3": "Giải ba",
+    "prize3Desc": "Trị giá hơn <b>500.000 VNĐ</b>, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
+    "certificate": "Giấy chứng nhận & DRL",
+    "certificateDesc": "Tất cả thí sinh hoàn thành bài thi đều nhận được Giấy chứng nhận tham gia. Nhận <b>+5 điểm rèn luyện</b> (theo Điều 1).",
+    "spectatorPerk": "Dành cho Cổ động viên",
+    "spectatorPerkDesc": "Tham gia cổ vũ Đêm Chung kết nhận ngay <b>+2 điểm rèn luyện</b> (Điều 1) & vé Lucky Draw với quà công nghệ hấp dẫn.",
+    "sponsorHeading": "Đồng hành cùng cuộc thi",
+    "sponsorDesc": "Web Design thu hút hơn <b>500+ sinh viên quan tâm</b> mỗi năm. Đây là cơ hội tốt để doanh nghiệp quảng bá và tiếp cận nguồn nhân lực chất lượng.",
+    "sponsorBtn": "Xem trang nhà tài trợ",
+    "proposalBtn": "Xem hồ sơ mời tài trợ",
+    "faqSectionTitle": "Câu hỏi thường gặp",
+    "joinTitle": "Tham gia",
+    "joinHeading": "Cách thức đăng ký",
+    "joinDesc": "Xem thêm chi tiết tại fanpage của chúng mình để biết thêm thông tin về thể lệ, cơ cấu giải thưởng và cách thức đăng ký tham gia.",
+    "learnMoreBtn": "Tìm hiểu thêm",
+    "followUpBtn": "Theo dõi ngay!",
+    "exhibitionTitle": "Các dự án tiêu biểu",
+    "countdownTitle": "Đếm ngược đến ngày thi",
+    "countdownDays": "Ngày",
+    "countdownHours": "Giờ",
+    "countdownMinutes": "Phút",
+    "countdownSeconds": "Giây",
+    "heroBadge": "WebDesign Summit 2026",
+    "heroTagline": "Unleashing Creative",
+    "heroTaglineSub": "Brilliance",
+    "rulesBtn": "Xem thể lệ",
+    "registerBtn": "Đăng ký ngay",
+    "sponsorCtaBtn": "Hợp tác tài trợ ngay"
+  }
+}

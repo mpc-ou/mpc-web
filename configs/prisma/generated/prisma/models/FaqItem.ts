@@ -40,6 +40,7 @@ export type FaqItemMinAggregateOutputType = {
   answerVi: string | null
   questionEn: string | null
   answerEn: string | null
+  target: string | null
   order: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -52,6 +53,7 @@ export type FaqItemMaxAggregateOutputType = {
   answerVi: string | null
   questionEn: string | null
   answerEn: string | null
+  target: string | null
   order: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -64,6 +66,7 @@ export type FaqItemCountAggregateOutputType = {
   answerVi: number
   questionEn: number
   answerEn: number
+  target: number
   order: number
   isActive: number
   createdAt: number
@@ -86,6 +89,7 @@ export type FaqItemMinAggregateInputType = {
   answerVi?: true
   questionEn?: true
   answerEn?: true
+  target?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -98,6 +102,7 @@ export type FaqItemMaxAggregateInputType = {
   answerVi?: true
   questionEn?: true
   answerEn?: true
+  target?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -110,6 +115,7 @@ export type FaqItemCountAggregateInputType = {
   answerVi?: true
   questionEn?: true
   answerEn?: true
+  target?: true
   order?: true
   isActive?: true
   createdAt?: true
@@ -209,6 +215,7 @@ export type FaqItemGroupByOutputType = {
   answerVi: string
   questionEn: string
   answerEn: string
+  target: string
   order: number
   isActive: boolean
   createdAt: Date
@@ -244,6 +251,7 @@ export type FaqItemWhereInput = {
   answerVi?: Prisma.StringFilter<"FaqItem"> | string
   questionEn?: Prisma.StringFilter<"FaqItem"> | string
   answerEn?: Prisma.StringFilter<"FaqItem"> | string
+  target?: Prisma.StringFilter<"FaqItem"> | string
   order?: Prisma.IntFilter<"FaqItem"> | number
   isActive?: Prisma.BoolFilter<"FaqItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FaqItem"> | Date | string
@@ -256,6 +264,7 @@ export type FaqItemOrderByWithRelationInput = {
   answerVi?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
+  target?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -271,6 +280,7 @@ export type FaqItemWhereUniqueInput = Prisma.AtLeast<{
   answerVi?: Prisma.StringFilter<"FaqItem"> | string
   questionEn?: Prisma.StringFilter<"FaqItem"> | string
   answerEn?: Prisma.StringFilter<"FaqItem"> | string
+  target?: Prisma.StringFilter<"FaqItem"> | string
   order?: Prisma.IntFilter<"FaqItem"> | number
   isActive?: Prisma.BoolFilter<"FaqItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FaqItem"> | Date | string
@@ -283,6 +293,7 @@ export type FaqItemOrderByWithAggregationInput = {
   answerVi?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
+  target?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -303,6 +314,7 @@ export type FaqItemScalarWhereWithAggregatesInput = {
   answerVi?: Prisma.StringWithAggregatesFilter<"FaqItem"> | string
   questionEn?: Prisma.StringWithAggregatesFilter<"FaqItem"> | string
   answerEn?: Prisma.StringWithAggregatesFilter<"FaqItem"> | string
+  target?: Prisma.StringWithAggregatesFilter<"FaqItem"> | string
   order?: Prisma.IntWithAggregatesFilter<"FaqItem"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"FaqItem"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FaqItem"> | Date | string
@@ -315,6 +327,7 @@ export type FaqItemCreateInput = {
   answerVi: string
   questionEn?: string
   answerEn?: string
+  target?: string
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -327,6 +340,7 @@ export type FaqItemUncheckedCreateInput = {
   answerVi: string
   questionEn?: string
   answerEn?: string
+  target?: string
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -339,6 +353,7 @@ export type FaqItemUpdateInput = {
   answerVi?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
+  target?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,6 +366,7 @@ export type FaqItemUncheckedUpdateInput = {
   answerVi?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
+  target?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -363,6 +379,7 @@ export type FaqItemCreateManyInput = {
   answerVi: string
   questionEn?: string
   answerEn?: string
+  target?: string
   order?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -375,6 +392,7 @@ export type FaqItemUpdateManyMutationInput = {
   answerVi?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
+  target?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -387,6 +405,7 @@ export type FaqItemUncheckedUpdateManyInput = {
   answerVi?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
+  target?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,6 +418,7 @@ export type FaqItemCountOrderByAggregateInput = {
   answerVi?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
+  target?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -415,6 +435,7 @@ export type FaqItemMaxOrderByAggregateInput = {
   answerVi?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
+  target?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -427,6 +448,7 @@ export type FaqItemMinOrderByAggregateInput = {
   answerVi?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
+  target?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -445,6 +467,7 @@ export type FaqItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   answerVi?: boolean
   questionEn?: boolean
   answerEn?: boolean
+  target?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -457,6 +480,7 @@ export type FaqItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   answerVi?: boolean
   questionEn?: boolean
   answerEn?: boolean
+  target?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -469,6 +493,7 @@ export type FaqItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   answerVi?: boolean
   questionEn?: boolean
   answerEn?: boolean
+  target?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -481,13 +506,14 @@ export type FaqItemSelectScalar = {
   answerVi?: boolean
   questionEn?: boolean
   answerEn?: boolean
+  target?: boolean
   order?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FaqItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionVi" | "answerVi" | "questionEn" | "answerEn" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["faqItem"]>
+export type FaqItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionVi" | "answerVi" | "questionEn" | "answerEn" | "target" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["faqItem"]>
 
 export type $FaqItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FaqItem"
@@ -498,6 +524,7 @@ export type $FaqItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     answerVi: string
     questionEn: string
     answerEn: string
+    target: string
     order: number
     isActive: boolean
     createdAt: Date
@@ -930,6 +957,7 @@ export interface FaqItemFieldRefs {
   readonly answerVi: Prisma.FieldRef<"FaqItem", 'String'>
   readonly questionEn: Prisma.FieldRef<"FaqItem", 'String'>
   readonly answerEn: Prisma.FieldRef<"FaqItem", 'String'>
+  readonly target: Prisma.FieldRef<"FaqItem", 'String'>
   readonly order: Prisma.FieldRef<"FaqItem", 'Int'>
   readonly isActive: Prisma.FieldRef<"FaqItem", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"FaqItem", 'DateTime'>

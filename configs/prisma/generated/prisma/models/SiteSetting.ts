@@ -15,7 +15,6 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model SiteSetting
  * Cài đặt trang web - Lưu cấu hình chung dạng key-value
- * VD: site_title, site_description, site_short_description, site_logo, ...
  */
 export type SiteSettingModel = runtime.Types.Result.DefaultSelection<Prisma.$SiteSettingPayload>
 

@@ -2,7 +2,7 @@
 
 // NOTE: 
 // I do not use database of Supabase, I use my own database with prisma to save data locally.
-// I only use Supabase for authentication (Google login). You can use Supabase for database as well.
+// I only use Supabase for authentication (Google, GitHub, Discord login).
 // Supabase Storage is used for file uploads (avatars, images, etc.)
 
 generator client {
@@ -22,7 +22,7 @@ datasource db {
 /// Vai trò trên web - quyền hạn hệ thống
 /// ADMIN: Toàn quyền quản trị
 /// COLLABORATOR: Cộng tác viên - được đăng bài, quản lý sự kiện
-/// MEMBER: Thành viên - tự sửa thông tin cá nhân, viết bài chờ duyệt
+/// MEMBER: Thành viên - tự sửa thông tin cá nhân, viết blog chờ duyệt
 /// GUEST: Đăng nhập bình thường, chưa được xác nhận thành viên
 enum WebRole {
   ADMIN
@@ -37,54 +37,88 @@ enum WebRole {
 /// Phản ánh cơ cấu tổ chức: Chủ nhiệm > Phó CN > Trưởng ban > Phó ban > Thành viên ban
 /// Ngoài ra còn: Cộng tác viên, Giảng viên cố vấn
 enum ClubPosition {
-  PRESIDENT              // Chủ nhiệm CLB
-  VICE_PRESIDENT         // Phó chủ nhiệm CLB
-  DEPARTMENT_LEADER      // Trưởng ban
+  PRESIDENT // Chủ nhiệm CLB
+  VICE_PRESIDENT // Phó chủ nhiệm CLB
+  DEPARTMENT_LEADER // Trưởng ban
   DEPARTMENT_VICE_LEADER // Phó ban
-  DEPARTMENT_MEMBER      // Thành viên ban
-  COLLABORATOR           // Cộng tác viên
-  ADVISOR                // Giảng viên cố vấn
+  DEPARTMENT_MEMBER // Thành viên ban
+  COLLABORATOR // Cộng tác viên
+  ADVISOR // Giảng viên cố vấn
 
   @@schema("public")
 }
 
 /// Trạng thái bài viết - workflow duyệt bài
+/// Blog: DRAFT -> PENDING_REVIEW -> PUBLISHED (hoặc REJECTED)
+/// Event/Achievement (chỉ ADMIN/COLLABORATOR tạo): DRAFT -> PUBLISHED (không cần duyệt)
 enum PostStatus {
-  DRAFT          // Bản nháp - chưa gửi duyệt
+  DRAFT // Bản nháp - chưa gửi duyệt
   PENDING_REVIEW // Đang chờ duyệt
-  PUBLISHED      // Đã xuất bản
-  ARCHIVED       // Đã lưu trữ
-  REJECTED       // Bị từ chối
+  PUBLISHED // Đã xuất bản
+  UNLISTED // Đã xuất bản nhưng không hiển thị trong danh sách (chỉ xem được qua link trực tiếp)
+  ARCHIVED // Đã lưu trữ
+  REJECTED // Bị từ chối
 
   @@schema("public")
 }
 
-/// Trạng thái sự kiện
+/// Phân loại bài viết (gom Post, Event, Achievement cũ)
+enum PostType {
+  BLOG // Bài viết chia sẻ thông thường (không phân loại)
+  EVENT // Bài viết về sự kiện CLB
+  ACHIEVEMENT // Bài viết tuyên dương thành tựu
+
+  @@schema("public")
+}
+
+/// Ngôn ngữ gốc khi soạn thảo bài viết (dùng để biết bản nào là gốc, bản nào cần dịch)
+enum PostLanguage {
+  VI // Tiếng Việt
+  EN // Tiếng Anh
+
+  @@schema("public")
+}
+
+/// Trạng thái sự kiện (dành cho Post type=EVENT)
 enum EventStatus {
-  UPCOMING  // Sắp diễn ra
-  ONGOING   // Đang diễn ra
+  UPCOMING // Sắp diễn ra
+  ONGOING // Đang diễn ra
   COMPLETED // Đã hoàn thành
   CANCELLED // Đã hủy
 
   @@schema("public")
 }
 
-/// Loại thành tựu
+/// Loại thành tựu (dành cho Post type=ACHIEVEMENT)
 enum AchievementType {
   INDIVIDUAL // Cá nhân (Olympic, thi đấu)
-  TEAM       // Nhóm dự án
-  CLUB       // Toàn CLB (CLB xuất sắc)
+  TEAM // Nhóm dự án
+  CLUB // Toàn CLB (CLB xuất sắc)
 
   @@schema("public")
 }
 
-/// Phân loại sự kiện
+/// Phân loại sự kiện (dành cho Post type=EVENT)
 enum EventType {
-  ACADEMIC        // Tổ chức cuộc thi học thuật
+  ACADEMIC // Tổ chức cuộc thi học thuật
   MEMBER_ACTIVITY // Hoạt động thành viên
-  VOLUNTEER       // Hoạt động tình nguyện
-  SEMINAR         // Hội thảo / Seminar
-  OTHER           // Khác
+  VOLUNTEER // Hoạt động tình nguyện
+  SEMINAR // Hội thảo / Seminar
+  OTHER // Khác
+
+  @@schema("public")
+}
+
+/// Loại thông báo
+enum NotificationType {
+  POST_APPROVED // Bài viết của bạn đã được duyệt
+  POST_REJECTED // Bài viết của bạn bị từ chối
+  POST_PUBLISHED // Có bài viết mới được đăng
+  EVENT_UPCOMING // Sắp có sự kiện mới
+  ACHIEVEMENT_NEW // Có thành tựu mới được công bố
+  ROLE_UPDATED // Vai trò trong CLB của bạn đã được cập nhật
+  MEMBER_WELCOME // Chào mừng thành viên mới
+  SYSTEM // Thông báo hệ thống
 
   @@schema("public")
 }
@@ -94,12 +128,11 @@ enum EventType {
 // ╚══════════════════════════════════════════════════════════════╝
 
 /// Cài đặt trang web - Lưu cấu hình chung dạng key-value
-/// VD: site_title, site_description, site_short_description, site_logo, ...
 model SiteSetting {
   id          String   @id @default(cuid())
-  key         String   @unique // VD: "site_title", "site_description"
-  value       String // Giá trị cài đặt
-  description String? // Mô tả setting này dùng làm gì
+  key         String   @unique
+  value       String
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -107,16 +140,17 @@ model SiteSetting {
 }
 
 /// Thông báo hiển thị trên AnnouncementBar
-/// Hỗ trợ thời hạn (startAt/endAt), nút CTA tuỳ chỉnh, màu nền tuỳ chỉnh
 model Announcement {
-  id        String    @id @default(cuid())
-  content   String // Nội dung thông báo
-  linkUrl   String? // URL nút CTA (VD: "/auth")
-  linkLabel String? // Text nút CTA (VD: "Đăng ký ngay")
-  bgColor   String? // CSS gradient/color
-  isActive  Boolean   @default(true)
-  startAt   DateTime  @default(now())
-  endAt     DateTime? // Null = vô thời hạn
+  id          String    @id @default(cuid())
+  contentVi   String
+  contentEn   String
+  linkUrl     String?
+  linkLabelVi String?
+  linkLabelEn String?
+  bgColor     String?
+  isActive    Boolean   @default(true)
+  startAt     DateTime  @default(now())
+  endAt       DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,9 +161,9 @@ model Announcement {
 /// Nội dung trang chủ - key-value cho hero image, intro image, stats...
 model HomepageSection {
   id       String  @id @default(cuid())
-  key      String  @unique // "hero_image", "intro_image", "hero_bg", ...
-  value    String // URL hoặc text
-  type     String  @default("text") // "text", "image", "json"
+  key      String  @unique
+  value    String
+  type     String  @default("text")
   order    Int     @default(0)
   isActive Boolean @default(true)
 
@@ -142,10 +176,11 @@ model HomepageSection {
 /// Câu hỏi thường gặp - quản lý FAQ từ admin (song ngữ)
 model FaqItem {
   id         String  @id @default(cuid())
-  questionVi String // Câu hỏi tiếng Việt
-  answerVi   String // Câu trả lời tiếng Việt
-  questionEn String  @default("") // Câu hỏi tiếng Anh
-  answerEn   String  @default("") // Câu trả lời tiếng Anh
+  questionVi String
+  answerVi   String
+  questionEn String  @default("")
+  answerEn   String  @default("")
+  target     String  @default("GENERAL")
   order      Int     @default(0)
   isActive   Boolean @default(true)
 
@@ -155,14 +190,14 @@ model FaqItem {
   @@schema("public")
 }
 
-/// Ảnh gallery trang chủ - quản lý từ admin
+/// Ảnh gallery - quản lý từ admin
 model GalleryImage {
-  id       String  @id @default(cuid())
-  url      String // Supabase Storage URL
-  caption  String?
-  order    Int     @default(0)
-  isActive Boolean @default(true)
-
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  type      String   @default("common")
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
   @@schema("public")
@@ -171,8 +206,8 @@ model GalleryImage {
 /// Liên kết ngoài - hiển thị ở footer, quản lý từ admin
 model ExternalLink {
   id       String  @id @default(cuid())
-  label    String // Tên hiển thị (VD: "Khoa CNTT – ĐH Mở TP.HCM")
-  url      String // URL liên kết
+  label    String
+  url      String
   order    Int     @default(0)
   isActive Boolean @default(true)
 
@@ -187,43 +222,43 @@ model ExternalLink {
 // ╚══════════════════════════════════════════════════════════════╝
 
 /// Thành viên CLB - liên kết với Supabase Auth qua authId
-/// Mỗi thành viên tương ứng 1 email Google, đăng nhập qua Supabase Auth
+/// Hỗ trợ đăng nhập: Google, GitHub, Discord, Email/Password
+/// GitHub và Discord có field riêng để xác thực, socials JSON chỉ chứa mạng xã hội khác
 model Member {
-  id           String    @id @default(cuid())
-  authId       String    @unique // Supabase Auth User ID (from Google login)
+  id           String    @id
   email        String    @unique
-  password     String?   // Password for email/password login
-  githubId     String?   @unique // GitHub User ID
-  githubEmail  String?   @unique // Email verified for GitHub login by admin
-  firstName    String // Họ
-  lastName     String // Tên
-  avatar       String?   // URL ảnh đại diện trên Supabase Storage
-  coverImage   String?   // URL ảnh bìa/cover profile
-  slug         String?   @unique // Custom profile slug (auto-gen từ email prefix, cho phép tùy chỉnh)
-  dob          DateTime? // Ngày sinh
-  showDob      Boolean   @default(true) // Hiện/ẩn ngày sinh trên trang thành viên
-  bio          String? // Giới thiệu bản thân
-  phone        String? // Số điện thoại
-  studentId    String? // Mã sinh viên (nếu có)
-  socials      Json?     @default("{}") // {"github":"konnn04","facebook":"konnn04","youtube":"..."}
-  joinedClubAt DateTime? // Ngày tham gia CLB
-  leftClubAt   DateTime? // Ngày rời CLB (null = đang hoạt động)
-  webRole      WebRole   @default(GUEST) // Quyền hạn trên hệ thống web
-  isActive     Boolean   @default(true) // Trạng thái hoạt động
-  createdBy    String? // ID of admin who created this member (null = root/self-registered)
+  firstName    String
+  middleName   String?
+  lastName     String
+  avatar       String?
+  coverImage   String?
+  slug         String?   @unique
+  dob          DateTime?
+  showDob      Boolean   @default(false)
+  showPhone    Boolean   @default(false)
+  showStudentId Boolean   @default(false)
+  bio          String?
+  phone        String?
+  studentId    String?
+  socials      Json?     @default("{}") // {"facebook":"...","youtube":"...","linkedin":"..."}
+  joinedClubAt DateTime?
+  leftClubAt   DateTime?
+  webRole      WebRole   @default(GUEST)
+  isActive     Boolean   @default(true)
+  spotifyUri   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // --- Relations ---
-  clubRoles       ClubRole[] // Các vai trò trong CLB theo thời gian
-  authoredPosts   Post[]           @relation("PostAuthor") // Bài viết đã tạo
-  reviewedPosts   Post[]           @relation("PostReviewer") // Bài viết đã duyệt
-  postRevisions   PostRevision[] // Lịch sử chỉnh sửa bài viết
-  createdEvents   Event[]          @relation("EventCreator") // Sự kiện đã tạo
-  organizedEvents EventOrganizer[] // Sự kiện tham gia tổ chức
-  achievements    AchievementMember[] // Thành tựu liên quan
-  projects        ProjectMember[] // Dự án tham gia
+  clubRoles             ClubRole[]
+  authoredPosts         Post[]                  @relation("PostAuthor")
+  reviewedPosts         Post[]                  @relation("PostReviewer")
+  postRevisions         PostRevision[]
+  eventOrganizerEntries PostOrganizer[]
+  achievementEntries    PostAchievementMember[]
+  projects              ProjectMember[]
+  notifications         Notification[]
 
   @@index([webRole])
   @@index([isActive])
@@ -236,52 +271,46 @@ model Member {
 // ╚══════════════════════════════════════════════════════════════╝
 
 /// Ban / Phòng trong CLB
-/// VD: Ban Lập trình, Ban Sự kiện & Hậu cần, Ban Truyền thông
 model Department {
-  id            String   @id @default(cuid())
-  slug          String   @unique // "programming", "events-logistics", "communication"
+  id   String @id @default(cuid())
+  slug String @unique
 
-  nameVi        String   @default("") // "Ban Lập Trình"
-  descriptionVi String?  // Mô tả chức năng ban
-  missionsVi    String[] @default([]) // Các nhiệm vụ chính
-  linkLabelVi   String?  // Nút xem chi tiết (VD: "Xem các dự án")
+  nameVi        String  @default("")
+  descriptionVi String?
+  missionsVi    String  @default("")
+  linkLabelVi   String?
 
-  nameEn        String   @default("") // "Programming Dept"
-  descriptionEn String?  
-  missionsEn    String[] @default([])
+  nameEn        String  @default("")
+  descriptionEn String?
+  missionsEn    String  @default("")
   linkLabelEn   String?
 
-  icon          String?  // Mã icon Lucide (VD: "Code", "Camera")
-  bgImage       String?  // Đường dẫn ảnh nền (VD: "/images/bg/lt.jpg")
+  hyperlink String?
+  icon      String?
+  bgImage   String?
 
-  order         Int      @default(0) // Thứ tự hiển thị
-  isActive      Boolean  @default(true) // Có đang hoạt động không
+  order    Int     @default(0)
+  isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // --- Relations ---
-  clubRoles ClubRole[] // Các chức vụ thuộc ban
+  clubRoles ClubRole[]
 
   @@schema("public")
 }
 
-/// Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ theo thời gian)
-/// Mỗi record = 1 giai đoạn giữ chức vụ. endAt = null nghĩa là đang đảm nhiệm.
-/// 
-/// VD: Nguyễn Triều từng là:
-///   - Thành viên ban Lập trình (2022-2023)
-///   - Trưởng ban Lập trình (2023-2024)  
-///   - Chủ nhiệm CLB nhiệm kỳ 2024 (2024-now)
+/// Vai trò / Chức vụ của thành viên trong CLB (lịch sử chức vụ)
 model ClubRole {
   id           String       @id @default(cuid())
   memberId     String
-  departmentId String? // Null = vai trò cấp CLB (Chủ nhiệm, Phó CN, Cố vấn, CTV)
-  position     ClubPosition // Chức vụ
-  term         Int? // Nhiệm kỳ (VD: 2023, 2024) - dành cho chủ nhiệm, phó CN
-  note         String? // Ghi chú thêm
-  startAt      DateTime // Ngày bắt đầu đảm nhiệm
-  endAt        DateTime? // Ngày kết thúc (null = đang đảm nhiệm)
+  departmentId String?
+  position     ClubPosition
+  term         Int?
+  note         String?
+  startAt      DateTime
+  endAt        DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,18 +327,17 @@ model ClubRole {
 }
 
 // ╔══════════════════════════════════════════════════════════════╗
-// ║                   POSTS & CONTENT                           ║
+// ║                 UNIFIED POSTS (BLOG / EVENT / ACHIEVEMENT)  ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-/// Danh mục bài viết
-/// VD: "Tin tức", "Hướng dẫn", "Chia sẻ kinh nghiệm", "Thông báo"
+/// Danh mục bài viết - chỉ áp dụng cho Post type=BLOG
 model Category {
   id          String  @id @default(cuid())
-  name        String // Tên danh mục
-  slug        String  @unique // URL-friendly identifier
-  description String? // Mô tả danh mục
-  color       String? // Mã màu hiển thị (VD: "#3B82F6")
-  order       Int     @default(0) // Thứ tự hiển thị
+  name        String
+  slug        String  @unique
+  description String?
+  color       String?
+  order       Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -320,75 +348,121 @@ model Category {
   @@schema("public")
 }
 
-/// Thẻ tag - dùng chung cho bài viết và sự kiện
+/// Thẻ tag - dùng chung cho tất cả loại bài viết
 model Tag {
   id   String @id @default(cuid())
-  name String // Tên tag
-  slug String @unique // URL-friendly identifier
+  name String
+  slug String @unique
 
   createdAt DateTime @default(now())
 
   // --- Relations ---
-  posts  PostTag[]
-  events EventTag[]
+  posts PostTag[]
 
   @@schema("public")
 }
 
-/// Bài viết / Blog post
-/// Workflow: DRAFT -> PENDING_REVIEW -> PUBLISHED (hoặc REJECTED)
-/// Member chỉ được tạo DRAFT và gửi PENDING_REVIEW
-/// Collaborator/Admin được PUBLISHED trực tiếp
+/// Bài viết thống nhất - gộp Post, Event, Achievement cũ
+///
+/// Workflow theo type:
+///   BLOG: Member tạo -> PENDING_REVIEW -> Admin duyệt -> PUBLISHED
+///         Admin/COLLABORATOR tạo -> PUBLISHED (tự động)
+///   EVENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+///   ACHIEVEMENT: Chỉ ADMIN/COLLABORATOR -> PUBLISHED
+///
+/// Song ngữ: Khi soạn thảo chọn sourceLanguage, sau đó dùng tool dịch
+/// tự động để điền bản còn lại. Cả 2 bản cùng lưu trong 1 record.
 model Post {
-  id         String     @id @default(cuid())
-  title      String // Tiêu đề
-  slug       String     @unique // URL-friendly identifier
-  summary    String? // Tóm tắt nội dung
-  content    String // Nội dung chính (Markdown/HTML)
-  thumbnail  String? // Ảnh đại diện bài viết (Supabase Storage URL)
-  status     PostStatus @default(DRAFT) // Trạng thái bài viết
-  isPinned   Boolean    @default(false) // Ghim bài viết lên đầu
-  viewCount  Int        @default(0) // Số lượt xem
-  authorId   String // Người viết
-  reviewerId String? // Người duyệt bài
-  categoryId String? // Danh mục
+  id   String   @id @default(cuid())
+  type PostType @default(BLOG)
 
-  publishedAt DateTime? // Thời điểm xuất bản
+  // -- Nội dung song ngữ --
+  titleVi        String
+  titleEn        String       @default("")
+  slug           String       @unique
+  summaryVi      String?
+  summaryEn      String?
+  contentVi      String
+  contentEn      String       @default("")
+  sourceLanguage PostLanguage @default(VI)
+
+  // -- Media --
+  thumbnail String?
+  images    String[] @default([])
+
+  // -- Metadata chung --
+  status     PostStatus @default(DRAFT)
+  isPinned   Boolean    @default(false)
+  viewCount  Int        @default(0)
+  authorId   String?
+  reviewerId String?
+  categoryId String?
+  activityId String?
+
+  // -- EVENT-specific fields (nullable) --
+  eventStatus  EventStatus?
+  eventType    EventType?
+  locationVi   String?
+  locationEn   String?
+  latitude     Float?
+  longitude    Float?
+  maxAttendees Int?
+  startAt      DateTime?
+  endAt        DateTime?
+
+  // -- ACHIEVEMENT-specific fields (nullable) --
+  achievementType AchievementType?
+  achievementDate DateTime?
+  isHighlight     Boolean          @default(false)
+  relatedUrl      String?
+
+  // -- Timestamps --
+  publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  // --- Relations ---
-  author    Member    @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  reviewer  Member?   @relation("PostReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
-  category  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  tags      PostTag[]
-  revisions PostRevision[]
-  achievements Achievement[] // Thành tựu liên quan bài viết
+  // -- Relations --
+  author             Member?                 @relation("PostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  reviewer           Member?                 @relation("PostReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  category           Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  activity           Activity?               @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  tags               PostTag[]
+  revisions          PostRevision[]
+  activities         PostActivity[]
+  organizers         PostOrganizer[]
+  sponsorships       PostSponsorship[]
+  gallery            Image[]
+  achievementMembers PostAchievementMember[]
+  notifications      Notification[]
 
-  @@index([authorId])
+  @@index([type])
   @@index([status])
+  @@index([authorId])
   @@index([publishedAt])
   @@index([categoryId])
+  @@index([activityId])
   @@schema("public")
 }
 
 /// Lịch sử chỉnh sửa bài viết - mỗi lần sửa lưu 1 bản snapshot
-/// Giúp theo dõi ai sửa gì, khi nào, và có thể rollback
 model PostRevision {
   id       String @id @default(cuid())
   postId   String
-  editorId String // Người chỉnh sửa
+  editorId String?
 
-  title    String // Tiêu đề tại thời điểm sửa
-  summary  String? // Tóm tắt tại thời điểm sửa
-  content  String // Nội dung tại thời điểm sửa
-  editNote String? // Lý do / ghi chú chỉnh sửa
+  titleVi   String
+  titleEn   String  @default("")
+  summaryVi String?
+  summaryEn String?
+  contentVi String
+  contentEn String  @default("")
+  editNote  String?
 
   createdAt DateTime @default(now())
 
   // --- Relations ---
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  editor Member @relation(fields: [editorId], references: [id], onDelete: Cascade)
+  post   Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  editor Member? @relation(fields: [editorId], references: [id], onDelete: SetNull)
 
   @@index([postId])
   @@index([editorId])
@@ -407,89 +481,72 @@ model PostTag {
   @@schema("public")
 }
 
-// ╔══════════════════════════════════════════════════════════════╗
-// ║                        EVENTS                               ║
-// ╚══════════════════════════════════════════════════════════════╝
+/// Bảng trung gian: Post (type=EVENT) <-> Activity
+model PostActivity {
+  postId     String
+  activityId String
 
-/// Sự kiện CLB
-/// Lưu thông tin các hoạt động, workshop, seminar, cuộc thi,...
-model Event {
-  id          String      @id @default(cuid())
-  title       String // Tên sự kiện
-  slug        String      @unique // URL-friendly identifier
-  description String? // Mô tả ngắn
-  content     String? // Nội dung chi tiết (Markdown/HTML)
-  thumbnail   String? // Ảnh bìa sự kiện (Supabase Storage URL)
-  images      String[] @default([]) // Các ảnh sự kiện bổ sung
-  location    String? // Địa điểm tổ chức
-  maxAttendees Int?       // Số người tham dự tối đa (null = không giới hạn)
-  status      EventStatus @default(UPCOMING) // Trạng thái sự kiện
-  type        EventType?  @default(OTHER) // Phân loại sự kiện
-  startAt     DateTime // Ngày giờ bắt đầu
-  endAt       DateTime? // Ngày giờ kết thúc
-  creatorId   String // Người tạo sự kiện
+  post     Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
+  @@id([postId, activityId])
+  @@schema("public")
+}
+
+/// Ban tổ chức sự kiện (chỉ dùng cho Post type=EVENT)
+model PostOrganizer {
+  id       String @id @default(cuid())
+  postId   String
+  memberId String
+  role     String
+
+  createdAt DateTime @default(now())
+
+  // --- Relations ---
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, memberId])
+  @@schema("public")
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  postId    String?
+  url       String   @unique
+  title     String?
+  caption   String?
+  isTemp    Boolean  @default(false)
+  type      String   @default("ADDITIONAL") // "THUMBNAIL" | "CONTENT" | "MEMBER" | "ADDITIONAL"
+  order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // --- Relations ---
-  creator      Member             @relation("EventCreator", fields: [creatorId], references: [id], onDelete: Cascade)
-  organizers   EventOrganizer[] // Ban tổ chức
-  tags         EventTag[] // Tags
-  sponsorships EventSponsorship[] // Tài trợ
-  gallery      EventGallery[] // Thư viện ảnh
+  post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@index([status])
-  @@index([startAt])
-  @@index([creatorId])
+  @@index([postId])
+  @@index([isTemp])
   @@schema("public")
 }
 
-/// Thành viên ban tổ chức sự kiện
-/// Ghi nhận ai tham gia tổ chức sự kiện với vai trò gì
-model EventOrganizer {
-  id       String @id @default(cuid())
-  eventId  String
+/// Thành viên được tuyên dương trong bài ACHIEVEMENT
+/// Dùng để đếm số thành tựu trên profile (COUNT theo memberId)
+model PostAchievementMember {
+  id       String  @id @default(cuid())
+  postId   String
   memberId String
-  role     String // VD: "organizer", "speaker", "mc", "volunteer", "mentor"
+  role     String?
+  prize    String?
+  imageUrl String?
 
   createdAt DateTime @default(now())
 
   // --- Relations ---
-  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  @@unique([eventId, memberId]) // Mỗi người chỉ 1 vai trò / sự kiện
-  @@schema("public")
-}
-
-/// Bảng trung gian: Event <-> Tag (many-to-many)
-model EventTag {
-  eventId String
-  tagId   String
-
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([eventId, tagId])
-  @@schema("public")
-}
-
-/// Thư viện ảnh sự kiện
-/// Lưu các ảnh recap, highlight của sự kiện
-model EventGallery {
-  id      String  @id @default(cuid())
-  eventId String
-  url     String // URL ảnh trên Supabase Storage
-  caption String? // Chú thích ảnh
-  order   Int     @default(0) // Thứ tự hiển thị
-
-  createdAt DateTime @default(now())
-
-  // --- Relations ---
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  @@index([eventId])
+  @@unique([postId, memberId])
+  @@index([memberId])
   @@schema("public")
 }
 
@@ -497,28 +554,33 @@ model EventGallery {
 // ║                     ACTIVITIES                              ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-/// Hoạt động CLB (Thay thế cho events.json data)
-/// Gồm các loại hoạt động/chương trình của CLB
+/// Hoạt động CLB - các chương trình/hoạt động định kỳ
 model Activity {
-  id            String   @id @default(cuid())
-  slug          String   @unique
+  id   String @id @default(cuid())
+  slug String @unique
 
   titleVi       String
-  descriptionVi String?
-  
-  titleEn       String?
-  descriptionEn String?
+  titleEn       String  @default("")
+  descriptionVi String  @default("")
+  descriptionEn String  @default("")
+  frequencyVi   String?
+  frequencyEn   String?
 
-  hyperlink     String?  // Nút bấm chuyển tiếp (vd: /activities/webdesign)
-  thumbnail     String?  // Ảnh đại diện
-  images        String[] @default([]) // Danh sách các ảnh bổ sung (vd: từ imageFolder trước đây)
-  
-  isInternal    Boolean  @default(false) // Phân biệt nội bộ hay bên ngoài
-  isActive      Boolean  @default(true) // Có đang hiển thị không
-  order         Int      @default(0) // Thứ tự hiển thị
+  hyperlink String?
+  thumbnail String?
+  images    String[] @default([])
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isInternal Boolean @default(false)
+  isActive   Boolean @default(true)
+  order      Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // --- Relations ---
+  eventPosts PostActivity[]
+  posts      Post[]
+  sponsors   Sponsor[]
 
   @@schema("public")
 }
@@ -527,98 +589,58 @@ model Activity {
 // ║                  SPONSORS & PARTNERS                        ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-/// Nhà tài trợ / Đối tác / Nhà đồng hành
-/// Lưu thông tin cơ bản của đơn vị tài trợ
+/// Nhà tài trợ / Đối tác
 model Sponsor {
-  id          String  @id @default(cuid())
-  name        String // Tên nhà tài trợ / đối tác
-  slug        String  @unique // URL-friendly identifier
-  logo        String? // URL logo (Supabase Storage)
-  email       String? // Email liên hệ
-  phone       String? // SĐT liên hệ
-  website     String? // Website
-  description String? // Mô tả về nhà tài trợ
-  isActive    Boolean @default(true) // Đang hợp tác hay không
+  id            String    @id @default(cuid())
+  name          String
+  nameEn        String    @default("")
+  slug          String    @unique
+  descriptionVi String?
+  descriptionEn String?
+  logo          String?
+  email         String?
+  phone         String?
+  website       String?
+  activityId    String?
+  startAt       DateTime?
+  endAt         DateTime?
+  images        String[]  @default([])
+  isActive      Boolean   @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // --- Relations ---
-  sponsorships EventSponsorship[] // Các đợt tài trợ
+  activity     Activity?         @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  sponsorships PostSponsorship[]
 
+  @@index([activityId])
   @@schema("public")
 }
 
-/// Chi tiết tài trợ - liên kết Sponsor với Event hoặc CLB
-/// eventId = null: Tài trợ chung cho CLB
-/// eventId != null: Tài trợ cho sự kiện cụ thể
-model EventSponsorship {
-  id        String @id @default(cuid())
+/// Chi tiết tài trợ - liên kết Sponsor với Post (type=EVENT) hoặc CLB
+model PostSponsorship {
+  id        String  @id @default(cuid())
   sponsorId String
-  eventId   String? // Null = tài trợ chung cho CLB, không gắn sự kiện cụ thể
+  postId    String?
 
-  title   String? // Tên gói tài trợ (VD: "Nhà tài trợ Kim cương")
-  content String? // Chi tiết nội dung tài trợ
-  tier    String? // Hạng tài trợ: "diamond", "gold", "silver", "bronze"
-  amount  Decimal? // Giá trị tài trợ (nếu muốn lưu)
+  title   String?
+  content String?
+  tier    String?
+  amount  Decimal?
 
-  startAt DateTime // Ngày bắt đầu tài trợ
-  endAt   DateTime? // Ngày kết thúc tài trợ
+  startAt DateTime
+  endAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // --- Relations ---
   sponsor Sponsor @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
-  event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  post    Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
 
   @@index([sponsorId])
-  @@index([eventId])
-  @@schema("public")
-}
-
-// ╔══════════════════════════════════════════════════════════════╗
-// ║                      ACHIEVEMENTS                           ║
-// ╚══════════════════════════════════════════════════════════════╝
-
-/// Thành tựu CLB - giải thưởng, thành tích cá nhân/nhóm/CLB
-model Achievement {
-  id          String          @id @default(cuid())
-  title       String // Tên thành tựu
-  slug        String          @unique
-  summary     String? // Tóm tắt hiển thị trên card
-  content     String? // Chi tiết Markdown
-  thumbnail   String? // Ảnh card (Supabase Storage)
-  images      String[] @default([]) // Các ảnh bổ sung
-  date        DateTime // Ngày đạt được
-  type        AchievementType @default(TEAM)
-  isHighlight Boolean         @default(false) // Nổi bật trang chủ
-
-  relatedUrl    String? // Link ngoài (bài báo, giải)
-  relatedPostId String? // Link bài viết nội bộ
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // --- Relations ---
-  relatedPost Post?              @relation(fields: [relatedPostId], references: [id], onDelete: SetNull)
-  members     AchievementMember[]
-
-  @@index([type])
-  @@index([date])
-  @@schema("public")
-}
-
-/// Thành viên liên quan đến thành tựu (cá nhân thi, mentor, trưởng nhóm...)
-model AchievementMember {
-  achievementId String
-  memberId      String
-  role          String? // "Thí sinh", "Mentor", "Trưởng nhóm"
-
-  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
-  member      Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
-
-  @@id([achievementId, memberId])
+  @@index([postId])
   @@schema("public")
 }
 
@@ -626,22 +648,25 @@ model AchievementMember {
 // ║                        PROJECTS                             ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-/// Dự án CLB - showcase các sản phẩm của thành viên
+/// Dự án CLB
 model Project {
-  id           String    @id @default(cuid())
-  title        String // Tên dự án
-  slug         String    @unique
-  description  String? // Mô tả ngắn
-  content      String? // Markdown chi tiết
-  thumbnail    String? // Supabase Storage
-  images       String[] @default([]) // Các ảnh dự án bổ sung
-  githubUrl    String? // Link GitHub
-  websiteUrl   String? // Link demo/website
-  videoUrl     String? // YouTube embed URL
-  technologies Json      @default("[]") // ["Next.js", "React", "TypeScript"]
-  startDate    DateTime?
-  endDate      DateTime?
-  isActive     Boolean   @default(true)
+  id            String    @id @default(cuid())
+  title         String
+  titleEn       String    @default("")
+  slug          String    @unique
+  description   String?
+  descriptionEn String?
+  content       String?
+  contentEn     String    @default("")
+  thumbnail     String?
+  images        String[]  @default([])
+  githubUrl     String?
+  websiteUrl    String?
+  videoUrl      String?
+  technologies  Json      @default("[]")
+  startDate     DateTime?
+  endDate       DateTime?
+  isActive      Boolean   @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -656,7 +681,7 @@ model Project {
 model ProjectMember {
   projectId String
   memberId  String
-  role      String? // "Lead", "Developer", "Designer"
+  role      String?
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   member  Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
@@ -666,22 +691,48 @@ model ProjectMember {
 }
 
 // ╔══════════════════════════════════════════════════════════════╗
+// ║                      NOTIFICATIONS                          ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+/// Hệ thống thông báo cá nhân
+/// Hỗ trợ real-time qua Supabase Realtime (subscription vào bảng này)
+model Notification {
+  id       String           @id @default(cuid())
+  memberId String
+  type     NotificationType
+  title    String
+  content  String?
+  linkUrl  String?
+  isRead   Boolean          @default(false)
+  postId   String?
+
+  createdAt DateTime @default(now())
+
+  // --- Relations ---
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  post   Post?  @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  @@index([memberId, isRead])
+  @@index([createdAt])
+  @@schema("public")
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
 // ║                      YEAR RECAP                             ║
 // ╚══════════════════════════════════════════════════════════════╝
 
 /// Tổng kết hoạt động CLB theo năm
-/// Dữ liệu recap được lưu dạng JSON tổng hợp từ Events, Achievements, Projects
 model YearRecap {
-  year         Int       @id                    // PK = năm (2024, 2025...)
-  name         String                           // Tên recap (VD: "MPC Recap 2024")
-  description  String?                          // Mô tả
-  coverImage   String?                          // Ảnh bìa chào (slide 1)
-  coverImage2  String?                          // Ảnh bìa thông số (slide 2)
-  coverImage3  String?                          // Ảnh bìa "bể cá" thành viên mới (slide 3)
-  endImage     String?                          // Ảnh bìa kết thúc (slide cuối)
-  musicUrl     String?                          // URL nhạc nền (Supabase Storage)
-  data         Json?     @default("{}")         // JSON tổng hợp recap
-  isPublished  Boolean   @default(false)
+  year        Int     @id
+  name        String
+  description String?
+  coverImage  String?
+  coverImage2 String?
+  coverImage3 String?
+  endImage    String?
+  musicUrl    String?
+  data        Json?   @default("{}")
+  isPublished Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -33,7 +33,7 @@ const STATIC_ROUTES = [
   { path: "/sponsors", priority: 0.6, changefreq: "monthly" },
   { path: "/training", priority: 0.7, changefreq: "monthly" },
   { path: "/activities", priority: 0.6, changefreq: "monthly" },
-  { path: "/activities/webdesign", priority: 0.6, changefreq: "monthly" }
+  { path: "/web-design", priority: 0.6, changefreq: "monthly" }
 ] as const;
 
 type DynamicSection = {

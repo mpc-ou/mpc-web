@@ -9,17 +9,18 @@ import {
   WEBDESIGN_EXHIBITIONS_KEY
 } from "@/types/webdesign";
 import { generatePageSeo } from "@/utils/seo";
-import { FaqSection } from "../../_components/faq-section";
-import { WebDesignBackground } from "./_components/webdesign-bg.client";
-import { WebDesignCriteriaClient } from "./_components/webdesign-criteria.client";
-import { WebDesignCtaClient } from "./_components/webdesign-cta.client";
+import { FaqSection } from "../_components/faq-section";
+import { WD_SECTION_IDS, WdSection } from "./_components/wd-primitives";
+import { WebDesignCriteria } from "./_components/webdesign-criteria";
+import { WebDesignCta } from "./_components/webdesign-cta";
 import { WebDesignExhibitionClient } from "./_components/webdesign-exhibition.client";
-import { WebDesignGalleryClient } from "./_components/webdesign-gallery.client";
+import { WebDesignGallery } from "./_components/webdesign-gallery";
 import { WebDesignHeroClient } from "./_components/webdesign-hero.client";
-import { WebDesignIntroClient } from "./_components/webdesign-intro.client";
-import { WebDesignPrizesClient } from "./_components/webdesign-prizes.client";
-import { WebDesignRulesClient } from "./_components/webdesign-rules.client";
-import { WebDesignSponsorClient } from "./_components/webdesign-sponsor.client";
+import { WebDesignIntro } from "./_components/webdesign-intro";
+import { WebDesignPrizes } from "./_components/webdesign-prizes";
+import { WebDesignRegulations } from "./_components/webdesign-regulations";
+import { WebDesignRules } from "./_components/webdesign-rules";
+import { WebDesignSponsor } from "./_components/webdesign-sponsor";
 import { WebDesignTimelineClient } from "./_components/webdesign-timeline.client";
 
 type Props = {
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generatePageSeo({
     page: "activities",
     locale,
-    pathname: "/activities/webdesign"
+    pathname: "/web-design"
   });
 }
 
@@ -43,8 +44,8 @@ type ProposalListItem = {
   lastModified: string;
 };
 
-const PROPOSAL_LIST_URL = "https://proposal.mpclub.dev/proposal-list.json";
-const PROPOSAL_BASE_URL = "https://proposal.mpclub.dev/";
+const PROPOSAL_LIST_URL = "https://business.mpclub.dev/proposal-list.json";
+const PROPOSAL_BASE_URL = "https://business.mpclub.dev/";
 const PROPOSAL_KEYWORD = "webdesign";
 
 async function getLatestWebDesignProposalUrl(): Promise<string> {
@@ -100,38 +101,45 @@ export default async function WebDesignPage({ params }: Props) {
   const wdExhibitions = parseWebDesignExhibitions(settingsMap[WEBDESIGN_EXHIBITIONS_KEY]);
   const proposalUrl = wdConfig.proposalUrl || fallbackProposalUrl;
 
+  const contestYear = new Date(wdConfig.contestDate).getFullYear();
+
   return (
-    <div className='relative min-h-screen overflow-hidden bg-background pb-20 text-foreground transition-colors duration-300'>
-      <WebDesignBackground />
+    <div className='relative min-h-screen overflow-x-clip bg-background text-foreground'>
+      <WebDesignHeroClient
+        contestDate={wdConfig.contestDate}
+        milestones={wdConfig.milestones}
+        registerUrl={wdConfig.registerUrl}
+      />
 
-      <WebDesignHeroClient contestDate={wdConfig.contestDate} subtitle={t("subtitle")} title={t("title")} />
-
-      <div className='container relative z-10 mx-auto mt-16 max-w-6xl space-y-28 px-4 sm:mt-24'>
-        <WebDesignIntroClient />
-
-        <WebDesignRulesClient />
-
-        <WebDesignTimelineClient />
-
-        <WebDesignCriteriaClient />
-
+      <main className='mx-auto max-w-310 px-4 sm:px-6'>
+        <WebDesignIntro />
+        <WebDesignRules />
+        <WebDesignTimelineClient milestones={wdConfig.milestones} />
+        <WebDesignCriteria />
+        <WebDesignRegulations pdfUrl={wdConfig.rulesPdfUrl} regulations={wdConfig.regulations} />
+        <WebDesignPrizes benefits={wdConfig.benefits} prizes={wdConfig.prizes} />
         <WebDesignExhibitionClient teams={wdExhibitions} />
+        <WebDesignGallery images={galleryImages} />
 
-        <WebDesignGalleryClient images={galleryImages} />
-
-        <WebDesignPrizesClient benefits={wdConfig.benefits} prizes={wdConfig.prizes} />
-
-        <WebDesignSponsorClient proposalUrl={proposalUrl} sponsorUrl={wdConfig.sponsorUrl} />
-
-        <WebDesignCtaClient registerUrl={wdConfig.registerUrl} />
+        <WdSection id={WD_SECTION_IDS.register}>
+          <WebDesignCta
+            registerUrl={wdConfig.registerUrl}
+            year={Number.isNaN(contestYear) ? new Date().getFullYear() : contestYear}
+          />
+          <WebDesignSponsor proposalUrl={proposalUrl} sponsorUrl={wdConfig.sponsorUrl} />
+        </WdSection>
 
         <FaqSection
-          className='relative z-10 bg-transparent py-0'
+          className='bg-transparent pt-24 pb-30 lg:pt-30'
+          containerClassName=''
+          id={WD_SECTION_IDS.faq}
+          index='09'
           locale={locale}
+          subtitle={t("faqSubtitle")}
           target='WEBDESIGN'
           title={t("faqSectionTitle")}
         />
-      </div>
+      </main>
     </div>
   );
 }

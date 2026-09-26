@@ -8,7 +8,6 @@ import {
   Handshake,
   HelpCircle,
   Info,
-  Laptop,
   Loader2,
   MessageSquare,
   Pencil,
@@ -57,12 +56,6 @@ const CATEGORY_DETAILS: Record<
     description: "Giới thiệu lịch sử hình thành, sứ mệnh, tầm nhìn và giá trị cốt lõi của CLB.",
     icon: Info,
     bgGradient: "from-emerald-500/10 to-teal-500/10 border-emerald-500/20"
-  },
-  WEBDESIGN: {
-    title: "Web Design",
-    description: "Giải đáp thắc mắc liên quan tới quy trình thiết kế, lập trình và vận hành website CLB.",
-    icon: Laptop,
-    bgGradient: "from-purple-500/10 to-pink-500/10 border-purple-500/20"
   },
   SPONSOR: {
     title: "Nhà tài trợ",

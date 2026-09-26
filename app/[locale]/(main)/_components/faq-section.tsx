@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { getFaqItems } from "@/app/_actions/main";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FaqAccordion } from "@/components/custom/faq-accordion.client";
+import { SectionHeading } from "@/components/custom/section-heading";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +11,12 @@ type FaqSectionProps = {
   title?: string;
   subtitle?: string;
   badge?: string;
+  /** Optional section number shown before the badge, e.g. "09". */
+  index?: string;
+  id?: string;
   className?: string;
+  /** Replaces the default inner container classes (width/padding), e.g. when nested in another container. */
+  containerClassName?: string;
 };
 
 const FaqSection = async ({
@@ -19,7 +25,10 @@ const FaqSection = async ({
   title,
   subtitle,
   badge = "faq",
-  className
+  index,
+  id,
+  className,
+  containerClassName
 }: FaqSectionProps) => {
   const t = await getTranslations({ locale, namespace: "home.faq" });
 
@@ -35,40 +44,26 @@ const FaqSection = async ({
     return null;
   }
 
-  const sectionTitle = title ?? t("title");
-  const sectionSubtitle = subtitle ?? t("subtitle");
-
   return (
-    <section className={cn("w-full bg-background py-20", className)}>
-      <div className='container mx-auto max-w-3xl px-4'>
-        <ScrollReveal className='mb-12 text-center'>
-          {badge && (
-            <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm uppercase'>
-              &gt; {badge}
-            </span>
-          )}
-          {sectionTitle && (
-            <h2 className='mt-4 font-black text-3xl text-foreground uppercase tracking-tight sm:text-4xl'>
-              {sectionTitle}
-            </h2>
-          )}
-          {sectionSubtitle && <p className='mt-3 text-muted-foreground text-sm'>{sectionSubtitle}</p>}
+    <section className={cn("w-full scroll-mt-32 bg-background py-20", className)} id={id}>
+      <div
+        className={cn(
+          "grid items-start gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]",
+          containerClassName ?? "container mx-auto max-w-6xl px-4"
+        )}
+      >
+        <ScrollReveal className='lg:sticky lg:top-32'>
+          <SectionHeading
+            description={subtitle ?? t("subtitle")}
+            index={index}
+            layout='stack'
+            tag={badge}
+            title={title ?? t("title")}
+          />
         </ScrollReveal>
-        <Accordion className='w-full space-y-3' collapsible type='single'>
-          {items.map((item, idx) => (
-            <ScrollReveal delay={idx * 80} key={item.id} variant='fade-up'>
-              <AccordionItem
-                className='rounded-xl border border-border bg-card/80 px-5 shadow-sm backdrop-blur-xl transition-all hover:border-orange-500/30 dark:border-white/10 dark:bg-slate-900/40'
-                value={item.id}
-              >
-                <AccordionTrigger className='text-left font-medium text-foreground hover:text-orange-500 hover:no-underline'>
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className='text-muted-foreground leading-relaxed'>{item.answer}</AccordionContent>
-              </AccordionItem>
-            </ScrollReveal>
-          ))}
-        </Accordion>
+        <ScrollReveal delay={120}>
+          <FaqAccordion items={items.map((item) => ({ id: item.id, question: item.question, answer: item.answer }))} />
+        </ScrollReveal>
       </div>
     </section>
   );

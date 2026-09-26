@@ -88,6 +88,56 @@
   --animate-terminal-line: terminal-line 0.3s ease-out forwards;
   --animate-shimmer: shimmer 2.5s infinite linear;
   --animate-grid-move: grid-move 4s linear infinite;
+  --animate-wd-shine: wd-shine 5s linear infinite;
+  --animate-wd-drift: wd-drift 16s ease-in-out infinite;
+  --animate-wd-drift-reverse: wd-drift-reverse 18s ease-in-out infinite;
+  --animate-wd-bob: wd-bob 5s ease-in-out infinite;
+  --animate-wd-progress: wd-progress 4.5s linear forwards;
+
+  @keyframes wd-shine {
+    to {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes wd-drift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(40px, -50px);
+    }
+  }
+
+  @keyframes wd-drift-reverse {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(-50px, 40px);
+    }
+  }
+
+  @keyframes wd-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes wd-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 
   @keyframes shimmer {
     0% {

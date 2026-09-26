@@ -236,11 +236,7 @@ export default function ActivityForm({ activity }: Props) {
 
             <div className='grid gap-1.5'>
               <Label>Liên kết CTA (tùy chọn)</Label>
-              <Input
-                onChange={(e) => setHyperlink(e.target.value)}
-                placeholder='/activities/webdesign'
-                value={hyperlink}
-              />
+              <Input onChange={(e) => setHyperlink(e.target.value)} placeholder='/web-design' value={hyperlink} />
             </div>
 
             <div className='grid gap-1.5'>

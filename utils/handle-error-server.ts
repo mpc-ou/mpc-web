@@ -44,10 +44,6 @@ const handleErrorServerNoAuth = async <T>({ cb }: HandleErrorServerType<T>): Pro
     if (isInternalCancelError(error) || isNextError(error)) {
       throw error;
     }
-    // Errors here get converted into a plain ErrorResponse, which callers
-    // (e.g. a page component) commonly treat as "not found" and swallow into
-    // a 404 — so without logging, real failures (DB timeouts, bad queries)
-    // are invisible and look identical to a genuinely missing record.
     console.error("[handleErrorServerNoAuth]", error);
     if (error instanceof Error) {
       return ErrorResponse({ message: error.message });

@@ -1,740 +1,473 @@
 "use client";
 
-import { ChevronDown, Download, Image as ImageIcon, Monitor, Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { Code2, Download, ExternalLink, FileText, Monitor, Pencil, RotateCcw, Save } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
+  adminGetDefaultWebDesignExhibitions,
+  adminGetDefaultWebDesignFaqs,
   adminSaveWebDesignConfig,
   adminSaveWebDesignExhibitions,
-  adminSeedWebDesignExhibitionsFromDefault
+  adminSaveWebDesignFaqs
 } from "@/app/_actions/admin";
 import { useHandleError } from "@/app/admin/_hooks/use-handle-error";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
-import { uploadToStorage } from "@/services/supabase-upload";
-import type {
-  LocalizedText,
-  WebDesignBenefit,
-  WebDesignConfig,
-  WebDesignExhibitionItem,
-  WebDesignPrize
-} from "@/types/webdesign";
+import { cn } from "@/lib/utils";
+import type { WebDesignConfig, WebDesignExhibitionItem, WebDesignFaq, WebDesignPrize } from "@/types/webdesign";
+import { formatMilestoneRange } from "@/utils/webdesign-milestones";
+import { generateId } from "@/utils/webdesign-validate";
+import { ExhibitionDialog } from "./_components/exhibition-form-dialog";
+import {
+  BenefitDialog,
+  FaqDialog,
+  GENERAL_FIELDS,
+  GeneralDialog,
+  MilestoneDialog,
+  PRIZE_TIER_LABELS,
+  PrizeDialog,
+  RegulationDialog
+} from "./_components/item-dialogs";
+import { type JsonApplyPayload, JsonDevDialog } from "./_components/json-dev-editor";
+import { ListPanel } from "./_components/list-panel";
+import { defaultBenefits, defaultPrizes, sampleMilestones, sampleRegulations } from "./_components/webdesign-defaults";
 
 type Props = {
   webDesignConfig: WebDesignConfig;
   webDesignExhibitions: WebDesignExhibitionItem[];
+  webDesignFaqs: WebDesignFaq[];
 };
 
-const genId = () => Math.random().toString(36).slice(2, 10);
+type Snapshot = { config: WebDesignConfig; exhibitions: WebDesignExhibitionItem[]; faqs: WebDesignFaq[] };
+type DocKey = keyof Snapshot;
 
-const EMPTY_TEXT: LocalizedText = { vi: "", en: "" };
-const EMPTY_PRIZE: Omit<WebDesignPrize, "id"> = {
-  tier: "gold",
-  title: { ...EMPTY_TEXT },
-  description: { ...EMPTY_TEXT }
-};
-const EMPTY_BENEFIT: Omit<WebDesignBenefit, "id"> = { title: { ...EMPTY_TEXT }, description: { ...EMPTY_TEXT } };
+const DOC_KEYS: DocKey[] = ["config", "exhibitions", "faqs"];
 
-const DEFAULT_PRIZES: WebDesignPrize[] = [
-  {
-    id: genId(),
-    tier: "gold",
-    title: { vi: "Giải nhất", en: "1st Prize" },
-    description: {
-      vi: "Trị giá hơn 1.000.000 VNĐ, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
-      en: "Worth over 1,000,000 VND, a special sponsor gift and a trophy"
-    }
-  },
-  {
-    id: genId(),
-    tier: "silver",
-    title: { vi: "Giải nhì", en: "2nd Prize" },
-    description: {
-      vi: "Trị giá hơn 700.000 VNĐ, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
-      en: "Worth over 700,000 VND, a special sponsor gift and a trophy"
-    }
-  },
-  {
-    id: genId(),
-    tier: "bronze",
-    title: { vi: "Giải ba", en: "3rd Prize" },
-    description: {
-      vi: "Trị giá hơn 500.000 VNĐ, quà đặc biệt của nhà tài trợ và cúp chứng nhận",
-      en: "Worth over 500,000 VND, a special sponsor gift and a trophy"
-    }
-  }
-];
-
-const DEFAULT_BENEFITS: WebDesignBenefit[] = [
-  {
-    id: genId(),
-    title: { vi: "Giấy chứng nhận & DRL", en: "Certificate & Training Points" },
-    description: {
-      vi: "Tất cả thí sinh hoàn thành bài thi đều nhận được Giấy chứng nhận tham gia. Nhận +5 điểm rèn luyện (theo Điều 1).",
-      en: "All contestants who complete the contest receive a Certificate of Participation and +5 training points."
-    }
-  },
-  {
-    id: genId(),
-    title: { vi: "Dành cho Cổ động viên", en: "For Supporters" },
-    description: {
-      vi: "Tham gia cổ vũ Đêm Chung kết nhận ngay +2 điểm rèn luyện (Điều 1) & vé Lucky Draw với quà công nghệ hấp dẫn.",
-      en: "Join and cheer at the Final Night to receive +2 training points & a Lucky Draw ticket with tech prizes."
-    }
-  }
-];
-
-const EMPTY_EXHIBITION: WebDesignExhibitionItem = {
-  teamName: "",
-  teamMembers: [],
-  subjects: "",
-  projectName: { ...EMPTY_TEXT },
-  description: { ...EMPTY_TEXT },
-  github: "",
-  live: "",
-  thumbnail: "",
-  techStack: []
+/** Each document has its own store (site setting / site setting / FaqItem rows) and save action. */
+const SAVERS: Record<DocKey, (input: unknown) => ReturnType<typeof adminSaveWebDesignConfig>> = {
+  config: adminSaveWebDesignConfig,
+  exhibitions: adminSaveWebDesignExhibitions,
+  faqs: adminSaveWebDesignFaqs
 };
 
-function CollapsibleSection({
-  title,
-  description,
-  icon,
-  actions,
-  defaultOpen = false,
-  children
-}: {
-  title: string;
-  description?: string;
-  icon?: React.ReactNode;
-  actions?: React.ReactNode;
-  defaultOpen?: boolean;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
+const PRIZE_TIER_STYLES: Record<WebDesignPrize["tier"], string> = {
+  gold: "border-yellow-500/40 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
+  silver: "border-slate-400/40 bg-slate-400/10 text-slate-600 dark:text-slate-300",
+  bronze: "border-amber-700/40 bg-amber-700/10 text-amber-700 dark:text-amber-500"
+};
 
-  return (
-    <div className='border-border border-t pt-6 first:border-t-0 first:pt-0'>
-      <div className='mb-1 flex flex-wrap items-start justify-between gap-2'>
-        <button className='flex flex-1 items-start gap-2 text-left' onClick={() => setOpen((v) => !v)} type='button'>
-          <ChevronDown
-            className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-0" : "-rotate-90"}`}
-          />
-          <div>
-            <h3 className='flex items-center gap-2 font-semibold text-base text-foreground'>
-              {icon}
-              {title}
-            </h3>
-            {description && <p className='text-muted-foreground text-xs'>{description}</p>}
-          </div>
-        </button>
-        {actions && <div>{actions}</div>}
-      </div>
-      {open && <div className='mt-4'>{children}</div>}
-    </div>
-  );
-}
+const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+const text = (t: { vi: string; en: string }) => t.vi || t.en || "—";
 
-function LocalizedInput({
-  value,
-  onChange,
-  placeholder,
-  className
-}: {
-  value: LocalizedText;
-  onChange: (next: LocalizedText) => void;
-  placeholder?: string;
-  className?: string;
-}) {
-  return (
-    <div className={`flex flex-1 gap-2 ${className ?? ""}`}>
-      <div className='flex flex-1 items-center gap-1'>
-        <span className='rounded bg-muted px-1.5 py-1 font-bold font-mono text-[10px] text-muted-foreground'>VI</span>
-        <Input
-          onChange={(e) => onChange({ ...value, vi: e.target.value })}
-          placeholder={placeholder}
-          value={value.vi}
-        />
-      </div>
-      <div className='flex flex-1 items-center gap-1'>
-        <span className='rounded bg-muted px-1.5 py-1 font-bold font-mono text-[10px] text-muted-foreground'>EN</span>
-        <Input
-          onChange={(e) => onChange({ ...value, en: e.target.value })}
-          placeholder={placeholder}
-          value={value.en}
-        />
-      </div>
-    </div>
-  );
-}
-
-function LocalizedTextarea({
-  value,
-  onChange,
-  placeholder
-}: {
-  value: LocalizedText;
-  onChange: (next: LocalizedText) => void;
-  placeholder?: string;
-}) {
-  return (
-    <div className='grid gap-2 sm:grid-cols-2'>
-      <div className='flex items-start gap-1'>
-        <span className='mt-2 rounded bg-muted px-1.5 py-1 font-bold font-mono text-[10px] text-muted-foreground'>
-          VI
-        </span>
-        <textarea
-          className='min-h-15 w-full rounded-md border border-border bg-background px-3 py-2 text-sm'
-          onChange={(e) => onChange({ ...value, vi: e.target.value })}
-          placeholder={placeholder}
-          value={value.vi}
-        />
-      </div>
-      <div className='flex items-start gap-1'>
-        <span className='mt-2 rounded bg-muted px-1.5 py-1 font-bold font-mono text-[10px] text-muted-foreground'>
-          EN
-        </span>
-        <textarea
-          className='min-h-15 w-full rounded-md border border-border bg-background px-3 py-2 text-sm'
-          onChange={(e) => onChange({ ...value, en: e.target.value })}
-          placeholder={placeholder}
-          value={value.en}
-        />
-      </div>
-    </div>
-  );
-}
-
-function ExhibitionFormDialog({
-  open,
-  onOpenChange,
-  item,
-  onSubmit,
-  uploading,
-  onUploadThumbnail
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  item: WebDesignExhibitionItem;
-  onSubmit: (item: WebDesignExhibitionItem) => void;
-  uploading: boolean;
-  onUploadThumbnail: (file: File) => Promise<string | null>;
-}) {
-  const [draft, setDraft] = useState<WebDesignExhibitionItem>(item);
-
-  const patch = (p: Partial<WebDesignExhibitionItem>) => setDraft((prev) => ({ ...prev, ...p }));
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-    const url = await onUploadThumbnail(file);
-    if (url) {
-      patch({ thumbnail: url });
-    }
-  };
-
-  return (
-    <Dialog
-      onOpenChange={(v) => {
-        if (v) {
-          setDraft(item);
-        }
-        onOpenChange(v);
-      }}
-      open={open}
-    >
-      <DialogContent className='max-h-[85vh] max-w-2xl overflow-y-auto'>
-        <DialogHeader>
-          <DialogTitle>{item.teamName ? "Sửa triển lãm" : "Thêm triển lãm"}</DialogTitle>
-        </DialogHeader>
-
-        <div className='grid gap-3 sm:grid-cols-2'>
-          <Input onChange={(e) => patch({ teamName: e.target.value })} placeholder='Tên đội' value={draft.teamName} />
-          <Input onChange={(e) => patch({ subjects: e.target.value })} placeholder='Chủ đề' value={draft.subjects} />
-          <Input onChange={(e) => patch({ live: e.target.value })} placeholder='URL demo (live)' value={draft.live} />
-          <Input onChange={(e) => patch({ github: e.target.value })} placeholder='URL GitHub' value={draft.github} />
-          <Input
-            className='sm:col-span-2'
-            onChange={(e) =>
-              patch({
-                techStack: e.target.value
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean)
-              })
-            }
-            placeholder='Tech stack (phân cách bằng dấu phẩy)'
-            value={draft.techStack.join(", ")}
-          />
-        </div>
-
-        <div className='flex items-center gap-4 rounded-lg border border-border bg-muted/10 p-3'>
-          <div className='relative flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded border border-border bg-muted/30'>
-            {draft.thumbnail ? (
-              <Image alt='Thumbnail' className='object-cover' fill sizes='96px' src={draft.thumbnail} />
-            ) : (
-              <span className='text-[10px] text-muted-foreground'>No image</span>
-            )}
-          </div>
-          <div className='flex flex-1 flex-col gap-2'>
-            <div className='flex items-center gap-2'>
-              <Input
-                onChange={(e) => patch({ thumbnail: e.target.value })}
-                placeholder='URL ảnh thumbnail'
-                value={draft.thumbnail}
-              />
-              <Button
-                className='h-9 shrink-0 text-xs'
-                disabled={uploading}
-                onClick={() => document.getElementById("wd-thumb-dialog-input")?.click()}
-                size='sm'
-                type='button'
-                variant='outline'
-              >
-                <Upload className='mr-1.5 h-3.5 w-3.5' />
-                {uploading ? "Đang tải..." : "Tải ảnh"}
-              </Button>
-              <input
-                accept='image/*'
-                className='hidden'
-                id='wd-thumb-dialog-input'
-                onChange={handleFileChange}
-                type='file'
-              />
-            </div>
-            <p className='text-[10px] text-muted-foreground'>Dán URL trực tiếp hoặc tải ảnh lên (Supabase Storage).</p>
-          </div>
-        </div>
-
-        <div className='grid gap-2'>
-          <Label className='text-xs'>Tên dự án</Label>
-          <LocalizedInput
-            onChange={(next) => patch({ projectName: next })}
-            placeholder='Tên dự án'
-            value={draft.projectName}
-          />
-        </div>
-        <div className='grid gap-2'>
-          <Label className='text-xs'>Mô tả</Label>
-          <LocalizedTextarea
-            onChange={(next) => patch({ description: next })}
-            placeholder='Mô tả dự án'
-            value={draft.description}
-          />
-        </div>
-
-        <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} type='button' variant='outline'>
-            Hủy
-          </Button>
-          <Button
-            onClick={() => {
-              onSubmit(draft);
-              onOpenChange(false);
-            }}
-            type='button'
-          >
-            Lưu
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions }: Props) => {
+export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDesignFaqs }: Props) => {
   const router = useRouter();
   const { handleErrorClient, toast } = useHandleError();
   const { confirm, ConfirmDialog } = useConfirmDialog();
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
-  const [contestDate, setContestDate] = useState(webDesignConfig.contestDate);
-  const [registerUrl, setRegisterUrl] = useState(webDesignConfig.registerUrl);
-  const [sponsorUrl, setSponsorUrl] = useState(webDesignConfig.sponsorUrl);
-  const [proposalUrl, setProposalUrl] = useState(webDesignConfig.proposalUrl);
-  const [prizes, setPrizes] = useState<WebDesignPrize[]>(webDesignConfig.prizes);
-  const [benefits, setBenefits] = useState<WebDesignBenefit[]>(webDesignConfig.benefits);
+  // Every edit lands in `draft`; the single Save button diffs it against `saved` and persists what changed.
+  const [saved, setSaved] = useState<Snapshot>({
+    config: webDesignConfig,
+    exhibitions: webDesignExhibitions,
+    faqs: webDesignFaqs
+  });
+  const [draft, setDraft] = useState<Snapshot>(saved);
+  const [saving, setSaving] = useState(false);
+  const [openDialog, setOpenDialog] = useState<"general" | "json" | null>(null);
 
-  const [exhibitions, setExhibitions] = useState<WebDesignExhibitionItem[]>(webDesignExhibitions);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const isDirty = DOC_KEYS.some((key) => !same(draft[key], saved[key]));
 
-  const handleSaveConfig = async () => {
-    setLoading(true);
-    await handleErrorClient({
-      cb: () =>
-        adminSaveWebDesignConfig({
-          contestDate,
-          registerUrl,
-          sponsorUrl,
-          proposalUrl,
-          prizes,
-          benefits
-        }),
-      onSuccess: () => router.refresh()
-    });
-    setLoading(false);
-  };
-
-  const handleSaveExhibitions = async (next: WebDesignExhibitionItem[]) => {
-    setLoading(true);
-    await handleErrorClient({
-      cb: () => adminSaveWebDesignExhibitions(next),
-      onSuccess: () => router.refresh()
-    });
-    setLoading(false);
-  };
-
-  const handleLoadDefaultExhibitions = async () => {
-    const ok = await confirm({
-      title: "Nạp danh sách triển lãm mặc định?",
-      description: "Thao tác này sẽ ghi đè danh sách triển lãm hiện tại bằng dữ liệu từ configs/data/wd.json.",
-      variant: "default",
-      confirmText: "Nạp mặc định"
-    });
-    if (!ok) {
+  useEffect(() => {
+    if (!isDirty) {
       return;
     }
-    setLoading(true);
-    await handleErrorClient({
-      cb: () => adminSeedWebDesignExhibitionsFromDefault(),
-      onSuccess: () => {
-        toast({ description: "Đã nạp danh sách triển lãm mặc định" });
-        router.refresh();
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [isDirty]);
+
+  const patchConfig = <K extends keyof WebDesignConfig>(key: K, value: WebDesignConfig[K]) =>
+    setDraft((prev) => ({ ...prev, config: { ...prev.config, [key]: value } }));
+
+  const save = async (next: Snapshot = draft) => {
+    setSaving(true);
+    let failed = false;
+    let result: Snapshot = saved;
+
+    // Save changed documents one by one; stop at the first failure.
+    for (const key of DOC_KEYS) {
+      if (failed || same(next[key], saved[key])) {
+        continue;
       }
-    });
-    setLoading(false);
-  };
-
-  const handleResetToDefaults = async () => {
-    const ok = await confirm({
-      title: "Đặt lại toàn bộ dữ liệu mặc định?",
-      description:
-        "Giải thưởng, quyền lợi sẽ được điền lại theo mẫu mặc định, và danh sách triển lãm sẽ được nạp lại từ configs/data/wd.json. Nhấn Lưu để áp dụng.",
-      variant: "default",
-      confirmText: "Đặt lại mặc định"
-    });
-    if (!ok) {
-      return;
-    }
-    setLoading(true);
-    setPrizes(DEFAULT_PRIZES);
-    setBenefits(DEFAULT_BENEFITS);
-    await handleErrorClient({
-      cb: () => adminSeedWebDesignExhibitionsFromDefault(),
-      onSuccess: () => {
-        toast({ description: "Đã đặt lại dữ liệu mặc định. Nhấn Lưu để hoàn tất." });
-        router.refresh();
-      }
-    });
-    setLoading(false);
-  };
-
-  const updatePrize = (id: string, patch: Partial<WebDesignPrize>) =>
-    setPrizes((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
-
-  const updateBenefit = (id: string, patch: Partial<WebDesignBenefit>) =>
-    setBenefits((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
-
-  const handleUploadThumbnail = async (file: File): Promise<string | null> => {
-    try {
-      setUploading(true);
-      const url = await uploadToStorage(file, "media", "webdesign");
-      toast({ description: "Đã tải ảnh lên thành công!" });
-      return url;
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: `Lỗi tải ảnh: ${err instanceof Error ? err.message : "Thất bại"}`
+      failed = true;
+      await handleErrorClient({
+        cb: () => SAVERS[key](next[key]),
+        withSuccessNotify: false,
+        onSuccess: ({ data }) => {
+          failed = false;
+          result = { ...result, [key]: data.payload } as Snapshot;
+        }
       });
-      return null;
-    } finally {
-      setUploading(false);
     }
+
+    setSaved(result);
+    if (failed) {
+      // Keep unsaved edits; documents that did save take the server's normalized version.
+      const merged = { ...next };
+      for (const key of DOC_KEYS) {
+        if (!same(result[key], saved[key])) {
+          Object.assign(merged, { [key]: result[key] });
+        }
+      }
+      setDraft(merged);
+    } else {
+      setDraft(result);
+      toast({ description: "Đã lưu cấu hình WebDesign." });
+      router.refresh();
+    }
+    setSaving(false);
   };
 
-  const openCreateDialog = () => {
-    setEditingIndex(null);
-    setDialogOpen(true);
-  };
-
-  const openEditDialog = (idx: number) => {
-    setEditingIndex(idx);
-    setDialogOpen(true);
-  };
-
-  const handleDialogSubmit = (item: WebDesignExhibitionItem) => {
-    const next =
-      editingIndex === null ? [...exhibitions, item] : exhibitions.map((ex, i) => (i === editingIndex ? item : ex));
-    setExhibitions(next);
-    handleSaveExhibitions(next);
-  };
-
-  const handleDeleteExhibition = async (idx: number) => {
+  const discard = async () => {
     const ok = await confirm({
-      title: "Xóa triển lãm này?",
-      description: "Hành động này không thể hoàn tác."
+      title: "Hủy các thay đổi chưa lưu?",
+      description: "Dữ liệu sẽ quay về lần lưu gần nhất.",
+      confirmText: "Hủy thay đổi"
     });
-    if (!ok) {
-      return;
+    if (ok) {
+      setDraft(saved);
     }
-    const next = exhibitions.filter((_, i) => i !== idx);
-    setExhibitions(next);
-    await handleSaveExhibitions(next);
   };
+
+  const applyJson = (payload: JsonApplyPayload, { save: shouldSave }: { save: boolean }) => {
+    const next: Snapshot = { ...draft, ...payload };
+    setDraft(next);
+    setOpenDialog(null);
+    if (shouldSave) {
+      save(next);
+    } else {
+      toast({ description: "Đã áp dụng JSON vào bản nháp. Nhấn Lưu để lưu lại." });
+    }
+  };
+
+  const loadDefaultExhibitions = async () => {
+    await handleErrorClient({
+      cb: () => adminGetDefaultWebDesignExhibitions(),
+      withSuccessNotify: false,
+      onSuccess: ({ data }) => setDraft((prev) => ({ ...prev, exhibitions: data.payload as WebDesignExhibitionItem[] }))
+    });
+  };
+
+  const loadDefaultFaqs = async () => {
+    await handleErrorClient({
+      cb: () => adminGetDefaultWebDesignFaqs(),
+      withSuccessNotify: false,
+      onSuccess: ({ data }) =>
+        setDraft((prev) => ({
+          ...prev,
+          faqs: (data.payload as Omit<WebDesignFaq, "id">[]).map((faq) => ({ ...faq, id: generateId() }))
+        }))
+    });
+  };
+
+  const { config, exhibitions, faqs } = draft;
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='rounded-xl border border-border bg-background shadow-sm'>
       <ConfirmDialog />
-
-      {dialogOpen && (
-        <ExhibitionFormDialog
-          item={editingIndex === null ? EMPTY_EXHIBITION : (exhibitions[editingIndex] ?? EMPTY_EXHIBITION)}
-          onOpenChange={setDialogOpen}
-          onSubmit={handleDialogSubmit}
-          onUploadThumbnail={handleUploadThumbnail}
-          open={dialogOpen}
-          uploading={uploading}
+      {openDialog === "general" && (
+        <GeneralDialog
+          onClose={() => setOpenDialog(null)}
+          onSubmit={(next) => {
+            setDraft((prev) => ({ ...prev, config: { ...prev.config, ...next } }));
+            setOpenDialog(null);
+          }}
+          value={config}
+        />
+      )}
+      {openDialog === "json" && (
+        <JsonDevDialog
+          config={config}
+          exhibitions={exhibitions}
+          faqs={faqs}
+          onApply={applyJson}
+          onClose={() => setOpenDialog(null)}
         />
       )}
 
-      {/* ─── WebDesign Contest (+ Exhibitions) ─── */}
-      <section className='rounded-xl border border-border bg-background p-6 shadow-sm'>
-        <div className='mb-4 flex flex-wrap items-start justify-between gap-2'>
-          <div>
-            <h2 className='flex items-center gap-2 font-semibold text-foreground text-lg'>
-              <Monitor className='h-5 w-5 text-primary' /> WebDesign Contest
-            </h2>
-            <p className='text-muted-foreground text-xs'>
-              Cấu hình trang <code>/activities/webdesign</code>. Để trống một nút để tự động ẩn nút đó ngoài trang. Các
-              trường nội dung hỗ trợ song ngữ VI/EN.
-            </p>
-          </div>
-          <Button disabled={loading} onClick={handleResetToDefaults} size='sm' type='button' variant='outline'>
-            <Download className='mr-1.5 h-3.5 w-3.5' /> Đặt lại mặc định
-          </Button>
-        </div>
-
-        <CollapsibleSection title='Thông tin chung & liên kết'>
-          <div className='grid gap-4 sm:grid-cols-2'>
-            <div className='grid gap-2'>
-              <Label htmlFor='wd-contest-date'>Ngày thi cuộc thi</Label>
-              <Input
-                id='wd-contest-date'
-                onChange={(e) => setContestDate(e.target.value)}
-                type='datetime-local'
-                value={contestDate}
-              />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='wd-register-url'>Nút "Đăng ký ngay" (URL)</Label>
-              <Input
-                id='wd-register-url'
-                onChange={(e) => setRegisterUrl(e.target.value)}
-                placeholder='https://... (để trống để ẩn nút)'
-                value={registerUrl}
-              />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='wd-sponsor-url'>Nút "Hợp tác tài trợ ngay" (URL)</Label>
-              <Input
-                id='wd-sponsor-url'
-                onChange={(e) => setSponsorUrl(e.target.value)}
-                placeholder='https://... (để trống để ẩn nút)'
-                value={sponsorUrl}
-              />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='wd-proposal-url'>Nút "Proposal" (URL)</Label>
-              <Input
-                id='wd-proposal-url'
-                onChange={(e) => setProposalUrl(e.target.value)}
-                placeholder='https://... (để trống để tự động quét link mới nhất)'
-                value={proposalUrl}
-              />
-            </div>
-          </div>
-          <Button className='mt-4 h-9 w-fit text-xs' disabled={loading} onClick={handleSaveConfig} type='button'>
-            {loading ? "Đang lưu..." : "Lưu cấu hình WebDesign"}
-          </Button>
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          actions={
-            <Button
-              onClick={() => setPrizes((prev) => [...prev, { ...EMPTY_PRIZE, id: genId() }])}
-              size='sm'
-              type='button'
-              variant='outline'
-            >
-              <Plus className='mr-1 h-3.5 w-3.5' /> Thêm giải
-            </Button>
-          }
-          description={`${prizes.length} giải thưởng`}
-          title='Giải thưởng (Prizes)'
-        >
-          <div className='flex flex-col gap-3'>
-            {prizes.map((prize) => (
-              <div className='flex flex-col gap-2 rounded-lg border border-border bg-muted/10 p-3' key={prize.id}>
-                <div className='flex items-center gap-2'>
-                  <select
-                    className='h-9 rounded-md border border-border bg-background px-2 text-sm'
-                    onChange={(e) => updatePrize(prize.id, { tier: e.target.value as WebDesignPrize["tier"] })}
-                    value={prize.tier}
-                  >
-                    <option value='gold'>Vàng</option>
-                    <option value='silver'>Bạc</option>
-                    <option value='bronze'>Đồng</option>
-                  </select>
-                  <LocalizedInput
-                    className='min-w-40'
-                    onChange={(next) => updatePrize(prize.id, { title: next })}
-                    placeholder='Tên giải'
-                    value={prize.title}
-                  />
-                  <Button
-                    onClick={() => setPrizes((prev) => prev.filter((p) => p.id !== prize.id))}
-                    size='icon'
-                    type='button'
-                    variant='ghost'
-                  >
-                    <Trash2 className='h-4 w-4 text-destructive' />
-                  </Button>
-                </div>
-                <LocalizedInput
-                  onChange={(next) => updatePrize(prize.id, { description: next })}
-                  placeholder='Mô tả'
-                  value={prize.description}
-                />
-              </div>
-            ))}
-            {prizes.length === 0 && <p className='text-muted-foreground text-xs'>Chưa có giải thưởng nào.</p>}
-          </div>
-          <Button className='mt-4 h-9 w-fit text-xs' disabled={loading} onClick={handleSaveConfig} type='button'>
-            {loading ? "Đang lưu..." : "Lưu cấu hình WebDesign"}
-          </Button>
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          actions={
-            <Button
-              onClick={() => setBenefits((prev) => [...prev, { ...EMPTY_BENEFIT, id: genId() }])}
-              size='sm'
-              type='button'
-              variant='outline'
-            >
-              <Plus className='mr-1 h-3.5 w-3.5' /> Thêm quyền lợi
-            </Button>
-          }
-          description={`${benefits.length} quyền lợi`}
-          title='Quyền lợi (Benefits)'
-        >
-          <div className='flex flex-col gap-3'>
-            {benefits.map((benefit) => (
-              <div className='flex flex-col gap-2 rounded-lg border border-border bg-muted/10 p-3' key={benefit.id}>
-                <div className='flex items-center gap-2'>
-                  <LocalizedInput
-                    onChange={(next) => updateBenefit(benefit.id, { title: next })}
-                    placeholder='Tên quyền lợi'
-                    value={benefit.title}
-                  />
-                  <Button
-                    onClick={() => setBenefits((prev) => prev.filter((b) => b.id !== benefit.id))}
-                    size='icon'
-                    type='button'
-                    variant='ghost'
-                  >
-                    <Trash2 className='h-4 w-4 text-destructive' />
-                  </Button>
-                </div>
-                <LocalizedInput
-                  onChange={(next) => updateBenefit(benefit.id, { description: next })}
-                  placeholder='Mô tả'
-                  value={benefit.description}
-                />
-              </div>
-            ))}
-            {benefits.length === 0 && <p className='text-muted-foreground text-xs'>Chưa có quyền lợi nào.</p>}
-          </div>
-          <Button className='mt-4 h-9 w-fit text-xs' disabled={loading} onClick={handleSaveConfig} type='button'>
-            {loading ? "Đang lưu..." : "Lưu cấu hình WebDesign"}
-          </Button>
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          actions={
-            <div className='flex items-center gap-2'>
-              <Button
-                disabled={loading}
-                onClick={handleLoadDefaultExhibitions}
-                size='sm'
-                type='button'
+      {/* Header — sticky so Save is always reachable */}
+      <div className='sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 rounded-t-xl border-border border-b bg-background/95 px-6 py-4 backdrop-blur'>
+        <div className='min-w-0'>
+          <h2 className='flex items-center gap-2 font-semibold text-foreground text-lg'>
+            <Monitor className='h-5 w-5 text-primary' /> WebDesign Contest
+            {isDirty && (
+              <Badge
+                className='border-orange-500/40 bg-orange-500/10 text-orange-600 dark:text-orange-400'
                 variant='outline'
               >
-                <Download className='mr-1.5 h-3.5 w-3.5' /> Nạp mặc định
-              </Button>
-              <Button disabled={loading} onClick={openCreateDialog} size='sm' type='button'>
-                <Plus className='mr-1.5 h-3.5 w-3.5' /> Thêm
-              </Button>
-            </div>
-          }
-          description={`${exhibitions.length} dự án hiển thị ở mục "Exhibition"`}
-          icon={<ImageIcon className='h-4 w-4 text-primary' />}
-          title='Triển lãm WebDesign'
-        >
-          <div className='overflow-hidden rounded-lg border border-border'>
-            <table className='w-full text-sm'>
-              <thead>
-                <tr className='border-border border-b bg-muted/50'>
-                  <th className='w-16 px-3 py-2 text-left font-medium text-muted-foreground'>Ảnh</th>
-                  <th className='px-3 py-2 text-left font-medium text-muted-foreground'>Đội</th>
-                  <th className='px-3 py-2 text-left font-medium text-muted-foreground'>Dự án</th>
-                  <th className='px-3 py-2 text-right font-medium text-muted-foreground'>Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {exhibitions.map((ex, idx) => (
-                  <tr className='border-border border-b last:border-0 hover:bg-muted/30' key={`${ex.teamName}-${idx}`}>
-                    <td className='px-3 py-2'>
-                      <div className='relative h-10 w-14 overflow-hidden rounded border border-border bg-muted/30'>
-                        {ex.thumbnail && (
-                          <Image alt={ex.teamName} className='object-cover' fill sizes='56px' src={ex.thumbnail} />
-                        )}
-                      </div>
-                    </td>
-                    <td className='px-3 py-2 font-medium'>{ex.teamName || "—"}</td>
-                    <td className='max-w-xs truncate px-3 py-2 text-muted-foreground text-xs'>
-                      {ex.projectName.vi || ex.projectName.en || "—"}
-                    </td>
-                    <td className='px-3 py-2 text-right'>
-                      <Button onClick={() => openEditDialog(idx)} size='sm' variant='ghost'>
-                        <Pencil className='h-4 w-4' />
-                      </Button>
-                      <Button onClick={() => handleDeleteExhibition(idx)} size='sm' variant='ghost'>
-                        <Trash2 className='h-4 w-4 text-destructive' />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-                {exhibitions.length === 0 && (
-                  <tr>
-                    <td className='px-4 py-8 text-center text-muted-foreground' colSpan={4}>
-                      Chưa có triển lãm nào. Thêm mới hoặc nạp mặc định.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                Chưa lưu
+              </Badge>
+            )}
+          </h2>
+          <p className='text-muted-foreground text-xs'>
+            Cấu hình trang <code>/web-design</code> — nội dung song ngữ VI/EN.
+          </p>
+        </div>
+        <div className='flex flex-wrap items-center gap-2'>
+          <Button onClick={() => setOpenDialog("json")} size='sm' type='button' variant='outline'>
+            <Code2 className='mr-1.5 h-4 w-4' /> JSON
+          </Button>
+          <Button asChild size='sm' variant='ghost'>
+            <a href='/vi/web-design' rel='noopener noreferrer' target='_blank'>
+              <ExternalLink className='mr-1.5 h-4 w-4' /> Xem trang
+            </a>
+          </Button>
+          {isDirty && (
+            <Button disabled={saving} onClick={discard} size='sm' type='button' variant='ghost'>
+              <RotateCcw className='mr-1.5 h-4 w-4' /> Hoàn tác
+            </Button>
+          )}
+          <Button disabled={!isDirty || saving} onClick={() => save()} size='sm' type='button'>
+            <Save className='mr-1.5 h-4 w-4' />
+            {saving ? "Đang lưu..." : "Lưu thay đổi"}
+          </Button>
+        </div>
+      </div>
+
+      <Tabs className='px-6 py-5' defaultValue='overview'>
+        <TabsList className='mb-5 h-auto w-full justify-start overflow-x-auto sm:w-fit'>
+          <TabsTrigger value='overview'>Tổng quan</TabsTrigger>
+          <TabsTrigger value='milestones'>Mốc thời gian · {config.milestones.length}</TabsTrigger>
+          <TabsTrigger value='regulations'>Quy định · {config.regulations.length}</TabsTrigger>
+          <TabsTrigger value='prizes'>Giải thưởng · {config.prizes.length + config.benefits.length}</TabsTrigger>
+          <TabsTrigger value='exhibitions'>Triển lãm · {exhibitions.length}</TabsTrigger>
+          <TabsTrigger value='faqs'>FAQ · {faqs.length}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent className='mt-0' value='overview'>
+          <div className='mb-4 flex items-center justify-between gap-3'>
+            <p className='text-muted-foreground text-sm'>Ngày thi và các liên kết hiển thị trên trang.</p>
+            <Button onClick={() => setOpenDialog("general")} size='sm' type='button'>
+              <Pencil className='mr-1.5 h-4 w-4' /> Chỉnh sửa
+            </Button>
           </div>
-        </CollapsibleSection>
-      </section>
+          <dl className='divide-y divide-border overflow-hidden rounded-lg border border-border'>
+            {GENERAL_FIELDS.map((field) => {
+              const value = config[field.key];
+              return (
+                <div className='grid gap-1 px-4 py-3 sm:grid-cols-[220px_1fr] sm:gap-4' key={field.key}>
+                  <dt className='font-medium text-sm'>{field.label}</dt>
+                  <dd className='min-w-0 truncate text-sm'>
+                    {value ? (
+                      <ValueText kind={field.kind} value={value} />
+                    ) : (
+                      <span className='text-muted-foreground'>— {field.hint}</span>
+                    )}
+                  </dd>
+                </div>
+              );
+            })}
+          </dl>
+        </TabsContent>
+
+        <TabsContent className='mt-0' value='milestones'>
+          <ListPanel
+            addLabel='Thêm mốc'
+            description='Tự sắp xếp theo ngày bắt đầu khi lưu. Hero đếm ngược tới mốc kế tiếp / hiện "Đang diễn ra".'
+            emptyAction={
+              <LoadSampleButton
+                label='Nạp 4 giai đoạn mẫu'
+                onClick={() => patchConfig("milestones", sampleMilestones())}
+              />
+            }
+            emptyText='Chưa có mốc nào — trang dùng "Ngày thi" và 4 giai đoạn mặc định.'
+            getKey={(m) => m.id}
+            items={config.milestones}
+            onChange={(next) => patchConfig("milestones", next)}
+            renderDialog={(props) => <MilestoneDialog {...props} />}
+            renderRow={(m) => ({
+              leading: <MonoTag>{formatMilestoneRange(m.start, m.end) || "?"}</MonoTag>,
+              title: text(m.title),
+              meta: m.description.vi || m.description.en
+            })}
+          />
+        </TabsContent>
+
+        <TabsContent className='mt-0' value='regulations'>
+          <ListPanel
+            addLabel='Thêm điều'
+            description='Hiển thị dạng accordion "Điều 01, 02…" theo thứ tự bên dưới.'
+            emptyAction={
+              <LoadSampleButton
+                label='Nạp bộ quy định mẫu'
+                onClick={() => patchConfig("regulations", sampleRegulations())}
+              />
+            }
+            emptyText='Chưa có điều khoản nào — mục Quy định đang bị ẩn ngoài trang.'
+            getKey={(r) => r.id}
+            header={
+              <div className='flex items-center gap-3 rounded-lg border border-border border-dashed px-4 py-3 text-sm'>
+                <FileText className='h-4 w-4 shrink-0 text-muted-foreground' />
+                <span className='min-w-0 flex-1 truncate'>
+                  Thể lệ PDF:{" "}
+                  {config.rulesPdfUrl ? (
+                    <ValueText kind='pdf' value={config.rulesPdfUrl} />
+                  ) : (
+                    <span className='text-muted-foreground'>chưa có (hiện "sắp cập nhật")</span>
+                  )}
+                </span>
+                <Button onClick={() => setOpenDialog("general")} size='sm' type='button' variant='ghost'>
+                  <Pencil className='mr-1.5 h-3.5 w-3.5' /> Sửa
+                </Button>
+              </div>
+            }
+            items={config.regulations}
+            onChange={(next) => patchConfig("regulations", next)}
+            renderDialog={(props) => <RegulationDialog {...props} />}
+            renderRow={(r, idx) => ({
+              leading: <MonoTag>Điều {String(idx + 1).padStart(2, "0")}</MonoTag>,
+              title: text(r.title),
+              meta: `${r.items.length} mục`
+            })}
+            reorderable
+          />
+        </TabsContent>
+
+        <TabsContent className='mt-0 space-y-8' value='prizes'>
+          <SubSection title='Giải thưởng'>
+            <ListPanel
+              addLabel='Thêm giải'
+              description='Giải Vàng hiển thị dạng thẻ lớn.'
+              emptyAction={
+                <LoadSampleButton label='Điền 3 giải mặc định' onClick={() => patchConfig("prizes", defaultPrizes())} />
+              }
+              emptyText='Chưa có giải thưởng nào.'
+              getKey={(p) => p.id}
+              items={config.prizes}
+              onChange={(next) => patchConfig("prizes", next)}
+              renderDialog={(props) => <PrizeDialog {...props} />}
+              renderRow={(p) => ({
+                leading: (
+                  <Badge className={cn("w-14 justify-center", PRIZE_TIER_STYLES[p.tier])} variant='outline'>
+                    {PRIZE_TIER_LABELS[p.tier]}
+                  </Badge>
+                ),
+                title: text(p.title),
+                meta: p.description.vi || p.description.en
+              })}
+              reorderable
+            />
+          </SubSection>
+          <SubSection title='Quyền lợi'>
+            <ListPanel
+              addLabel='Thêm quyền lợi'
+              emptyAction={
+                <LoadSampleButton
+                  label='Điền quyền lợi mặc định'
+                  onClick={() => patchConfig("benefits", defaultBenefits())}
+                />
+              }
+              emptyText='Chưa có quyền lợi nào.'
+              getKey={(b) => b.id}
+              items={config.benefits}
+              onChange={(next) => patchConfig("benefits", next)}
+              renderDialog={(props) => <BenefitDialog {...props} />}
+              renderRow={(b) => ({ title: text(b.title), meta: b.description.vi || b.description.en })}
+              reorderable
+            />
+          </SubSection>
+        </TabsContent>
+
+        <TabsContent className='mt-0' value='exhibitions'>
+          <ListPanel
+            addLabel='Thêm dự án'
+            description='Hiển thị ở mục "Các dự án tiêu biểu".'
+            emptyAction={<LoadSampleButton label='Nạp từ configs/data/wd.json' onClick={loadDefaultExhibitions} />}
+            emptyText='Chưa có dự án nào — mục Dự án đang bị ẩn ngoài trang.'
+            getKey={(ex, idx) => `${ex.teamName}-${ex.live}-${idx}`}
+            items={exhibitions}
+            onChange={(next) => setDraft((prev) => ({ ...prev, exhibitions: next }))}
+            renderDialog={(props) => <ExhibitionDialog {...props} />}
+            renderRow={(ex) => ({
+              leading: (
+                <div className='relative h-10 w-16 overflow-hidden rounded-md border border-border bg-muted/40'>
+                  {ex.thumbnail && <Image alt='' className='object-cover' fill sizes='64px' src={ex.thumbnail} />}
+                </div>
+              ),
+              title: text(ex.projectName),
+              meta: [ex.teamName, ex.techStack.join(", ")].filter(Boolean).join(" · ")
+            })}
+            reorderable
+          />
+        </TabsContent>
+
+        <TabsContent className='mt-0' value='faqs'>
+          <ListPanel
+            addLabel='Thêm câu hỏi'
+            description='Hiển thị ở mục "Câu hỏi thường gặp" cuối trang, theo thứ tự bên dưới.'
+            emptyAction={<LoadSampleButton label='Nạp từ configs/data/fqa.json' onClick={loadDefaultFaqs} />}
+            emptyText='Chưa có câu hỏi nào — mục FAQ đang bị ẩn ngoài trang.'
+            getKey={(f) => f.id}
+            items={faqs}
+            onChange={(next) => setDraft((prev) => ({ ...prev, faqs: next }))}
+            renderDialog={(props) => <FaqDialog {...props} />}
+            renderRow={(f, idx) => ({
+              leading: f.isActive ? (
+                <MonoTag>Q{String(idx + 1).padStart(2, "0")}</MonoTag>
+              ) : (
+                <Badge className='text-muted-foreground' variant='outline'>
+                  Ẩn
+                </Badge>
+              ),
+              title: text(f.question),
+              meta: f.answer.vi || f.answer.en
+            })}
+            reorderable
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
+
+function SubSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className='space-y-3'>
+      <h3 className='font-semibold text-sm'>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function MonoTag({ children }: { children: ReactNode }) {
+  return (
+    <span className='inline-block rounded-md bg-muted px-2 py-1 font-mono text-[11px] text-muted-foreground'>
+      {children}
+    </span>
+  );
+}
+
+function LoadSampleButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <Button onClick={onClick} size='sm' type='button' variant='outline'>
+      <Download className='mr-1.5 h-4 w-4' /> {label}
+    </Button>
+  );
+}
+
+function ValueText({ kind, value }: { kind: "date" | "url" | "pdf"; value: string }) {
+  if (kind === "date") {
+    return (
+      <span className='font-mono'>
+        {formatMilestoneRange(value, "")} {value.slice(11, 16)}
+      </span>
+    );
+  }
+  return (
+    <a className='text-primary hover:underline' href={value} rel='noopener noreferrer' target='_blank'>
+      {value}
+    </a>
+  );
+}

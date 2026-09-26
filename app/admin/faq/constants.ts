@@ -1,7 +1,7 @@
+/** WEBDESIGN is intentionally absent: its FAQ is managed in Site Config → WebDesign. */
 export const FAQ_TARGETS = [
   { value: "GENERAL", label: "Chung" },
   { value: "ABOUT", label: "Giới thiệu (About)" },
-  { value: "WEBDESIGN", label: "Web Design" },
   { value: "SPONSOR", label: "Nhà tài trợ" },
   { value: "TRAINING", label: "Training" },
   { value: "ACTIVITIES", label: "Hoạt động" },

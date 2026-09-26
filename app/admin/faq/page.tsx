@@ -10,7 +10,11 @@ export default async function AdminFaqPage(): Promise<React.ReactNode> {
 
   return (
     <div className='flex flex-col gap-6'>
-      <AdminPageHeader description='Câu hỏi thường gặp hiển thị trên website' icon={HelpCircle} title='Quản lý FAQ' />
+      <AdminPageHeader
+        description='Câu hỏi thường gặp hiển thị trên website. FAQ của WebDesign được quản lý tại Site Config → WebDesign.'
+        icon={HelpCircle}
+        title='Quản lý FAQ'
+      />
       <FaqDataTable data={items} />
     </div>
   );

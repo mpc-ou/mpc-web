@@ -65,7 +65,7 @@ const MobileMenu = () => {
       children: [
         { label: tNav("introduction"), href: "/about" },
         { label: tNav("members"), href: "/members" },
-        { label: tNav("webdesign"), href: "/activities/webdesign" }
+        { label: tNav("webdesign"), href: "/web-design" }
         // { label: tNav("recap"), href: "/recap" },
       ]
     },

@@ -114,9 +114,12 @@ export {
   adminUpdateSponsor
 } from "./sponsors";
 export {
+  adminGetDefaultWebDesignExhibitions,
+  adminGetDefaultWebDesignFaqs,
   adminGetWebDesignConfig,
   adminGetWebDesignExhibitions,
+  adminGetWebDesignFaqs,
   adminSaveWebDesignConfig,
   adminSaveWebDesignExhibitions,
-  adminSeedWebDesignExhibitionsFromDefault
+  adminSaveWebDesignFaqs
 } from "./webdesign";

@@ -3,6 +3,10 @@ import { getGalleryImages } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { GalleryMasonry } from "./gallery-masonry.client";
 
+/** Diagonal, tilted-plane look for the home gallery. */
+const GALLERY_TILT_X_DEG = 22;
+const GALLERY_TILT_Z_DEG = -30;
+
 const GallerySection = async ({ locale }: { locale: string }) => {
   const t = await getTranslations({ locale, namespace: "home.gallery" });
 
@@ -29,7 +33,7 @@ const GallerySection = async ({ locale }: { locale: string }) => {
           <p className='mt-3 text-muted-foreground'>{t("subtitle")}</p>
         </ScrollReveal>
         <ScrollReveal delay={200} variant='zoom-in'>
-          <GalleryMasonry images={images} />
+          <GalleryMasonry images={images} tiltXDeg={GALLERY_TILT_X_DEG} tiltZDeg={GALLERY_TILT_Z_DEG} />
         </ScrollReveal>
       </div>
     </section>

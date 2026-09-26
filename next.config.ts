@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+  // The WebDesign contest page moved from /activities/webdesign; old links (incl. Activity hrefs stored in the DB) keep working.
+  redirects: async () => [
+    { source: "/:locale(vi|en)/activities/webdesign", destination: "/:locale/web-design", permanent: true },
+    { source: "/activities/webdesign", destination: "/web-design", permanent: true }
+  ],
   cacheComponents: true,
   reactCompiler: true,
   output: "standalone",

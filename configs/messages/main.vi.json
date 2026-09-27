@@ -224,11 +224,48 @@
         "VICE_PRESIDENT": "Phó chủ nhiệm",
         "DEPARTMENT_LEADER": "Trưởng ban",
         "DEPARTMENT_VICE_LEADER": "Phó ban",
-        "ADVISOR": "Cố vấn"
+        "ADVISOR": "Cố vấn",
+        "DEPARTMENT_MEMBER": "Thành viên ban",
+        "COLLABORATOR": "Cộng tác viên"
       }
     },
     "honoredMembers": "Thành viên vinh danh",
-    "noHonorImage": "Chưa có hình ảnh vinh danh"
+    "noHonorImage": "Chưa có hình ảnh vinh danh",
+    "board": {
+      "hallEyebrow": "01 · BẢNG VÀNG",
+      "hallNote": "xếp theo số thành tựu",
+      "awardsUnit": "GIẢI",
+      "hallEmpty": "Chưa có thành viên nào trên bảng vàng.",
+      "leadEyebrow": "02 · BAN CHỦ NHIỆM",
+      "leadTitle": "Qua các nhiệm kỳ",
+      "leadNote": "",
+      "termCurrent": "hiện tại",
+      "termLabel": "NK {year}",
+      "viewProfile": "Hồ sơ",
+      "openDetail": "Xem chi tiết {name}",
+      "postsEyebrow": "03 · BÀI VIẾT",
+      "viewAll": "Xem tất cả {total} bài",
+      "collapse": "Thu gọn",
+      "peopleCount": "{count} người",
+      "featured": "NỔI BẬT",
+      "range": "{start}–{end} / {total}",
+      "prevPage": "Trang trước",
+      "nextPage": "Trang sau",
+      "goToPage": "Trang {page}",
+      "modal": {
+        "achievements": "Thành tựu",
+        "projects": "Dự án",
+        "terms": "Nhiệm kỳ",
+        "roleHistory": "Lịch sử chức vụ",
+        "journey": "Hành trình thành tựu",
+        "empty": "Chưa có thành tựu nào được công bố.",
+        "viewProfile": "Xem hồ sơ đầy đủ",
+        "rank": "Hạng #{rank} bảng vàng",
+        "present": "nay",
+        "member": "Thành viên MPC",
+        "close": "Đóng"
+      }
+    }
   },
   "trainingPage": {
     "hero": {

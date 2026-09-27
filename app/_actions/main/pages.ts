@@ -2,6 +2,7 @@
 
 import { prisma } from "@/configs/prisma/db";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
+import { groupRolesByTerm, LEADERSHIP_POSITIONS } from "@/utils/leadership-terms";
 
 const ACHIEVEMENT_SELECT = {
   id: true,
@@ -42,132 +43,138 @@ const ACHIEVEMENT_SELECT = {
   gallery: { orderBy: { order: "asc" } }
 } as const;
 
+const PUBLISHED_ACHIEVEMENT = { type: "ACHIEVEMENT", status: "PUBLISHED" } as const;
+
+const HONOREE_SELECT = {
+  id: true,
+  firstName: true,
+  middleName: true,
+  lastName: true,
+  avatar: true,
+  coverImage: true,
+  slug: true,
+  socials: true,
+  _count: { select: { achievementEntries: { where: { post: PUBLISHED_ACHIEVEMENT } }, projects: true } },
+  clubRoles: {
+    include: { department: { select: { nameVi: true, nameEn: true } } },
+    orderBy: { startAt: "desc" }
+  }
+} as const;
+
 export const getAchievementsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache";
-      const skip = (validPage - 1) * take;
-      const where = {
-        type: "ACHIEVEMENT" as const,
-        status: "PUBLISHED" as const
+      const isEn = locale === "en";
+      const deptName = (d: { nameVi: string; nameEn: string | null } | null) => {
+        if (!d) {
+          return null;
+        }
+        return isEn && d.nameEn ? d.nameEn : d.nameVi;
       };
 
-      const [total, achievements] = await Promise.all([
+      const skip = (validPage - 1) * take;
+      const where = PUBLISHED_ACHIEVEMENT;
+
+      const [total, achievements, leadershipRoles, goldBoardMembers] = await Promise.all([
         prisma.post.count({ where }),
         prisma.post.findMany({
           where,
           skip,
           take,
-          orderBy: { achievementDate: "desc" },
+          orderBy: [{ isHighlight: "desc" }, { achievementDate: "desc" }],
           select: ACHIEVEMENT_SELECT
+        }),
+        prisma.clubRole.findMany({
+          where: {
+            position: { in: [...LEADERSHIP_POSITIONS] },
+            member: { isActive: true }
+          },
+          select: {
+            memberId: true,
+            position: true,
+            startAt: true,
+            endAt: true,
+            department: { select: { nameVi: true, nameEn: true } }
+          }
+        }),
+        prisma.member.findMany({
+          where: { isActive: true, achievementEntries: { some: { post: where } } },
+          select: { id: true, _count: { select: { achievementEntries: { where: { post: where } } } } },
+          orderBy: { achievementEntries: { _count: "desc" } },
+          take: 12
         })
       ]);
 
-      const totalPages = Math.ceil(total / take);
-
-      const historicalRoles = await prisma.clubRole.findMany({
-        where: {
-          position: {
-            in: ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER", "ADVISOR"]
-          },
-          member: { isActive: true }
-        },
-        include: {
-          member: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              middleName: true,
-              avatar: true,
-              slug: true,
-              socials: true,
-              coverImage: true,
-              _count: { select: { achievementEntries: true, projects: true } }
-            }
-          },
-          department: true
-        },
-        orderBy: { startAt: "asc" }
-      });
-
-      const leaderMap = new Map<string, unknown>();
-      for (const r of historicalRoles) {
-        if (!leaderMap.has(r.member.id)) {
-          leaderMap.set(r.member.id, {
-            member: r.member,
-            roles: [] as Record<string, unknown>[]
-          });
-        }
-        (leaderMap.get(r.member.id) as { roles: Record<string, unknown>[] }).roles.push({
-          id: r.id,
+      const terms = groupRolesByTerm(
+        leadershipRoles.map((r) => ({
+          memberId: r.memberId,
           position: r.position,
-          startAt: r.startAt.toISOString(),
-          endAt: r.endAt?.toISOString() ?? null,
-          departmentName: locale === "en" && r.department?.nameEn ? r.department.nameEn : (r.department?.nameVi ?? null)
-        });
+          startAt: r.startAt,
+          endAt: r.endAt,
+          departmentName: deptName(r.department)
+        }))
+      );
+
+      const goldBoard: { memberId: string; count: number; rank: number }[] = [];
+      for (const [i, m] of goldBoardMembers.entries()) {
+        const count = m._count.achievementEntries;
+        const prev = goldBoard[i - 1];
+        goldBoard.push({ memberId: m.id, count, rank: prev && prev.count === count ? prev.rank : i + 1 });
       }
 
-      const leaders = Array.from(leaderMap.values()).map((l) => {
-        (l as { roles: Record<string, unknown>[] }).roles.sort(
-          (a, b) => new Date(b.startAt as string).getTime() - new Date(a.startAt as string).getTime()
-        );
-        return l;
+      const memberIds = [...new Set([...goldBoard.map((g) => g.memberId), ...leadershipRoles.map((r) => r.memberId)])];
+      const members = await prisma.member.findMany({
+        where: { id: { in: memberIds } },
+        select: HONOREE_SELECT
       });
 
-      // Gold board — all members with achievements, not just leadership
-      const goldBoardMembers = await prisma.member.findMany({
-        where: {
-          achievementEntries: { some: {} }
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          middleName: true,
-          avatar: true,
-          slug: true,
-          _count: { select: { achievementEntries: true, projects: true } },
-          clubRoles: {
-            include: { department: true },
-            orderBy: { startAt: "desc" },
-            take: 1
+      const people = Object.fromEntries(
+        members.map((m) => [
+          m.id,
+          {
+            id: m.id,
+            firstName: m.firstName,
+            middleName: m.middleName,
+            lastName: m.lastName,
+            avatar: m.avatar,
+            coverImage: m.coverImage,
+            slug: m.slug,
+            socials: m.socials,
+            achievementCount: m._count.achievementEntries,
+            projectCount: m._count.projects,
+            roles: m.clubRoles.map((r) => ({
+              id: r.id,
+              position: r.position,
+              startAt: r.startAt.toISOString(),
+              endAt: r.endAt?.toISOString() ?? null,
+              departmentName: deptName(r.department)
+            }))
           }
-        },
-        orderBy: { achievementEntries: { _count: "desc" } },
-        take: 12
-      });
+        ])
+      );
 
-      const goldBoard = goldBoardMembers.map((m) => ({
-        member: {
-          id: m.id,
-          firstName: m.firstName,
-          middleName: m.middleName,
-          lastName: m.lastName,
-          avatar: m.avatar,
-          slug: m.slug,
-          _count: m._count
-        },
-        roles: m.clubRoles.map((r) => ({
-          position: r.position,
-          departmentName: locale === "en" && r.department?.nameEn ? r.department.nameEn : (r.department?.nameVi ?? null)
-        }))
-      }));
-
-      const isEn = locale === "en";
       return {
         achievements: achievements.map((a) => ({
-          ...a,
+          id: a.id,
+          slug: a.slug,
           title: isEn && a.titleEn ? a.titleEn : a.titleVi,
-          summary: isEn && a.summaryEn ? a.summaryEn : a.summaryVi,
-          content: isEn && a.contentEn ? a.contentEn : a.contentVi,
+          thumbnail: a.thumbnail,
           date: a.achievementDate?.toISOString() ?? null,
           type: a.achievementType,
-          members: a.achievementMembers
+          isHighlight: a.isHighlight,
+          members: a.achievementMembers.map((am) => ({
+            id: am.member.id,
+            firstName: am.member.firstName,
+            lastName: am.member.lastName,
+            avatar: am.member.avatar
+          }))
         })),
-        totalPages,
-        leaders,
-        goldBoard
+        total,
+        totalPages: Math.ceil(total / take),
+        people,
+        goldBoard,
+        terms
       };
     }
   });

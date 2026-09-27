@@ -1,52 +1,13 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { getAchievementsPageData } from "@/app/_actions/main";
+import { PageHero } from "@/components/custom/page-hero.client";
 import { generatePageSeo } from "@/utils/seo";
-import { GoldBoard } from "./_components/gold-board.client";
-import { LeadershipCarouselClient } from "./_components/leadership-carousel.client";
-import type { Achievement } from "./client";
-import { AchievementsClient } from "./client";
-
-type LeaderRole = {
-  id: string;
-  position: string;
-  startAt: string;
-  endAt: string | null;
-  departmentName: string | null;
-};
-
-type Leader = {
-  member: {
-    id: string;
-    firstName: string;
-    middleName?: string | null;
-    lastName: string;
-    avatar: string | null;
-    slug: string;
-    socials: unknown;
-    coverImage?: string | null;
-    _count?: {
-      achievementEntries: number;
-      projects: number;
-    };
-  };
-  roles: LeaderRole[];
-};
-
-type GoldBoardMember = {
-  member: {
-    id: string;
-    firstName: string;
-    middleName?: string | null;
-    lastName: string;
-    avatar: string | null;
-    slug: string;
-    _count?: { achievementEntries: number; projects: number };
-  };
-  roles: Array<{
-    position: string;
-    departmentName: string | null;
-  }>;
-};
+import { AchievementPosts } from "./_components/achievement-posts.client";
+import { HonorBoard } from "./_components/honor-board.client";
+import { HonoreeProvider } from "./_components/honoree-dialog.client";
+import { LeadershipTerms } from "./_components/leadership-terms.client";
+import { type AchievementsPagePayload, POSTS_PER_PAGE } from "./_components/types";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -56,9 +17,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     pathname: "/achievements"
   });
 }
-
-import { getTranslations } from "next-intl/server";
-import { PageHero } from "@/components/custom/page-hero.client";
 
 export default async function AchievementsPage({
   params,
@@ -72,26 +30,12 @@ export default async function AchievementsPage({
   const page = typeof sp.page === "string" ? Number.parseInt(sp.page, 10) : 1;
   const validPage = Number.isNaN(page) || page < 1 ? 1 : page;
 
-  const take = 6;
   const t = await getTranslations("achievements");
-
-  const { data } = await getAchievementsPageData(validPage, take, locale);
-  const payload = data?.payload as
-    | {
-        achievements: Achievement[];
-        totalPages: number;
-        leaders: Leader[];
-        goldBoard: GoldBoardMember[];
-      }
-    | undefined;
-
-  const achievements = payload?.achievements ?? [];
-  const totalPages = payload?.totalPages ?? 0;
-  const leaders = payload?.leaders ?? [];
-  const goldBoard = payload?.goldBoard ?? [];
+  const { data } = await getAchievementsPageData(validPage, POSTS_PER_PAGE, locale);
+  const payload = data?.payload as AchievementsPagePayload | undefined;
 
   return (
-    <div className='min-h-screen bg-background pb-20'>
+    <div className='min-h-screen bg-background'>
       <PageHero
         badge='HONORS & AWARDS'
         description={t("description")}
@@ -99,33 +43,21 @@ export default async function AchievementsPage({
         title={t("title")}
       />
 
-      <div className='container mx-auto mt-16 px-4'>
-        {leaders.length > 0 && (
-          <div className='mb-16'>
-            <div className='mb-6 text-center'>
-              <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("hallOfFameTitle")}</h2>
-              <p className='mt-2 text-muted-foreground'>{t("hallOfFameDesc")}</p>
-            </div>
-            <GoldBoard locale={locale} members={goldBoard} />
-          </div>
-        )}
-      </div>
+      <div className='container mx-auto flex max-w-6xl flex-col gap-24 px-4 pt-12 pb-24'>
+        <HonoreeProvider
+          goldBoard={payload?.goldBoard ?? []}
+          people={payload?.people ?? {}}
+          terms={payload?.terms ?? []}
+        >
+          <HonorBoard />
+          <LeadershipTerms />
+        </HonoreeProvider>
 
-      <div className='w-full'>
-        <LeadershipCarouselClient leaders={leaders} />
-      </div>
-
-      <div className='container mx-auto mt-20 max-w-6xl px-4'>
-        {/* 2. Bài viết thành tích */}
-        <div className='mb-8 text-center'>
-          <h2 className='font-bold text-3xl tracking-tight sm:text-4xl'>{t("articlesTitle")}</h2>
-        </div>
-
-        <AchievementsClient
-          achievements={achievements}
+        <AchievementPosts
           currentPage={validPage}
-          locale={locale}
-          totalPages={totalPages}
+          posts={payload?.achievements ?? []}
+          total={payload?.total ?? 0}
+          totalPages={payload?.totalPages ?? 0}
         />
       </div>
     </div>

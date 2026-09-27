@@ -3,7 +3,7 @@
 import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   adminCreateProject,
   adminLinkProjectMember,
@@ -42,14 +42,36 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
   const [loading, setLoading] = useState(false);
 
   const bi = useBilingualForm(
-    project ? { title: project.title, titleEn: project.titleEn, summary: project.description ?? undefined } : null
+    project
+      ? {
+          titleVi: project.title,
+          titleEn: project.titleEn,
+          summaryVi: project.description,
+          summaryEn: project.descriptionEn,
+          contentVi: project.content ?? "",
+          contentEn: project.contentEn ?? ""
+        }
+      : null
   );
 
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
 
   const [techs, setTechs] = useState<string[]>(project?.technologies ?? []);
   const [techInput, setTechInput] = useState("");
-  const [linked, setLinked] = useState<LinkedMember[]>([]);
+  const [linked, setLinked] = useState<LinkedMember[]>(() =>
+    (project?.members ?? []).map((m) => ({
+      member: {
+        id: m.member.id,
+        firstName: m.member.firstName,
+        lastName: m.member.lastName,
+        avatar: null,
+        studentId: null,
+        webRole: ""
+      } as MemberOption,
+      role: m.role,
+      joinedAt: m.joinedAt ?? null
+    }))
+  );
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(project?.thumbnail ?? null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -57,25 +79,6 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
   const [imagesItems, setImagesItems] = useState<ImageItem[]>(
     ((project as { images?: string[] } | null | undefined)?.images ?? []).map((url) => ({ url }))
   );
-
-  useEffect(() => {
-    if (project?.members) {
-      setLinked(
-        project.members.map((m) => ({
-          member: {
-            id: m.member.id,
-            firstName: m.member.firstName,
-            lastName: m.member.lastName,
-            avatar: null,
-            studentId: null,
-            webRole: ""
-          } as MemberOption,
-          role: m.role,
-          joinedAt: m.joinedAt ?? null
-        }))
-      );
-    }
-  }, [project?.members]);
 
   const processThumbnailFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {

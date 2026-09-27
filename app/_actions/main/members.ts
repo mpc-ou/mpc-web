@@ -173,6 +173,7 @@ export const getMemberAchievements = async (memberId: string) =>
       const posts = await prisma.post.findMany({
         where: {
           type: "ACHIEVEMENT",
+          status: "PUBLISHED",
           achievementMembers: { some: { memberId } }
         },
         orderBy: { achievementDate: "desc" },
@@ -186,9 +187,15 @@ export const getMemberAchievements = async (memberId: string) =>
           thumbnail: true,
           achievementDate: true,
           achievementType: true,
-          isHighlight: true
+          isHighlight: true,
+          achievementMembers: { where: { memberId }, select: { role: true, prize: true } }
         }
       });
-      return posts;
+      return posts.map(({ achievementMembers, ...p }) => ({
+        ...p,
+        achievementDate: p.achievementDate?.toISOString() ?? null,
+        role: achievementMembers[0]?.role ?? null,
+        prize: achievementMembers[0]?.prize ?? null
+      }));
     }
   });

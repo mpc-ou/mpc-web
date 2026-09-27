@@ -93,6 +93,44 @@
   --animate-wd-drift-reverse: wd-drift-reverse 18s ease-in-out infinite;
   --animate-wd-bob: wd-bob 5s ease-in-out infinite;
   --animate-wd-progress: wd-progress 4.5s linear forwards;
+  --animate-ach-sheen: ach-sheen 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-ach-spin: ach-spin 6s linear infinite;
+  --animate-ach-float: ach-float 4s ease-in-out infinite;
+  --animate-ach-progress: ach-progress 10s linear forwards;
+
+  @keyframes ach-sheen {
+    from {
+      transform: translateX(-120%) skewX(-20deg);
+    }
+    to {
+      transform: translateX(260%) skewX(-20deg);
+    }
+  }
+
+  @keyframes ach-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes ach-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes ach-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 
   @keyframes wd-shine {
     to {

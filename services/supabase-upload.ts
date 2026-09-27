@@ -1,49 +1,19 @@
-import { createClient } from "@/configs/supabase/client";
-
 /**
- * Upload a file to Supabase Storage and return the public URL.
- * Buckets must be created in Supabase Dashboard → Storage → New bucket (Public).
- *
- * Buckets used by this app:
- *   - "media"  : avatars, editor images, gallery
- *
- * @param file   - File to upload
- * @param bucket - Storage bucket name (must exist in Supabase)
- * @param folder - Optional subfolder path (e.g. "avatars", "editor")
- * @returns Public URL string
+ * Upload a file through `/api/upload` (SSO session checked server-side, stored with the service role)
+ * and return its public URL. Buckets: "media", "gallery".
  */
 export async function uploadToStorage(file: File, bucket: string, folder?: string): Promise<string> {
-  const supabase = createClient();
-  const ext = file.name.split(".").pop() ?? "png";
-  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const path = folder ? `${folder}/${fileName}` : fileName;
-
-  const { error } = await supabase.storage.from(bucket).upload(path, file, {
-    cacheControl: "3600",
-    upsert: false
-  });
-
-  if (error) {
-    if (error.message.includes("Bucket not found")) {
-      throw new Error(
-        `Bucket "${bucket}" is not found.\n` +
-          `Please create bucket "${bucket}" in Supabase Dashboard → Storage → New bucket (Public).`
-      );
-    }
-    if (error.message.includes("row-level security") || error.message.includes("Unauthorized")) {
-      throw new Error(
-        `No permission to upload to bucket "${bucket}".\n` +
-          `Please configure policies in Supabase Dashboard → Storage → Policies → bucket "${bucket}" → add:\n` +
-          `  INSERT: auth.role() = 'authenticated'\n` +
-          "  SELECT: true"
-      );
-    }
-    throw new Error(`Upload failed: ${error.message}`);
+  const body = new FormData();
+  body.append("file", file);
+  body.append("bucket", bucket);
+  if (folder) {
+    body.append("folder", folder);
   }
 
-  const {
-    data: { publicUrl }
-  } = supabase.storage.from(bucket).getPublicUrl(path);
-
-  return publicUrl;
+  const res = await fetch("/api/upload", { method: "POST", body });
+  const json = (await res.json().catch(() => null)) as { url?: string; error?: string } | null;
+  if (!(res.ok && json?.url)) {
+    throw new Error(json?.error ?? `Upload failed (${res.status})`);
+  }
+  return json.url;
 }

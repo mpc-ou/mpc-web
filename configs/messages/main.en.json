@@ -224,11 +224,48 @@
         "VICE_PRESIDENT": "Vice President",
         "DEPARTMENT_LEADER": "Head of Department",
         "DEPARTMENT_VICE_LEADER": "Deputy Head",
-        "ADVISOR": "Advisor"
+        "ADVISOR": "Advisor",
+        "DEPARTMENT_MEMBER": "Department member",
+        "COLLABORATOR": "Collaborator"
       }
     },
     "honoredMembers": "Honored Members",
-    "noHonorImage": "No honor image"
+    "noHonorImage": "No honor image",
+    "board": {
+      "hallEyebrow": "01 · HALL OF FAME",
+      "hallNote": "ranked by achievements",
+      "awardsUnit": "AWARDS",
+      "hallEmpty": "No one on the hall of fame yet.",
+      "leadEyebrow": "02 · BOARD",
+      "leadTitle": "Through the terms",
+      "leadNote": "",
+      "termCurrent": "current",
+      "termLabel": "Term {year}",
+      "viewProfile": "Profile",
+      "openDetail": "View details of {name}",
+      "postsEyebrow": "03 · ARTICLES",
+      "viewAll": "View all {total} articles",
+      "collapse": "Collapse",
+      "peopleCount": "{count} people",
+      "featured": "FEATURED",
+      "range": "{start}–{end} / {total}",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "goToPage": "Page {page}",
+      "modal": {
+        "achievements": "Achievements",
+        "projects": "Projects",
+        "terms": "Terms",
+        "roleHistory": "Role history",
+        "journey": "Achievement journey",
+        "empty": "No published achievements yet.",
+        "viewProfile": "View full profile",
+        "rank": "Rank #{rank} on the hall of fame",
+        "present": "now",
+        "member": "MPC member",
+        "close": "Close"
+      }
+    }
   },
   "trainingPage": {
     "hero": {

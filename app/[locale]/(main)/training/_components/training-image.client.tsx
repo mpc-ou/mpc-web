@@ -18,7 +18,7 @@ export function TrainingImage({ src, alt, className, fallback }: TrainingImagePr
   }
 
   // `className` positions this wrapper (e.g. `absolute inset-x-0 top-6 bottom-0`);
-  // the Image itself just fills whatever box the wrapper ends up with — `fill`
+  // the Image itself just fills whatever box the wrapper ends up with - `fill`
   // sets `inset: 0` via inline style, which would stomp an asymmetric inset
   // passed straight through as the image's own className.
   return (

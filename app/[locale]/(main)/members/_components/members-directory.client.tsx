@@ -3,7 +3,7 @@
 import { ArrowRight, Search } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,8 @@ export type DirectoryYear = { year: number; members: DirectoryMember[] };
 
 const LEADER_POSITIONS = new Set(["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER"]);
 const MAX_POPUP_SOCIALS = 6;
+const TILE_STAGGER_MS = 30;
+const TILE_MAX_DELAY_MS = 900;
 const WHITESPACE_RE = /\s+/;
 const DIACRITICS_RE = /\p{Diacritic}/gu;
 
@@ -65,7 +67,42 @@ const MemberAvatar = ({
   </span>
 );
 
-function MemberTile({ member, locale }: { member: DirectoryMember; locale: string }) {
+function useInViewOnce<T extends Element>() {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || inView) {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [inView]);
+
+  return { ref, inView };
+}
+
+function MemberTile({
+  member,
+  locale,
+  revealed,
+  index
+}: {
+  member: DirectoryMember;
+  locale: string;
+  revealed: boolean;
+  index: number;
+}) {
   const t = useTranslations("membersPage");
   const tPos = useTranslations("userMenu.positions");
   const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
@@ -77,19 +114,29 @@ function MemberTile({ member, locale }: { member: DirectoryMember; locale: strin
 
   return (
     <div className='group/tile relative aspect-square transition-opacity duration-200 hover:z-40' data-tile>
-      <Link
-        aria-label={fullName}
-        className={cn(
-          "absolute inset-0 rounded-full ring-offset-2 ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group-hover/tile:scale-105 group-hover/tile:ring-2 group-hover/tile:ring-primary",
-          isLeader && "ring-2 ring-primary/60"
-        )}
-        href={href}
+      <span
+        className={cn("absolute inset-0", revealed ? "motion-safe:animate-member-pop" : "motion-safe:opacity-0")}
+        style={revealed ? { animationDelay: `${Math.min(index * TILE_STAGGER_MS, TILE_MAX_DELAY_MS)}ms` } : undefined}
       >
-        <MemberAvatar className='h-full w-full text-sm sm:text-base' initials={initials} member={member} sizes='96px' />
-        {isLeader && (
-          <span className='absolute top-[6%] right-[6%] h-2.5 w-2.5 rounded-full border-2 border-background bg-primary' />
-        )}
-      </Link>
+        <Link
+          aria-label={fullName}
+          className={cn(
+            "absolute inset-0 rounded-full ring-offset-2 ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group-hover/tile:scale-105 group-hover/tile:ring-2 group-hover/tile:ring-primary",
+            isLeader && "ring-2 ring-primary/60"
+          )}
+          href={href}
+        >
+          <MemberAvatar
+            className='h-full w-full text-sm sm:text-base'
+            initials={initials}
+            member={member}
+            sizes='96px'
+          />
+          {isLeader && (
+            <span className='absolute top-[6%] right-[6%] h-2.5 w-2.5 rounded-full border-2 border-background bg-primary' />
+          )}
+        </Link>
+      </span>
 
       <div className='pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 hidden w-80 -translate-x-1/2 translate-y-1 opacity-0 transition-all duration-200 after:absolute after:inset-x-0 after:top-full after:h-5 group-hover/tile:pointer-events-auto group-hover/tile:translate-y-0 group-hover/tile:opacity-100 md:block'>
         <div className='overflow-hidden rounded-xl border bg-popover text-popover-foreground shadow-xl'>
@@ -232,23 +279,45 @@ export function MembersDirectory({ years }: { years: DirectoryYear[] }) {
         ) : (
           <div className='flex flex-col gap-14 [&:has([data-tile]:hover)_[data-tile]:not(:hover)]:opacity-40'>
             {filtered.map(({ year, members }, idx) => (
-              <section className='flex scroll-mt-40 flex-col gap-5 md:flex-row md:gap-8' id={`year-${year}`} key={year}>
-                <div className='flex items-baseline gap-3 md:w-28 md:shrink-0 md:flex-col md:gap-1'>
-                  <h2 className={cn("font-bold text-3xl md:text-4xl", idx === 0 ? "text-primary" : "text-foreground")}>
-                    {year}
-                  </h2>
-                  <p className='text-muted-foreground text-sm'>{t("peopleCount", { count: members.length })}</p>
-                </div>
-                <div className='grid min-w-0 flex-1 grid-cols-4 gap-3 border-l-0 sm:grid-cols-6 md:border-l md:pl-8 lg:grid-cols-8 xl:grid-cols-10'>
-                  {members.map((member) => (
-                    <MemberTile key={member.id} locale={locale} member={member} />
-                  ))}
-                </div>
-              </section>
+              <YearSection highlight={idx === 0} key={year} locale={locale} members={members} year={year} />
             ))}
           </div>
         )}
       </div>
     </>
+  );
+}
+
+function YearSection({
+  year,
+  members,
+  locale,
+  highlight
+}: {
+  year: number;
+  members: DirectoryMember[];
+  locale: string;
+  highlight: boolean;
+}) {
+  const t = useTranslations("membersPage");
+  const { ref, inView } = useInViewOnce<HTMLElement>();
+
+  return (
+    <section className='flex scroll-mt-40 flex-col gap-5 md:flex-row md:gap-8' id={`year-${year}`} ref={ref}>
+      <div
+        className={cn(
+          "flex items-baseline gap-3 md:w-28 md:shrink-0 md:flex-col md:gap-1",
+          inView ? "motion-safe:animate-fade-in-up" : "motion-safe:opacity-0"
+        )}
+      >
+        <h2 className={cn("font-bold text-3xl md:text-4xl", highlight ? "text-primary" : "text-foreground")}>{year}</h2>
+        <p className='text-muted-foreground text-sm'>{t("peopleCount", { count: members.length })}</p>
+      </div>
+      <div className='grid min-w-0 flex-1 grid-cols-4 gap-3 border-l-0 sm:grid-cols-6 md:border-l md:pl-8 lg:grid-cols-8 xl:grid-cols-10'>
+        {members.map((member, index) => (
+          <MemberTile index={index} key={member.id} locale={locale} member={member} revealed={inView} />
+        ))}
+      </div>
+    </section>
   );
 }

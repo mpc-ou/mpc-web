@@ -60,7 +60,7 @@ const PRIZE_TIER_STYLES: Record<WebDesignPrize["tier"], string> = {
 };
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
-const text = (t: { vi: string; en: string }) => t.vi || t.en || "—";
+const text = (t: { vi: string; en: string }) => t.vi || t.en || "-";
 
 export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDesignFaqs }: Props) => {
   const router = useRouter();
@@ -197,7 +197,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
         />
       )}
 
-      {/* Header — sticky so Save is always reachable */}
+      {/* Header - sticky so Save is always reachable */}
       <div className='sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 rounded-t-xl border-border border-b bg-background/95 px-6 py-4 backdrop-blur'>
         <div className='min-w-0'>
           <h2 className='flex items-center gap-2 font-semibold text-foreground text-lg'>
@@ -212,7 +212,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
             )}
           </h2>
           <p className='text-muted-foreground text-xs'>
-            Cấu hình trang <code>/web-design</code> — nội dung song ngữ VI/EN.
+            Cấu hình trang <code>/web-design</code> - nội dung song ngữ VI/EN.
           </p>
         </div>
         <div className='flex flex-wrap items-center gap-2'>
@@ -263,7 +263,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
                     {value ? (
                       <ValueText kind={field.kind} value={value} />
                     ) : (
-                      <span className='text-muted-foreground'>— {field.hint}</span>
+                      <span className='text-muted-foreground'>- {field.hint}</span>
                     )}
                   </dd>
                 </div>
@@ -282,7 +282,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
                 onClick={() => patchConfig("milestones", sampleMilestones())}
               />
             }
-            emptyText='Chưa có mốc nào — trang dùng "Ngày thi" và 4 giai đoạn mặc định.'
+            emptyText='Chưa có mốc nào - trang dùng "Ngày thi" và 4 giai đoạn mặc định.'
             getKey={(m) => m.id}
             items={config.milestones}
             onChange={(next) => patchConfig("milestones", next)}
@@ -305,7 +305,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
                 onClick={() => patchConfig("regulations", sampleRegulations())}
               />
             }
-            emptyText='Chưa có điều khoản nào — mục Quy định đang bị ẩn ngoài trang.'
+            emptyText='Chưa có điều khoản nào - mục Quy định đang bị ẩn ngoài trang.'
             getKey={(r) => r.id}
             header={
               <div className='flex items-center gap-3 rounded-lg border border-border border-dashed px-4 py-3 text-sm'>
@@ -385,7 +385,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
             addLabel='Thêm dự án'
             description='Hiển thị ở mục "Các dự án tiêu biểu".'
             emptyAction={<LoadSampleButton label='Nạp từ configs/data/wd.json' onClick={loadDefaultExhibitions} />}
-            emptyText='Chưa có dự án nào — mục Dự án đang bị ẩn ngoài trang.'
+            emptyText='Chưa có dự án nào - mục Dự án đang bị ẩn ngoài trang.'
             getKey={(ex, idx) => `${ex.teamName}-${ex.live}-${idx}`}
             items={exhibitions}
             onChange={(next) => setDraft((prev) => ({ ...prev, exhibitions: next }))}
@@ -408,7 +408,7 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
             addLabel='Thêm câu hỏi'
             description='Hiển thị ở mục "Câu hỏi thường gặp" cuối trang, theo thứ tự bên dưới.'
             emptyAction={<LoadSampleButton label='Nạp từ configs/data/fqa.json' onClick={loadDefaultFaqs} />}
-            emptyText='Chưa có câu hỏi nào — mục FAQ đang bị ẩn ngoài trang.'
+            emptyText='Chưa có câu hỏi nào - mục FAQ đang bị ẩn ngoài trang.'
             getKey={(f) => f.id}
             items={faqs}
             onChange={(next) => setDraft((prev) => ({ ...prev, faqs: next }))}

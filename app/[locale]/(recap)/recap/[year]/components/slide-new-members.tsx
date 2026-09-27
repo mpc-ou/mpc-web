@@ -217,7 +217,7 @@ function GravityBubbleField({ members }: { members: RecapData["newMembers"] }) {
               </div>
             )}
           </div>
-          {/* Name label — always below, no rotation */}
+          {/* Name label - always below, no rotation */}
           <span className='mt-1.5 w-[80px] truncate text-center font-medium text-white/60 text-xs transition-colors group-hover:text-white/90'>
             {b.name}
           </span>
@@ -272,7 +272,7 @@ export function SlideNewMembers({
           </div>
         </motion.div>
 
-        {/* Gravity bubble field — fills remaining space */}
+        {/* Gravity bubble field - fills remaining space */}
         <div className='flex-1 overflow-hidden'>
           <GravityBubbleField members={members} />
         </div>

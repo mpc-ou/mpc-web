@@ -28,6 +28,7 @@ export const adminCreateActivity = async (data: {
   hyperlink?: string;
   thumbnail?: string;
   images?: string[];
+  isInternal?: boolean;
   isActive?: boolean;
   order?: number;
 }) =>
@@ -47,6 +48,7 @@ export const adminCreateActivity = async (data: {
           hyperlink: data.hyperlink ?? null,
           thumbnail: data.thumbnail ?? null,
           images: data.images ?? [],
+          isInternal: data.isInternal ?? false,
           isActive: data.isActive ?? true,
           order: data.order ?? 0
         }
@@ -68,6 +70,7 @@ export const adminUpdateActivity = async (
     hyperlink?: string | null;
     thumbnail?: string | null;
     images?: string[];
+    isInternal?: boolean;
     isActive?: boolean;
     order?: number;
   }
@@ -131,7 +134,7 @@ export const adminSeedActivities = async () =>
         ];
         publicDir = candidateDirs.find((d) => fsModule.existsSync(d)) ?? "";
       } catch {
-        // fs not available (e.g. Vercel serverless) — use pre-computed images from config
+        // fs not available (e.g. Vercel serverless) - use pre-computed images from config
       }
 
       for (let i = 0; i < all.length; i++) {
@@ -152,7 +155,7 @@ export const adminSeedActivities = async () =>
                 .map((f) => `${item.imageFolder}/${f}`);
             }
           } catch {
-            /* fs not available — use empty */
+            /* fs not available - use empty */
           }
         }
 

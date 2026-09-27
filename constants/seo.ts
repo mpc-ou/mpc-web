@@ -20,7 +20,7 @@ function resolveSiteUrl(): string {
 
 export const SITE_URL = resolveSiteUrl();
 export const SITE_DESCRIPTION_VI =
-  "Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) — Khoa Công nghệ Thông tin, Trường Đại học Mở TP.HCM.";
+  "Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) - Khoa Công nghệ Thông tin, Trường Đại học Mở TP.HCM.";
 export const SITE_DESCRIPTION_EN =
-  "Mobile Programming Club (MPC) — Faculty of Information Technology, Ho Chi Minh City Open University.";
+  "Mobile Programming Club (MPC) - Faculty of Information Technology, Ho Chi Minh City Open University.";
 export const OG_IMAGE = `${SITE_URL}/og`;

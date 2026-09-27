@@ -73,7 +73,7 @@ const SortHeader = ({ label, column }: { label: string; column: Column<MemberRow
 
 function ClubRolesBadges({ roles }: { roles: MemberRow["clubRoles"] }) {
   if (!roles.length) {
-    return <span className='text-muted-foreground text-xs'>—</span>;
+    return <span className='text-muted-foreground text-xs'>-</span>;
   }
 
   const activeRoles = roles.filter((r) => !r.endAt);

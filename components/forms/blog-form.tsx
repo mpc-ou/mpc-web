@@ -66,7 +66,7 @@ type Props = {
   onSetTags: (postId: string, tags: string[]) => Promise<void>;
   backUrl?: string;
   onSuccess?: () => void;
-  /** When false, hides PUBLISHED option — for regular users who can only submit DRAFT or PENDING_REVIEW */
+  /** When false, hides PUBLISHED option - for regular users who can only submit DRAFT or PENDING_REVIEW */
   showPublishedOption?: boolean;
 };
 

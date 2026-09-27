@@ -20,7 +20,7 @@ GallerySection (Server Component)
 
 ---
 
-## 1. `GallerySection` — Server Component
+## 1. `GallerySection` - Server Component
 
 **Đường dẫn**: `app/[locale]/(main)/_components/gallery-section.tsx`
 
@@ -40,7 +40,7 @@ GallerySection (Server Component)
 
 ---
 
-## 2. `GalleryMasonry` — Client Component
+## 2. `GalleryMasonry` - Client Component
 
 **Đường dẫn**: `app/[locale]/(main)/_components/gallery-masonry.client.tsx`
 
@@ -111,7 +111,7 @@ type GalleryImage = {
 
 ---
 
-## 3. `ImageLightbox` — Client Component
+## 3. `ImageLightbox` - Client Component
 
 **Đường dẫn**: `components/image-lightbox.client.tsx`
 
@@ -171,6 +171,6 @@ GalleryMasonry              ← Client Component (nhận images prop)
 ## Lưu ý
 
 - `GalleryMasonry` là **Client Component** (có `"use client"`) vì sử dụng DOM manipulation trực tiếp, `requestAnimationFrame`, và event listeners
-- `GallerySection` là **Server Component** — fetch data và render markup tối thiểu
+- `GallerySection` là **Server Component** - fetch data và render markup tối thiểu
 - Empty state được xử lý ở cả server component (`images.length === 0` → return null)
 - Component này dùng DOM API trực tiếp (`document.createElement`, `style.cssText`) thay vì React state để tối ưu performance cho số lượng lớn ảnh

@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Generic admin loading skeleton — covers all admin sub-routes.
+ * Generic admin loading skeleton - covers all admin sub-routes.
  * Shows: title + subtitle skeleton, toolbar, and a table skeleton with rows.
  */
 export default function AdminLoading() {

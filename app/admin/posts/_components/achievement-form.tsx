@@ -684,7 +684,7 @@ export function AchievementForm({ post, allMembers = [] }: Props) {
                   {linked.map((l) => (
                     <Badge className='text-xs' key={l.member.id} variant='secondary'>
                       {getFullName(l.member.firstName, l.member.middleName, l.member.lastName, "vi")}
-                      {l.role ? ` — ${l.role}` : ""}
+                      {l.role ? ` - ${l.role}` : ""}
                     </Badge>
                   ))}
                 </div>

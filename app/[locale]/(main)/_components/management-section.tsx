@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getLeadership } from "@/app/_actions/main";
+import { SectionHeading } from "@/components/custom/section-heading";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import type { ClubPosition } from "@/configs/prisma/generated/prisma/client";
@@ -105,17 +106,15 @@ const Pedestal = ({ isCenter }: { rank: string; isCenter: boolean }) => (
     <div
       className={cn(
         "transform-[perspective(160px)_rotateX(60deg)] h-4 origin-bottom rounded-t-md sm:h-6",
-        isCenter
-          ? "bg-linear-to-b from-orange-200 to-orange-400"
-          : "bg-linear-to-b from-zinc-200 to-zinc-300 dark:from-zinc-500 dark:to-zinc-600"
+        isCenter ? "bg-linear-to-b from-primary/60 to-primary" : "bg-linear-to-b from-muted to-border"
       )}
     />
     <div
       className={cn(
         "flex items-center justify-center rounded-b-lg border-x border-b font-black font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]",
         isCenter
-          ? "h-8 border-orange-400/50 bg-linear-to-b from-orange-500 to-orange-700 text-orange-950/40 sm:h-11"
-          : "h-5 border-zinc-400/40 bg-linear-to-b from-zinc-300 to-zinc-400 text-black/20 sm:h-7 dark:border-zinc-500/40 dark:from-zinc-700 dark:to-zinc-800 dark:text-white/15"
+          ? "h-8 border-primary/50 bg-linear-to-b from-primary to-primary/80 sm:h-11"
+          : "h-5 border-border bg-linear-to-b from-border to-muted sm:h-7"
       )}
     >
       {/* <span className={isCenter ? "text-xl sm:text-3xl" : "text-sm sm:text-xl"}>{Number(rank)}</span> */}
@@ -123,7 +122,7 @@ const Pedestal = ({ isCenter }: { rank: string; isCenter: boolean }) => (
     <div
       className={cn(
         "mx-auto mt-1 h-2 w-[85%] rounded-full blur-md",
-        isCenter ? "bg-orange-500/50" : "bg-black/30 dark:bg-black/50"
+        isCenter ? "bg-primary/50" : "bg-black/30 dark:bg-black/50"
       )}
     />
   </div>
@@ -149,10 +148,10 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
     >
       <div
         className={cn(
-          "relative z-10 aspect-square overflow-hidden rounded-xl border bg-muted transition-all duration-300 group-hover:-translate-y-1.5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:rounded-2xl",
+          "relative z-10 aspect-square overflow-hidden rounded-xl border bg-muted transition-all duration-300 group-hover:-translate-y-1.5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary sm:rounded-2xl",
           isCenter
-            ? "border-2 border-orange-500 shadow-[0_0_36px_-10px_rgba(249,115,22,0.6)] group-hover:shadow-[0_0_56px_-6px_rgba(249,115,22,0.85)]"
-            : "border-border group-hover:border-orange-500/70 group-hover:shadow-[0_0_32px_-12px_rgba(249,115,22,0.7)]"
+            ? "border-2 border-primary shadow-[0_0_36px_-10px_hsl(var(--primary)/0.6)] group-hover:shadow-[0_0_56px_-6px_hsl(var(--primary)/0.85)]"
+            : "border-border group-hover:border-primary/70 group-hover:shadow-[0_0_32px_-12px_hsl(var(--primary)/0.7)]"
         )}
       >
         {member.avatar ? (
@@ -169,7 +168,7 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
           </span>
         )}
         <div className='absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent' />
-        <div className='absolute inset-0 bg-linear-to-t from-orange-600/45 via-orange-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+        <div className='absolute inset-0 bg-linear-to-t from-primary/45 via-primary/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
         <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
         <SocialLinks
           className='absolute top-2.5 left-2.5 hidden opacity-0 transition-opacity duration-300 focus-within:opacity-100 group-hover:opacity-100 sm:flex'
@@ -184,9 +183,7 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
           >
             {fullName}
           </p>
-          <p
-            className={cn("mt-0.5 line-clamp-1 text-[10px] sm:text-xs", isCenter ? "text-orange-400" : "text-white/70")}
-          >
+          <p className={cn("mt-0.5 line-clamp-1 text-[10px] sm:text-xs", isCenter ? "text-primary" : "text-white/70")}>
             {topRole}
           </p>
         </div>
@@ -200,7 +197,7 @@ const StaffCard = ({ member, locale, topRole }: { member: LeaderWithRoles; local
   const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
 
   return (
-    <div className='group relative aspect-3/4 w-[calc((100%-1.25rem)/3)] overflow-hidden rounded-xl border border-border bg-muted transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-500/70 hover:shadow-[0_0_32px_-12px_rgba(249,115,22,0.7)] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:w-36 sm:rounded-2xl lg:w-40'>
+    <div className='group relative aspect-3/4 w-[calc((100%-1.25rem)/3)] overflow-hidden rounded-xl border border-border bg-muted transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/70 hover:shadow-[0_0_32px_-12px_hsl(var(--primary)/0.7)] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary sm:w-36 sm:rounded-2xl lg:w-40'>
       {member.avatar ? (
         <Image
           alt=''
@@ -215,14 +212,14 @@ const StaffCard = ({ member, locale, topRole }: { member: LeaderWithRoles; local
         </span>
       )}
       <div className='absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent' />
-      <div className='absolute inset-0 bg-linear-to-t from-orange-600/45 via-orange-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+      <div className='absolute inset-0 bg-linear-to-t from-primary/45 via-primary/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
       <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
       <SocialLinks
         className='pointer-events-none absolute top-2.5 left-2.5 flex-wrap opacity-0 transition-all duration-300 focus-within:translate-y-0 focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 sm:-translate-y-1 [&_a]:h-6 [&_a]:w-6'
         socials={member.socials}
       />
       <div className='pointer-events-none absolute inset-x-0 bottom-0 p-2 text-left sm:p-3'>
-        <p className='line-clamp-2 font-bold text-white text-xs leading-tight transition-colors group-hover:text-orange-100 sm:text-sm'>
+        <p className='line-clamp-2 font-bold text-white text-xs leading-tight transition-colors group-hover:text-primary-foreground sm:text-sm'>
           {fullName}
         </p>
         <p className='mt-0.5 line-clamp-2 text-[9px] text-white/70 sm:text-[11px]'>{topRole}</p>
@@ -256,18 +253,10 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
   const podium = arrangePodium(executives);
 
   return (
-    <section className='relative w-full overflow-hidden bg-background py-16' suppressHydrationWarning>
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-x-0 top-0 h-140 bg-[radial-gradient(ellipse_50%_60%_at_50%_0%,rgba(249,115,22,0.18),transparent)]'
-      />
-
+    <section className='relative w-full overflow-hidden bg-background py-20 sm:py-24' suppressHydrationWarning>
       <div className='container relative mx-auto px-4'>
-        <ScrollReveal className='mb-10 text-center'>
-          <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm'>
-            &gt; organization
-          </span>
-          <h2 className='mt-4 font-extrabold text-3xl text-foreground tracking-tight sm:text-4xl'>{t("title")}</h2>
+        <ScrollReveal>
+          <SectionHeading description={t("subtitle")} tag='organization' title={t("title")} />
         </ScrollReveal>
 
         {leaders.length === 0 ? (
@@ -306,10 +295,7 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
             )}
 
             <div className='text-center'>
-              <Link
-                className='font-semibold text-base text-orange-500 underline-offset-4 hover:underline'
-                href='/members'
-              >
+              <Link className='font-semibold text-base text-primary underline-offset-4 hover:underline' href='/members'>
                 {t("viewAll")}
 
                 <ChevronRight className='ml-2 inline h-4 w-4' />

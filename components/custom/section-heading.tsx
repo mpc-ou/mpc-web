@@ -2,11 +2,13 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type SectionHeadingProps = {
-  /** Mono tag shown above the title, rendered as `{index} — > {tag}`. */
+  /** Mono tag shown above the title, rendered as `{index} - > {tag}`. */
   tag: string;
   index?: string;
   title: ReactNode;
   description?: ReactNode;
+  /** Extra content under the description on the right side (e.g. a "view all" link). */
+  aside?: ReactNode;
   /**
    * `split`: title left, description right, divider underneath.
    * `stack`: everything stacked in one column (for side-by-side layouts).
@@ -17,8 +19,8 @@ type SectionHeadingProps = {
 
 export function SectionEyebrow({ index, tag, className }: { index?: string; tag: string; className?: string }) {
   return (
-    <span className={cn("font-mono text-[13px] text-orange-500", className)}>
-      {index ? `${index} — ` : ""}&gt; {tag}
+    <span className={cn("font-mono text-[13px] text-primary", className)}>
+      {index ? `${index} - ` : ""}&gt; {tag}
     </span>
   );
 }
@@ -36,7 +38,15 @@ export function SectionTitle({ children, className }: { children: ReactNode; cla
   );
 }
 
-export function SectionHeading({ tag, index, title, description, layout = "split", className }: SectionHeadingProps) {
+export function SectionHeading({
+  tag,
+  index,
+  title,
+  description,
+  aside,
+  layout = "split",
+  className
+}: SectionHeadingProps) {
   if (layout === "stack") {
     return (
       <div className={cn("flex flex-col gap-4", className)}>
@@ -49,16 +59,18 @@ export function SectionHeading({ tag, index, title, description, layout = "split
 
   return (
     <div
-      className={cn(
-        "mb-8 flex flex-wrap items-end justify-between gap-6 border-border/60 border-b pb-7 dark:border-white/10",
-        className
-      )}
+      className={cn("mb-8 flex flex-wrap items-end justify-between gap-6 border-border/60 border-b pb-7", className)}
     >
       <div className='flex flex-col gap-3'>
         <SectionEyebrow index={index} tag={tag} />
         <SectionTitle>{title}</SectionTitle>
       </div>
-      {description && <p className='max-w-sm text-[15px] text-muted-foreground leading-relaxed'>{description}</p>}
+      {(description || aside) && (
+        <div className='flex max-w-sm flex-col items-end justify-end gap-4'>
+          {description && <p className='text-[15px] text-muted-foreground leading-relaxed'>{description}</p>}
+          {aside}
+        </div>
+      )}
     </div>
   );
 }

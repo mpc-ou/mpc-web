@@ -286,7 +286,7 @@ export function RecapsManager() {
                         {recap.name}
                       </h3>
                       <p className='line-clamp-2 min-h-[2rem] text-muted-foreground text-xs'>
-                        {recap.description || "—"}
+                        {recap.description || "-"}
                       </p>
                     </div>
                   </div>

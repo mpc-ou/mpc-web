@@ -55,7 +55,7 @@ const UserProfile = ({ profile }: Props) => {
         <DropdownMenuContent align='end' className='w-56'>
           {/* Header: Name + Role */}
           <DropdownMenuLabel className='font-normal'>
-            <p className='truncate font-semibold text-sm'>{profile.fullName ?? "—"}</p>
+            <p className='truncate font-semibold text-sm'>{profile.fullName ?? "-"}</p>
             <p className='mt-0.5 text-muted-foreground text-xs'>
               {tUserMenu(`roles.${profile.webRole}` as Parameters<typeof tUserMenu>[0]) || profile.webRole}
             </p>
@@ -133,7 +133,7 @@ const UserProfile = ({ profile }: Props) => {
       </Dialog>
     </>
   ) : (
-    <Button asChild type='button' variant='outline'>
+    <Button asChild className='hidden md:inline-flex' type='button' variant='outline'>
       <Link href={_ROUTE_AUTH}>{t("login")}</Link>
     </Button>
   );

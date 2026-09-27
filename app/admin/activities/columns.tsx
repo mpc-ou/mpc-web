@@ -65,7 +65,7 @@ export const createColumns = (
   {
     accessorKey: "frequencyVi",
     header: "Tần suất",
-    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.frequencyVi || "—"}</span>
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.frequencyVi || "-"}</span>
   },
   {
     accessorKey: "isInternal",

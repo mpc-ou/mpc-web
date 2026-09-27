@@ -29,11 +29,12 @@
       "members": "Thành viên",
       "events": "Sự kiện tổ chức",
       "years": "Năm hoạt động",
-      "projects": "Dự án hoàn thành"
+      "projects": "Dự án hoàn thành",
+      "subtitle": "Hơn một thập kỷ học, làm và chia sẻ cùng nhau."
     },
     "benefits": {
       "title": "Lợi ích khi tham gia CLB",
-      "subtitle": "Không chỉ là một CLB — đây là nơi bạn thực chiến với dự án thật, gặp mentor tận tâm và build portfolio từ năm nhất.",
+      "subtitle": "Không chỉ là một CLB - đây là nơi bạn thực chiến với dự án thật, gặp mentor tận tâm và build portfolio từ năm nhất.",
       "skills": {
         "title": "Phát triển kỹ năng",
         "desc": "Học và thực hành các công nghệ mới nhất trong lĩnh vực Web, App và AI thông qua các workshop, dự án thực tế."
@@ -103,6 +104,11 @@
     "members": {
       "title": "Thành viên CLB",
       "description": "Danh sách tất cả thành viên đang hoạt động của CLB. Để cập nhật hồ sơ của bạn, vui lòng truy cập"
+    },
+    "cta": {
+      "eyebrow": "Tuyển thành viên - mỗi nhiệm kỳ",
+      "title": "Ở đâu có bug, ở đó có MPC.",
+      "button": "Theo dõi fanpage"
     }
   },
   "profile": {
@@ -195,7 +201,7 @@
     "description": "Những thành tựu, giải thưởng và cột mốc đáng tự hào trong suốt chặng đường phát triển của câu lạc bộ.",
     "hallOfFame": "Bảng vàng thành tích",
     "hallOfFameTitle": "Danh sách bảng vàng",
-    "hallOfFameDesc": "Bảng vàng thành tích — xếp theo số thành tựu",
+    "hallOfFameDesc": "Bảng vàng thành tích - xếp theo số thành tựu",
     "articlesTitle": "Bài viết thành tích",
     "highlight": "⭐ Nổi bật",
     "individual": "Cá nhân",
@@ -537,11 +543,11 @@
   "seo": {
     "home": {
       "title": "Trang chủ – CLB MPC",
-      "description": "Câu lạc bộ Lập trình trên Thiết bị Di động — Khoa CNTT, Trường Đại học Mở TP.HCM"
+      "description": "Câu lạc bộ Lập trình trên Thiết bị Di động - Khoa CNTT, Trường Đại học Mở TP.HCM"
     },
     "about": {
       "title": "Về chúng tôi",
-      "description": "Tìm hiểu về Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) — Sứ mệnh, lĩnh vực hoạt động và đội ngũ"
+      "description": "Tìm hiểu về Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) - Sứ mệnh, lĩnh vực hoạt động và đội ngũ"
     },
     "events": {
       "title": "Sự kiện",
@@ -633,9 +639,9 @@
     },
     "webdesign": {
       "title": "Cuộc thi Web Design {year}",
-      "description": "Web Design {year} — cuộc thi học thuật thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, Trường ĐH Mở TP.HCM. Thi theo đội 2–3 sinh viên, miễn phí tham gia.",
+      "description": "Web Design {year} - cuộc thi học thuật thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, Trường ĐH Mở TP.HCM. Thi theo đội 2–3 sinh viên, miễn phí tham gia.",
       "dateSentence": "Chung kết ngày {date}.",
-      "ogAlt": "Web Design {year} — Cuộc thi thiết kế & lập trình website của MPClub"
+      "ogAlt": "Web Design {year} - Cuộc thi thiết kế & lập trình website của MPClub"
     }
   }
 }

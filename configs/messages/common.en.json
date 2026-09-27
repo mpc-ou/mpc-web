@@ -97,7 +97,7 @@
       "role": "Role:",
       "activeMember": "Active Club Member",
       "leftClubNotice": "This member has left the club.",
-      "guestNotice": "This is a guest account — not a club member.",
+      "guestNotice": "This is a guest account - not a club member.",
       "featured": "Featured",
       "filters": {
         "all": "All",

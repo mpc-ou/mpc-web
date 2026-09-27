@@ -64,7 +64,7 @@ function SuggestionRow({ item }: { item: SearchIndexItem }) {
           <Image alt='' className='object-cover' fill sizes='28px' src={item.thumbnail} />
         ) : (
           <span className='flex h-full w-full items-center justify-center text-muted-foreground text-xs'>
-            {isMember ? "?" : "—"}
+            {isMember ? "?" : "-"}
           </span>
         )}
       </span>

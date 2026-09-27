@@ -83,7 +83,7 @@ export function SlideStats({
           <h2 className='font-black text-5xl text-white tracking-tight sm:text-6xl'>{t("recap.statsTitle")}</h2>
         </motion.div>
 
-        {/* 5 stat cards row — full width */}
+        {/* 5 stat cards row - full width */}
         <StaggerReveal className='grid w-full grid-cols-5 gap-4' delay={0.2} stagger={0.08}>
           {[
             {
@@ -151,7 +151,7 @@ export function SlideStats({
           ))}
         </StaggerReveal>
 
-        {/* Bottom charts row — full width */}
+        {/* Bottom charts row - full width */}
         {eventTypeEntries.length > 0 && (
           <motion.div
             animate={active ? { opacity: 1, y: 0 } : {}}

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     template: `%s | ${SITE_NAME}`,
-    default: `${SITE_NAME} — Where there's a bug, there's MPC!`
+    default: `${SITE_NAME} - Where there's a bug, there's MPC!`
   },
   description: SITE_DESCRIPTION_EN,
   applicationName: SITE_NAME,
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "vi_VN",
     alternateLocale: "en_US",
-    title: `${SITE_NAME} — Where there's a bug, there's MPC!`,
+    title: `${SITE_NAME} - Where there's a bug, there's MPC!`,
     description: SITE_DESCRIPTION_EN,
     url: SITE_URL,
     images: [
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — Where there's a bug, there's MPC!`
+        alt: `${SITE_NAME} - Where there's a bug, there's MPC!`
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — Where there's a bug, there's MPC!`,
+    title: `${SITE_NAME} - Where there's a bug, there's MPC!`,
     description: SITE_DESCRIPTION_EN,
     images: [OG_IMAGE]
   },

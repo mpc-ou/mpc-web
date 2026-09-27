@@ -70,7 +70,7 @@ export function HonoredMembers({ members, locale }: Props) {
               className='group overflow-hidden rounded-lg border bg-card shadow-xs transition-all hover:border-amber-500/40 hover:shadow-md'
               key={m.id}
             >
-              {/* Honor Image — full width */}
+              {/* Honor Image - full width */}
               <div className='relative w-full overflow-hidden bg-muted'>
                 {honorImg ? (
                   <>

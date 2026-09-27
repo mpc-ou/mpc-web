@@ -106,7 +106,7 @@ export const defaultBenefits = (): WebDesignBenefit[] => [
   }
 ];
 
-/** Sample phases — the dates are placeholders the admin is expected to adjust. */
+/** Sample phases - the dates are placeholders the admin is expected to adjust. */
 export const sampleMilestones = (): WebDesignMilestone[] => [
   {
     id: generateId(),

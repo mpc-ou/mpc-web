@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getMembersGroupedByYear } from "@/app/_actions/main";
 import { generatePageSeo } from "@/utils/seo";
+import { JoinCtaSection } from "../_components/join-cta-section";
 import { type DirectoryMember, type DirectoryYear, MembersDirectory } from "./_components/members-directory.client";
 import { MembersHeroClient } from "./_components/members-hero.client";
 
@@ -31,13 +32,14 @@ export default async function MembersPage({
   }));
 
   return (
-    <div className='min-h-screen bg-background pb-24'>
+    <div className='min-h-screen bg-background pb-8'>
       <MembersHeroClient />
       {years.length === 0 ? (
         <div className='py-20 text-center text-muted-foreground'>{t("empty")}</div>
       ) : (
         <MembersDirectory years={years} />
       )}
+      <JoinCtaSection locale={locale} />
     </div>
   );
 }

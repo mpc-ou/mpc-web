@@ -41,7 +41,7 @@ export function WebDesignRegulations({ regulations, pdfUrl }: { regulations: Web
             >
               <FileText className='h-4.5 w-4.5 shrink-0 text-orange-400' />
               <span className='flex-1'>
-                {t("regulationsPdfLabel")} —{" "}
+                {t("regulationsPdfLabel")} -{" "}
                 <span className='font-bold text-orange-400'>{t("regulationsPdfOpen")}</span>
               </span>
               <ArrowUpRight className='h-4 w-4 text-orange-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5' />
@@ -50,7 +50,7 @@ export function WebDesignRegulations({ regulations, pdfUrl }: { regulations: Web
             <div className='flex max-w-sm items-center gap-2.5 rounded-xl border border-border border-dashed px-4 py-3.5 text-muted-foreground text-sm dark:border-white/15'>
               <FileText className='h-4.5 w-4.5 shrink-0' />
               <span>
-                {t("regulationsPdfLabel")} —{" "}
+                {t("regulationsPdfLabel")} -{" "}
                 <span className='font-bold text-foreground'>{t("regulationsPdfSoon")}</span>
               </span>
             </div>

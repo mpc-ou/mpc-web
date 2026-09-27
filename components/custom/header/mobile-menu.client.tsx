@@ -1,10 +1,11 @@
 "use client";
 
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, usePathname } from "@/configs/i18n/routing";
+import { _ROUTE_AUTH } from "@/constants/route";
 import { cn } from "@/lib/utils";
 import { LocaleSelect } from "./locale-select.client";
 import { ModeToggle } from "./mode-toggle.client";
@@ -14,8 +15,9 @@ type NavGroup = { label: string; children: NavLink[] };
 type NavItem = NavLink | NavGroup;
 const isGroup = (item: NavItem): item is NavGroup => "children" in item;
 
-const MobileMenu = () => {
+const MobileMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const t = useTranslations("header");
+  const tCommon = useTranslations("common.nav");
   const tNav = useTranslations("header.nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -155,7 +157,20 @@ const MobileMenu = () => {
           )}
         </nav>
 
-        <div className='mt-auto flex items-center justify-between border-border border-t p-4'>
+        {!isLoggedIn && (
+          <div className='mt-auto border-border border-t p-4'>
+            <Link
+              className='flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-semibold text-primary-foreground text-sm shadow-glow-primary transition-transform active:scale-[0.98]'
+              href={_ROUTE_AUTH}
+              onClick={closeMenu}
+            >
+              <LogIn className='h-4 w-4' />
+              {tCommon("login")}
+            </Link>
+          </div>
+        )}
+
+        <div className={cn("flex items-center justify-between border-border border-t p-4", isLoggedIn && "mt-auto")}>
           <LocaleSelect />
           <ModeToggle />
         </div>

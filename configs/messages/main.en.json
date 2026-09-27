@@ -29,11 +29,12 @@
       "members": "Members",
       "events": "Events Organized",
       "years": "Years Active",
-      "projects": "Projects Completed"
+      "projects": "Projects Completed",
+      "subtitle": "Over a decade of learning, building and sharing together."
     },
     "benefits": {
       "title": "Benefits of Joining",
-      "subtitle": "More than a club — real projects, dedicated mentors, and a portfolio that speaks louder than your GPA.",
+      "subtitle": "More than a club - real projects, dedicated mentors, and a portfolio that speaks louder than your GPA.",
       "skills": {
         "title": "Skill Development",
         "desc": "Learn and practice the latest technologies in Web, App, and AI through workshops and real projects."
@@ -103,6 +104,11 @@
     "members": {
       "title": "Club Members",
       "description": "List of all active club members. To update your profile, please visit"
+    },
+    "cta": {
+      "eyebrow": "Recruitment - each term",
+      "title": "Where there’s a bug, there’s MPC.",
+      "button": "Follow the fanpage"
     }
   },
   "profile": {
@@ -195,7 +201,7 @@
     "description": "The proud achievements, awards, and milestones during the club's journey of development.",
     "hallOfFame": "Achievements Hall of Fame",
     "hallOfFameTitle": "Hall of Fame",
-    "hallOfFameDesc": "Achievements Hall of Fame — ranked by achievement count",
+    "hallOfFameDesc": "Achievements Hall of Fame - ranked by achievement count",
     "articlesTitle": "Achievement Articles",
     "highlight": "⭐ Highlight",
     "individual": "Individual",
@@ -537,11 +543,11 @@
   "seo": {
     "home": {
       "title": "Home – MPC Club",
-      "description": "Mobile Programming Club — Faculty of Information Technology, Ho Chi Minh City Open University"
+      "description": "Mobile Programming Club - Faculty of Information Technology, Ho Chi Minh City Open University"
     },
     "about": {
       "title": "About Us",
-      "description": "Learn about Mobile Programming Club (MPC) — Mission, fields of activity and team"
+      "description": "Learn about Mobile Programming Club (MPC) - Mission, fields of activity and team"
     },
     "events": {
       "title": "Events",
@@ -633,9 +639,9 @@
     },
     "webdesign": {
       "title": "Web Design Contest {year}",
-      "description": "Web Design {year} — MPClub's annual academic contest in website design & front-end development, Faculty of IT, Ho Chi Minh City Open University. Teams of 2–3 students, free to join.",
+      "description": "Web Design {year} - MPClub's annual academic contest in website design & front-end development, Faculty of IT, Ho Chi Minh City Open University. Teams of 2–3 students, free to join.",
       "dateSentence": "Final round on {date}.",
-      "ogAlt": "Web Design {year} — MPClub's website design & development contest"
+      "ogAlt": "Web Design {year} - MPClub's website design & development contest"
     }
   }
 }

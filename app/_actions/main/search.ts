@@ -152,7 +152,7 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
   const titleCol = isVi ? `"titleVi"` : `coalesce(nullif("titleEn",''), "titleVi")`;
   const summaryCol = isVi ? `"summaryVi"` : `coalesce(nullif("summaryEn",''), "summaryVi")`;
 
-  // tsvector gồm: title (A) + summary (B) + author name + tags (C) — KHÔNG có content (markdown quá nặng)
+  // tsvector gồm: title (A) + summary (B) + author name + tags (C) - KHÔNG có content (markdown quá nặng)
   const buildPostVector = (withAuthor: boolean) => {
     const extra = withAuthor
       ? `coalesce(au."firstName",'') || ' ' || coalesce(au."lastName",'') || ' ' || coalesce(tg.names,'')`

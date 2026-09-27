@@ -13,7 +13,7 @@ export async function GET() {
     const logo = await readFile(join(process.cwd(), "public", "images", "logo.png"));
     logoDataUri = `data:image/png;base64,${logo.toString("base64")}`;
   } catch {
-    /* logo is optional — banner still renders without it */
+    /* logo is optional - banner still renders without it */
   }
 
   return new ImageResponse(
@@ -58,7 +58,7 @@ export async function GET() {
       </div>
 
       <div style={{ marginTop: 24, fontSize: 28, color: "#94a3b8", maxWidth: 900 }}>
-        Mobile Programming Club — Faculty of Information Technology, Ho Chi Minh City Open University
+        Mobile Programming Club - Faculty of Information Technology, Ho Chi Minh City Open University
       </div>
 
       <div

@@ -153,7 +153,7 @@ export function DepartmentsCarouselClient({ departments }: { departments: Depart
               </p>
             </div>
 
-            {/* Missions — rendered as Markdown */}
+            {/* Missions - rendered as Markdown */}
             {currentDept.missions && (
               <div className='fade-in slide-in-from-bottom-6 animate-in fill-mode-both delay-300 duration-500'>
                 <h4

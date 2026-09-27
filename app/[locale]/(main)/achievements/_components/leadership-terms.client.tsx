@@ -256,26 +256,28 @@ function LeaderCard({ entry, person }: { entry: TermEntry; person: Honoree }) {
     >
       <HonoreeAvatar
         className='absolute inset-0 text-3xl'
-        imageClassName='transition-transform duration-700 ease-out group-hover:scale-110 group-focus-within:scale-110'
+        imageClassName='transition-transform duration-700 ease-out group-hover:scale-110 group-has-[:focus-visible]:scale-110'
         initials={initialsOf(person.firstName, person.lastName)}
         name={name}
         sizes='(min-width: 1024px) 280px, (min-width: 640px) 33vw, 50vw'
         src={person.avatar}
       />
-      <div className='pointer-events-none absolute inset-0 bg-gradient-to-b from-40% from-transparent to-black/90' />
+      <div className='pointer-events-none absolute inset-0 bg-gradient-to-b from-55% from-transparent to-black/85 sm:from-40% sm:to-black/90' />
 
       <span
         className={cn(
-          "pointer-events-none absolute top-3 left-3 z-10 rounded-md px-2 py-1 font-bold font-mono text-[10px] uppercase sm:text-[11px]",
+          "pointer-events-none absolute top-2 left-2 z-10 rounded-md px-1.5 py-0.5 font-bold font-mono text-[9px] uppercase sm:top-3 sm:left-3 sm:px-2 sm:py-1 sm:text-[11px]",
           isTop ? "bg-primary text-primary-foreground" : "bg-black/70 text-white backdrop-blur-sm"
         )}
       >
         {positionLabel(entry.position)}
       </span>
 
-      <div className='pointer-events-none absolute inset-x-3 bottom-3 text-white transition-all duration-500 group-focus-within:translate-y-3 group-focus-within:opacity-0 group-hover:translate-y-3 group-hover:opacity-0 sm:inset-x-4 sm:bottom-4'>
-        <p className='line-clamp-2 font-extrabold text-base leading-tight sm:text-lg'>{name}</p>
-        {entry.departmentName && <p className='truncate font-mono text-[11px] text-white/70'>{entry.departmentName}</p>}
+      <div className='pointer-events-none absolute inset-x-2.5 bottom-2.5 text-white transition-all duration-500 group-hover:translate-y-3 group-hover:opacity-0 group-has-[:focus-visible]:translate-y-3 group-has-[:focus-visible]:opacity-0 sm:inset-x-4 sm:bottom-4'>
+        <p className='line-clamp-2 font-extrabold text-sm leading-tight sm:text-lg'>{name}</p>
+        {entry.departmentName && (
+          <p className='truncate font-mono text-[10px] text-white/70 sm:text-[11px]'>{entry.departmentName}</p>
+        )}
       </div>
 
       <button
@@ -285,7 +287,7 @@ function LeaderCard({ entry, person }: { entry: TermEntry; person: Honoree }) {
         type='button'
       />
 
-      <div className='pointer-events-none absolute inset-0 z-20 flex translate-y-4 flex-col justify-end gap-3 bg-black/85 p-4 text-white opacity-0 backdrop-blur-[2px] transition-all duration-500 ease-out group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 sm:p-5'>
+      <div className='pointer-events-none absolute inset-0 z-20 flex translate-y-4 flex-col justify-end gap-3 bg-black/85 p-4 text-white opacity-0 backdrop-blur-[2px] transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-has-[:focus-visible]:translate-y-0 group-has-[:focus-visible]:opacity-100 sm:p-5'>
         <p className='font-extrabold text-base leading-tight sm:text-lg'>{name}</p>
         {history.length > 0 && (
           <ul className='flex flex-col gap-1 font-medium font-mono text-[11px] text-white/75'>
@@ -299,7 +301,7 @@ function LeaderCard({ entry, person }: { entry: TermEntry; person: Honoree }) {
             ))}
           </ul>
         )}
-        <div className='pointer-events-auto flex flex-wrap items-center gap-1.5'>
+        <div className='flex flex-wrap items-center gap-1.5 group-hover:pointer-events-auto group-has-[:focus-visible]:pointer-events-auto'>
           <SocialIcons itemClassName='h-7 w-7' max={4} socials={person.socials} />
           {person.slug && (
             <Link

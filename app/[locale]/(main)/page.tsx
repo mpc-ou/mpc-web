@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { getTerminalStats } from "@/app/_actions/main";
 import { LoadingComponent } from "@/components/custom/loading";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
+import { getHeroSlides } from "@/services/hero-images";
 import type { locale } from "@/types/global";
 import { generatePageSeo } from "@/utils/seo";
 import { BenefitsSection } from "./_components/benefits-section";
@@ -11,6 +12,7 @@ import { FaqSection } from "./_components/faq-section";
 import { GallerySection } from "./_components/gallery-section";
 import { HeroSection } from "./_components/hero-section";
 import { IntroSection } from "./_components/intro-section";
+import { JoinCtaSection } from "./_components/join-cta-section";
 import { ManagementSection } from "./_components/management-section";
 import { RecentEventsSection } from "./_components/recent-events";
 import { StatsSection } from "./_components/stats-section";
@@ -51,7 +53,7 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
     <div className='flex flex-col'>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
-      <HeroSection stats={stats} />
+      <HeroSection slides={getHeroSlides()} stats={stats} />
 
       <IntroSection locale={locale} />
 
@@ -72,6 +74,10 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
       </Suspense>
 
       <FaqSection locale={locale} />
+
+      <Suspense fallback={null}>
+        <JoinCtaSection locale={locale} />
+      </Suspense>
     </div>
   );
 }

@@ -178,7 +178,7 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
       <div className='absolute inset-0 bg-black/40' />
       <div className='absolute inset-0 bg-linear-to-br from-transparent via-transparent to-black/70' />
 
-      {/* Main card layout — full width */}
+      {/* Main card layout - full width */}
       <div className='relative z-10 mx-auto flex h-full w-full flex-col justify-center gap-8 px-10 pb-10 lg:flex-row'>
         {/* ── LEFT COLUMN: Content Card ── */}
         <div className='flex w-full flex-col lg:w-[55%]'>

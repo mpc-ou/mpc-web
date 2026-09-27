@@ -194,7 +194,7 @@ export function PhaseInfo({ data, onChange, mode }: Props) {
           <div className='flex items-center gap-3 rounded-lg border p-3'>
             <Music className='h-5 w-5 shrink-0 text-primary' />
             <span className='flex-1 truncate text-sm'>{data.musicUrl.split("/").pop()}</span>
-            {/* biome-ignore lint/a11y/useMediaCaption: background/instrumental music preview, not spoken content — captions don't apply */}
+            {/* biome-ignore lint/a11y/useMediaCaption: background/instrumental music preview, not spoken content - captions don't apply */}
             <audio className='h-8' controls src={data.musicUrl} />
             <button
               className='rounded-full p-1 text-muted-foreground hover:text-destructive'

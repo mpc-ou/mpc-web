@@ -3,6 +3,7 @@ import Image from "next/image";
 import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getRecentEvents } from "@/app/_actions/main";
+import { SectionHeading } from "@/components/custom/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
@@ -43,23 +44,21 @@ export async function RecentEventsSection() {
   };
 
   return (
-    <section className='py-20 md:py-32' id='recent-events'>
-      <div className='container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'>
-        <ScrollReveal className='mb-12 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end'>
-          <div className='max-w-2xl space-y-4 text-center md:text-left'>
-            <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm'>
-              &gt; {ta("badge")}
-            </span>
-            <h2 className='font-bold text-3xl text-foreground tracking-tight md:text-4xl'>{ta("title")}</h2>
-            <div className='mx-auto h-1 w-20 rounded-full bg-orange-500/70 md:mx-0' />
-            <p className='text-lg text-muted-foreground'>{ta("description")}</p>
-          </div>
-
-          <Button asChild className='hidden rounded-full md:flex' variant='outline'>
-            <Link href='/events'>
-              {ta("viewAll")} <ArrowRight className='ml-2 h-4 w-4' />
-            </Link>
-          </Button>
+    <section className='w-full bg-background py-20 sm:py-24' id='recent-events'>
+      <div className='container mx-auto px-4'>
+        <ScrollReveal>
+          <SectionHeading
+            aside={
+              <Button asChild className='rounded-full' variant='outline'>
+                <Link href='/events'>
+                  {ta("viewAll")} <ArrowRight className='ml-2 h-4 w-4' />
+                </Link>
+              </Button>
+            }
+            description={ta("description")}
+            tag={ta("badge")}
+            title={ta("title")}
+          />
         </ScrollReveal>
 
         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
@@ -134,14 +133,6 @@ export async function RecentEventsSection() {
               </ScrollReveal>
             );
           })}
-        </div>
-
-        <div className='mt-10 flex justify-center md:hidden'>
-          <Button asChild className='w-full max-w-sm rounded-full' variant='outline'>
-            <Link href='/events'>
-              {ta("viewAll")} <ArrowRight className='ml-2 h-4 w-4' />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>

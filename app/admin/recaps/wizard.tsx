@@ -90,7 +90,7 @@ export function RecapWizard({ mode, initialData }: Props) {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Phase 1 — Info
+  // Phase 1 - Info
   const [info, setInfo] = useState<PhaseInfoData>({
     year: initialData?.year ?? new Date().getFullYear(),
     name: initialData?.name ?? "",
@@ -120,7 +120,7 @@ export function RecapWizard({ mode, initialData }: Props) {
     }
   }, [info.year]);
 
-  // Phase 2-4 — Selected IDs
+  // Phase 2-4 - Selected IDs
   const existingData = initialData?.data;
   const existingEventIds = existingData?.timeline?.filter((t) => t.type === "event").map((t) => t.id) ?? [];
   const existingAchievementIds = existingData?.timeline?.filter((t) => t.type === "achievement").map((t) => t.id) ?? [];

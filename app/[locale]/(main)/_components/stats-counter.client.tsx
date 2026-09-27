@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { orbitron } from "@/configs/fonts";
+import { SectionHeading } from "@/components/custom/section-heading";
 import { cn } from "@/lib/utils";
 
 type StatItem = {
+  key: string;
   label: string;
   value: string;
 };
@@ -64,12 +65,16 @@ function AnimatedNumber({ value, animate, duration = 2000 }: { value: string; an
   return (
     <>
       {display}
-      {suffix}
+      {suffix && (
+        <sup className='ml-[0.04em] align-super font-black text-[0.45em] text-foreground [text-shadow:none]'>
+          {suffix}
+        </sup>
+      )}
     </>
   );
 }
 
-function StatsCounter({ stats, title }: { stats: StatItem[]; title: string }) {
+function StatsCounter({ stats, title, subtitle }: { stats: StatItem[]; title: string; subtitle: string }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -78,7 +83,6 @@ function StatsCounter({ stats, title }: { stats: StatItem[]; title: string }) {
     if (!el) {
       return;
     }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
@@ -88,57 +92,52 @@ function StatsCounter({ stats, title }: { stats: StatItem[]; title: string }) {
       },
       { threshold: 0.3 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <section className='w-full bg-linear-to-r from-orange-500 via-orange-500 to-amber-600 py-16' ref={sectionRef}>
-      <div className='container mx-auto px-4'>
-        <div
-          className={cn(
-            "mb-6 text-center transition-all duration-700",
-            inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-          )}
-        >
-          <span className='rounded-full bg-white/15 px-3 py-1 font-medium font-mono text-sm text-white/90'>
-            &gt; club_stats
-          </span>
-        </div>
-        <h2
-          className={cn(
-            "mb-10 text-center font-bold text-2xl text-primary-foreground transition-all duration-700",
-            inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-          )}
-        >
-          {title}
-        </h2>
+  const revealClass = cn(
+    "transition-all duration-700",
+    inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+  );
+  const delay = (ms: number) => ({ transitionDelay: inView ? `${ms}ms` : "0ms" });
 
-        <div className='grid grid-cols-2 gap-8 sm:grid-cols-4'>
-          {stats.map((stat, index) => (
-            <div
-              className={cn(
-                "flex flex-col items-center gap-3 transition-all duration-700",
-                inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-              )}
-              key={stat.label}
-              style={{ transitionDelay: inView ? `${index * 150}ms` : "0ms" }}
-            >
-              <div className='relative rounded-2xl border border-white/15 bg-black/20 px-6 py-4 shadow-inner backdrop-blur-sm'>
-                <div className='absolute inset-0 rounded-2xl bg-linear-to-b from-white/5 to-transparent' />
-                <span
-                  className={cn(
-                    "relative block text-center font-black text-4xl text-white tabular-nums tracking-widest sm:text-5xl",
-                    orbitron.className
-                  )}
-                >
-                  <AnimatedNumber animate={inView} value={stat.value} />
-                </span>
-              </div>
-              <span className='font-medium text-primary-foreground/80 text-sm'>{stat.label}</span>
+  return (
+    <section className='w-full bg-background py-20 sm:py-24' ref={sectionRef}>
+      <div className='container mx-auto px-4'>
+        <div className='relative overflow-hidden rounded-3xl border border-border bg-card px-6 py-10 sm:px-12 sm:py-14 lg:px-24'>
+          <div
+            aria-hidden
+            className='pointer-events-none absolute top-1/2 right-[-10%] h-[28rem] w-[28rem] -translate-y-1/2 rounded-full bg-primary/10 blur-[110px]'
+          />
+          <div className='relative grid items-center gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16'>
+            <div className={revealClass}>
+              <SectionHeading description={subtitle} layout='stack' tag='club_stats' title={title} />
             </div>
-          ))}
+
+            <div className='grid grid-cols-2 overflow-hidden rounded-2xl border border-border bg-background/40'>
+              {stats.map((stat, index) => (
+                <div
+                  className={cn(
+                    revealClass,
+                    "flex flex-col gap-3 border-border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8",
+                    index % 2 === 0 && "border-r",
+                    index < 2 && "border-b"
+                  )}
+                  key={stat.key}
+                  style={delay(200 + index * 120)}
+                >
+                  <div className='flex flex-col gap-1'>
+                    <span className='font-mono text-[11px] text-muted-foreground/70'>{stat.key}:</span>
+                    <span className='font-semibold text-foreground text-sm sm:text-base'>{stat.label}</span>
+                  </div>
+                  <span className='font-black text-4xl text-primary tabular-nums leading-none tracking-tight [text-shadow:0_0_24px_hsl(var(--primary)/0.55)] sm:text-6xl'>
+                    <AnimatedNumber animate={inView} value={stat.value} />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

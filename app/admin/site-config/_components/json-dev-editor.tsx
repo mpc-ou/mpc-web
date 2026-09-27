@@ -66,7 +66,7 @@ const TEMPLATES: Record<DocKey, () => unknown> = {
 const DOCS: Record<DocKey, { label: string; hint: string; validate: (v: unknown) => ValidationResult<unknown> }> = {
   config: {
     label: "config.json",
-    hint: "Ngày thi, liên kết, mốc thời gian, quy định, giải thưởng, quyền lợi. `id` có thể bỏ — tự sinh.",
+    hint: "Ngày thi, liên kết, mốc thời gian, quy định, giải thưởng, quyền lợi. `id` có thể bỏ - tự sinh.",
     validate: validateWebDesignConfig
   },
   exhibitions: {

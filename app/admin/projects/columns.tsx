@@ -73,7 +73,7 @@ export const createColumns = (
     cell: ({ row }) => {
       const techs = row.original.technologies ?? [];
       if (!techs.length) {
-        return <span className='text-muted-foreground text-xs'>—</span>;
+        return <span className='text-muted-foreground text-xs'>-</span>;
       }
       return (
         <div className='flex flex-wrap gap-1'>
@@ -101,7 +101,7 @@ export const createColumns = (
         p.websiteUrl && { label: "Web", url: p.websiteUrl }
       ].filter(Boolean) as { label: string; url: string }[];
       if (!links.length) {
-        return <span className='text-muted-foreground text-xs'>—</span>;
+        return <span className='text-muted-foreground text-xs'>-</span>;
       }
       return (
         <div className='flex gap-2'>
@@ -124,7 +124,7 @@ export const createColumns = (
   {
     id: "memberCount",
     header: "Thành viên",
-    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.members.length || "—"}</span>
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.members.length || "-"}</span>
   },
   {
     accessorKey: "isActive",

@@ -122,7 +122,7 @@ export const getOtherProjects = async (excludeSlug: string) =>
   });
 
 /**
- * Gold board — top members sorted by achievement count.
+ * Gold board - top members sorted by achievement count.
  */
 export const getGoldBoardMembers = async () =>
   handleErrorServerNoAuth({

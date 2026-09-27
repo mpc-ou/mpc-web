@@ -575,7 +575,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
                 <tr className='border-border border-b last:border-0 hover:bg-muted/30' key={s.id}>
                   <td className='px-4 py-3 font-medium font-mono text-foreground text-xs'>{s.key}</td>
                   <td className='max-w-xs truncate px-4 py-3 text-muted-foreground text-xs'>{s.value}</td>
-                  <td className='px-4 py-3 text-muted-foreground text-xs'>{s.description ?? "—"}</td>
+                  <td className='px-4 py-3 text-muted-foreground text-xs'>{s.description ?? "-"}</td>
                 </tr>
               ))}
               {settings.length === 0 && (

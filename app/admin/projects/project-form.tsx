@@ -526,7 +526,7 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
             <CardContent>
               <MemberSelector
                 allMembers={allMembers}
-                joinedAtHint='Ngày tham gia dự án — để trống sẽ dùng ngày bắt đầu dự án'
+                joinedAtHint='Ngày tham gia dự án - để trống sẽ dùng ngày bắt đầu dự án'
                 linked={linked}
                 onLink={handleLink}
                 onUnlink={handleUnlink}

@@ -171,7 +171,7 @@ const SearchModal = () => {
 
         {trimmed && (
           <p className='mt-3 text-center text-muted-foreground/60 text-xs'>
-            {t("searchViewAll")} &quot;{trimmed}&quot; —{" "}
+            {t("searchViewAll")} &quot;{trimmed}&quot; -{" "}
             <button className='underline hover:text-foreground' onClick={handleSubmit} type='button'>
               Enter
             </button>

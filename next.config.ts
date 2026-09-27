@@ -28,16 +28,16 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com"
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co"
       }
     ],
-    // DiceBear avatars are served as SVG; sandboxed per Next.js docs since
-    // remote SVGs can otherwise carry inline scripts.
     dangerouslyAllowSVG: true,
-    // Dev machines behind DNS64/NAT64 resolve Supabase to 64:ff9b::/96, which the optimizer treats as private.
     dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-  // The WebDesign contest page moved from /activities/webdesign; old links (incl. Activity hrefs stored in the DB) keep working.
   redirects: async () => [
     {
       source: "/:locale(vi|en)/activities/webdesign",

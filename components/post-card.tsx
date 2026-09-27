@@ -284,7 +284,7 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
           <div className='flex items-center gap-1.5 font-medium text-muted-foreground text-xs'>
             <CalendarDays className='h-3.5 w-3.5' />
             <span>
-              {start || "..."} — {end || "..."}
+              {start || "..."} - {end || "..."}
             </span>
           </div>
         ) : (
@@ -419,7 +419,7 @@ export function PostCard({ data }: { data: PostCardData }) {
     "group relative flex overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg";
 
   // The card links out to `href` via a "stretched link" that covers the whole
-  // card (z-0), so it can never itself contain other <a> tags — any nested
+  // card (z-0), so it can never itself contain other <a> tags - any nested
   // links (author, read-more, ...) sit above it at z-10 and stay clickable.
   const stretchedLink = <Link aria-label={getTitle(data, "vi")} className='absolute inset-0 z-0' href={href} />;
 
@@ -427,7 +427,7 @@ export function PostCard({ data }: { data: PostCardData }) {
     return (
       <div className={`${baseClass} flex-row`}>
         {stretchedLink}
-        {/* Thumbnail — fixed width */}
+        {/* Thumbnail - fixed width */}
         <div className='relative w-48 shrink-0 overflow-hidden bg-muted/30 sm:w-64'>
           {data.thumbnail ? (
             <Image

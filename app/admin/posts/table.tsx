@@ -252,7 +252,7 @@ export function PostsDataTable({
         label: "Tác giả",
         value: viewPost.author
           ? getFullName(viewPost.author.firstName, viewPost.author.middleName, viewPost.author.lastName, "vi")
-          : "—"
+          : "-"
       },
       {
         label: "Ngày tạo",
@@ -260,27 +260,27 @@ export function PostsDataTable({
       },
       {
         label: "Ngày xuất bản",
-        value: viewPost.publishedAt ? new Date(viewPost.publishedAt).toLocaleString("vi-VN") : "—"
+        value: viewPost.publishedAt ? new Date(viewPost.publishedAt).toLocaleString("vi-VN") : "-"
       },
-      { label: "Tóm tắt", value: viewPost.summary || "—", colSpan: 2 as const }
+      { label: "Tóm tắt", value: viewPost.summary || "-", colSpan: 2 as const }
     ];
 
     if (viewPost.type === "EVENT") {
       return [
         ...base,
-        { label: "Địa điểm", value: viewPost.locationVi || "—" },
+        { label: "Địa điểm", value: viewPost.locationVi || "-" },
         {
           label: "Trạng thái sự kiện",
-          value: <Badge variant='outline'>{viewPost.eventStatus || "—"}</Badge>
+          value: <Badge variant='outline'>{viewPost.eventStatus || "-"}</Badge>
         },
-        { label: "Loại sự kiện", value: viewPost.eventType || "—" },
+        { label: "Loại sự kiện", value: viewPost.eventType || "-" },
         {
           label: "Bắt đầu",
-          value: viewPost.startAt ? new Date(viewPost.startAt).toLocaleString("vi-VN") : "—"
+          value: viewPost.startAt ? new Date(viewPost.startAt).toLocaleString("vi-VN") : "-"
         },
         {
           label: "Kết thúc",
-          value: viewPost.endAt ? new Date(viewPost.endAt).toLocaleString("vi-VN") : "—"
+          value: viewPost.endAt ? new Date(viewPost.endAt).toLocaleString("vi-VN") : "-"
         },
         {
           label: "Ảnh bìa (Thumbnail)",
@@ -289,7 +289,7 @@ export function PostsDataTable({
               <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={viewPost.thumbnail} />
             </div>
           ) : (
-            "—"
+            "-"
           ),
           colSpan: 2 as const
         },
@@ -305,7 +305,7 @@ export function PostsDataTable({
                 ))}
               </div>
             ) : (
-              "—"
+              "-"
             ),
           colSpan: 2 as const
         }
@@ -322,7 +322,7 @@ export function PostsDataTable({
               <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={viewPost.thumbnail} />
             </div>
           ) : (
-            "—"
+            "-"
           ),
           colSpan: 2 as const
         },
@@ -338,7 +338,7 @@ export function PostsDataTable({
                 ))}
               </div>
             ) : (
-              "—"
+              "-"
             ),
           colSpan: 2 as const
         }
@@ -649,7 +649,7 @@ export function PostsDataTable({
                         <h3 className='line-clamp-1 font-bold text-foreground text-sm transition-colors group-hover:text-primary'>
                           {post.title}
                         </h3>
-                        <p className='line-clamp-2 min-h-[2rem] text-muted-foreground text-xs'>{post.summary || "—"}</p>
+                        <p className='line-clamp-2 min-h-[2rem] text-muted-foreground text-xs'>{post.summary || "-"}</p>
                       </div>
                     </div>
 

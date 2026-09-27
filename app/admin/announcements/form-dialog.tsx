@@ -169,7 +169,7 @@ export function AnnouncementFormDialog({ open, onOpenChange, announcement }: Pro
   }
 
   return (
-    <Dialog key={announcement?.id ?? "new"} onOpenChange={onOpenChange} open={open}>
+    <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className='sm:max-w-[650px]'>
         <DialogHeader>
           <DialogTitle>{isEdit ? "Chỉnh sửa thông báo" : "Thêm thông báo"}</DialogTitle>

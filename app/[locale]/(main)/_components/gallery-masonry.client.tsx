@@ -653,7 +653,7 @@ const GalleryMasonry = ({ images, className, tiltXDeg = 0, tiltZDeg = 0 }: Galle
       <section
         aria-label='Gallery. Arrow up/down to scroll, Space to toggle auto-scroll, Enter to open.'
         className={cn(
-          "relative mx-auto h-125 w-full max-w-6xl cursor-grab touch-pan-y select-none overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-orange-500/60 data-[dragging=true]:cursor-grabbing",
+          "relative mx-auto h-125 w-full max-w-6xl cursor-grab touch-pan-y select-none overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-primary/60 data-[dragging=true]:cursor-grabbing",
           className
         )}
         ref={outerRef}
@@ -667,7 +667,7 @@ const GalleryMasonry = ({ images, className, tiltXDeg = 0, tiltZDeg = 0 }: Galle
         // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable region for keyboard scrolling (cards are tabIndex -1)
         tabIndex={0}
       >
-        {/* Columns are coplanar with the plane, so it stays transform-style: flat —
+        {/* Columns are coplanar with the plane, so it stays transform-style: flat -
             preserve-3d adds 3D sorting cost and makes Chrome hit-test the plane
             instead of the cards. Depth comes from the parent's perspective. */}
         <div

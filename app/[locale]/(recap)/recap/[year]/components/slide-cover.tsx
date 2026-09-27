@@ -58,7 +58,7 @@ export function SlideCover({ coverImage, name, year }: { coverImage: string | nu
       <div className='absolute inset-0 bg-black/30' />
       <div className='absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/60' />
 
-      {/* Club badge — top-left */}
+      {/* Club badge - top-left */}
       <motion.div
         animate={{ opacity: 1, x: 0 }}
         className='absolute top-24 left-8 z-10 flex items-center gap-3 md:left-12'
@@ -109,7 +109,7 @@ export function SlideCover({ coverImage, name, year }: { coverImage: string | nu
         >
           <span className='h-px w-8 bg-orange-500/40' />
           <span className='font-mono text-3xl text-orange-300 tracking-[0.15em] sm:text-4xl'>
-            {year - 1} — {year}
+            {year - 1} - {year}
           </span>
           <span className='h-px w-8 bg-orange-500/40' />
         </motion.div>

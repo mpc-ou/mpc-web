@@ -235,7 +235,7 @@ export default async function ProjectDetailPage({
             {startDateLabel && (
               <span className='flex items-center gap-1.5 font-medium'>
                 <CalendarDays className='h-4 w-4 shrink-0 text-primary/80' />
-                {startDateLabel} — {endDateLabel}
+                {startDateLabel} - {endDateLabel}
               </span>
             )}
           </div>

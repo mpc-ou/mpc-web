@@ -45,11 +45,11 @@ const FaqSection = async ({
   }
 
   return (
-    <section className={cn("w-full scroll-mt-32 bg-background py-20", className)} id={id}>
+    <section className={cn("w-full scroll-mt-32 bg-background py-20 sm:py-24", className)} id={id}>
       <div
         className={cn(
           "grid items-start gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]",
-          containerClassName ?? "container mx-auto max-w-6xl px-4"
+          containerClassName ?? "container mx-auto px-4"
         )}
       >
         <ScrollReveal className='lg:sticky lg:top-32'>

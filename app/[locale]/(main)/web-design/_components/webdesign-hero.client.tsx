@@ -10,7 +10,7 @@ import { HeroStatus } from "./hero-status.client";
 import { TechMarquee } from "./tech-marquee";
 import { WD_SECTION_IDS } from "./wd-primitives";
 
-/** Moves the decorative spotlight via CSS vars — no React re-render per mouse move. */
+/** Moves the decorative spotlight via CSS vars - no React re-render per mouse move. */
 function useSpotlight<T extends HTMLElement>() {
   const ref = useRef<T>(null);
 

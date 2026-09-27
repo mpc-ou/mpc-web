@@ -4,9 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import type { PostCardData } from "@/components/post-card";
-import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui/button";
+import { EventCard } from "./_components/event-card.client";
 
 export type EventListItem = {
   id: string;
@@ -43,43 +42,14 @@ export function DynamicEventsClient({
     });
   };
 
-  const statusMap: Record<string, { labelKey: string; variant: "default" | "secondary" | "outline" }> = {
-    UPCOMING: { labelKey: "status.upcoming", variant: "default" },
-    ONGOING: { labelKey: "status.ongoing", variant: "secondary" },
-    COMPLETED: { labelKey: "status.completed", variant: "outline" }
-  };
-
-  const cards: PostCardData[] = events.map((event) => {
-    const statusInfo = statusMap[event.status ?? ""] || { labelKey: "", variant: "outline" as const };
-    const statusLabel = statusInfo.labelKey ? t(statusInfo.labelKey as Parameters<typeof t>[0]) : (event.status ?? "");
-    const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
-    const eventTypeLabel =
-      displayType && displayType !== "OTHER"
-        ? t(`types.${displayType}` as Parameters<typeof t>[0]) || displayType
-        : null;
-
-    return {
-      id: event.id,
-      slug: event.slug,
-      variant: "event",
-      titleVi: event.title,
-      summaryVi: event.description,
-      thumbnail: event.thumbnail,
-      date: event.startAt,
-      statusBadge: { label: statusLabel, variant: statusInfo.variant },
-      eventTypeBadge: eventTypeLabel,
-      readMoreLabel: t("viewDetails")
-    };
-  });
-
   return (
     <div className={`transition-opacity duration-300 ${isPending ? "opacity-50" : "opacity-100"}`}>
       {events.length === 0 ? (
         <div className='py-20 text-center text-muted-foreground'>{t("emptyData")}</div>
       ) : (
         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {cards.map((card) => (
-            <PostCard data={card} key={card.id} />
+          {events.map((event) => (
+            <EventCard event={event} key={event.id} />
           ))}
         </div>
       )}

@@ -243,7 +243,7 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
             {achievement.title}
           </h1>
 
-          {/* Byline: achievements are official club posts, so credit the club — never the posting account */}
+          {/* Byline */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <ClubByline />
             {dateLabel && (

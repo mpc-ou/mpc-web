@@ -5,6 +5,7 @@ import { prisma } from "@/configs/prisma/db";
 import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS, _CACHE_POSTS, _CACHE_PROJECTS } from "@/constants/cache";
 import type { SearchIndexItem, SearchSection } from "@/types/search";
+import { getSearchItemUrl } from "@/utils/search-url";
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: building search index items
 export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]> {
@@ -70,16 +71,18 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
 
   for (const p of posts) {
     const tagNames = p.tags.map((pt: { tag: { name: string } }) => pt.tag.name).join(" ");
+    const isClubPost = p.type === "EVENT" || p.type === "ACHIEVEMENT";
+    const section = p.type.toLowerCase() as SearchIndexItem["section"];
     items.push({
       id: p.id,
       title: isVi ? p.titleVi : p.titleEn || p.titleVi,
       slug: p.slug,
-      section: p.type.toLowerCase() as SearchIndexItem["section"],
+      section,
       thumbnail: p.thumbnail,
-      authorName: p.author ? `${p.author.firstName} ${p.author.lastName}` : null,
+      authorName: p.author && !isClubPost ? `${p.author.firstName} ${p.author.lastName}` : null,
       keywords: tagNames,
       extra: null,
-      url: `/posts/${p.slug}`
+      url: getSearchItemUrl(section, p.slug)
     });
   }
 
@@ -93,7 +96,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
       authorName: null,
       keywords: "",
       extra: null,
-      url: `/projects/${p.slug}`
+      url: getSearchItemUrl("project", p.slug)
     });
   }
 
@@ -122,7 +125,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
       authorName: null,
       keywords: "",
       extra: extraParts.length > 0 ? extraParts.join(" · ") : null,
-      url: `/members/${m.slug ?? m.id}`
+      url: getSearchItemUrl("member", m.slug ?? m.id)
     });
   }
 
@@ -197,7 +200,6 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
 
       UNION ALL
 
-      -- Events & achievements are official club posts: never expose the account that posted them.
       SELECT 'event' AS section,
         p.id, ${Prisma.raw(titleCol)} AS title,
         p.slug, p.thumbnail,

@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, Clock, MapPin, UserCircle, Users } from "lucide-react";
+import { ArrowRight, Calendar, ChevronLeft, Clock, MapPin, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -17,6 +17,7 @@ import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
+import { EventCard } from "../_components/event-card.client";
 import type { EventListItem } from "../client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -241,7 +242,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             {event.title}
           </h1>
 
-          {/* Byline: events are official club posts, so show the club — never the account that posted it */}
+          {/* Byline */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <ClubByline />
             {dateLabel && (
@@ -388,39 +389,18 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
         {/* Related events */}
         {recentEvents.length > 0 && (
           <div className='mt-20 border-t pt-10'>
-            <h2 className='mb-8 font-black text-2xl text-foreground'>{t("otherEventsTitle")}</h2>
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {recentEvents.map((e) => (
-                <Link
-                  className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
-                  href={`/events/${e.slug}` as "/"}
-                  key={e.id}
-                >
-                  {e.thumbnail ? (
-                    <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-                      <Image
-                        alt={e.title}
-                        className='object-cover transition-transform duration-500 group-hover:scale-105'
-                        fill
-                        sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
-                        src={e.thumbnail}
-                      />
-                    </div>
-                  ) : (
-                    <div className='relative flex aspect-video w-full items-center justify-center bg-muted/40 text-muted-foreground'>
-                      <span>{t("noThumbnail")}</span>
-                    </div>
-                  )}
-                  <div className='flex flex-1 flex-col p-5'>
-                    <div className='mb-2 flex items-center justify-between text-muted-foreground text-xs'>
-                      <span className='rounded bg-muted px-2 py-0.5 font-medium'>{t("badgeLabel")}</span>
-                      <span>{fmtDateShort(e.startAt ?? null, locale)}</span>
-                    </div>
-                    <h3 className='line-clamp-2 font-bold text-foreground leading-snug transition-colors group-hover:text-primary'>
-                      {e.title}
-                    </h3>
-                  </div>
+            <div className='mb-8 flex flex-wrap items-end justify-between gap-4'>
+              <h2 className='font-black text-2xl text-foreground'>{t("otherEventsTitle")}</h2>
+              <Button asChild className='gap-1.5' variant='outline'>
+                <Link href='/events'>
+                  {t("viewAllEvents")}
+                  <ArrowRight className='h-4 w-4' />
                 </Link>
+              </Button>
+            </div>
+            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+              {recentEvents.map((e) => (
+                <EventCard event={e} key={e.id} />
               ))}
             </div>
           </div>

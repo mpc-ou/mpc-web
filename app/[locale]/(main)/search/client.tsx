@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FtsRow } from "@/app/_actions/main";
 import { searchAll } from "@/app/_actions/main";
 import type { SearchSection } from "@/types/search";
+import { getSearchItemUrl } from "@/utils/search-url";
 
 const SECTION_ICONS: Record<SearchSection, typeof User> = {
   member: User,
@@ -66,16 +67,7 @@ export function SearchClient({ initialQuery, locale: _locale }: Props) {
     project: ts("project")
   };
 
-  const buildUrl = (section: SearchSection, slug: string) => {
-    const map: Record<SearchSection, string> = {
-      member: "/members",
-      blog: "/posts",
-      event: "/posts",
-      achievement: "/posts",
-      project: "/projects"
-    };
-    return `${map[section]}/${slug}`;
-  };
+  const buildUrl = getSearchItemUrl;
 
   return (
     <div className='min-h-[60vh] px-4 py-16'>

@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import type { WebDesignMilestone } from "@/types/webdesign";
-import { HeroKeyFacts } from "./hero-key-facts";
 import { HeroSlideshow } from "./hero-slideshow.client";
 import { HeroStatus } from "./hero-status.client";
 import { TechMarquee } from "./tech-marquee";
@@ -106,7 +105,7 @@ export function WebDesignHeroClient({
         </ScrollReveal>
       </div>
 
-      <HeroKeyFacts />
+      {/* <HeroKeyFacts /> */}
       <TechMarquee />
     </section>
   );

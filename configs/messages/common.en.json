@@ -37,7 +37,8 @@
         "message": "Operation failed.",
         "unknownError": "Unknown error. Please contact the administrator."
       }
-    }
+    },
+    "clubFullName": "Mobile Programming Club"
   },
   "header": {
     "logoName": "MPC",

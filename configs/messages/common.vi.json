@@ -37,7 +37,8 @@
         "message": "Thao tác thất bại.",
         "unknownError": "Lỗi không xác định. Vui lòng liên hệ quản trị viên."
       }
-    }
+    },
+    "clubFullName": "Câu lạc bộ Lập trình trên Thiết bị Di động"
   },
   "header": {
     "logoName": "MPC",

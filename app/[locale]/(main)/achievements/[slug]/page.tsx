@@ -1,9 +1,10 @@
-import { Award, Calendar, ChevronLeft, ExternalLink, Star, Trophy, UserCircle, Users } from "lucide-react";
+import { Award, Calendar, ChevronLeft, ExternalLink, Star, Trophy, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getAchievementBySlug, getRecentAchievements } from "@/app/_actions/main";
+import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
 import { HonoredMembers } from "./_components/honored-members.client";
@@ -243,44 +243,9 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
             {achievement.title}
           </h1>
 
-          {/* Byline: author + date */}
+          {/* Byline: achievements are official club posts, so credit the club — never the posting account */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
-            <div className='flex items-center gap-3'>
-              {achievement.creator?.avatar ? (
-                <Image
-                  alt={getFullName(
-                    achievement.creator.firstName,
-                    achievement.creator.middleName,
-                    achievement.creator.lastName,
-                    locale
-                  )}
-                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
-                  height={40}
-                  src={achievement.creator.avatar}
-                  width={40}
-                />
-              ) : (
-                <UserCircle className='h-10 w-10 text-muted-foreground' />
-              )}
-              <div className='min-w-0'>
-                <span className='block font-semibold text-foreground text-sm leading-none'>
-                  {getFullName(
-                    achievement.creator?.firstName,
-                    achievement.creator?.middleName,
-                    achievement.creator?.lastName,
-                    locale
-                  )}
-                </span>
-                {achievement.creator?.slug && (
-                  <Link
-                    className='mt-1 block text-muted-foreground text-xs hover:text-primary hover:underline'
-                    href={`/members/${achievement.creator.slug}` as "/"}
-                  >
-                    @{achievement.creator.slug}
-                  </Link>
-                )}
-              </div>
-            </div>
+            <ClubByline />
             {dateLabel && (
               <span className='flex items-center gap-1.5'>
                 <Calendar className='h-4 w-4 shrink-0 text-primary/60' />

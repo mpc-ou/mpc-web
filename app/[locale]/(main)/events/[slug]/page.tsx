@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getEventBySlug, getRecentEvents } from "@/app/_actions/main";
+import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { EventJsonLd } from "@/components/seo/json-ld";
@@ -240,34 +241,9 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             {event.title}
           </h1>
 
-          {/* Byline: author + date */}
+          {/* Byline: events are official club posts, so show the club — never the account that posted it */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
-            <div className='flex items-center gap-3'>
-              {event.creator?.avatar ? (
-                <Image
-                  alt={getFullName(event.creator.firstName, event.creator.middleName, event.creator.lastName, locale)}
-                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
-                  height={40}
-                  src={event.creator.avatar}
-                  width={40}
-                />
-              ) : (
-                <UserCircle className='h-10 w-10 text-muted-foreground' />
-              )}
-              <div className='min-w-0'>
-                <span className='block font-semibold text-foreground text-sm leading-none'>
-                  {getFullName(event.creator?.firstName, event.creator?.middleName, event.creator?.lastName, locale)}
-                </span>
-                {event.creator?.slug && (
-                  <Link
-                    className='mt-1 block text-muted-foreground text-xs hover:text-primary hover:underline'
-                    href={`/members/${event.creator.slug}` as "/"}
-                  >
-                    @{event.creator.slug}
-                  </Link>
-                )}
-              </div>
-            </div>
+            <ClubByline />
             {dateLabel && (
               <span className='flex items-center gap-1.5'>
                 <Calendar className='h-4 w-4 shrink-0 text-primary/60' />

@@ -587,6 +587,12 @@
       "profile": "Profile",
       "blog": "Blog post not found",
       "achievement": "Achievement not found"
+    },
+    "webdesign": {
+      "title": "Web Design Contest {year}",
+      "description": "Web Design {year} — MPClub's annual academic contest in website design & front-end development, Faculty of IT, Ho Chi Minh City Open University. Teams of 2–3 students, free to join.",
+      "dateSentence": "Final round on {date}.",
+      "ogAlt": "Web Design {year} — MPClub's website design & development contest"
     }
   }
 }

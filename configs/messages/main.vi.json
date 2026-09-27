@@ -587,6 +587,12 @@
       "profile": "Trang cá nhân",
       "blog": "Không tìm thấy bài viết",
       "achievement": "Không tìm thấy thành tích"
+    },
+    "webdesign": {
+      "title": "Cuộc thi Web Design {year}",
+      "description": "Web Design {year} — cuộc thi học thuật thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, Trường ĐH Mở TP.HCM. Thi theo đội 2–3 sinh viên, miễn phí tham gia.",
+      "dateSentence": "Chung kết ngày {date}.",
+      "ogAlt": "Web Design {year} — Cuộc thi thiết kế & lập trình website của MPClub"
     }
   }
 }

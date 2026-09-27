@@ -59,9 +59,19 @@ type EventJsonLdProps = {
   location?: string | null;
   image?: string | null;
   url: string;
+  isAccessibleForFree?: boolean;
 };
 
-export function EventJsonLd({ name, description, startDate, endDate, location, image, url }: EventJsonLdProps) {
+export function EventJsonLd({
+  name,
+  description,
+  startDate,
+  endDate,
+  location,
+  image,
+  url,
+  isAccessibleForFree
+}: EventJsonLdProps) {
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -87,6 +97,9 @@ export function EventJsonLd({ name, description, startDate, endDate, location, i
   }
   if (image) {
     jsonLd.image = image;
+  }
+  if (isAccessibleForFree !== undefined) {
+    jsonLd.isAccessibleForFree = isAccessibleForFree;
   }
 
   return (

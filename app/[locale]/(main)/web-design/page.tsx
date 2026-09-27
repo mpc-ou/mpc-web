@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getGalleryImages, getSiteSettings } from "@/app/_actions/main";
+import { EventJsonLd } from "@/components/seo/json-ld";
 import wdData from "@/configs/data/wd.json";
+import { SITE_URL } from "@/constants/seo";
 import {
   parseWebDesignConfig,
   parseWebDesignExhibitions,
@@ -9,6 +11,7 @@ import {
   WEBDESIGN_EXHIBITIONS_KEY
 } from "@/types/webdesign";
 import { generatePageSeo } from "@/utils/seo";
+import { getWebDesignSeoInfo } from "@/utils/webdesign-seo";
 import { FaqSection } from "../_components/faq-section";
 import { WD_SECTION_IDS, WdSection } from "./_components/wd-primitives";
 import { WebDesignCriteria } from "./_components/webdesign-criteria";
@@ -27,13 +30,41 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+const PATHNAME = "/web-design";
+
+const SEO_KEYWORDS = {
+  vi: ["cuộc thi Web Design", "cuộc thi thiết kế website", "cuộc thi lập trình web", "thiết kế UI/UX", "Frontend"],
+  en: ["Web Design contest", "website design competition", "web development contest", "UI/UX design", "Frontend"]
+} as const;
+
+const webDesignOgImage = (locale: string) => `${SITE_URL}/og${PATHNAME}?locale=${locale}`;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return generatePageSeo({
-    page: "activities",
+  const [t, { data: settingsRes }] = await Promise.all([
+    getTranslations({ locale, namespace: "seo.webdesign" }),
+    getSiteSettings([WEBDESIGN_CONFIG_KEY])
+  ]);
+  const settingsMap = (settingsRes?.payload ?? {}) as Record<string, string>;
+  const info = getWebDesignSeoInfo(parseWebDesignConfig(settingsMap[WEBDESIGN_CONFIG_KEY]), locale);
+  const year = info.year ?? "";
+  const { contestDateLabel } = info;
+
+  const description = [t("description", { year }), contestDateLabel && t("dateSentence", { date: contestDateLabel })]
+    .filter(Boolean)
+    .join(" ");
+
+  const seo = await generatePageSeo({
+    page: "webdesign",
     locale,
-    pathname: "/web-design"
+    pathname: PATHNAME,
+    title: t("title", { year }).trim(),
+    description,
+    image: webDesignOgImage(locale),
+    keywords: [...SEO_KEYWORDS[locale === "en" ? "en" : "vi"], `Web Design ${year}`.trim(), "MPClub", "HCMOU"]
   });
+  const ogImage = { url: webDesignOgImage(locale), width: 1200, height: 630, alt: t("ogAlt", { year }) };
+  return { ...seo, openGraph: { ...seo.openGraph, images: [ogImage] } };
 }
 
 type ProposalListItem = {
@@ -102,9 +133,22 @@ export default async function WebDesignPage({ params }: Props) {
   const proposalUrl = wdConfig.proposalUrl || fallbackProposalUrl;
 
   const contestYear = new Date(wdConfig.contestDate).getFullYear();
+  const seoInfo = getWebDesignSeoInfo(wdConfig, locale);
 
   return (
     <div className='relative min-h-screen overflow-x-clip bg-background text-foreground'>
+      {seoInfo.startIso ? (
+        <EventJsonLd
+          description={t("subtitle")}
+          endDate={seoInfo.endIso}
+          image={webDesignOgImage(locale)}
+          isAccessibleForFree
+          location='Trường Đại học Mở TP.HCM'
+          name={`Web Design ${seoInfo.year ?? ""}`.trim()}
+          startDate={seoInfo.startIso}
+          url={`${SITE_URL}/${locale}${PATHNAME}`}
+        />
+      ) : null}
       <WebDesignHeroClient
         contestDate={wdConfig.contestDate}
         milestones={wdConfig.milestones}

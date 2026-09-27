@@ -107,8 +107,24 @@ const pick = (vi: string, en: string | null, locale: string) => (locale === "en"
 export const departmentName = (department: { nameVi: string; nameEn: string | null }, locale: string) =>
   pick(department.nameVi, department.nameEn, locale);
 
+const clubJoinTime = (member: Member) => {
+  const candidates = [member.joinedClubAt, ...member.clubRoles.map((r) => r.startAt)]
+    .map(toTime)
+    .filter((t) => !Number.isNaN(t));
+  return candidates.length > 0 ? Math.min(...candidates) : Number.NaN;
+};
+
+const projectTime = (joinedAt: string | null, project: Member["projects"][number]["project"], clubJoin: number) => {
+  if (joinedAt) {
+    return toTime(joinedAt);
+  }
+  const start = toTime(project.startDate ?? project.createdAt);
+  return Number.isNaN(clubJoin) ? start : Math.max(start, clubJoin);
+};
+
 export function buildTimeline(member: Member, locale: string, labels: Labels): TimelineItem[] {
   const items: TimelineItem[] = [];
+  const clubJoin = clubJoinTime(member);
 
   for (const { achievement, role, prize } of member.achievements) {
     items.push({
@@ -129,7 +145,7 @@ export function buildTimeline(member: Member, locale: string, labels: Labels): T
     items.push({
       id: `project-${project.id}`,
       kind: "project",
-      date: toTime(joinedAt ?? project.startDate ?? project.createdAt),
+      date: projectTime(joinedAt, project, clubJoin),
       title: pick(project.title, project.titleEn, locale),
       href: `/projects/${project.slug}`,
       thumbnail: project.thumbnail,

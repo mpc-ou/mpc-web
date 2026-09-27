@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getProjectsPageData } from "@/app/_actions/main";
 import { PageHero } from "@/components/custom/page-hero.client";
-import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { ABOUT_CLUB } from "@/configs/data/about";
 import type { ProjectSummary } from "@/types/common";
 import { generatePageSeo } from "@/utils/seo";
 import { FaqSection } from "../_components/faq-section";
+import { JoinCtaSection } from "../_components/join-cta-section";
 import { ProjectsClient } from "./client";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -54,33 +54,20 @@ export default async function ProjectsPage({
         <ProjectsClient currentPage={validPage} projects={projects} totalPages={totalPages} />
 
         {/* FAQ Section */}
-        <div className='mt-12 border-border border-t pt-12'>
+        <div className='mt-12 border-border pt-12'>
           <FaqSection locale={locale} target='PROJECTS' />
         </div>
 
-        {/* Contact Footer */}
-        <ScrollReveal className='mt-12 border-border border-t pt-16 text-center'>
-          <h2 className='mb-4 font-bold text-3xl text-foreground'>{t("footerTitle")}</h2>
-          <p className='mx-auto mb-8 max-w-2xl text-lg text-muted-foreground'>{t("footerDesc")}</p>
-          <div className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
-            <a
-              className='inline-flex h-11 items-center justify-center whitespace-nowrap rounded-md bg-[#1877F2] px-8 font-medium text-sm text-white shadow-sm hover:bg-[#1877F2]/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
-              href={ABOUT_CLUB.contact.facebook}
-              rel='noopener noreferrer'
-              target='_blank'
-            >
-              {t("contactFacebook")}
-            </a>
-            <a
-              className='inline-flex h-11 items-center justify-center whitespace-nowrap rounded-md bg-foreground px-8 font-medium text-background text-sm shadow-sm hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
-              href='https://github.com/mpc-ou'
-              rel='noopener noreferrer'
-              target='_blank'
-            >
-              {t("exploreGithub")}
-            </a>
-          </div>
-        </ScrollReveal>
+        <JoinCtaSection
+          bare
+          className='mt-12 border-border pt-16'
+          description={t("footerDesc")}
+          eyebrow={t("footerEyebrow")}
+          locale={locale}
+          primary={{ label: t("contactFacebook"), href: ABOUT_CLUB.contact.facebook }}
+          secondary={{ label: t("exploreGithub"), href: ABOUT_CLUB.contact.github }}
+          title={t("footerTitle")}
+        />
       </div>
     </div>
   );

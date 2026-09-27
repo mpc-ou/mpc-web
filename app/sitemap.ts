@@ -3,23 +3,29 @@ import { getSitemapData } from "@/app/_actions/main";
 import { _LOCALES } from "@/constants/lang";
 import { SITE_URL } from "@/constants/seo";
 
+type ChangeFrequency = MetadataRoute.Sitemap[number]["changeFrequency"];
+
 function alternates(path: string): Record<string, string> {
-  return Object.fromEntries(_LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${path}`]));
+  return {
+    ...Object.fromEntries(_LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${path}`])),
+    "x-default": `${SITE_URL}/en${path}`
+  };
 }
 
-function buildEntry(
+function buildEntries(
   path: string,
   lastModified: Date,
   priority: number,
-  changefreq: MetadataRoute.Sitemap[number]["changeFrequency"]
-): MetadataRoute.Sitemap[number] {
-  return {
-    url: `${SITE_URL}/vi${path}`,
+  changefreq: ChangeFrequency
+): MetadataRoute.Sitemap {
+  const languages = alternates(path);
+  return _LOCALES.map((locale) => ({
+    url: `${SITE_URL}/${locale}${path}`,
     lastModified,
     changeFrequency: changefreq,
     priority,
-    alternates: { languages: alternates(path) }
-  };
+    alternates: { languages }
+  }));
 }
 
 const STATIC_ROUTES = [
@@ -33,20 +39,21 @@ const STATIC_ROUTES = [
   { path: "/sponsors", priority: 0.6, changefreq: "monthly" },
   { path: "/training", priority: 0.7, changefreq: "monthly" },
   { path: "/activities", priority: 0.6, changefreq: "monthly" },
-  { path: "/web-design", priority: 0.6, changefreq: "monthly" }
+  { path: "/web-design", priority: 0.6, changefreq: "monthly" },
+  { path: "/faq", priority: 0.5, changefreq: "monthly" }
 ] as const;
 
 type DynamicSection = {
   rows: readonly { slug: string; updatedAt: Date }[];
   prefix: string;
   priority: number;
-  changefreq: MetadataRoute.Sitemap[number]["changeFrequency"];
+  changefreq: ChangeFrequency;
 };
 
 function addDynamicSection(entries: MetadataRoute.Sitemap, section: DynamicSection) {
   for (const row of section.rows) {
     const path = `${section.prefix}/${row.slug}`;
-    entries.push(buildEntry(path, row.updatedAt, section.priority, section.changefreq));
+    entries.push(...buildEntries(path, row.updatedAt, section.priority, section.changefreq));
   }
 }
 
@@ -55,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const now = new Date();
   for (const r of STATIC_ROUTES) {
-    entries.push(buildEntry(r.path, now, r.priority, r.changefreq as MetadataRoute.Sitemap[number]["changeFrequency"]));
+    entries.push(...buildEntries(r.path, now, r.priority, r.changefreq));
   }
 
   const { data } = await getSitemapData();

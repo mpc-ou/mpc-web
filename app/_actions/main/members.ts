@@ -32,6 +32,7 @@ export const getLeadership = async () =>
           lastName: true,
           middleName: true,
           avatar: true,
+          email: true,
           bio: true,
           socials: true,
           clubRoles: {

@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { getRecapByYear } from "@/app/_actions/main";
 import { parseRecapData } from "@/lib/recap-data";
+import { generatePageSeo } from "@/utils/seo";
 import { RecapSlideViewer } from "./client";
 
 type Props = {
@@ -23,6 +25,20 @@ type YearRecapPayload = {
   createdAt: string;
   updatedAt: string;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { year, locale } = await params;
+  const { data } = await getRecapByYear(Number(year));
+  const recap = data?.payload as YearRecapPayload | null | undefined;
+  return generatePageSeo({
+    page: "recap",
+    locale,
+    pathname: `/recap/${year}`,
+    title: recap?.name || `MPC Recap ${year}`,
+    description: recap?.description || undefined,
+    image: recap?.coverImage || undefined
+  });
+}
 
 async function RecapContent({ yearPromise }: { yearPromise: Promise<string> }) {
   await connection();

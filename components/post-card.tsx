@@ -2,7 +2,7 @@
 
 import { ArrowRight, CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
 import { formatLocalDate } from "@/utils/handle-datetime";
@@ -191,10 +191,11 @@ function CardContent({ data }: { data: PostCardData }) {
   const title = getTitle(data, locale);
   const summary = getSummary(data, locale);
   const dateStr = fmtDate(data, locale, data.dateLabel ?? undefined);
+  const tProjects = useTranslations("projects");
 
   return (
     <div className='flex grow flex-col p-5'>
-      {renderMeta(data, locale, dateStr)}
+      {renderMeta(data, locale, dateStr, tProjects("present"))}
       <h3 className='mb-2 line-clamp-2 font-bold text-lg leading-snug transition-colors group-hover:text-primary'>
         {title}
       </h3>
@@ -205,7 +206,7 @@ function CardContent({ data }: { data: PostCardData }) {
 }
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: post metadata conditional rendering
-function renderMeta(data: PostCardData, locale: string, dateStr: string): React.ReactNode {
+function renderMeta(data: PostCardData, locale: string, dateStr: string, presentLabel: string): React.ReactNode {
   // Blog: author + date
   if (data.variant === "blog") {
     return (
@@ -276,16 +277,19 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
   if (data.variant === "project") {
     const start = data.startDate ? formatLocalDate(data.startDate, locale, "MM/yyyy") : null;
     const end = data.endDate ? formatLocalDate(data.endDate, locale, "MM/yyyy") : null;
-    const hasDate = start || end;
+    let dateRange: string | null = null;
+    if (start) {
+      dateRange = `${start} - ${end ?? presentLabel}`;
+    } else if (end) {
+      dateRange = end;
+    }
 
     return (
       <div className='mb-3 flex items-center justify-between gap-2'>
-        {hasDate ? (
+        {dateRange ? (
           <div className='flex items-center gap-1.5 font-medium text-muted-foreground text-xs'>
             <CalendarDays className='h-3.5 w-3.5' />
-            <span>
-              {start || "..."} - {end || "..."}
-            </span>
+            <span>{dateRange}</span>
           </div>
         ) : (
           <div />

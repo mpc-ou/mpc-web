@@ -14,6 +14,7 @@ import { ABOUT_CLUB } from "@/configs/data/about";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
+import { SeoSettings } from "./seo-settings";
 
 type Setting = {
   id: string;
@@ -84,7 +85,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
     }
     try {
       setLoading(true);
-      const url = await uploadToStorage(file, "branding");
+      const url = await uploadToStorage(file, "media", "branding");
       setSiteLogo(url);
       toast({ description: "Đã tải lên logo thành công!" });
     } catch (err) {
@@ -104,7 +105,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
     }
     try {
       setLoading(true);
-      const url = await uploadToStorage(file, "branding");
+      const url = await uploadToStorage(file, "media", "branding");
       setSiteFavicon(url);
       toast({ description: "Đã tải lên favicon thành công!" });
     } catch (err) {
@@ -453,6 +454,8 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
           </Button>
         </form>
       </section>
+
+      <SeoSettings settingsMap={settingsMap} />
 
       {/* ─── Footer Social Links ─── */}
       <section className='rounded-xl border border-border bg-background p-5 shadow-sm'>

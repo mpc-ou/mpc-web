@@ -323,13 +323,13 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
             ref={sceneRef}
             style={{ transform: `rotateX(${BASE_TILT.x}deg) rotateY(${BASE_TILT.y}deg)` }}
           >
-            <Box d={1.4} front={monitorFront} h={16.5} w={26} x={-9} y={-5.5} z={0} />
-            <Box d={1.2} h={7} w={2.4} x={-9} y={6.2} z={-2.4} />
-            <Box d={6} h={0.5} w={10} x={-9} y={9.95} z={-2.2} />
-            <Box d={10} faceClassName='border-primary/80' h={0.5} top={<LaptopDeck />} w={16} x={13.6} y={9.85} z={6} />
+            <Box d={1.4} front={monitorFront} h={15.5} w={25} x={-7.5} y={-5} z={0} />
+            <Box d={1.2} h={7} w={2.4} x={-7.5} y={6.2} z={-2.4} />
+            <Box d={6} h={0.5} w={10} x={-7.5} y={9.95} z={-2.2} />
+            <Box d={10} faceClassName='border-primary/80' h={0.5} top={<LaptopDeck />} w={16} x={12.8} y={9.85} z={6} />
             <div
               className='absolute top-1/2 left-1/2 h-0 w-0 [transform-style:preserve-3d]'
-              style={{ transform: "translate3d(13.6em, 9.6em, 1em)" }}
+              style={{ transform: "translate3d(12.8em, 9.6em, 1em)" }}
             >
               <div className='h-0 w-0 [transform-style:preserve-3d] [transform:rotateX(18deg)] motion-safe:animate-[hero-lid-open_1.8s_cubic-bezier(0.25,1,0.5,1)_0.5s_both]'>
                 <Box d={0.35} front={<Slideshow paused={open} slides={slides} />} h={10} w={16} y={-5} />
@@ -340,8 +340,8 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
               faceClassName='border-accent/70 shadow-[0_0_0.8em_hsl(var(--accent)/0.35)]'
               h={0.7}
               top={<Keyboard />}
-              w={18}
-              x={-8}
+              w={17}
+              x={-6.5}
               y={9.75}
               z={9.5}
             />
@@ -350,7 +350,7 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
               faceClassName='rounded-[0.8em] border-accent/70 shadow-[0_0_0.8em_hsl(var(--accent)/0.4)]'
               h={0.8}
               w={2.2}
-              x={2.6}
+              x={3.6}
               y={9.8}
               z={10}
             />
@@ -359,12 +359,12 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
               faceClassName='rounded-[0.9em] border-primary/90'
               front={<PhoneScreen />}
               h={9.4}
-              rx={10}
-              ry={24}
+              rx={55}
+              ry={6}
               w={4.8}
-              x={-20.5}
-              y={5.3}
-              z={11}
+              x={-17.2}
+              y={7.4}
+              z={2.2}
             />
           </div>
         </motion.div>

@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { OG_IMAGE, SITE_DESCRIPTION_EN, SITE_NAME, SITE_URL } from "@/constants/seo";
+import { BASE_KEYWORDS, OG_IMAGE, OG_IMAGE_SIZE, SITE_DESCRIPTION_EN, SITE_NAME, SITE_URL } from "@/constants/seo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -15,21 +15,7 @@ export const metadata: Metadata = {
   category: "Technology",
   creator: "MPClub Team",
   publisher: "MPClub",
-  keywords: [
-    "MPClub",
-    "MPC",
-    "HCMOU",
-    "OU",
-    "Đại học Mở",
-    "Trường Đại học Mở TP.HCM",
-    "Câu lạc bộ lập trình",
-    "Mobile Programming Club",
-    "Faculty of Information Technology",
-    "Khoa Công nghệ Thông tin",
-    "Student Club",
-    "web development",
-    "programming"
-  ],
+  keywords: [...BASE_KEYWORDS],
   robots: {
     index: true,
     follow: true,
@@ -52,8 +38,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 1200,
-        height: 630,
+        ...OG_IMAGE_SIZE,
         alt: `${SITE_NAME} - Where there's a bug, there's MPC!`
       }
     ]
@@ -68,7 +53,8 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
     languages: {
       vi: `${SITE_URL}/vi`,
-      en: `${SITE_URL}/en`
+      en: `${SITE_URL}/en`,
+      "x-default": `${SITE_URL}/en`
     }
   },
   verification: {

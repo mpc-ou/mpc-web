@@ -1,9 +1,10 @@
 "use client";
 
-import { Trophy, X, ZoomIn } from "lucide-react";
+import { Trophy, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ImageLightbox } from "@/components/image-lightbox.client";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
 import { getFullName } from "@/lib/utils";
@@ -35,20 +36,14 @@ type Props = {
 
 export function HonoredMembers({ members, locale }: Props) {
   const t = useTranslations("achievements");
-  const [activeImage, setActiveImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!activeImage) {
-      return;
-    }
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setActiveImage(null);
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [activeImage]);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const honorImages = (members ?? [])
+    .filter((m) => m.imageUrl)
+    .map((m) => ({
+      url: m.imageUrl as string,
+      title: getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale),
+      caption: [m.role, m.prize].filter(Boolean).join(" · ") || null
+    }));
 
   if (!members || members.length === 0) {
     return null;
@@ -85,7 +80,7 @@ export function HonoredMembers({ members, locale }: Props) {
                     </div>
                     <button
                       className='absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/20 group-hover:opacity-100'
-                      onClick={() => setActiveImage(honorImg)}
+                      onClick={() => setActiveIndex(honorImages.findIndex((img) => img.url === honorImg))}
                       type='button'
                     >
                       <ZoomIn className='h-8 w-8 rounded-full bg-white/90 p-1.5 text-slate-900 shadow-lg' />
@@ -136,28 +131,13 @@ export function HonoredMembers({ members, locale }: Props) {
         })}
       </div>
 
-      {/* Lightbox / Zoom Modal */}
-      {activeImage && (
-        <div className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center p-4 transition-all duration-300'>
-          <button
-            aria-label='Close'
-            className='absolute inset-0 cursor-default bg-black/90 backdrop-blur-xs'
-            onClick={() => setActiveImage(null)}
-            type='button'
-          />
-          <button
-            aria-label='Close'
-            className='absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20'
-            onClick={() => setActiveImage(null)}
-            type='button'
-          >
-            <X className='h-6 w-6' />
-          </button>
-          <div className='relative z-10 h-[85vh] w-[95vw] animate-zoom-in overflow-hidden rounded-lg shadow-2xl'>
-            <Image alt='Zoomed Honor' className='select-none object-contain' fill sizes='95vw' src={activeImage} />
-          </div>
-        </div>
-      )}
+      <ImageLightbox
+        images={honorImages}
+        initialIndex={activeIndex ?? 0}
+        onClose={() => setActiveIndex(null)}
+        open={activeIndex !== null}
+        title={t("honoredMembers")}
+      />
     </div>
   );
 }

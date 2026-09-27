@@ -1,16 +1,4 @@
-import {
-  ArrowUpRight,
-  Calendar,
-  Code2,
-  FileText,
-  Globe2,
-  Laptop,
-  Layers,
-  Mail,
-  Rocket,
-  Sparkles,
-  Users
-} from "lucide-react";
+import { ArrowUpRight, Calendar, Code2, FileText, Globe2, Laptop, Layers, Rocket, Sparkles, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getTrainingPageData } from "@/app/_actions/main";
@@ -19,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { ABOUT_CLUB } from "@/configs/data/about";
+import { cn } from "@/lib/utils";
 import type { ProjectSummary } from "@/types/common";
 import { generatePageSeo } from "@/utils/seo";
+import { JoinCtaSection } from "../_components/join-cta-section";
 import { FeaturedProjectsClient } from "./_components/featured-projects.client";
 import { TrainingImage } from "./_components/training-image.client";
 
@@ -260,19 +250,23 @@ export default async function TrainingPage({
             </ScrollReveal>
           </div>
 
-          <div className='grid gap-6 md:grid-cols-3'>
+          <div className='divide-y divide-border'>
             {pillars.map((pillar, idx) => {
               const Icon = pillar.icon;
+              const reversed = idx % 2 === 1;
               return (
-                <ScrollReveal delay={idx * 100} key={pillar.id} variant='fade-up'>
-                  <div className='group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/5'>
-                    <div className='pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-
-                    <div className='relative z-10 space-y-4'>
-                      <div className='relative flex aspect-video w-full select-none items-center justify-center overflow-hidden rounded-xl border border-border bg-slate-150 dark:bg-slate-900'>
+                <ScrollReveal key={pillar.id} variant='fade-up'>
+                  <div className='group grid md:grid-cols-2'>
+                    <div
+                      className={cn(
+                        "border-border border-b p-6 sm:p-10 md:border-b-0",
+                        reversed ? "md:order-2 md:border-l" : "md:border-r"
+                      )}
+                    >
+                      <div className='relative flex aspect-4/3 w-full select-none items-center justify-center overflow-hidden rounded-xl bg-muted'>
                         <TrainingImage
                           alt={pillar.title}
-                          className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                          className='absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105'
                           fallback={
                             <div className='p-3 text-center font-mono text-[10px] text-muted-foreground'>
                               [Ảnh: {pillar.title}]
@@ -280,18 +274,27 @@ export default async function TrainingPage({
                           }
                           src={pillar.image}
                         />
-                        {/* Floating Icon badge */}
-                        <div className='absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background/90 text-orange-500 shadow-sm backdrop-blur-xs'>
-                          <Icon className='h-4 w-4' />
-                        </div>
                       </div>
+                    </div>
 
-                      <div className='space-y-2'>
-                        <h3 className='font-bold text-foreground text-lg transition-colors group-hover:text-primary'>
-                          {pillar.title}
-                        </h3>
-                        <p className='text-muted-foreground text-xs leading-relaxed'>{pillar.description}</p>
+                    <div
+                      className={cn(
+                        "flex flex-col justify-center gap-5 p-6 sm:p-10 lg:px-16",
+                        reversed && "md:order-1"
+                      )}
+                    >
+                      <div className='flex items-center gap-3'>
+                        <span className='flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground'>
+                          <Icon className='h-5 w-5' />
+                        </span>
+                        <span className='font-mono text-muted-foreground text-sm'>
+                          {String(idx + 1).padStart(2, "0")} / {String(pillars.length).padStart(2, "0")}
+                        </span>
                       </div>
+                      <h3 className='font-black text-2xl text-foreground tracking-tight transition-colors group-hover:text-primary sm:text-3xl'>
+                        {pillar.title}
+                      </h3>
+                      <p className='max-w-md text-muted-foreground leading-relaxed'>{pillar.description}</p>
                     </div>
                   </div>
                 </ScrollReveal>
@@ -408,74 +411,22 @@ export default async function TrainingPage({
           </div>
         </section>
 
-        {/* ── SECTION 6: CALL TO ACTION (CTA) ─────────────────────── */}
-        <section className='relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-12'>
-          {/* Subtle Glow overlay */}
-          <div className='at 50% 50%, rgba(249,115,22,0.05), transparent 60%) pointer-events-none absolute inset-0 bg-radial-gradient(circle' />
-
-          <div className='relative z-10 flex flex-col items-center justify-between gap-8 md:flex-row'>
-            {/* Left Column: Content */}
-            <div className='max-w-lg space-y-4 text-center md:text-left'>
-              <Badge
-                className='border-orange-500/20 bg-orange-500/5 px-3 py-1 font-semibold text-orange-500 text-xs uppercase tracking-wider'
-                variant='outline'
-              >
-                {t("ctaTitle")}
-              </Badge>
-              <h2 className='font-black text-3xl text-foreground leading-tight tracking-tight'>{t("ctaHeading")}</h2>
-              <p className='text-muted-foreground text-sm leading-relaxed'>{t("ctaDesc")}</p>
-            </div>
-
-            {/* Right Column: CTA buttons */}
-            <div className='flex w-full shrink-0 flex-col items-center gap-4 md:w-auto md:items-end'>
-              <div className='flex w-full flex-col items-center justify-end gap-3 sm:flex-row'>
-                {trainingFormUrl ? (
-                  <>
-                    <Button
-                      asChild
-                      className='h-12 w-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-8 font-semibold transition-all hover:from-orange-600 hover:to-amber-600 hover:shadow-lg hover:shadow-orange-500/10 active:scale-[0.98] sm:w-auto'
-                    >
-                      <a
-                        className='flex items-center justify-center gap-2'
-                        href={trainingFormUrl}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        {t("ctaRegNow")}
-                        <ArrowUpRight className='h-4 w-4' />
-                      </a>
-                    </Button>
-                    <Button
-                      asChild
-                      className='h-12 w-full rounded-full border-slate-300 px-8 font-semibold text-slate-800 hover:bg-slate-100 sm:w-auto dark:border-white/10 dark:text-slate-200 dark:hover:bg-slate-800'
-                      variant='outline'
-                    >
-                      <a href={`mailto:${ABOUT_CLUB.contact.email}`}>
-                        <Mail className='mr-2 h-4 w-4' />
-                        {t("ctaContactEmail")}
-                      </a>
-                    </Button>
-                  </>
-                ) : (
-                  <div className='flex w-full flex-col items-center gap-3 md:items-end'>
-                    <p className='max-w-[280px] text-center text-[11px] text-muted-foreground italic md:text-right'>
-                      {t("ctaClosedMsg")}
-                    </p>
-                    <Button
-                      asChild
-                      className='h-12 w-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-8 font-semibold transition-all hover:from-orange-600 hover:to-amber-600 hover:shadow-lg hover:shadow-orange-500/10 active:scale-[0.98] sm:w-auto'
-                    >
-                      <a className='flex items-center justify-center gap-2' href={`mailto:${ABOUT_CLUB.contact.email}`}>
-                        <Mail className='h-4 w-4' />
-                        {t("ctaContactEmailBtn")}
-                      </a>
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
+        <JoinCtaSection
+          bare
+          description={t("ctaDesc")}
+          eyebrow={t("ctaTitle")}
+          locale={locale}
+          note={trainingFormUrl ? undefined : t("ctaClosedMsg")}
+          primary={
+            trainingFormUrl
+              ? { label: t("ctaRegNow"), href: trainingFormUrl, external: true }
+              : { label: t("ctaContactEmailBtn"), href: `mailto:${ABOUT_CLUB.contact.email}` }
+          }
+          secondary={
+            trainingFormUrl ? { label: t("ctaContactEmail"), href: `mailto:${ABOUT_CLUB.contact.email}` } : undefined
+          }
+          title={t("ctaHeading")}
+        />
       </div>
     </div>
   );

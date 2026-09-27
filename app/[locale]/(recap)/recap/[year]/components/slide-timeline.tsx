@@ -1,11 +1,11 @@
 "use client";
 
-import { Calendar, ExternalLink, FolderGit2, MapPin, Trophy, X } from "lucide-react";
+import { Calendar, ExternalLink, FolderGit2, MapPin, Trophy } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useState } from "react";
+import { ImageLightbox } from "@/components/image-lightbox.client";
 import { MarkdownContent } from "@/components/markdown-content";
-import { useMediumZoom } from "@/hooks/use-medium-zoom";
 import type { RecapTimelineItem } from "@/lib/recap-data";
 import { resolveTimelineDescription, resolveTimelineLocation, resolveTimelineTitle } from "@/lib/recap-data";
 import { getFullName } from "@/lib/utils";
@@ -73,56 +73,6 @@ function MemberChip({
   );
 }
 
-function ImageLightbox({ images, index, onClose }: { images: string[]; index: number; onClose: () => void }) {
-  const [current, setCurrent] = useState(index);
-
-  const goNext = useCallback(() => setCurrent((p) => (p + 1) % images.length), [images.length]);
-  const goPrev = useCallback(() => setCurrent((p) => (p - 1 + images.length) % images.length), [images.length]);
-
-  return (
-    <div className='fixed inset-0 z-9999 flex items-center justify-center bg-black/95 backdrop-blur-sm'>
-      <button aria-label='Close' className='absolute inset-0 cursor-default' onClick={onClose} type='button' />
-
-      <button
-        className='absolute top-6 right-6 z-10 rounded-full bg-white/10 p-2 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
-        onClick={onClose}
-        type='button'
-      >
-        <X className='h-5 w-5' />
-      </button>
-
-      {images.length > 1 && (
-        <>
-          <button
-            className='absolute left-4 z-10 rounded-full bg-white/10 p-3 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
-            onClick={goPrev}
-            type='button'
-          >
-            <ExternalLink className='h-5 w-5 rotate-180' />
-          </button>
-          <button
-            className='absolute right-4 z-10 rounded-full bg-white/10 p-3 text-white/70 transition-colors hover:bg-white/20 hover:text-white'
-            onClick={goNext}
-            type='button'
-          >
-            <ExternalLink className='h-5 w-5' />
-          </button>
-        </>
-      )}
-
-      <div className='relative z-10 h-[90vh] w-[90vw]'>
-        <Image alt='' className='rounded-xl object-contain' fill sizes='90vw' src={images[current]} />
-      </div>
-
-      {images.length > 1 && (
-        <div className='absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 font-mono text-sm text-white/60 backdrop-blur-md'>
-          {current + 1} / {images.length}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Main component ──
 
 export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
@@ -162,10 +112,8 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
   const displayMembers = members.slice(0, 6);
   const extraCount = members.length - displayMembers.length;
 
-  const containerRef = useMediumZoom<HTMLDivElement>();
-
   return (
-    <div className='relative flex h-full w-full overflow-hidden bg-[#0a0a0f] pt-16' ref={containerRef}>
+    <div className='relative flex h-full w-full overflow-hidden bg-[#0a0a0f] pt-16'>
       <GridBackground />
       <GlowingOrbs />
       <FloatingShapes />
@@ -318,7 +266,7 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
 
       {/* Lightbox */}
       {lightboxIdx !== null && (
-        <ImageLightbox images={images} index={lightboxIdx} onClose={() => setLightboxIdx(null)} />
+        <ImageLightbox images={images} initialIndex={lightboxIdx} onClose={() => setLightboxIdx(null)} open />
       )}
     </div>
   );

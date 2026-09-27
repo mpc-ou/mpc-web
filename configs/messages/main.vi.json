@@ -50,7 +50,8 @@
       "community": {
         "title": "Cộng đồng thân thiện",
         "desc": "Môi trường học tập tích cực, hỗ trợ lẫn nhau và luôn sẵn sàng giúp đỡ các thành viên mới."
-      }
+      },
+      "viewActivities": "Xem các hoạt động"
     },
     "team": {
       "title": "Tổ chức CLB",
@@ -270,7 +271,13 @@
         "present": "nay",
         "member": "Thành viên MPC",
         "close": "Đóng"
-      }
+      },
+      "filterAll": "Tất cả",
+      "filterByYear": "Theo năm",
+      "selectYear": "Chọn năm",
+      "showMore": "Xem thêm {count} người",
+      "showLess": "Thu gọn",
+      "yearEmpty": "Năm này chưa có thành viên được vinh danh."
     }
   },
   "trainingPage": {
@@ -369,10 +376,7 @@
           "title": "Cuộc thi & Ngoại khóa",
           "desc": "Tổ chức các Cuộc thi học thuật ứng dụng kiến thức chuyên môn, kết hợp các hoạt động ngoại khóa, tạo động lực cho sinh viên học lập trình như Web design, ROBOCODE, …"
         }
-      ],
-      "fanpage": "Fanpage",
-      "email": "Email",
-      "github": "GitHub"
+      ]
     },
     "fields": {
       "badge": "training",
@@ -393,7 +397,9 @@
       "android": {
         "title": "Lập trình Android",
         "desc": "Xây dựng ứng dụng di động native cho Android và các nền tảng cross-platform, tối ưu hóa phần cứng và trải nghiệm người dùng."
-      }
+      },
+      "prev": "Hoạt động trước",
+      "next": "Hoạt động tiếp theo"
     },
     "topMembers": {
       "badge": "top_members",
@@ -423,6 +429,42 @@
     "departments": {
       "badge": "Department",
       "missionsLabel": "Nhiệm vụ chính"
+    },
+    "cta": {
+      "eyebrow": "$ ./join.sh --next-gen",
+      "title": "Sẵn sàng debug cùng MPC?",
+      "description": "Không cần giỏi sẵn — chỉ cần muốn học. Đợt tuyển thành viên mới được thông báo trên fanpage của CLB.",
+      "primary": "Theo dõi đợt tuyển",
+      "secondary": "Hỏi qua email",
+      "steps": [
+        {
+          "title": "Điền đơn online",
+          "meta": "~5 phút"
+        },
+        {
+          "title": "Phỏng vấn trực tiếp",
+          "meta": "~15 phút"
+        },
+        {
+          "title": "Onboarding cùng CLB",
+          "meta": "gen mới"
+        }
+      ],
+      "statusKey": "next_batch",
+      "statusValue": "thông báo trên fanpage"
+    },
+    "contact": {
+      "title": "Liên hệ với MPC",
+      "description": "Hợp tác, tài trợ, hỏi về tuyển thành viên hay chỉ muốn làm quen — cứ nhắn cho tụi mình.",
+      "email": {
+        "label": "email",
+        "desc": "Phù hợp cho hợp tác, tài trợ và các nội dung chính thức."
+      },
+      "fanpage": {
+        "label": "fanpage",
+        "desc": "Nhắn tin trực tiếp, cập nhật sự kiện và đợt tuyển thành viên mới nhất."
+      },
+      "mascotAlt": "Foxy — linh vật của MPC đang vẫy chào"
     }
   },
   "membersPage": {
@@ -497,7 +539,8 @@
       "viewProfile": "Xem trang cá nhân",
       "modalTitle": "Thành tựu của",
       "noAchievements": "Chưa có thành tựu nào."
-    }
+    },
+    "footerEyebrow": "Mở cửa cho thành viên mới"
   },
   "blogs": {
     "badge": "GÓC CHIA SẺ & KIẾN THỨC",
@@ -542,64 +585,64 @@
   },
   "seo": {
     "home": {
-      "title": "Trang chủ – CLB MPC",
-      "description": "Câu lạc bộ Lập trình trên Thiết bị Di động - Khoa CNTT, Trường Đại học Mở TP.HCM"
+      "title": "MPClub – Câu lạc bộ Lập trình trên thiết bị di động (MPC)",
+      "description": "MPC (MPClub) – Câu lạc bộ Lập trình trên thiết bị di động, Khoa CNTT, Trường Đại học Mở TP.HCM. Workshop, dự án thực tế, cuộc thi Web Design và cộng đồng lập trình sinh viên."
     },
     "about": {
-      "title": "Về chúng tôi",
-      "description": "Tìm hiểu về Câu lạc bộ Lập trình trên Thiết bị Di động (MPC) - Sứ mệnh, lĩnh vực hoạt động và đội ngũ"
+      "title": "Giới thiệu MPC – CLB Lập trình trên thiết bị di động",
+      "description": "Tìm hiểu về MPC (MPClub) – Câu lạc bộ Lập trình trên thiết bị di động, Khoa CNTT, Trường ĐH Mở TP.HCM: sứ mệnh, lĩnh vực hoạt động, cơ cấu tổ chức."
     },
     "events": {
-      "title": "Sự kiện",
-      "description": "Các sự kiện sắp tới và đã diễn ra của câu lạc bộ MPClub"
+      "title": "Sự kiện MPC",
+      "description": "Sự kiện sắp tới và đã diễn ra của MPClub – Câu lạc bộ Lập trình trên thiết bị di động: workshop, seminar, cuộc thi lập trình, talkshow."
     },
     "eventDetail": {
-      "title": "Sự kiện",
-      "description": "Sự kiện của câu lạc bộ MPC"
+      "title": "Sự kiện MPC",
+      "description": "Sự kiện của MPClub – Câu lạc bộ Lập trình trên thiết bị di động, Trường ĐH Mở TP.HCM."
     },
     "projects": {
-      "title": "Dự án",
-      "description": "Những dự án thực tế do chính sinh viên MPClub thực hiện"
+      "title": "Dự án của MPC",
+      "description": "Dự án thực tế do thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động nghiên cứu và phát triển: web, mobile app, tiện ích sinh viên."
     },
     "projectDetail": {
-      "title": "Dự án",
-      "description": "Dự án của câu lạc bộ MPC"
+      "title": "Dự án MPC",
+      "description": "Dự án do thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động phát triển."
     },
     "members": {
-      "title": "Thành viên",
-      "description": "Danh sách thành viên câu lạc bộ MPClub, những người đã và đang cùng nhau xây dựng cộng đồng"
+      "title": "Thành viên MPC",
+      "description": "Danh sách thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động, Khoa CNTT, Trường ĐH Mở TP.HCM, qua các khoá."
     },
     "memberDetail": {
-      "title": "Thành viên",
-      "description": "Hồ sơ thành viên MPClub"
+      "title": "Thành viên MPC",
+      "description": "Hồ sơ thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động."
     },
     "achievements": {
-      "title": "Thành tựu",
-      "description": "Những thành tựu, giải thưởng và cột mốc đáng tự hào của câu lạc bộ MPClub"
+      "title": "Thành tựu MPC",
+      "description": "Thành tựu, giải thưởng và bảng vàng của MPClub – Câu lạc bộ Lập trình trên thiết bị di động: Olympic Tin học, Giải pháp phần mềm, hackathon."
     },
     "sponsors": {
-      "title": "Nhà tài trợ",
-      "description": "Những đối tác và nhà tài trợ đồng hành cùng sự phát triển của MPClub"
+      "title": "Nhà tài trợ & đối tác MPC",
+      "description": "Đối tác và nhà tài trợ đồng hành cùng MPClub – Câu lạc bộ Lập trình trên thiết bị di động qua các sự kiện và cuộc thi."
     },
     "training": {
-      "title": "Đào tạo",
-      "description": "Hướng dẫn cơ bản, nhập môn lập trình, ôn tập các kiến thức liên quan đến ngành trong suốt quá trình học tập"
+      "title": "Đào tạo lập trình tại MPC",
+      "description": "Lộ trình đào tạo lập trình của MPClub: kỹ thuật lập trình, web, OOP, dự án thực tế và mentor 1-1 cho sinh viên Trường ĐH Mở TP.HCM."
     },
     "activities": {
-      "title": "Hoạt động",
-      "description": "Các hoạt động nội bộ và đối ngoại của câu lạc bộ MPClub"
+      "title": "Hoạt động MPC",
+      "description": "Hoạt động nội bộ và đối ngoại của MPClub – Câu lạc bộ Lập trình trên thiết bị di động: team building, offline, tình nguyện, Web Design, Robocode."
     },
     "blogs": {
-      "title": "Góc chia sẻ",
-      "description": "Tin tức công nghệ, kinh nghiệm lập trình từ các thành viên MPC"
+      "title": "Blog MPC – Góc chia sẻ lập trình",
+      "description": "Bài viết chia sẻ kinh nghiệm lập trình, tin công nghệ từ thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động."
     },
     "blogDetail": {
-      "title": "Bài viết",
-      "description": "Chi tiết bài viết"
+      "title": "Bài viết MPC",
+      "description": "Bài viết từ thành viên MPClub – Câu lạc bộ Lập trình trên thiết bị di động."
     },
     "search": {
-      "title": "Tìm kiếm",
-      "description": "Tìm kiếm bài viết, sự kiện, dự án và thành viên của MPClub"
+      "title": "Tìm kiếm trên MPClub",
+      "description": "Tìm kiếm bài viết, sự kiện, dự án và thành viên của MPClub – Câu lạc bộ Lập trình trên thiết bị di động."
     },
     "departments-new": {
       "title": "Thêm ban mới",
@@ -642,6 +685,79 @@
       "description": "Web Design {year} - cuộc thi học thuật thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, Trường ĐH Mở TP.HCM. Thi theo đội 2–3 sinh viên, miễn phí tham gia.",
       "dateSentence": "Chung kết ngày {date}.",
       "ogAlt": "Web Design {year} - Cuộc thi thiết kế & lập trình website của MPClub"
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp về MPC",
+      "description": "Giải đáp thắc mắc về MPClub – Câu lạc bộ Lập trình trên thiết bị di động: tuyển thành viên, hoạt động, dự án, đào tạo."
+    },
+    "recap": {
+      "title": "MPC Recap – Nhìn lại một năm",
+      "description": "Nhìn lại những khoảnh khắc, sự kiện và thành tựu nổi bật trong năm của MPClub – Câu lạc bộ Lập trình trên thiết bị di động."
     }
+  },
+  "sponsorsPage": {
+    "badge": "PARTNERS & SPONSORS",
+    "title": "Nhà tài trợ & Đối tác",
+    "description": "Cảm ơn các doanh nghiệp, tổ chức và cá nhân đã đồng hành cùng MPC trên hành trình xây dựng cộng đồng lập trình sinh viên.",
+    "whyTag": "why_sponsor",
+    "whyTitle": "Vì sao đồng hành cùng MPC?",
+    "whyDesc": "Tiếp cận trực tiếp cộng đồng sinh viên CNTT năng động tại Trường Đại học Mở TP.HCM.",
+    "statMembers": "thành viên",
+    "statEvents": "sự kiện đã tổ chức",
+    "statYears": "năm hoạt động",
+    "benefits": [
+      {
+        "title": "Tiếp cận nhân tài",
+        "desc": "Gặp gỡ sinh viên CNTT qua workshop, cuộc thi và ngày hội tuyển dụng do CLB tổ chức."
+      },
+      {
+        "title": "Quảng bá thương hiệu",
+        "desc": "Logo và thông điệp xuất hiện trên website, fanpage và ấn phẩm của các sự kiện lớn như Web Design."
+      },
+      {
+        "title": "Đồng hành học thuật",
+        "desc": "Cùng thiết kế đề thi, chia sẻ chuyên môn và mentor cho các dự án thực tế của sinh viên."
+      }
+    ],
+    "listTag": "our_partners",
+    "listTitle": "Đã đồng hành cùng MPC",
+    "listDesc": "Theo từng năm hợp tác.",
+    "year": "Năm {year}",
+    "active": "Đang tài trợ",
+    "present": "nay",
+    "website": "Website",
+    "email": "Email",
+    "gallery": "Hình ảnh",
+    "viewDetail": "Xem chi tiết",
+    "emptyTitle": "Chưa có nhà tài trợ được công bố",
+    "emptyDesc": "Bạn có thể là đối tác đầu tiên xuất hiện tại đây. Liên hệ với MPC để cùng tạo nên những sự kiện ý nghĩa.",
+    "ctaEyebrow": "Hợp tác cùng MPC",
+    "ctaTitle": "Trở thành nhà tài trợ của MPC",
+    "ctaDesc": "Đồng hành cùng các sự kiện, cuộc thi và chương trình đào tạo của câu lạc bộ. Chúng tôi sẵn sàng gửi hồ sơ tài trợ chi tiết.",
+    "ctaEmail": "Gửi email hợp tác",
+    "ctaFanpage": "Nhắn tin fanpage"
+  },
+  "faqPage": {
+    "badge": "FAQ",
+    "title": "Câu hỏi thường gặp",
+    "description": "Tổng hợp mọi thắc mắc về MPC: tuyển thành viên, hoạt động, đào tạo, dự án và tài trợ.",
+    "searchPlaceholder": "Tìm câu hỏi...",
+    "all": "Tất cả",
+    "empty": "Không tìm thấy câu hỏi phù hợp.",
+    "count": "{count} câu hỏi",
+    "targets": {
+      "GENERAL": "Chung",
+      "ABOUT": "Về CLB",
+      "ACTIVITIES": "Hoạt động",
+      "TRAINING": "Đào tạo",
+      "PROJECTS": "Dự án",
+      "SPONSOR": "Tài trợ",
+      "WEBDESIGN": "Web Design"
+    },
+    "ctaEyebrow": "Vẫn còn thắc mắc?",
+    "ctaTitle": "Tham gia hoạt động cùng MPC",
+    "ctaDesc": "Cách nhanh nhất để hiểu về câu lạc bộ là tham gia một hoạt động. Xem lịch hoạt động nội bộ và sự kiện đối ngoại của MPC.",
+    "ctaActivities": "Khám phá hoạt động",
+    "ctaAsk": "Hỏi qua fanpage"
   }
 }

@@ -24,6 +24,7 @@ export const ABOUT_CLUB = {
   },
   contact: {
     email: "it.mpclub@ou.edu.vn",
+    facebookName: "CLB Lập Trình Trên Thiết Bị Di Động",
     facebook: "https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong",
     github: "https://github.com/mpc-ou",
     facultyWebsite: "https://it.ou.edu.vn",

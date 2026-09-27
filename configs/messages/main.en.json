@@ -50,7 +50,8 @@
       "community": {
         "title": "Friendly Community",
         "desc": "A positive learning environment that supports and is always ready to help new members."
-      }
+      },
+      "viewActivities": "Explore activities"
     },
     "team": {
       "title": "Club Organization",
@@ -270,7 +271,13 @@
         "present": "now",
         "member": "MPC member",
         "close": "Close"
-      }
+      },
+      "filterAll": "All time",
+      "filterByYear": "By year",
+      "selectYear": "Select year",
+      "showMore": "Show {count} more",
+      "showLess": "Show less",
+      "yearEmpty": "No honorees for this year yet."
     }
   },
   "trainingPage": {
@@ -369,10 +376,7 @@
           "title": "Competitions & Extracurriculars",
           "desc": "Organize academic competitions applying specialized knowledge, combined with extracurricular activities to motivate students in programming such as Web Design, ROBOCODE, etc."
         }
-      ],
-      "fanpage": "Fanpage",
-      "email": "Email",
-      "github": "GitHub"
+      ]
     },
     "fields": {
       "badge": "training",
@@ -393,7 +397,9 @@
       "android": {
         "title": "Android Programming",
         "desc": "Build native Android mobile applications and cross-platform solutions, optimizing hardware and user experience."
-      }
+      },
+      "prev": "Previous activity",
+      "next": "Next activity"
     },
     "topMembers": {
       "badge": "top_members",
@@ -423,6 +429,42 @@
     "departments": {
       "badge": "Department",
       "missionsLabel": "Key Missions"
+    },
+    "cta": {
+      "eyebrow": "$ ./join.sh --next-gen",
+      "title": "Ready to debug with MPC?",
+      "description": "No need to be great already — just be eager to learn. New member recruitment is announced on our fanpage.",
+      "primary": "Follow recruitment",
+      "secondary": "Ask via email",
+      "steps": [
+        {
+          "title": "Fill the online form",
+          "meta": "~5 min"
+        },
+        {
+          "title": "A friendly interview",
+          "meta": "~15 min"
+        },
+        {
+          "title": "Onboard with the club",
+          "meta": "new gen"
+        }
+      ],
+      "statusKey": "next_batch",
+      "statusValue": "announced on fanpage"
+    },
+    "contact": {
+      "title": "Get in touch with MPC",
+      "description": "Partnerships, sponsorships, recruitment questions or just saying hi — drop us a message.",
+      "email": {
+        "label": "email",
+        "desc": "Best for partnerships, sponsorships and official matters."
+      },
+      "fanpage": {
+        "label": "fanpage",
+        "desc": "Message us directly and follow the latest events and recruitment rounds."
+      },
+      "mascotAlt": "Foxy — the MPC mascot waving hello"
     }
   },
   "membersPage": {
@@ -497,7 +539,8 @@
       "viewProfile": "View Profile",
       "modalTitle": "Achievements of",
       "noAchievements": "No achievements yet."
-    }
+    },
+    "footerEyebrow": "Open to new contributors"
   },
   "blogs": {
     "badge": "MPC BLOG & KNOWLEDGE",
@@ -542,64 +585,64 @@
   },
   "seo": {
     "home": {
-      "title": "Home – MPC Club",
-      "description": "Mobile Programming Club - Faculty of Information Technology, Ho Chi Minh City Open University"
+      "title": "MPClub – Mobile Programming Club (MPC)",
+      "description": "MPC (MPClub) – Mobile Programming Club, Faculty of IT, Ho Chi Minh City Open University. Workshops, real projects, the Web Design contest and a student developer community."
     },
     "about": {
-      "title": "About Us",
-      "description": "Learn about Mobile Programming Club (MPC) - Mission, fields of activity and team"
+      "title": "About MPC – Mobile Programming Club",
+      "description": "About MPC (MPClub) – the Mobile Programming Club at Ho Chi Minh City Open University: mission, activities and organization."
     },
     "events": {
-      "title": "Events",
-      "description": "Upcoming and past events of MPClub"
+      "title": "MPC Events",
+      "description": "Upcoming and past events of MPClub – Mobile Programming Club: workshops, seminars, programming contests and talkshows."
     },
     "eventDetail": {
-      "title": "Event",
-      "description": "An event by MPC Club"
+      "title": "MPC Event",
+      "description": "An event by MPClub – Mobile Programming Club, Ho Chi Minh City Open University."
     },
     "projects": {
-      "title": "Projects",
-      "description": "Real-world projects built by MPClub students"
+      "title": "MPC Projects",
+      "description": "Real-world projects built by MPClub – Mobile Programming Club members: web, mobile apps and student tools."
     },
     "projectDetail": {
-      "title": "Project",
-      "description": "A project by MPC Club"
+      "title": "MPC Project",
+      "description": "A project built by MPClub – Mobile Programming Club members."
     },
     "members": {
-      "title": "Members",
-      "description": "MPClub members who have been building the community together"
+      "title": "MPC Members",
+      "description": "Members of MPClub – Mobile Programming Club, Faculty of IT, Ho Chi Minh City Open University, across generations."
     },
     "memberDetail": {
-      "title": "Member",
-      "description": "MPClub member profile"
+      "title": "MPC Member",
+      "description": "Member profile at MPClub – Mobile Programming Club."
     },
     "achievements": {
-      "title": "Achievements",
-      "description": "Achievements, awards and proud milestones of MPClub"
+      "title": "MPC Achievements",
+      "description": "Awards, achievements and hall of fame of MPClub – Mobile Programming Club: Olympiad in Informatics, software solutions, hackathons."
     },
     "sponsors": {
-      "title": "Sponsors",
-      "description": "Partners and sponsors supporting MPClub's growth"
+      "title": "MPC Sponsors & Partners",
+      "description": "Partners and sponsors supporting MPClub – Mobile Programming Club events and contests."
     },
     "training": {
-      "title": "Training",
-      "description": "Basic tutorials, programming fundamentals, and academic knowledge review throughout your studies"
+      "title": "Programming Training at MPC",
+      "description": "MPClub's programming curriculum: fundamentals, web, OOP, real projects and 1-on-1 mentoring for Ho Chi Minh City Open University students."
     },
     "activities": {
-      "title": "Activities",
-      "description": "Internal and external activities of MPClub"
+      "title": "MPC Activities",
+      "description": "Internal and external activities of MPClub – Mobile Programming Club: team building, meetups, volunteering, Web Design, Robocode."
     },
     "blogs": {
-      "title": "Blog",
-      "description": "Tech news, programming experience from MPC members"
+      "title": "MPC Blog",
+      "description": "Programming tips and tech stories from MPClub – Mobile Programming Club members."
     },
     "blogDetail": {
-      "title": "Blog Post",
-      "description": "Blog post details"
+      "title": "MPC Blog Post",
+      "description": "A blog post by MPClub – Mobile Programming Club members."
     },
     "search": {
-      "title": "Search",
-      "description": "Search posts, events, projects and members of MPClub"
+      "title": "Search MPClub",
+      "description": "Search posts, events, projects and members of MPClub – Mobile Programming Club."
     },
     "departments-new": {
       "title": "New Department",
@@ -642,6 +685,79 @@
       "description": "Web Design {year} - MPClub's annual academic contest in website design & front-end development, Faculty of IT, Ho Chi Minh City Open University. Teams of 2–3 students, free to join.",
       "dateSentence": "Final round on {date}.",
       "ogAlt": "Web Design {year} - MPClub's website design & development contest"
+    },
+    "faq": {
+      "title": "MPC FAQ",
+      "description": "Frequently asked questions about MPClub – Mobile Programming Club: recruitment, activities, projects and training."
+    },
+    "recap": {
+      "title": "MPC Recap – Year in Review",
+      "description": "Highlights, events and achievements of MPClub – Mobile Programming Club throughout the year."
     }
+  },
+  "sponsorsPage": {
+    "badge": "PARTNERS & SPONSORS",
+    "title": "Sponsors & Partners",
+    "description": "Thank you to the companies, organizations and individuals supporting MPC in building a student developer community.",
+    "whyTag": "why_sponsor",
+    "whyTitle": "Why partner with MPC?",
+    "whyDesc": "Reach an active community of IT students at Ho Chi Minh City Open University.",
+    "statMembers": "members",
+    "statEvents": "events organized",
+    "statYears": "years active",
+    "benefits": [
+      {
+        "title": "Meet future talent",
+        "desc": "Connect with IT students through our workshops, contests and recruitment days."
+      },
+      {
+        "title": "Brand visibility",
+        "desc": "Your logo and message across our website, fanpage and flagship events like Web Design."
+      },
+      {
+        "title": "Academic collaboration",
+        "desc": "Co-design contest problems, share expertise and mentor real student projects."
+      }
+    ],
+    "listTag": "our_partners",
+    "listTitle": "Partners who supported MPC",
+    "listDesc": "Grouped by year of partnership.",
+    "year": "{year}",
+    "active": "Active",
+    "present": "present",
+    "website": "Website",
+    "email": "Email",
+    "gallery": "Gallery",
+    "viewDetail": "View details",
+    "emptyTitle": "No sponsors announced yet",
+    "emptyDesc": "You could be the first partner featured here. Contact MPC to create meaningful events together.",
+    "ctaEyebrow": "Partner with MPC",
+    "ctaTitle": "Become an MPC sponsor",
+    "ctaDesc": "Support our events, contests and training programs. We are happy to share a detailed sponsorship proposal.",
+    "ctaEmail": "Email us",
+    "ctaFanpage": "Message our fanpage"
+  },
+  "faqPage": {
+    "badge": "FAQ",
+    "title": "Frequently asked questions",
+    "description": "Everything about MPC: recruitment, activities, training, projects and sponsorship.",
+    "searchPlaceholder": "Search questions...",
+    "all": "All",
+    "empty": "No matching questions.",
+    "count": "{count} questions",
+    "targets": {
+      "GENERAL": "General",
+      "ABOUT": "About",
+      "ACTIVITIES": "Activities",
+      "TRAINING": "Training",
+      "PROJECTS": "Projects",
+      "SPONSOR": "Sponsorship",
+      "WEBDESIGN": "Web Design"
+    },
+    "ctaEyebrow": "Still curious?",
+    "ctaTitle": "Join an MPC activity",
+    "ctaDesc": "The quickest way to get to know the club is to join an activity. Browse MPC's internal activities and public events.",
+    "ctaActivities": "Explore activities",
+    "ctaAsk": "Ask on our fanpage"
   }
 }

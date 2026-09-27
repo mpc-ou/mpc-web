@@ -46,6 +46,7 @@ export default async function AchievementsPage({
       <div className='container mx-auto flex max-w-6xl flex-col gap-24 px-4 pt-12 pb-24'>
         <HonoreeProvider
           goldBoard={payload?.goldBoard ?? []}
+          goldBoardByYear={payload?.goldBoardByYear ?? {}}
           people={payload?.people ?? {}}
           terms={payload?.terms ?? []}
         >

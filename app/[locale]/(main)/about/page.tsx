@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getAboutPageData, getActivitiesPageData, getDepartmentsPageData } from "@/app/_actions/main";
+import { getActivitiesPageData, getDepartmentsPageData, getFooterData } from "@/app/_actions/main";
 import { LoadingComponent } from "@/components/custom/loading";
+import { ABOUT_CLUB } from "@/configs/data/about";
 import type { locale } from "@/types/global";
+import { frequencyLabel } from "@/utils/activity-frequency";
 import { generatePageSeo } from "@/utils/seo";
 
 import { BenefitsSection } from "../_components/benefits-section";
@@ -10,7 +12,8 @@ import { FaqSection } from "../_components/faq-section";
 import { ManagementSection } from "../_components/management-section";
 import { RecentEventsSection } from "../_components/recent-events";
 import { StatsSection } from "../_components/stats-section";
-import type { TopMember } from "./_components/top-members.client";
+import { ContactSection } from "./_components/contact-section";
+import { RecruitCtaSection } from "./_components/recruit-cta-section";
 import { AboutClient } from "./client";
 
 type DbDepartment = {
@@ -56,11 +59,14 @@ export async function generateMetadata({ params }: PageType): Promise<Metadata> 
 export default async function AboutPage({ params }: PageType): Promise<React.ReactNode> {
   const { locale } = await params;
 
-  const { data } = await getAboutPageData();
-  const payload = data?.payload as { topMembers: TopMember[] } | undefined;
-  const serializedTopMembers = payload?.topMembers ?? [];
-
-  const [deptRes, activitiesRes] = await Promise.all([getDepartmentsPageData(), getActivitiesPageData()]);
+  const [deptRes, activitiesRes, footerRes] = await Promise.all([
+    getDepartmentsPageData(),
+    getActivitiesPageData(),
+    getFooterData()
+  ]);
+  const settings = (footerRes.data?.payload as { settings?: Record<string, string> } | undefined)?.settings;
+  const fanpageUrl = settings?.footer_fanpage || ABOUT_CLUB.contact.facebook;
+  const email = settings?.footer_mail || ABOUT_CLUB.contact.email;
   const dbDepartments = (deptRes.data?.payload as { departments: DbDepartment[] } | undefined)?.departments ?? [];
 
   const dbActivities = (activitiesRes.data?.payload as { activities: DbActivity[] } | undefined)?.activities ?? [];
@@ -68,7 +74,7 @@ export default async function AboutPage({ params }: PageType): Promise<React.Rea
     id: a.slug,
     title: locale === "en" ? a.titleEn || a.titleVi : a.titleVi,
     description: (locale === "en" ? a.descriptionEn || a.descriptionVi : a.descriptionVi) ?? "",
-    frequency: (locale === "en" ? a.frequencyEn || a.frequencyVi : a.frequencyVi) || undefined,
+    frequency: frequencyLabel(a.frequencyVi, a.frequencyEn, locale) || undefined,
     thumbnail: a.thumbnail || null,
     href: a.hyperlink || undefined
   }));
@@ -86,13 +92,14 @@ export default async function AboutPage({ params }: PageType): Promise<React.Rea
 
   return (
     <AboutClient
-      benefitsSection={<BenefitsSection compact={true} locale={locale} />}
+      benefitsSection={<BenefitsSection compact={true} locale={locale} showActivitiesLink={true} />}
+      contactSection={<ContactSection email={email} fanpageUrl={fanpageUrl} locale={locale} />}
+      ctaSection={<RecruitCtaSection email={email} fanpageUrl={fanpageUrl} locale={locale} />}
       faqSection={
         <div className='border-border border-t'>
           <FaqSection locale={locale} target='ABOUT' />
         </div>
       }
-      locale={locale}
       localizedActivities={localizedActivities}
       localizedDepartments={localizedDepartments}
       managementSection={
@@ -105,13 +112,10 @@ export default async function AboutPage({ params }: PageType): Promise<React.Rea
           <RecentEventsSection />
         </Suspense>
       }
-      serializedTopMembers={serializedTopMembers}
       statsSection={
-        <div className='border-border border-t bg-muted/30'>
-          <Suspense fallback={<LoadingComponent />}>
-            <StatsSection locale={locale} />
-          </Suspense>
-        </div>
+        <Suspense fallback={<LoadingComponent />}>
+          <StatsSection locale={locale} />
+        </Suspense>
       }
     />
   );

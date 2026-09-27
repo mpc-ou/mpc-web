@@ -1,4 +1,5 @@
 import { Film } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
@@ -6,6 +7,12 @@ import { Suspense } from "react";
 import { getPublishedRecaps } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
+import { generatePageSeo } from "@/utils/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageSeo({ page: "recap", locale, pathname: "/recap" });
+}
 
 export default function RecapListPage() {
   return (

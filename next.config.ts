@@ -46,7 +46,7 @@ const nextConfig: NextConfig = {
     },
     {
       source: "/activities/webdesign",
-      destination: "/web-design",
+      destination: "/en/web-design",
       permanent: true
     }
   ],

@@ -30,6 +30,7 @@ type MemberAchievement = {
 type HonoreeContextValue = {
   people: Record<string, Honoree>;
   goldBoard: GoldBoardEntry[];
+  goldBoardByYear: Record<string, GoldBoardEntry[]>;
   terms: TermGroup[];
   open: (memberId: string) => void;
   isOpen: boolean;
@@ -54,11 +55,12 @@ const TYPE_KEY: Record<string, "individual" | "team" | "club"> = {
 type ProviderProps = {
   people: Record<string, Honoree>;
   goldBoard: GoldBoardEntry[];
+  goldBoardByYear: Record<string, GoldBoardEntry[]>;
   terms: TermGroup[];
   children: React.ReactNode;
 };
 
-export function HonoreeProvider({ people, goldBoard, terms, children }: ProviderProps) {
+export function HonoreeProvider({ people, goldBoard, goldBoardByYear, terms, children }: ProviderProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [achievementsById, setAchievementsById] = useState<Record<string, MemberAchievement[]>>({});
 
@@ -81,8 +83,8 @@ export function HonoreeProvider({ people, goldBoard, terms, children }: Provider
   }, [selectedId, achievementsById]);
 
   const value = useMemo(
-    () => ({ people, goldBoard, terms, open: setSelectedId, isOpen: selectedId !== null }),
-    [people, goldBoard, terms, selectedId]
+    () => ({ people, goldBoard, goldBoardByYear, terms, open: setSelectedId, isOpen: selectedId !== null }),
+    [people, goldBoard, goldBoardByYear, terms, selectedId]
   );
 
   const person = selectedId ? people[selectedId] : undefined;

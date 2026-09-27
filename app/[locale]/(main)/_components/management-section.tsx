@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/custom/section-heading";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import type { ClubPosition } from "@/configs/prisma/generated/prisma/client";
+import { SOCIAL_COLLECTION } from "@/constants/common";
 import { buildSocialHref, cn, getFullName } from "@/lib/utils";
 import { getSocialMeta, parseSocials } from "@/utils/social";
 
@@ -25,6 +26,7 @@ type LeaderWithRoles = {
   middleName?: string | null;
   lastName: string;
   avatar: string | null;
+  email: string;
   bio: string | null;
   socials: unknown;
   clubRoles: ClubRole[];
@@ -74,19 +76,24 @@ const arrangePodium = (executives: LeaderWithRoles[]): PodiumSlot[] => {
   return [...left.map((m) => toSlot(m, false)), toSlot(center, true), ...right.map((m) => toSlot(m, false))];
 };
 
-const SocialLinks = ({ socials, className }: { socials: unknown; className?: string }) => {
-  const list = parseSocials(socials).slice(0, MAX_SOCIALS);
-  if (list.length === 0) {
-    return null;
-  }
+const SOCIAL_ICON_CLASS =
+  "flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm transition-transform hover:scale-110 dark:bg-white/85";
+
+const SocialLinks = ({ socials, email, className }: { socials: unknown; email: string; className?: string }) => {
+  const list = parseSocials(socials)
+    .filter((s) => getSocialMeta(s.platform) !== SOCIAL_COLLECTION.EMAIL)
+    .slice(0, MAX_SOCIALS - 1);
   return (
     <div className={cn("relative z-10 flex gap-1.5", className)}>
+      <a aria-label={email} className={SOCIAL_ICON_CLASS} href={`mailto:${email}`} title={email}>
+        <Image alt='' className='h-4 w-4 object-contain' height={16} src={SOCIAL_COLLECTION.EMAIL.icon} width={16} />
+      </a>
       {list.map((social) => {
         const meta = getSocialMeta(social.platform);
         return (
           <a
             aria-label={meta.platform}
-            className='flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm transition-transform hover:scale-110 dark:bg-white/85'
+            className={SOCIAL_ICON_CLASS}
             href={buildSocialHref(social.url, meta.prefix)}
             key={social.id || `${social.platform}-${social.url}`}
             rel='noopener noreferrer'
@@ -172,6 +179,7 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
         <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
         <SocialLinks
           className='absolute top-2.5 left-2.5 hidden opacity-0 transition-opacity duration-300 focus-within:opacity-100 group-hover:opacity-100 sm:flex'
+          email={member.email}
           socials={member.socials}
         />
         <div className='absolute inset-x-0 bottom-0 p-2 text-left sm:p-3.5'>
@@ -216,6 +224,7 @@ const StaffCard = ({ member, locale, topRole }: { member: LeaderWithRoles; local
       <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
       <SocialLinks
         className='pointer-events-none absolute top-2.5 left-2.5 flex-wrap opacity-0 transition-all duration-300 focus-within:translate-y-0 focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 sm:-translate-y-1 [&_a]:h-6 [&_a]:w-6'
+        email={member.email}
         socials={member.socials}
       />
       <div className='pointer-events-none absolute inset-x-0 bottom-0 p-2 text-left sm:p-3'>

@@ -103,24 +103,20 @@ function StatsCounter({ stats, title, subtitle }: { stats: StatItem[]; title: st
   const delay = (ms: number) => ({ transitionDelay: inView ? `${ms}ms` : "0ms" });
 
   return (
-    <section className='w-full bg-background py-20 sm:py-24' ref={sectionRef}>
+    <section className='w-full py-20 sm:py-24' ref={sectionRef}>
       <div className='container mx-auto px-4'>
-        <div className='relative overflow-hidden rounded-3xl border border-border bg-card px-6 py-10 sm:px-12 sm:py-14 lg:px-24'>
-          <div
-            aria-hidden
-            className='pointer-events-none absolute top-1/2 right-[-10%] h-[28rem] w-[28rem] -translate-y-1/2 rounded-full bg-primary/10 blur-[110px]'
-          />
+        <div className='relative overflow-hidden rounded-3xl px-6 py-10 sm:px-12 sm:py-14 lg:px-24'>
           <div className='relative grid items-center gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16'>
             <div className={revealClass}>
               <SectionHeading description={subtitle} layout='stack' tag='club_stats' title={title} />
             </div>
 
-            <div className='grid grid-cols-2 overflow-hidden rounded-2xl border border-border bg-background/40'>
+            <div className='grid grid-cols-2 overflow-hidden rounded-2xl'>
               {stats.map((stat, index) => (
                 <div
                   className={cn(
                     revealClass,
-                    "flex flex-col gap-3 border-border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8",
+                    "flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8",
                     index % 2 === 0 && "border-r",
                     index < 2 && "border-b"
                   )}

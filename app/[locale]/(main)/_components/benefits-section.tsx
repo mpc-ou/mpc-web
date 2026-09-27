@@ -1,7 +1,10 @@
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { SectionHeading } from "@/components/custom/section-heading";
+import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Link } from "@/configs/i18n/routing";
 import { cn } from "@/lib/utils";
 
 const benefits = [
@@ -11,14 +14,33 @@ const benefits = [
   { key: "community", image: "/images/toc/2025_4.jpg" }
 ] as const;
 
-const BenefitsSection = async ({ locale, compact = false }: { locale: string; compact?: boolean }) => {
+type Props = {
+  locale: string;
+  compact?: boolean;
+  showActivitiesLink?: boolean;
+};
+
+const BenefitsSection = async ({ locale, compact = false, showActivitiesLink = false }: Props) => {
   const t = await getTranslations({ locale, namespace: "home.benefits" });
 
   return (
     <section className={cn("w-full bg-background py-20 sm:py-24", compact && "border-border border-t")}>
       <div className='container mx-auto px-4'>
         <ScrollReveal>
-          <SectionHeading description={t("subtitle")} tag='why_join' title={t("title")} />
+          <SectionHeading
+            aside={
+              showActivitiesLink && (
+                <Button asChild className='rounded-full' variant='outline'>
+                  <Link href='/activities'>
+                    {t("viewActivities")} <ArrowRight className='ml-2 h-4 w-4' />
+                  </Link>
+                </Button>
+              )
+            }
+            description={t("subtitle")}
+            tag='why_join'
+            title={t("title")}
+          />
         </ScrollReveal>
 
         <ul className='[&::-webkit-scrollbar]:hidden! -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none]! sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 lg:gap-5'>

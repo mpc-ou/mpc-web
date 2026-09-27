@@ -6,10 +6,22 @@ export const FREQ_OPTIONS = [
   { value: "none", vi: "Không cố định", en: "Irregular" }
 ] as const;
 
-/** Resolves a stored frequency (option key or legacy free text) to a display label; "none" yields "". */
+export type FrequencyKey = (typeof FREQ_OPTIONS)[number]["value"];
+
+const matchOption = (raw: string | null | undefined) => {
+  const value = raw?.trim().toLowerCase();
+  if (!value) {
+    return undefined;
+  }
+  return FREQ_OPTIONS.find((o) => o.value === value || o.vi.toLowerCase() === value || o.en.toLowerCase() === value);
+};
+
+export const frequencyKey = (vi: string | null | undefined, en?: string | null): FrequencyKey | null =>
+  (matchOption(vi) ?? matchOption(en))?.value ?? null;
+
 export const frequencyLabel = (vi: string | null, en: string | null, locale: string) => {
   const isEn = locale === "en";
-  const option = FREQ_OPTIONS.find((o) => o.value === vi || o.value === en);
+  const option = matchOption(vi) ?? matchOption(en);
   if (option) {
     return option.value === "none" ? "" : option[isEn ? "en" : "vi"];
   }

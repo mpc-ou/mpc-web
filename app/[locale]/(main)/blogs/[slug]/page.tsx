@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { checkUserIsAdmin, getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
@@ -94,6 +94,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
     return { title: tSeo("blog") };
   }
+  if (blog.type === "EVENT") {
+    permanentRedirect(`/${locale}/events/${slug}`);
+  }
+  if (blog.type === "ACHIEVEMENT") {
+    permanentRedirect(`/${locale}/achievements/${slug}`);
+  }
 
   return generatePageSeo({
     page: "blogDetail",
@@ -139,12 +145,10 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
   }
 
   if (blog.type === "EVENT") {
-    const { redirect } = await import("next/navigation");
-    redirect(`/${locale}/events/${slug}`);
+    permanentRedirect(`/${locale}/events/${slug}`);
   }
   if (blog.type === "ACHIEVEMENT") {
-    const { redirect } = await import("next/navigation");
-    redirect(`/${locale}/achievements/${slug}`);
+    permanentRedirect(`/${locale}/achievements/${slug}`);
   }
 
   const { data: relatedData } = await getRelatedPosts(

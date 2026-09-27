@@ -1,3 +1,5 @@
+import { ABOUT_CLUB } from "@/configs/data/about";
+import { MPC_FOUNDED_YEAR } from "@/constants/hero";
 import { SITE_DESCRIPTION_VI, SITE_NAME, SITE_URL } from "@/constants/seo";
 
 /**
@@ -10,18 +12,26 @@ export function OrganizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
-    alternateName: ["MPC", "Mobile Programming Club", "Câu lạc bộ Lập trình trên Thiết bị Di động"],
+    alternateName: [
+      "MPC",
+      "MPClub",
+      "CLB MPC",
+      "Mobile Programming Club",
+      "Câu lạc bộ Lập trình trên Thiết bị Di động",
+      "CLB Lập trình trên thiết bị di động"
+    ],
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.png`,
     description: SITE_DESCRIPTION_VI,
-    foundingDate: "2017",
+    foundingDate: String(MPC_FOUNDED_YEAR),
+    email: ABOUT_CLUB.contact.email,
     parentOrganization: {
       "@type": "EducationalOrganization",
       name: "Trường Đại học Mở TP.HCM",
       alternateName: "HCMOU",
       url: "https://ou.edu.vn"
     },
-    sameAs: ["https://www.facebook.com/mpc.ou"]
+    sameAs: [ABOUT_CLUB.contact.facebook, ABOUT_CLUB.contact.github, ABOUT_CLUB.contact.linkedin]
   };
 
   return (
@@ -101,6 +111,26 @@ export function EventJsonLd({
   if (isAccessibleForFree !== undefined) {
     jsonLd.isAccessibleForFree = isAccessibleForFree;
   }
+
+  return (
+    <script
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      type='application/ld+json'
+    />
+  );
+}
+
+export function FaqJsonLd({ items }: { items: { question: string; answer: string }[] }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  };
 
   return (
     <script

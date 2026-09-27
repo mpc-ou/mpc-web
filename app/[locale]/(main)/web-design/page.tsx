@@ -37,7 +37,7 @@ const SEO_KEYWORDS = {
   en: ["Web Design contest", "website design competition", "web development contest", "UI/UX design", "Frontend"]
 } as const;
 
-const webDesignOgImage = (locale: string) => `${SITE_URL}/og${PATHNAME}?locale=${locale}`;
+const WEB_DESIGN_OG_IMAGE = `${SITE_URL}/images/og/web-design.jpg`;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -60,10 +60,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     pathname: PATHNAME,
     title: t("title", { year }).trim(),
     description,
-    image: webDesignOgImage(locale),
+    image: WEB_DESIGN_OG_IMAGE,
     keywords: [...SEO_KEYWORDS[locale === "en" ? "en" : "vi"], `Web Design ${year}`.trim(), "MPClub", "HCMOU"]
   });
-  const ogImage = { url: webDesignOgImage(locale), width: 1200, height: 630, alt: t("ogAlt", { year }) };
+  const ogImage = { url: WEB_DESIGN_OG_IMAGE, width: 1200, height: 630, alt: t("ogAlt", { year }) };
   return { ...seo, openGraph: { ...seo.openGraph, images: [ogImage] } };
 }
 
@@ -141,7 +141,7 @@ export default async function WebDesignPage({ params }: Props) {
         <EventJsonLd
           description={t("subtitle")}
           endDate={seoInfo.endIso}
-          image={webDesignOgImage(locale)}
+          image={WEB_DESIGN_OG_IMAGE}
           isAccessibleForFree
           location='Trường Đại học Mở TP.HCM'
           name={`Web Design ${seoInfo.year ?? ""}`.trim()}

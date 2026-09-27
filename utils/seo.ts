@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/constants/seo";
+import { getSiteSettings } from "@/app/_actions/main";
+import { BASE_KEYWORDS, OG_IMAGE, parseKeywords, SEO_SETTING_KEYS, SITE_NAME, SITE_URL } from "@/constants/seo";
 
 type PageSeoOptions = {
   /** Translation key under "seo" namespace, e.g. "home", "events", "about" */
@@ -21,11 +22,9 @@ type PageSeoOptions = {
   keywords?: string[];
 };
 
-/**
- * Generate consistent, SEO-complete metadata for any page.
- * Uses next-intl translations from the "seo" namespace.
- * Includes title, description, openGraph, twitter, canonical, and hreflang alternates.
- */
+const absoluteUrl = (url: string) =>
+  url.startsWith("http") ? url : `${SITE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+
 export async function generatePageSeo({
   page,
   locale,
@@ -36,35 +35,41 @@ export async function generatePageSeo({
   type = "website",
   keywords
 }: PageSeoOptions): Promise<Metadata> {
-  const t = await getTranslations({ locale, namespace: "seo" });
+  const [t, { data: settingsRes }] = await Promise.all([
+    getTranslations({ locale, namespace: "seo" }),
+    getSiteSettings(Object.values(SEO_SETTING_KEYS))
+  ]);
+  const settings = (settingsRes?.payload ?? {}) as Record<string, string>;
+  const isEn = locale === "en";
 
+  const homeDescription = settings[isEn ? SEO_SETTING_KEYS.descriptionEn : SEO_SETTING_KEYS.descriptionVi];
   const title = titleOverride || t(`${page}.title`);
-  const description = descOverride || t(`${page}.description`);
+  const description = descOverride || (page === "home" && homeDescription) || t(`${page}.description`);
+  const ogImage = absoluteUrl(image || settings[SEO_SETTING_KEYS.ogImage] || OG_IMAGE);
+  const allKeywords = [
+    ...new Set([...(keywords ?? []), ...parseKeywords(settings[SEO_SETTING_KEYS.keywords]), ...BASE_KEYWORDS])
+  ];
 
   const url = `${SITE_URL}/${locale}${pathname}`;
-  const ogImage = image || OG_IMAGE;
+  const ogTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
   return {
-    title,
+    title: title.includes(SITE_NAME) ? { absolute: title } : title,
     description,
-    ...(keywords ? { keywords } : {}),
+    keywords: allKeywords,
     openGraph: {
       type,
-      title: `${title} | ${SITE_NAME}`,
+      title: ogTitle,
       description,
       url,
       siteName: SITE_NAME,
-      locale: locale === "vi" ? "vi_VN" : "en_US",
-      images: [
-        {
-          url: ogImage,
-          alt: title
-        }
-      ]
+      locale: isEn ? "en_US" : "vi_VN",
+      alternateLocale: isEn ? "vi_VN" : "en_US",
+      images: [{ url: ogImage, alt: title }]
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${SITE_NAME}`,
+      title: ogTitle,
       description,
       images: [ogImage]
     },
@@ -72,7 +77,8 @@ export async function generatePageSeo({
       canonical: url,
       languages: {
         vi: `${SITE_URL}/vi${pathname}`,
-        en: `${SITE_URL}/en${pathname}`
+        en: `${SITE_URL}/en${pathname}`,
+        "x-default": `${SITE_URL}/en${pathname}`
       }
     }
   };

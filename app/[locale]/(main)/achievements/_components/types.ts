@@ -41,8 +41,11 @@ export type AchievementsPagePayload = {
   totalPages: number;
   people: Record<string, Honoree>;
   goldBoard: GoldBoardEntry[];
+  goldBoardByYear: Record<string, GoldBoardEntry[]>;
   terms: TermGroup[];
 };
+
+export const HONOR_BOARD_LIMIT = 24;
 
 export const LEADER_TOP_POSITIONS = new Set(["PRESIDENT"]);
 

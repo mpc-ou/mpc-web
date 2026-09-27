@@ -1,10 +1,10 @@
 "use client";
 
 import { marked } from "marked";
-import mediumZoom from "medium-zoom";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getProjectDetail } from "@/app/_actions/main";
 import { sanitizeHtml } from "@/utils/sanitize-html";
+import { ImageLightbox, type LightboxImage } from "./image-lightbox.client";
 
 const PROJECT_LINK_REGEX = /(?:^|\/)(?:[a-z]{2}\/)?projects\/([a-zA-Z0-9_-]+)(?:\?|#|$)/;
 
@@ -232,6 +232,8 @@ type MarkdownBlockProps = {
  */
 export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [lightboxImages, setLightboxImages] = useState<LightboxImage[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const htmlContent = useMemo(() => {
     if (!content) {
@@ -252,41 +254,17 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
       return;
     }
 
-    // Zoom
-    const images = containerRef.current.querySelectorAll("img");
-    const zoom = mediumZoom(images, {
-      margin: 24,
-      background: "rgba(0,0,0,0.85)"
-    });
-
-    let captionEl: HTMLDivElement | null = null;
-
-    zoom.on("open", (event) => {
-      const img = event.target as HTMLImageElement;
-      const title = img.getAttribute("title") || img.getAttribute("alt") || "";
-      if (title) {
-        captionEl = document.createElement("div");
-        captionEl.className =
-          "fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] bg-black/75 backdrop-blur-[2px] px-4 py-2 rounded-lg text-white text-sm font-semibold max-w-[80vw] text-center shadow-lg pointer-events-none transition-all duration-300 opacity-0 select-none";
-        captionEl.textContent = title;
-        document.body.appendChild(captionEl);
-        requestAnimationFrame(() => {
-          if (captionEl) {
-            captionEl.style.opacity = "1";
-          }
-        });
-      }
-    });
-
-    zoom.on("close", () => {
-      if (captionEl) {
-        captionEl.style.opacity = "0";
-        const el = captionEl;
-        captionEl = null;
-        setTimeout(() => {
-          el.remove();
-        }, 300);
-      }
+    // Lightbox: every content image opens the shared viewer at its position
+    const images = Array.from(containerRef.current.querySelectorAll<HTMLImageElement>("img")).filter(
+      (img) => !img.closest("a")
+    );
+    setLightboxImages(
+      images.map((img) => ({ url: img.currentSrc || img.src, title: img.getAttribute("title") || img.alt || null }))
+    );
+    const openHandlers = images.map((img, i) => {
+      const handler = () => setLightboxIndex(i);
+      img.addEventListener("click", handler);
+      return () => img.removeEventListener("click", handler);
     });
 
     // Disable task-list checkboxes (visual only)
@@ -402,9 +380,8 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
     }
 
     return () => {
-      zoom.detach();
-      if (captionEl) {
-        captionEl.remove();
+      for (const off of openHandlers) {
+        off();
       }
       for (const [btn, handler] of copyHandlers.entries()) {
         btn.removeEventListener("click", handler);
@@ -420,12 +397,20 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
   }
 
   return (
-    <div
-      className={`prose prose-neutral dark:prose-invert prose-hr:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h1:mt-12 prose-h2:mt-10 prose-h3:mt-8 prose-h4:mt-6 prose-h1:mb-6 prose-h2:mb-4 prose-h3:mb-3 prose-h4:mb-2 prose-table:w-full max-w-none prose-table:border-collapse prose-ol:list-decimal prose-ul:list-disc prose-code:rounded prose-pre:rounded-xl prose-td:border prose-th:border prose-hr:border-border prose-td:border-border prose-th:border-border prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-th:bg-muted/50 prose-pre:p-0 prose-code:px-1.5 prose-td:px-3 prose-th:px-3 prose-code:py-0.5 prose-td:py-2 prose-th:py-2 prose-blockquote:pl-4 prose-th:text-left prose-a:font-bold prose-headings:font-bold prose-th:font-semibold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-base prose-td:text-sm prose-th:text-sm prose-blockquote:italic prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:underline-offset-4 prose-a:transition-colors prose-code:before:content-none prose-code:after:content-none hover:prose-a:text-primary/80 [&_.task-list-item]:list-none [&_.task-list-item]:pl-0 [&_iframe]:mx-auto [&_iframe]:my-8 [&_iframe]:block [&_iframe]:max-w-full [&_iframe]:rounded-2xl md:[&_iframe]:max-w-[80%] [&_img]:mx-auto [&_img]:mt-8 [&_img]:mb-12 [&_img]:block [&_img]:max-w-full [&_img]:cursor-zoom-in [&_img]:rounded-2xl [&_img]:border [&_img]:border-border [&_img]:shadow-[0_8px_30px_rgb(0,0,0,0.12)] md:[&_img]:max-w-[75%] lg:[&_img]:max-w-[65%] [&_input[type=checkbox]]:mr-2 [&_input[type=checkbox]]:align-middle [&_ol]:pl-6 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:pl-6 [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square] ${className}
+    <>
+      <div
+        className={`prose prose-neutral dark:prose-invert prose-hr:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h1:mt-12 prose-h2:mt-10 prose-h3:mt-8 prose-h4:mt-6 prose-h1:mb-6 prose-h2:mb-4 prose-h3:mb-3 prose-h4:mb-2 prose-table:w-full max-w-none prose-table:border-collapse prose-ol:list-decimal prose-ul:list-disc prose-code:rounded prose-pre:rounded-xl prose-td:border prose-th:border prose-hr:border-border prose-td:border-border prose-th:border-border prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-th:bg-muted/50 prose-pre:p-0 prose-code:px-1.5 prose-td:px-3 prose-th:px-3 prose-code:py-0.5 prose-td:py-2 prose-th:py-2 prose-blockquote:pl-4 prose-th:text-left prose-a:font-bold prose-headings:font-bold prose-th:font-semibold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-base prose-td:text-sm prose-th:text-sm prose-blockquote:italic prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:underline-offset-4 prose-a:transition-colors prose-code:before:content-none prose-code:after:content-none hover:prose-a:text-primary/80 [&_.task-list-item]:list-none [&_.task-list-item]:pl-0 [&_iframe]:mx-auto [&_iframe]:my-8 [&_iframe]:block [&_iframe]:max-w-full [&_iframe]:rounded-2xl md:[&_iframe]:max-w-[80%] [&_img]:mx-auto [&_img]:mt-8 [&_img]:mb-12 [&_img]:block [&_img]:max-w-full [&_img]:cursor-zoom-in [&_img]:rounded-2xl [&_img]:border [&_img]:border-border [&_img]:shadow-[0_8px_30px_rgb(0,0,0,0.12)] md:[&_img]:max-w-[75%] lg:[&_img]:max-w-[65%] [&_input[type=checkbox]]:mr-2 [&_input[type=checkbox]]:align-middle [&_ol]:pl-6 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:pl-6 [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square] ${className}
       `}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
-      dangerouslySetInnerHTML={{ __html: htmlContent }}
-      ref={containerRef}
-    />
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        ref={containerRef}
+      />
+      <ImageLightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex ?? 0}
+        onClose={() => setLightboxIndex(null)}
+        open={lightboxIndex !== null}
+      />
+    </>
   );
 }

@@ -1,13 +1,15 @@
 "use client";
 
-import { Crown } from "lucide-react";
+import { ChevronDown, Crown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn, getFullName } from "@/lib/utils";
 import { HonoreeAvatar, initialsOf } from "./honoree-avatar";
 import { useHonorees } from "./honoree-dialog.client";
 import { SectionHeading } from "./section-heading";
-import type { GoldBoardEntry, Honoree } from "./types";
+import { type GoldBoardEntry, HONOR_BOARD_LIMIT, type Honoree } from "./types";
 
 const MEDALS: Record<number, { card: string; ring: string; text: string; glow: string }> = {
   1: {
@@ -37,24 +39,103 @@ const DEFAULT_MEDAL = {
   glow: "hover:shadow-[0_22px_50px_-20px_rgba(251,191,36,0.55)]"
 };
 
+type Mode = "all" | "year";
+
 export function HonorBoard() {
   const t = useTranslations("achievements");
-  const { goldBoard, people } = useHonorees();
-  const rows = goldBoard.filter((g) => people[g.memberId]);
+  const { goldBoard, goldBoardByYear, people } = useHonorees();
+  const years = Object.keys(goldBoardByYear).sort((a, b) => Number(b) - Number(a));
+  const [mode, setMode] = useState<Mode>("all");
+  const [year, setYear] = useState(years[0] ?? "");
+  const [expanded, setExpanded] = useState(false);
+
+  const source = mode === "all" ? goldBoard : (goldBoardByYear[year] ?? []);
+  const rows = source.filter((g) => people[g.memberId]);
+  const visible = expanded ? rows : rows.slice(0, HONOR_BOARD_LIMIT);
+  const hidden = rows.length - visible.length;
+
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setExpanded(false);
+  };
+
+  const segment = (active: boolean) =>
+    cn(
+      "rounded-full px-3.5 py-1.5 font-medium text-xs transition-colors",
+      active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+    );
+
+  const filters = (
+    <div className='flex flex-wrap items-center gap-2'>
+      <div className='inline-flex rounded-full border border-border bg-card p-1'>
+        <button
+          aria-pressed={mode === "all"}
+          className={segment(mode === "all")}
+          onClick={() => switchMode("all")}
+          type='button'
+        >
+          {t("board.filterAll")}
+        </button>
+        <button
+          aria-pressed={mode === "year"}
+          className={segment(mode === "year")}
+          disabled={years.length === 0}
+          onClick={() => switchMode("year")}
+          type='button'
+        >
+          {t("board.filterByYear")}
+        </button>
+      </div>
+      {mode === "year" && (
+        <Select
+          onValueChange={(value) => {
+            setYear(value);
+            setExpanded(false);
+          }}
+          value={year}
+        >
+          <SelectTrigger aria-label={t("board.selectYear")} className='h-9 w-28 rounded-full text-xs'>
+            <SelectValue placeholder={t("board.selectYear")} />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((y) => (
+              <SelectItem key={y} value={y}>
+                {y}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    </div>
+  );
 
   return (
     <section className='flex flex-col gap-7'>
-      <SectionHeading aside={t("board.hallNote")} eyebrow={t("board.hallEyebrow")} title={t("hallOfFameTitle")} />
+      <SectionHeading aside={filters} eyebrow={t("board.hallEyebrow")} title={t("hallOfFameTitle")} />
       {rows.length === 0 ? (
-        <p className='py-12 text-center text-muted-foreground'>{t("board.hallEmpty")}</p>
+        <p className='py-12 text-center text-muted-foreground'>
+          {mode === "year" ? t("board.yearEmpty") : t("board.hallEmpty")}
+        </p>
       ) : (
-        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          {rows.map((entry, i) => (
-            <ScrollReveal delay={i * 60} key={entry.memberId} variant='fade-up'>
-              <HonorCard entry={entry} person={people[entry.memberId]} />
-            </ScrollReveal>
-          ))}
-        </div>
+        <>
+          <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' key={`${mode}-${year}`}>
+            {visible.map((entry, i) => (
+              <ScrollReveal delay={Math.min(i, 11) * 50} key={entry.memberId} variant='fade-up'>
+                <HonorCard entry={entry} person={people[entry.memberId]} />
+              </ScrollReveal>
+            ))}
+          </div>
+          {(hidden > 0 || expanded) && rows.length > HONOR_BOARD_LIMIT && (
+            <button
+              className='mx-auto inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-medium text-sm transition-colors hover:border-primary hover:text-primary'
+              onClick={() => setExpanded((v) => !v)}
+              type='button'
+            >
+              {expanded ? t("board.showLess") : t("board.showMore", { count: hidden })}
+              <ChevronDown className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")} />
+            </button>
+          )}
+        </>
       )}
     </section>
   );

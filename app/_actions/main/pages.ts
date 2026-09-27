@@ -61,6 +61,19 @@ const HONOREE_SELECT = {
   }
 } as const;
 
+const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
+const vnYear = (d: Date) => new Date(d.getTime() + VN_OFFSET_MS).getUTCFullYear();
+
+const rankHonorees = (counts: Map<string, number>) => {
+  const sorted = [...counts.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b));
+  const ranked: { memberId: string; count: number; rank: number }[] = [];
+  for (const [i, [memberId, count]] of sorted.entries()) {
+    const prev = ranked[i - 1];
+    ranked.push({ memberId, count, rank: prev && prev.count === count ? prev.rank : i + 1 });
+  }
+  return ranked;
+};
+
 export const getAchievementsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
@@ -76,7 +89,7 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
       const skip = (validPage - 1) * take;
       const where = PUBLISHED_ACHIEVEMENT;
 
-      const [total, achievements, leadershipRoles, goldBoardMembers] = await Promise.all([
+      const [total, achievements, leadershipRoles, honorEntries] = await Promise.all([
         prisma.post.count({ where }),
         prisma.post.findMany({
           where,
@@ -98,11 +111,9 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
             department: { select: { nameVi: true, nameEn: true } }
           }
         }),
-        prisma.member.findMany({
-          where: { isActive: true, achievementEntries: { some: { post: where } } },
-          select: { id: true, _count: { select: { achievementEntries: { where: { post: where } } } } },
-          orderBy: { achievementEntries: { _count: "desc" } },
-          take: 12
+        prisma.postAchievementMember.findMany({
+          where: { post: where, member: { isActive: true } },
+          select: { memberId: true, post: { select: { achievementDate: true, createdAt: true } } }
         })
       ]);
 
@@ -116,12 +127,19 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
         }))
       );
 
-      const goldBoard: { memberId: string; count: number; rank: number }[] = [];
-      for (const [i, m] of goldBoardMembers.entries()) {
-        const count = m._count.achievementEntries;
-        const prev = goldBoard[i - 1];
-        goldBoard.push({ memberId: m.id, count, rank: prev && prev.count === count ? prev.rank : i + 1 });
+      const allCounts = new Map<string, number>();
+      const yearCounts = new Map<number, Map<string, number>>();
+      for (const e of honorEntries) {
+        const year = vnYear(e.post.achievementDate ?? e.post.createdAt);
+        allCounts.set(e.memberId, (allCounts.get(e.memberId) ?? 0) + 1);
+        const bucket = yearCounts.get(year) ?? new Map<string, number>();
+        bucket.set(e.memberId, (bucket.get(e.memberId) ?? 0) + 1);
+        yearCounts.set(year, bucket);
       }
+      const goldBoard = rankHonorees(allCounts);
+      const goldBoardByYear = Object.fromEntries(
+        [...yearCounts.entries()].sort(([a], [b]) => b - a).map(([year, counts]) => [year, rankHonorees(counts)])
+      );
 
       const memberIds = [...new Set([...goldBoard.map((g) => g.memberId), ...leadershipRoles.map((r) => r.memberId)])];
       const members = await prisma.member.findMany({
@@ -174,6 +192,7 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
         totalPages: Math.ceil(total / take),
         people,
         goldBoard,
+        goldBoardByYear,
         terms
       };
     }

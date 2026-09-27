@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
-import { FREQ_OPTIONS } from "@/utils/activity-frequency";
+import { FREQ_OPTIONS, frequencyKey } from "@/utils/activity-frequency";
 import type { ActivityRow } from "./columns";
 
 const SCOPE_OPTIONS = [
@@ -48,8 +48,9 @@ export default function ActivityForm({ activity }: Props) {
 
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
 
-  const [frequencyVi, setFrequencyVi] = useState(activity?.frequencyVi ?? "monthly");
-  const [frequencyEn, setFrequencyEn] = useState(activity?.frequencyEn ?? "monthly");
+  const [frequency, setFrequency] = useState<string>(
+    activity ? (frequencyKey(activity.frequencyVi, activity.frequencyEn) ?? "none") : "monthly"
+  );
   const [hyperlink, setHyperlink] = useState(activity?.hyperlink ?? "");
   const [isInternal, setIsInternal] = useState(activity?.isInternal ?? false);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(activity?.thumbnail ?? null);
@@ -82,7 +83,6 @@ export default function ActivityForm({ activity }: Props) {
   const isVi = bi.viewLang === "vi";
   const currentTitle = isVi ? bi.titleVi : bi.titleEn;
   const currentDesc = isVi ? (bi.summaryVi ?? "") : (bi.summaryEn ?? "");
-  const currentFreq = isVi ? frequencyVi : frequencyEn;
 
   const setTitle = useCallback(
     (v: string) => (bi.viewLang === "vi" ? bi.setTitleVi(v) : bi.setTitleEn(v)),
@@ -92,14 +92,10 @@ export default function ActivityForm({ activity }: Props) {
     (v: string) => (bi.viewLang === "vi" ? bi.setSummaryVi(v) : bi.setSummaryEn(v)),
     [bi.viewLang, bi.setSummaryVi, bi.setSummaryEn]
   );
-  const setFreq = useCallback(
-    (v: string) => (bi.viewLang === "vi" ? setFrequencyVi(v) : setFrequencyEn(v)),
-    [bi.viewLang]
-  );
 
   const freqLabel = useMemo(() => {
-    return FREQ_OPTIONS.find((o) => o.value === currentFreq)?.[isVi ? "vi" : "en"] ?? "";
-  }, [currentFreq, isVi]);
+    return FREQ_OPTIONS.find((o) => o.value === frequency)?.[isVi ? "vi" : "en"] ?? "";
+  }, [frequency, isVi]);
 
   const translateSrcFields = useMemo(
     () => ({
@@ -129,8 +125,8 @@ export default function ActivityForm({ activity }: Props) {
       titleEn: bi.titleEn || undefined,
       descriptionVi: bi.summaryVi ?? undefined,
       descriptionEn: bi.summaryEn ?? undefined,
-      frequencyVi: frequencyVi || undefined,
-      frequencyEn: frequencyEn || undefined,
+      frequencyVi: frequency,
+      frequencyEn: frequency,
       hyperlink: hyperlink || undefined,
       isInternal,
       thumbnail: thumbnailUrl ?? undefined,
@@ -251,7 +247,7 @@ export default function ActivityForm({ activity }: Props) {
 
             <div className='grid gap-1.5'>
               <Label>Tần suất</Label>
-              <Select onValueChange={setFreq} value={currentFreq}>
+              <Select onValueChange={setFrequency} value={frequency}>
                 <SelectTrigger className='h-9 text-sm'>
                   <SelectValue>{freqLabel}</SelectValue>
                 </SelectTrigger>

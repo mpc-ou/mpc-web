@@ -10,12 +10,10 @@ type SectionHeadingProps = {
   /** Extra content under the description on the right side (e.g. a "view all" link). */
   aside?: ReactNode;
   /**
-   * `split`: title left, description right, divider underneath.
+   * `split`: title + description left, aside right, divider underneath.
    * `stack`: everything stacked in one column (for side-by-side layouts).
    */
   layout?: "split" | "stack";
-  /** `split` only: render the description under the title instead of the right column. */
-  descriptionBelow?: boolean;
   className?: string;
 };
 
@@ -47,7 +45,6 @@ export function SectionHeading({
   description,
   aside,
   layout = "split",
-  descriptionBelow = false,
   className
 }: SectionHeadingProps) {
   if (layout === "stack") {
@@ -67,18 +64,9 @@ export function SectionHeading({
       <div className='flex flex-col gap-3'>
         <SectionEyebrow index={index} tag={tag} />
         <SectionTitle>{title}</SectionTitle>
-        {descriptionBelow && description && (
-          <p className='max-w-2xl text-[15px] text-muted-foreground leading-relaxed'>{description}</p>
-        )}
+        {description && <p className='max-w-2xl text-[15px] text-muted-foreground leading-relaxed'>{description}</p>}
       </div>
-      {((description && !descriptionBelow) || aside) && (
-        <div className='flex max-w-sm flex-col items-end justify-end gap-4'>
-          {description && !descriptionBelow && (
-            <p className='text-[15px] text-muted-foreground leading-relaxed'>{description}</p>
-          )}
-          {aside}
-        </div>
-      )}
+      {aside && <div className='flex flex-col items-end justify-end gap-4'>{aside}</div>}
     </div>
   );
 }

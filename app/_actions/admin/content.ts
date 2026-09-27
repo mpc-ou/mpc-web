@@ -13,7 +13,10 @@ export const adminGetFaqItems = async () =>
     cb: async ({ user }) => {
       await requireAdmin(user);
       // WebDesign FAQ is managed in Site Config.
-      return prisma.faqItem.findMany({ where: { target: { not: "WEBDESIGN" } }, orderBy: { order: "asc" } });
+      return prisma.faqItem.findMany({
+        where: { target: { not: "WEBDESIGN" } },
+        orderBy: { order: "asc" }
+      });
     }
   });
 
@@ -93,7 +96,6 @@ export const adminSeedDefaultFaqItems = async (target?: string) =>
       >;
 
       let seededCount = 0;
-      // WEBDESIGN is managed from Site Config, so "seed all" leaves it alone.
       const targets = target ? [target] : Object.keys(faqJson).filter((k) => k !== "_README" && k !== "WEBDESIGN");
 
       for (const t of targets) {

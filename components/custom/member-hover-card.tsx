@@ -5,42 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
-import { SOCIAL_COLLECTION } from "@/constants/common";
 import { buildSocialHref, cn, getFullName } from "@/lib/utils";
-
-type SocialEntry = { id?: string; platform: string; url: string };
-
-const getSocialMeta = (platform: string) => {
-  const p = platform.toLowerCase();
-  if (p.includes("facebook") || p === "fb") {
-    return SOCIAL_COLLECTION.FACEBOOK;
-  }
-  if (p.includes("twitter") || p === "x") {
-    return SOCIAL_COLLECTION.TWITTER;
-  }
-  if (p.includes("linkedin")) {
-    return SOCIAL_COLLECTION.LINKEDIN;
-  }
-  if (p.includes("github")) {
-    return SOCIAL_COLLECTION.GITHUB;
-  }
-  if (p.includes("instagram") || p === "ig") {
-    return SOCIAL_COLLECTION.INSTAGRAM;
-  }
-  if (p.includes("tiktok")) {
-    return SOCIAL_COLLECTION.TIKTOK;
-  }
-  if (p.includes("youtube") || p === "yt") {
-    return SOCIAL_COLLECTION.YOUTUBE;
-  }
-  if (p.includes("discord")) {
-    return SOCIAL_COLLECTION.DISCORD;
-  }
-  if (p.includes("email") || p.includes("mail")) {
-    return SOCIAL_COLLECTION.EMAIL;
-  }
-  return SOCIAL_COLLECTION.WEBSITE;
-};
+import { getSocialMeta, type SocialEntry } from "@/utils/social";
 
 export type HoverCardMember = {
   id: string;

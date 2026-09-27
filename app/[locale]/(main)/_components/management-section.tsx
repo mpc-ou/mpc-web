@@ -1,13 +1,22 @@
+import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getLeadership } from "@/app/_actions/main";
-import { MemberHoverCard } from "@/components/custom/member-hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import type { ClubPosition } from "@/configs/prisma/generated/prisma/client";
-import { getFullName } from "@/lib/utils";
+import { buildSocialHref, cn, getFullName } from "@/lib/utils";
+import { getSocialMeta, parseSocials } from "@/utils/social";
 
 const POSITION_ORDER = ["PRESIDENT", "VICE_PRESIDENT", "DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER"] as const;
+const WHITESPACE_RE = /\s+/;
+const MAX_SOCIALS = 4;
+
+type ClubRole = {
+  position: ClubPosition;
+  department: { nameVi: string; slug: string } | null;
+};
 
 type LeaderWithRoles = {
   id: string;
@@ -18,30 +27,202 @@ type LeaderWithRoles = {
   avatar: string | null;
   bio: string | null;
   socials: unknown;
-  clubRoles: {
-    position: ClubPosition;
-    department: { nameVi: string; slug: string } | null;
-  }[];
+  clubRoles: ClubRole[];
 };
 
-const getTopRole = (
-  roles: {
-    position: ClubPosition;
-    department: { nameVi: string; slug: string } | null;
-  }[],
-  positionLabel: Record<string, string>
-) => {
-  const sorted = [...roles].sort(
+const getTopRole = (roles: ClubRole[], positionLabel: Record<string, string>) => {
+  const top = [...roles].sort(
     (a, b) =>
       POSITION_ORDER.indexOf(a.position as (typeof POSITION_ORDER)[number]) -
       POSITION_ORDER.indexOf(b.position as (typeof POSITION_ORDER)[number])
-  );
-  const top = sorted[0];
+  )[0];
   if (!top) {
     return "";
   }
   const label = positionLabel[top.position] ?? top.position;
-  return top.department ? `${label} – ${top.department.nameVi}` : label;
+  return top.department ? `${label} ${top.department.nameVi}` : label;
+};
+
+const isPresident = (member: LeaderWithRoles) => member.clubRoles.some((r) => r.position === "PRESIDENT");
+
+const getInitials = (fullName: string) =>
+  fullName
+    .trim()
+    .split(WHITESPACE_RE)
+    .slice(-2)
+    .map((w) => w.charAt(0).toUpperCase())
+    .join("");
+
+const profileHref = (member: LeaderWithRoles) => `/members/${member.slug ?? member.id}` as "/";
+
+type PodiumSlot = { member: LeaderWithRoles; rank: string; isCenter: boolean };
+
+const arrangePodium = (executives: LeaderWithRoles[]): PodiumSlot[] => {
+  const centerIdx = Math.max(executives.findIndex(isPresident), 0);
+  const center = executives[centerIdx];
+  if (!center) {
+    return [];
+  }
+  const others = executives.filter((_, i) => i !== centerIdx);
+  const left = others.filter((_, i) => i % 2 === 0).reverse();
+  const right = others.filter((_, i) => i % 2 === 1);
+  const toSlot = (member: LeaderWithRoles, isCenter: boolean): PodiumSlot => ({
+    member,
+    rank: isPresident(member) ? "01" : "02",
+    isCenter
+  });
+  return [...left.map((m) => toSlot(m, false)), toSlot(center, true), ...right.map((m) => toSlot(m, false))];
+};
+
+const SocialLinks = ({ socials, className }: { socials: unknown; className?: string }) => {
+  const list = parseSocials(socials).slice(0, MAX_SOCIALS);
+  if (list.length === 0) {
+    return null;
+  }
+  return (
+    <div className={cn("relative z-10 flex gap-1.5", className)}>
+      {list.map((social) => {
+        const meta = getSocialMeta(social.platform);
+        return (
+          <a
+            aria-label={meta.platform}
+            className='flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm transition-transform hover:scale-110 dark:bg-white/85'
+            href={buildSocialHref(social.url, meta.prefix)}
+            key={social.id || `${social.platform}-${social.url}`}
+            rel='noopener noreferrer'
+            target='_blank'
+            title={meta.platform}
+          >
+            <Image alt='' className='h-4 w-4 object-contain' height={16} src={meta.icon} width={16} />
+          </a>
+        );
+      })}
+    </div>
+  );
+};
+
+const Pedestal = ({ isCenter }: { rank: string; isCenter: boolean }) => (
+  <div aria-hidden className='relative -mt-2 transition-[filter] duration-300 group-hover:brightness-110 sm:-mt-3'>
+    <div
+      className={cn(
+        "transform-[perspective(160px)_rotateX(60deg)] h-4 origin-bottom rounded-t-md sm:h-6",
+        isCenter
+          ? "bg-linear-to-b from-orange-200 to-orange-400"
+          : "bg-linear-to-b from-zinc-200 to-zinc-300 dark:from-zinc-500 dark:to-zinc-600"
+      )}
+    />
+    <div
+      className={cn(
+        "flex items-center justify-center rounded-b-lg border-x border-b font-black font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]",
+        isCenter
+          ? "h-9 border-orange-400/50 bg-linear-to-b from-orange-500 to-orange-700 text-orange-950/40 sm:h-14"
+          : "h-6 border-zinc-400/40 bg-linear-to-b from-zinc-300 to-zinc-400 text-black/20 sm:h-9 dark:border-zinc-500/40 dark:from-zinc-700 dark:to-zinc-800 dark:text-white/15"
+      )}
+    >
+      {/* <span className={isCenter ? "text-xl sm:text-3xl" : "text-sm sm:text-xl"}>{Number(rank)}</span> */}
+    </div>
+    <div
+      className={cn(
+        "mx-auto mt-1 h-2 w-[85%] rounded-full blur-md",
+        isCenter ? "bg-orange-500/50" : "bg-black/30 dark:bg-black/50"
+      )}
+    />
+  </div>
+);
+
+type PodiumCardProps = {
+  slot: PodiumSlot;
+  locale: string;
+  positionLabel: Record<string, string>;
+};
+
+const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
+  const { member, rank, isCenter } = slot;
+  const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
+  const topRole = getTopRole(member.clubRoles, positionLabel);
+
+  return (
+    <div
+      className={cn(
+        "group flex min-w-0 flex-col sm:flex-none",
+        isCenter ? "max-w-60 flex-[1.3] sm:w-56 lg:w-60" : "max-w-48 flex-1 sm:w-44 lg:w-48"
+      )}
+    >
+      <div
+        className={cn(
+          "relative z-10 aspect-square overflow-hidden rounded-xl border bg-muted transition-all duration-300 group-hover:-translate-y-1.5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:rounded-2xl",
+          isCenter
+            ? "border-2 border-orange-500 shadow-[0_0_36px_-10px_rgba(249,115,22,0.6)] group-hover:shadow-[0_0_56px_-6px_rgba(249,115,22,0.85)]"
+            : "border-border group-hover:border-orange-500/70 group-hover:shadow-[0_0_32px_-12px_rgba(249,115,22,0.7)]"
+        )}
+      >
+        {member.avatar ? (
+          <Image
+            alt=''
+            className='object-cover transition-transform duration-500 group-hover:scale-110'
+            fill
+            sizes='(min-width: 1024px) 240px, (min-width: 640px) 224px, 40vw'
+            src={member.avatar}
+          />
+        ) : (
+          <span className='absolute inset-0 flex items-center justify-center font-bold text-2xl text-muted-foreground sm:text-4xl'>
+            {getInitials(fullName)}
+          </span>
+        )}
+        <div className='absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent' />
+        <div className='absolute inset-0 bg-linear-to-t from-orange-600/45 via-orange-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+        <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
+        <SocialLinks
+          className='absolute top-2.5 left-2.5 hidden opacity-0 transition-opacity duration-300 focus-within:opacity-100 group-hover:opacity-100 sm:flex'
+          socials={member.socials}
+        />
+        <div className='absolute inset-x-0 bottom-0 p-2 text-left sm:p-3.5'>
+          <p
+            className={cn(
+              "line-clamp-2 font-bold text-white leading-tight",
+              isCenter ? "text-sm sm:text-lg" : "text-xs sm:text-base"
+            )}
+          >
+            {fullName}
+          </p>
+          <p
+            className={cn("mt-0.5 line-clamp-1 text-[10px] sm:text-xs", isCenter ? "text-orange-400" : "text-white/70")}
+          >
+            {topRole}
+          </p>
+        </div>
+      </div>
+      <Pedestal isCenter={isCenter} rank={rank} />
+    </div>
+  );
+};
+
+const StaffCard = ({ member, locale, topRole }: { member: LeaderWithRoles; locale: string; topRole: string }) => {
+  const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
+
+  return (
+    <div className='group relative flex w-full items-center gap-3 rounded-xl border border-border bg-card/60 p-2 pr-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500/50 hover:bg-orange-500/10 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:w-auto sm:gap-3.5 sm:rounded-2xl sm:p-2.5 sm:pr-5'>
+      <Avatar className='h-12 w-12 shrink-0 rounded-lg sm:h-16 sm:w-16 sm:rounded-xl'>
+        <AvatarImage
+          className='object-cover transition-transform duration-500 group-hover:scale-110'
+          src={member.avatar ?? undefined}
+        />
+        <AvatarFallback className='rounded-lg bg-muted font-bold text-foreground text-sm sm:rounded-xl'>
+          {getInitials(fullName)}
+        </AvatarFallback>
+      </Avatar>
+      <div className='min-w-0 flex-1 text-left'>
+        <Link
+          className='block truncate font-bold text-foreground text-sm outline-none transition-colors after:absolute after:inset-0 group-hover:text-orange-500'
+          href={profileHref(member)}
+        >
+          {fullName}
+        </Link>
+        <p className='mt-0.5 truncate text-muted-foreground text-xs'>{topRole}</p>
+        <SocialLinks className='mt-1.5 [&_a]:h-6 [&_a]:w-6' socials={member.socials} />
+      </div>
+    </div>
+  );
 };
 
 const ManagementSection = async ({ locale }: { locale: string }) => {
@@ -66,108 +247,66 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
   const departmentHeads = leaders.filter((m) =>
     m.clubRoles.every((r) => r.position !== "PRESIDENT" && r.position !== "VICE_PRESIDENT")
   );
+  const podium = arrangePodium(executives);
 
   return (
-    <section className='w-full bg-background py-20' suppressHydrationWarning>
-      <div className='container mx-auto px-4'>
-        <ScrollReveal className='mb-12 text-center'>
+    <section className='relative w-full overflow-hidden bg-background py-16' suppressHydrationWarning>
+      <div
+        aria-hidden
+        className='pointer-events-none absolute inset-x-0 top-0 h-140 bg-[radial-gradient(ellipse_50%_60%_at_50%_0%,rgba(249,115,22,0.18),transparent)]'
+      />
+
+      <div className='container relative mx-auto px-4'>
+        <ScrollReveal className='mb-10 text-center'>
           <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm'>
             &gt; organization
           </span>
-          <h2 className='mt-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl'>{t("title")}</h2>
-          <p className='mt-3 text-muted-foreground'>{t("subtitle")}</p>
+          <h2 className='mt-4 font-extrabold text-3xl text-foreground tracking-tight sm:text-4xl'>{t("title")}</h2>
         </ScrollReveal>
 
         {leaders.length === 0 ? (
           <p className='text-center text-muted-foreground'>{t("noLeadership")}</p>
         ) : (
-          <div className='flex flex-col gap-12'>
-            {/* Executive Board */}
-            {executives.length > 0 && (
-              <div>
-                <h3 className='mb-6 text-center font-semibold text-foreground text-xl'>{t("president")}</h3>
-                <div className='flex flex-wrap justify-center gap-6'>
-                  {executives.map((member) => {
-                    const topRole = getTopRole(member.clubRoles, positionLabel);
-                    return (
-                      <MemberHoverCard
-                        badgeText={topRole}
-                        key={member.id}
-                        locale={locale}
-                        member={member}
-                        subtitle={t("executiveDept")}
-                        viewProfileLabel={t("viewProfile")}
-                      >
-                        <div className='flex h-full w-52 flex-col items-center gap-3 rounded-2xl border border-border bg-background p-6 text-center shadow-sm transition-shadow hover:shadow-md'>
-                          <Avatar className='h-20 w-20 ring-2 ring-primary/20 transition-transform duration-300 group-hover:scale-105 group-hover:ring-primary/50'>
-                            <AvatarImage src={member.avatar ?? undefined} />
-                            <AvatarFallback className='bg-primary/10 font-bold text-lg text-primary'>
-                              {getFullName(member.firstName, member.middleName, member.lastName, locale)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className='flex-1'>
-                            <p className='font-semibold text-foreground'>
-                              {getFullName(member.firstName, member.middleName, member.lastName, locale)}
-                            </p>
-                            <p className='mt-0.5 font-medium text-muted-foreground text-xs'>{topRole}</p>
-                            {member.bio && (
-                              <p className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
-                                {member.bio}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </MemberHoverCard>
-                    );
-                  })}
+          <div className='flex flex-col gap-10'>
+            {podium.length > 0 && (
+              <ScrollReveal>
+                <h3 className='sr-only'>{t("president")}</h3>
+                <div className='flex items-end justify-center gap-2.5 sm:gap-5 lg:gap-7'>
+                  {podium.map((slot) => (
+                    <PodiumCard key={slot.member.id} locale={locale} positionLabel={positionLabel} slot={slot} />
+                  ))}
                 </div>
-              </div>
+              </ScrollReveal>
             )}
 
-            {/* Department Leaders */}
             {departmentHeads.length > 0 && (
-              <div>
-                <h3 className='mb-6 text-center font-semibold text-foreground text-xl'>{t("staff")}</h3>
-                <div className='flex flex-wrap justify-center gap-4'>
-                  {departmentHeads.map((member) => {
-                    const topRole = getTopRole(member.clubRoles, positionLabel);
-                    const topDept =
-                      member.clubRoles.find((r) => ["DEPARTMENT_LEADER", "DEPARTMENT_VICE_LEADER"].includes(r.position))
-                        ?.department?.nameVi || t("departmentMember");
-
-                    return (
-                      <MemberHoverCard
-                        badgeText={topRole}
-                        key={member.id}
-                        locale={locale}
-                        member={member}
-                        subtitle={topDept}
-                        viewProfileLabel={t("viewProfile")}
-                      >
-                        <div className='flex h-full w-44 flex-col items-center gap-2 rounded-2xl border border-border bg-background p-4 text-center shadow-sm transition-shadow hover:shadow-md'>
-                          <Avatar className='h-14 w-14 ring-2 ring-border transition-transform duration-300 group-hover:scale-105 group-hover:ring-primary/50'>
-                            <AvatarImage src={member.avatar ?? undefined} />
-                            <AvatarFallback className='bg-muted font-bold text-foreground text-sm'>
-                              {getFullName(member.firstName, member.middleName, member.lastName, locale)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className='flex-1'>
-                            <p className='font-semibold text-foreground text-sm'>
-                              {getFullName(member.firstName, member.middleName, member.lastName, locale)}
-                            </p>
-                            <p className='mt-0.5 text-muted-foreground text-xs'>{topRole}</p>
-                          </div>
-                        </div>
-                      </MemberHoverCard>
-                    );
-                  })}
+              <ScrollReveal>
+                <div className='mb-6 flex items-center gap-4'>
+                  <span className='h-px flex-1 bg-border' />
+                  <h3 className='font-mono text-muted-foreground text-xs uppercase tracking-[0.3em]'>{t("staff")}</h3>
+                  <span className='h-px flex-1 bg-border' />
                 </div>
-              </div>
+                <div className='grid gap-2.5 sm:flex sm:flex-wrap sm:justify-center sm:gap-3.5'>
+                  {departmentHeads.map((member) => (
+                    <StaffCard
+                      key={member.id}
+                      locale={locale}
+                      member={member}
+                      topRole={getTopRole(member.clubRoles, positionLabel)}
+                    />
+                  ))}
+                </div>
+              </ScrollReveal>
             )}
 
             <div className='text-center'>
-              <Link className='font-medium text-primary text-sm underline-offset-4 hover:underline' href='/members'>
-                {t("viewAll")} →
+              <Link
+                className='font-semibold text-base text-orange-500 underline-offset-4 hover:underline'
+                href='/members'
+              >
+                {t("viewAll")}
+
+                <ChevronRight className='ml-2 inline h-4 w-4' />
               </Link>
             </div>
           </div>

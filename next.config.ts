@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
         // (see configs/data/wd.json)
         protocol: "https",
         hostname: "image.thum.io"
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com"
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com"
       }
     ],
     // DiceBear avatars are served as SVG; sandboxed per Next.js docs since
@@ -29,8 +37,16 @@ const nextConfig: NextConfig = {
   },
   // The WebDesign contest page moved from /activities/webdesign; old links (incl. Activity hrefs stored in the DB) keep working.
   redirects: async () => [
-    { source: "/:locale(vi|en)/activities/webdesign", destination: "/:locale/web-design", permanent: true },
-    { source: "/activities/webdesign", destination: "/web-design", permanent: true }
+    {
+      source: "/:locale(vi|en)/activities/webdesign",
+      destination: "/:locale/web-design",
+      permanent: true
+    },
+    {
+      source: "/activities/webdesign",
+      destination: "/web-design",
+      permanent: true
+    }
   ],
   cacheComponents: true,
   reactCompiler: true,

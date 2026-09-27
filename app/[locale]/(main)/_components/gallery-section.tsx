@@ -3,9 +3,8 @@ import { getGalleryImages } from "@/app/_actions/main";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { GalleryMasonry } from "./gallery-masonry.client";
 
-/** Diagonal, tilted-plane look for the home gallery. */
-const GALLERY_TILT_X_DEG = 22;
-const GALLERY_TILT_Z_DEG = -30;
+const GALLERY_TILT_X_DEG = 0;
+const GALLERY_TILT_Z_DEG = -10;
 
 const GallerySection = async ({ locale }: { locale: string }) => {
   const t = await getTranslations({ locale, namespace: "home.gallery" });

@@ -14,7 +14,7 @@ const TECHS = [
 
 export function TechMarquee() {
   return (
-    <div className='mask-[linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] relative mx-auto max-w-320 overflow-hidden py-6.5'>
+    <div className='mask-[linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] relative mx-auto max-w-7xl overflow-hidden py-6.5'>
       {/* Track holds the list twice; the keyframe shifts by -50% for a seamless loop. */}
       <div className='flex w-max animate-[activities-marquee_34s_linear_infinite] motion-reduce:animate-none'>
         {[0, 1].map((copy) => (

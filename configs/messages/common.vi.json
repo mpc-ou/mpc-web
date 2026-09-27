@@ -97,7 +97,24 @@
       "role": "Vai trò:",
       "activeMember": "Thành viên đang hoạt động",
       "leftClubNotice": "Thành viên này đã rời CLB.",
-      "guestNotice": "Đây là tài khoản khách — không phải thành viên CLB."
+      "guestNotice": "Đây là tài khoản khách — không phải thành viên CLB.",
+      "featured": "Nổi bật",
+      "filters": {
+        "all": "Tất cả",
+        "projects": "Dự án",
+        "achievements": "Thành tích",
+        "posts": "Bài viết",
+        "roles": "Vai trò"
+      },
+      "itemsCount": "{count} mục",
+      "showMore": "+ {count} mục nữa",
+      "showLess": "Thu gọn",
+      "since": "từ {year}",
+      "readMinutes": "{count} phút",
+      "joinedClub": "Gia nhập CLB",
+      "emptyTimeline": "Chưa có hoạt động nào.",
+      "guest": "Khách",
+      "term": "NK {term}"
     }
   },
   "badges": {

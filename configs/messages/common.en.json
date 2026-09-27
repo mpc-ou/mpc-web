@@ -97,7 +97,24 @@
       "role": "Role:",
       "activeMember": "Active Club Member",
       "leftClubNotice": "This member has left the club.",
-      "guestNotice": "This is a guest account — not a club member."
+      "guestNotice": "This is a guest account — not a club member.",
+      "featured": "Featured",
+      "filters": {
+        "all": "All",
+        "projects": "Projects",
+        "achievements": "Achievements",
+        "posts": "Posts",
+        "roles": "Roles"
+      },
+      "itemsCount": "{count} items",
+      "showMore": "+ {count} more",
+      "showLess": "Show less",
+      "since": "since {year}",
+      "readMinutes": "{count} min",
+      "joinedClub": "Joined the club",
+      "emptyTimeline": "No activity yet.",
+      "guest": "Guest",
+      "term": "Term {term}"
     }
   },
   "badges": {

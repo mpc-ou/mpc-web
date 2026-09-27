@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getMemberBySlug, getMemberSlugByAuthId } from "@/app/_actions/main/member-detail";
 import { createClientSsr } from "@/configs/supabase/server";
 import { getFullName } from "@/lib/utils";
@@ -11,14 +12,15 @@ type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
+  const tNotFound = await getTranslations({ locale, namespace: "seo.notFound" });
   if (slug === "me") {
-    return { title: "Trang cá nhân" };
+    return { title: tNotFound("profile") };
   }
   const { data } = await getMemberBySlug(slug);
   const member = (data?.payload as { member: Member | null } | undefined)?.member;
 
   if (!member) {
-    return { title: "Không tìm thấy" };
+    return { title: tNotFound("member") };
   }
   return generatePageSeo({
     page: "memberDetail",

@@ -682,6 +682,7 @@ model ProjectMember {
   projectId String
   memberId  String
   role      String?
+  joinedAt  DateTime?
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   member  Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)

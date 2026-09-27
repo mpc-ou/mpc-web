@@ -91,6 +91,7 @@ export const getMembersGroupedByYear = async () =>
         lastName: string;
         avatar: string | null;
         slug: string | null;
+        studentId: string | null;
         socials: (typeof members)[number]["socials"];
         currentRole: (typeof members)[number]["clubRoles"][number];
       };
@@ -121,6 +122,7 @@ export const getMembersGroupedByYear = async () =>
             lastName: member.lastName,
             avatar: member.avatar,
             slug: member.slug,
+            studentId: member.showStudentId ? member.studentId : null,
             socials: member.socials,
             currentRole: member.clubRoles[0]
           });

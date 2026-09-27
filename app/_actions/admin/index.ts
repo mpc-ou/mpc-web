@@ -94,7 +94,8 @@ export {
   adminGetProjectsPaginated,
   adminLinkProjectMember,
   adminUnlinkProjectMember,
-  adminUpdateProject
+  adminUpdateProject,
+  adminUpdateProjectMembers
 } from "./projects";
 export {
   adminBuildRecapData,

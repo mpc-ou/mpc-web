@@ -8,7 +8,8 @@ import {
   adminCreateProject,
   adminLinkProjectMember,
   adminUnlinkProjectMember,
-  adminUpdateProject
+  adminUpdateProject,
+  adminUpdateProjectMembers
 } from "@/app/_actions/admin";
 import { LanguageToggle, type ViewLanguage } from "@/components/custom/language-toggle";
 import { TranslateButton } from "@/components/forms/translate-button";
@@ -69,7 +70,8 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
             studentId: null,
             webRole: ""
           } as MemberOption,
-          role: m.role
+          role: m.role,
+          joinedAt: m.joinedAt ?? null
         }))
       );
     }
@@ -116,17 +118,22 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
     setTechInput("");
   };
 
-  const handleLink = async (member: MemberOption, role: string) => {
+  const handleLink = async (member: MemberOption, role: string, joinedAt: string | null) => {
+    const entry = { member, role: role || null, joinedAt };
     if (!project) {
-      setLinked((prev) => [...prev, { member, role: role || null }]);
+      setLinked((prev) => [...prev, entry]);
       return;
     }
-    const res = await adminLinkProjectMember(project.id, member.id, role || undefined);
+    const res = await adminLinkProjectMember(project.id, member.id, role || undefined, joinedAt);
     if (res.error) {
       toast({ variant: "destructive", description: res.error?.message });
       return;
     }
-    setLinked((prev) => [...prev, { member, role: role || null }]);
+    setLinked((prev) => [...prev, entry]);
+  };
+
+  const handleUpdateLinked = (memberId: string, updates: Partial<LinkedMember>) => {
+    setLinked((prev) => prev.map((l) => (l.member.id === memberId ? { ...l, ...updates } : l)));
   };
 
   const handleUnlink = async (memberId: string) => {
@@ -185,7 +192,19 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
 
     if (!isEdit && entityId) {
       for (const l of linked) {
-        await adminLinkProjectMember(entityId, l.member.id, l.role ?? undefined);
+        await adminLinkProjectMember(entityId, l.member.id, l.role ?? undefined, l.joinedAt ?? null);
+      }
+    }
+
+    if (isEdit && project && linked.length > 0) {
+      const res = await adminUpdateProjectMembers(
+        project.id,
+        linked.map((l) => ({ memberId: l.member.id, role: l.role, joinedAt: l.joinedAt ?? null }))
+      );
+      if (res.error) {
+        toast({ variant: "destructive", description: res.error.message });
+        setLoading(false);
+        return;
       }
     }
 
@@ -502,7 +521,16 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
               <CardTitle className='font-semibold text-sm'>Thành viên tham gia</CardTitle>
             </CardHeader>
             <CardContent>
-              <MemberSelector allMembers={allMembers} linked={linked} onLink={handleLink} onUnlink={handleUnlink} />
+              <MemberSelector
+                allMembers={allMembers}
+                joinedAtHint='Ngày tham gia dự án — để trống sẽ dùng ngày bắt đầu dự án'
+                linked={linked}
+                onLink={handleLink}
+                onUnlink={handleUnlink}
+                onUpdate={handleUpdateLinked}
+                withImage={false}
+                withJoinedAt
+              />
             </CardContent>
           </Card>
         </form>

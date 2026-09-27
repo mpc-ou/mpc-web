@@ -390,7 +390,13 @@
     },
     "membersCount": "{count} thành viên",
     "empty": "Chưa có dữ liệu thành viên.",
-    "viewDetail": "Xem chi tiết"
+    "viewDetail": "Xem chi tiết",
+    "searchPlaceholder": "Tìm tên…",
+    "filterAll": "Tất cả",
+    "peopleCount": "{count} người",
+    "profile": "Xem hồ sơ",
+    "noResults": "Không tìm thấy thành viên phù hợp.",
+    "jumpToYear": "Đi tới năm {year}"
   },
   "userMenu": {
     "myBlogs": "Bài viết của tôi",

@@ -46,19 +46,19 @@ export function WebDesignHeroClient({
   const sectionRef = useSpotlight<HTMLElement>();
 
   return (
-    <section className='relative px-4 pt-18 sm:px-6' ref={sectionRef}>
+    <section className='relative min-h-screen px-4 pt-18 sm:px-6' ref={sectionRef}>
       <HeroBackdrop />
 
-      <div className='relative mx-auto flex max-w-320 flex-wrap items-center gap-14'>
+      <div className='relative mx-auto mb-8 flex max-w-7xl flex-wrap items-center gap-14'>
         {/* Copy */}
         <div className='flex min-w-0 flex-[1_1_420px] flex-col items-start gap-7'>
-          <ScrollReveal className='flex flex-wrap items-center gap-2.5'>
+          {/* <ScrollReveal className='flex flex-wrap items-center gap-2.5'>
             <span className='inline-flex items-center gap-2 rounded-full border border-orange-500/35 bg-orange-500/10 px-3.5 py-1.5 font-mono font-semibold text-orange-400 text-xs tracking-[0.04em]'>
               <span className='h-1.5 w-1.5 rounded-full bg-[#ff5e00] motion-safe:animate-pulse' />
               {t("heroBadge")}
             </span>
             <span className='font-mono text-muted-foreground text-xs'>{t("heroEyebrow")}</span>
-          </ScrollReveal>
+          </ScrollReveal> */}
 
           <ScrollReveal delay={90}>
             <h1 className='font-black text-[clamp(2.75rem,6.4vw,5.25rem)] leading-[0.98] tracking-[-0.035em]'>
@@ -66,7 +66,7 @@ export function WebDesignHeroClient({
                 {t("heroTitlePrefix")}
               </span>
               <span className='block text-foreground'>Web</span>
-              <span className='block bg-[linear-gradient(90deg,#ff5e00,#fbbf24,#ff5e00)] bg-size-[200%_100%] bg-clip-text text-transparent motion-safe:animate-wd-shine'>
+              <span className='block bg-[linear-gradient(90deg,#ff5e00,#fbbf24,#ff5e00)] bg-size-[200%_100%] bg-clip-text pb-2 text-transparent motion-safe:animate-wd-shine'>
                 Design.
               </span>
             </h1>

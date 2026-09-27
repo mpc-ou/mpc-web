@@ -26,6 +26,7 @@ export type ProjectRow = {
   members: Array<{
     member: { id: string; firstName: string; lastName: string };
     role: string | null;
+    joinedAt?: string | null;
   }>;
 };
 

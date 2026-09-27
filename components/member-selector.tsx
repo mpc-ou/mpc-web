@@ -28,14 +28,33 @@ export type LinkedMember = {
   member: MemberOption;
   role: string | null;
   imageUrl?: string | null;
+  joinedAt?: string | null;
 };
 
 type MemberSelectorProps = {
   allMembers: MemberOption[];
   linked: LinkedMember[];
-  onLink: (member: MemberOption, role: string) => void;
+  onLink: (member: MemberOption, role: string, joinedAt: string | null) => void;
   onUnlink: (memberId: string) => void;
   onUpdate?: (memberId: string, updates: Partial<LinkedMember>) => void;
+  withJoinedAt?: boolean;
+  withImage?: boolean;
+  joinedAtHint?: string;
+};
+
+const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+const toDateInputValue = (value?: string | null) => {
+  if (!value) {
+    return "";
+  }
+  if (DATE_ONLY_RE.test(value)) {
+    return value;
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ""
+    : new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(date);
 };
 
 function MemberImageUploadButton({ memberId, onUploaded }: { memberId: string; onUploaded: (url: string) => void }) {
@@ -94,11 +113,21 @@ const SELECTOR_LABELS = {
   clearSelectedMember: "Clear Selected Member"
 };
 
-export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate }: MemberSelectorProps) {
+export function MemberSelector({
+  allMembers,
+  linked,
+  onLink,
+  onUnlink,
+  onUpdate,
+  withJoinedAt = false,
+  withImage = true,
+  joinedAtHint
+}: MemberSelectorProps) {
   const t = (key: keyof typeof SELECTOR_LABELS) => SELECTOR_LABELS[key];
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [roleInput, setRoleInput] = useState("");
+  const [joinedAtInput, setJoinedAtInput] = useState("");
 
   const linkedIds = new Set(linked.map((l) => l.member.id));
 
@@ -122,9 +151,10 @@ export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate 
     if (!selectedMember) {
       return;
     }
-    onLink(selectedMember, roleInput.trim());
+    onLink(selectedMember, roleInput.trim(), joinedAtInput || null);
     setSelectedId(null);
     setRoleInput("");
+    setJoinedAtInput("");
     setSearch("");
   };
 
@@ -167,36 +197,47 @@ export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate 
                     value={l.role || ""}
                   />
                 </div>
-              </div>
-
-              {/* Right: Custom Photo Upload */}
-              <div className='flex shrink-0 items-center gap-2'>
-                <span className='text-[10px] text-muted-foreground'>Ảnh tuyên dương:</span>
-                {l.imageUrl ? (
-                  <div className='relative h-12 w-12 shrink-0 rounded-md border bg-muted'>
-                    <Image
-                      alt={`Avatar ${l.member.firstName}`}
-                      className='rounded-md object-cover'
-                      fill
-                      sizes='48px'
-                      src={l.imageUrl}
-                    />
-                    <button
-                      className='absolute -top-1.5 -right-1.5 z-10 rounded-full bg-destructive p-0.5 text-white hover:bg-destructive/80'
-                      onClick={() => onUpdate?.(l.member.id, { imageUrl: null })}
-                      title='Xóa ảnh đại diện'
-                      type='button'
-                    >
-                      <X className='h-2.5 w-2.5' />
-                    </button>
-                  </div>
-                ) : (
-                  <MemberImageUploadButton
-                    memberId={l.member.id}
-                    onUploaded={(url) => onUpdate?.(l.member.id, { imageUrl: url })}
+                {withJoinedAt && (
+                  <Input
+                    aria-label='Ngày tham gia'
+                    className='h-8 w-36 text-xs'
+                    onChange={(e) => onUpdate?.(l.member.id, { joinedAt: e.target.value || null })}
+                    title={joinedAtHint}
+                    type='date'
+                    value={toDateInputValue(l.joinedAt)}
                   />
                 )}
               </div>
+
+              {withImage && (
+                <div className='flex shrink-0 items-center gap-2'>
+                  <span className='text-[10px] text-muted-foreground'>Ảnh tuyên dương:</span>
+                  {l.imageUrl ? (
+                    <div className='relative h-12 w-12 shrink-0 rounded-md border bg-muted'>
+                      <Image
+                        alt={`Avatar ${l.member.firstName}`}
+                        className='rounded-md object-cover'
+                        fill
+                        sizes='48px'
+                        src={l.imageUrl}
+                      />
+                      <button
+                        className='absolute -top-1.5 -right-1.5 z-10 rounded-full bg-destructive p-0.5 text-white hover:bg-destructive/80'
+                        onClick={() => onUpdate?.(l.member.id, { imageUrl: null })}
+                        title='Xóa ảnh đại diện'
+                        type='button'
+                      >
+                        <X className='h-2.5 w-2.5' />
+                      </button>
+                    </div>
+                  ) : (
+                    <MemberImageUploadButton
+                      memberId={l.member.id}
+                      onUploaded={(url) => onUpdate?.(l.member.id, { imageUrl: url })}
+                    />
+                  )}
+                </div>
+              )}
 
               {/* Far Right: Delete Button */}
               <button
@@ -281,6 +322,16 @@ export function MemberSelector({ allMembers, linked, onLink, onUnlink, onUpdate 
             placeholder={t("rolePlaceholder")}
             value={roleInput}
           />
+          {withJoinedAt && (
+            <Input
+              aria-label='Ngày tham gia'
+              className='h-7 w-36 text-xs'
+              onChange={(e) => setJoinedAtInput(e.target.value)}
+              title={joinedAtHint}
+              type='date'
+              value={joinedAtInput}
+            />
+          )}
           <button
             className='shrink-0 rounded-md bg-primary px-2 py-1 text-primary-foreground text-xs hover:bg-primary/90'
             onClick={handleAdd}

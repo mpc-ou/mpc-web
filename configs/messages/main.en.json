@@ -390,7 +390,13 @@
     },
     "membersCount": "{count} members",
     "empty": "No member data available.",
-    "viewDetail": "View Details"
+    "viewDetail": "View Details",
+    "searchPlaceholder": "Search name…",
+    "filterAll": "All",
+    "peopleCount": "{count} people",
+    "profile": "View Profile",
+    "noResults": "No matching members.",
+    "jumpToYear": "Jump to {year}"
   },
   "userMenu": {
     "myBlogs": "My Blog Posts",

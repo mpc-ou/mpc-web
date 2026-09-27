@@ -2699,7 +2699,8 @@ export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeo
 export const ProjectMemberScalarFieldEnum = {
   projectId: 'projectId',
   memberId: 'memberId',
-  role: 'role'
+  role: 'role',
+  joinedAt: 'joinedAt'
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]

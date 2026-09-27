@@ -7,8 +7,6 @@ import { updateSession } from "./configs/auth/middleware";
 const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
-  // /admin is a standalone, locale-less area — skip next-intl's locale
-  // detection/redirect for it, but still run the auth/session middleware.
   const isAdminRoute = request.nextUrl.pathname === "/admin" || request.nextUrl.pathname.startsWith("/admin/");
   const response = isAdminRoute ? NextResponse.next() : handleI18nRouting(request);
   return await updateSession(request, response);

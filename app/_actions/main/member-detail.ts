@@ -5,6 +5,10 @@ import { prisma } from "@/configs/prisma/db";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
+const MAX_POSTS = 50;
+const WORDS_PER_MINUTE = 200;
+const WORD_SPLIT_RE = /\s+/;
+
 export const getMemberBySlug = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
@@ -21,37 +25,53 @@ export const getMemberBySlug = async (slug: string) =>
             orderBy: { startAt: "desc" }
           },
           achievementEntries: {
-            include: { post: true },
-            take: 6,
+            where: { post: { status: "PUBLISHED" } },
+            include: {
+              post: {
+                select: {
+                  id: true,
+                  titleVi: true,
+                  titleEn: true,
+                  slug: true,
+                  thumbnail: true,
+                  achievementDate: true,
+                  achievementType: true,
+                  isHighlight: true,
+                  publishedAt: true
+                }
+              }
+            },
             orderBy: { post: { achievementDate: "desc" } }
           },
           projects: {
             include: {
               project: {
-                include: {
-                  members: {
-                    include: {
-                      member: {
-                        select: {
-                          id: true,
-                          firstName: true,
-                          lastName: true,
-                          middleName: true,
-                          avatar: true,
-                          slug: true
-                        }
-                      }
-                    }
-                  }
+                select: {
+                  id: true,
+                  slug: true,
+                  title: true,
+                  titleEn: true,
+                  thumbnail: true,
+                  technologies: true,
+                  startDate: true,
+                  createdAt: true
                 }
               }
-            },
-            take: 6
+            }
           },
           authoredPosts: {
             where: { status: "PUBLISHED", type: "BLOG" },
-            take: 4,
-            orderBy: { publishedAt: "desc" }
+            take: MAX_POSTS,
+            orderBy: { publishedAt: "desc" },
+            select: {
+              id: true,
+              titleVi: true,
+              titleEn: true,
+              slug: true,
+              thumbnail: true,
+              publishedAt: true,
+              contentVi: true
+            }
           }
         }
       });
@@ -60,14 +80,14 @@ export const getMemberBySlug = async (slug: string) =>
         return { member: null };
       }
 
-      // Remap achievementEntries → achievements, post → achievement
       const achievements = member.achievementEntries.map((entry) => ({
         role: entry.role,
         prize: entry.prize,
         achievement: {
           id: entry.post.id,
           title: entry.post.titleVi,
-          date: entry.post.achievementDate,
+          titleEn: entry.post.titleEn,
+          date: entry.post.achievementDate ?? entry.post.publishedAt,
           type: entry.post.achievementType,
           isHighlight: entry.post.isHighlight,
           slug: entry.post.slug,
@@ -75,7 +95,13 @@ export const getMemberBySlug = async (slug: string) =>
         }
       }));
 
-      return { member: { ...member, achievements } };
+      const authoredPosts = member.authoredPosts.map(({ contentVi, ...post }) => ({
+        ...post,
+        readMinutes: Math.max(1, Math.round(contentVi.split(WORD_SPLIT_RE).filter(Boolean).length / WORDS_PER_MINUTE))
+      }));
+
+      const { achievementEntries: _entries, ...rest } = member;
+      return { member: { ...rest, achievements, authoredPosts } };
     }
   });
 

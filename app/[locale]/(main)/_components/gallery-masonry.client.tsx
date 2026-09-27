@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox.client";
 import { cn } from "@/lib/utils";
@@ -189,14 +190,14 @@ const GalleryCard = ({ item, onSelect }: { item: GalleryItem; onSelect: (index: 
       tabIndex={-1}
       type='button'
     >
-      {/* biome-ignore lint/performance/noImgElement: hundreds of duplicated, constantly moving tiles; next/image adds per-tile overhead */}
-      {/* biome-ignore lint/correctness/useImageSize: size comes from the card box */}
-      <img
+      <Image
         alt={image.caption ?? ""}
         className='block h-full w-full object-cover transition-transform duration-400 ease-out group-hover/card:scale-[1.06]'
         decoding='async'
         draggable={false}
+        fill
         loading={eager ? "eager" : "lazy"}
+        sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
         src={image.url}
       />
       {image.caption && (
@@ -667,9 +668,6 @@ const GalleryMasonry = ({ images, className, tiltXDeg = 0, tiltZDeg = 0 }: Galle
         // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable region for keyboard scrolling (cards are tabIndex -1)
         tabIndex={0}
       >
-        {/* Columns are coplanar with the plane, so it stays transform-style: flat -
-            preserve-3d adds 3D sorting cost and makes Chrome hit-test the plane
-            instead of the cards. Depth comes from the parent's perspective. */}
         <div
           className='absolute will-change-transform'
           ref={planeRef}

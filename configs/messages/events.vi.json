@@ -4,7 +4,10 @@
     "subtitle": "Các hoạt động của CLB rất đa dạng và được tổ chức thường xuyên, bao gồm các buổi đào tạo, workshop, hợp tác dự án và các sự kiện xã hội. Những hoạt động này nhằm mục đích xây dựng một cộng đồng sôi động, nâng cao kỹ năng của các thành viên và tạo cơ hội kết nối cũng như phát triển bản thân.",
     "projectsTitle": "Dự án tiêu biểu",
     "projectsDesc": "Một số sản phẩm được xây dựng bởi các thành viên CLB trong quá trình học tập và hoạt động.",
-    "viewAllProjects": "Xem tất cả dự án"
+    "viewAllProjects": "Xem tất cả dự án",
+    "countLabel": "hoạt động",
+    "photosLabel": "ảnh",
+    "viewPhotos": "Xem ảnh & chi tiết"
   },
   "events": {
     "title": "Sự Kiện",

@@ -17,19 +17,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
+import { FREQ_OPTIONS } from "@/utils/activity-frequency";
 import type { ActivityRow } from "./columns";
 
 const SCOPE_OPTIONS = [
   { internal: true, label: "Đối nội", hint: "Hoạt động dành cho thành viên CLB" },
   { internal: false, label: "Đối ngoại", hint: "Sự kiện mở cho sinh viên bên ngoài" }
-] as const;
-
-const FREQ_OPTIONS = [
-  { value: "weekly", vi: "Hằng tuần", en: "Weekly" },
-  { value: "monthly", vi: "Hằng tháng", en: "Monthly" },
-  { value: "yearly", vi: "Hằng năm", en: "Annually" },
-  { value: "semester", vi: "Hằng kỳ", en: "Every Semester" },
-  { value: "none", vi: "Không cố định", en: "Irregular" }
 ] as const;
 
 type Props = {

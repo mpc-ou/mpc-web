@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import type { ProjectSummary } from "@/types/common";
+import { frequencyLabel } from "@/utils/activity-frequency";
 import { generatePageSeo } from "@/utils/seo";
 import { EventsHeroClient } from "./_components/activities-hero.client";
 import { EventsClient } from "./client";
@@ -82,8 +83,8 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
       id: a.slug,
       title: (locale === "en" ? a.titleEn : a.titleVi) || a.titleVi,
       description: (locale === "en" ? a.descriptionEn : a.descriptionVi) || a.descriptionVi,
-      frequency: (locale === "en" ? a.frequencyEn : a.frequencyVi) || a.frequencyVi || "",
-      thumbnail: a.thumbnail || "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image",
+      frequency: frequencyLabel(a.frequencyVi, a.frequencyEn, locale),
+      thumbnail: a.thumbnail,
       images: a.images || [],
       href: a.hyperlink || undefined
     }));
@@ -94,8 +95,8 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
       id: a.slug,
       title: (locale === "en" ? a.titleEn : a.titleVi) || a.titleVi,
       description: (locale === "en" ? a.descriptionEn : a.descriptionVi) || a.descriptionVi,
-      frequency: (locale === "en" ? a.frequencyEn : a.frequencyVi) || a.frequencyVi || "",
-      thumbnail: a.thumbnail || "https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image",
+      frequency: frequencyLabel(a.frequencyVi, a.frequencyEn, locale),
+      thumbnail: a.thumbnail,
       images: a.images || [],
       href: a.hyperlink || undefined
     }));
@@ -105,7 +106,10 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
     internalDesc: t("internal.desc"),
     externalTitle: t("external.title"),
     externalDesc: t("external.desc"),
-    learnMore: t("learnMore")
+    learnMore: t("learnMore"),
+    countLabel: ta("countLabel"),
+    photosLabel: ta("photosLabel"),
+    viewPhotos: ta("viewPhotos")
   };
 
   return (

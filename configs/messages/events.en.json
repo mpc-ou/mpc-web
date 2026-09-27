@@ -4,7 +4,10 @@
     "subtitle": "The club's activities are diverse and regularly organized, including training sessions, workshops, project collaborations, and social events. These activities aim to foster a vibrant community, enhance members' skills, and create opportunities for networking and personal growth.",
     "projectsTitle": "Featured Projects",
     "projectsDesc": "Some of the products built by club members through learning and club activities.",
-    "viewAllProjects": "View all projects"
+    "viewAllProjects": "View all projects",
+    "countLabel": "activities",
+    "photosLabel": "photos",
+    "viewPhotos": "View photos & details"
   },
   "events": {
     "title": "Events",

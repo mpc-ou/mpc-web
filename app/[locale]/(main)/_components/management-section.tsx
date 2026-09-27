@@ -2,7 +2,6 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getLeadership } from "@/app/_actions/main";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import type { ClubPosition } from "@/configs/prisma/generated/prisma/client";
@@ -115,8 +114,8 @@ const Pedestal = ({ isCenter }: { rank: string; isCenter: boolean }) => (
       className={cn(
         "flex items-center justify-center rounded-b-lg border-x border-b font-black font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]",
         isCenter
-          ? "h-9 border-orange-400/50 bg-linear-to-b from-orange-500 to-orange-700 text-orange-950/40 sm:h-14"
-          : "h-6 border-zinc-400/40 bg-linear-to-b from-zinc-300 to-zinc-400 text-black/20 sm:h-9 dark:border-zinc-500/40 dark:from-zinc-700 dark:to-zinc-800 dark:text-white/15"
+          ? "h-8 border-orange-400/50 bg-linear-to-b from-orange-500 to-orange-700 text-orange-950/40 sm:h-11"
+          : "h-5 border-zinc-400/40 bg-linear-to-b from-zinc-300 to-zinc-400 text-black/20 sm:h-7 dark:border-zinc-500/40 dark:from-zinc-700 dark:to-zinc-800 dark:text-white/15"
       )}
     >
       {/* <span className={isCenter ? "text-xl sm:text-3xl" : "text-sm sm:text-xl"}>{Number(rank)}</span> */}
@@ -145,7 +144,7 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
     <div
       className={cn(
         "group flex min-w-0 flex-col sm:flex-none",
-        isCenter ? "max-w-60 flex-[1.3] sm:w-56 lg:w-60" : "max-w-48 flex-1 sm:w-44 lg:w-48"
+        isCenter ? "max-w-52 flex-[1.3] sm:w-48 lg:w-52" : "max-w-44 flex-1 sm:w-40 lg:w-44"
       )}
     >
       <div
@@ -161,7 +160,7 @@ const PodiumCard = ({ slot, locale, positionLabel }: PodiumCardProps) => {
             alt=''
             className='object-cover transition-transform duration-500 group-hover:scale-110'
             fill
-            sizes='(min-width: 1024px) 240px, (min-width: 640px) 224px, 40vw'
+            sizes='(min-width: 1024px) 208px, (min-width: 640px) 192px, 40vw'
             src={member.avatar}
           />
         ) : (
@@ -201,25 +200,32 @@ const StaffCard = ({ member, locale, topRole }: { member: LeaderWithRoles; local
   const fullName = getFullName(member.firstName, member.middleName, member.lastName, locale);
 
   return (
-    <div className='group relative flex w-full items-center gap-3 rounded-xl border border-border bg-card/60 p-2 pr-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500/50 hover:bg-orange-500/10 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:w-auto sm:gap-3.5 sm:rounded-2xl sm:p-2.5 sm:pr-5'>
-      <Avatar className='h-12 w-12 shrink-0 rounded-lg sm:h-16 sm:w-16 sm:rounded-xl'>
-        <AvatarImage
+    <div className='group relative aspect-3/4 w-[calc((100%-1.25rem)/3)] overflow-hidden rounded-xl border border-border bg-muted transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-500/70 hover:shadow-[0_0_32px_-12px_rgba(249,115,22,0.7)] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-orange-500 sm:w-36 sm:rounded-2xl lg:w-40'>
+      {member.avatar ? (
+        <Image
+          alt=''
           className='object-cover transition-transform duration-500 group-hover:scale-110'
-          src={member.avatar ?? undefined}
+          fill
+          sizes='(min-width: 1024px) 160px, (min-width: 640px) 144px, 33vw'
+          src={member.avatar}
         />
-        <AvatarFallback className='rounded-lg bg-muted font-bold text-foreground text-sm sm:rounded-xl'>
+      ) : (
+        <span className='absolute inset-0 flex items-center justify-center font-bold text-3xl text-muted-foreground'>
           {getInitials(fullName)}
-        </AvatarFallback>
-      </Avatar>
-      <div className='min-w-0 flex-1 text-left'>
-        <Link
-          className='block truncate font-bold text-foreground text-sm outline-none transition-colors after:absolute after:inset-0 group-hover:text-orange-500'
-          href={profileHref(member)}
-        >
+        </span>
+      )}
+      <div className='absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent' />
+      <div className='absolute inset-0 bg-linear-to-t from-orange-600/45 via-orange-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+      <Link aria-label={fullName} className='absolute inset-0 outline-none' href={profileHref(member)} />
+      <SocialLinks
+        className='pointer-events-none absolute top-2.5 left-2.5 flex-wrap opacity-0 transition-all duration-300 focus-within:translate-y-0 focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 sm:-translate-y-1 [&_a]:h-6 [&_a]:w-6'
+        socials={member.socials}
+      />
+      <div className='pointer-events-none absolute inset-x-0 bottom-0 p-2 text-left sm:p-3'>
+        <p className='line-clamp-2 font-bold text-white text-xs leading-tight transition-colors group-hover:text-orange-100 sm:text-sm'>
           {fullName}
-        </Link>
-        <p className='mt-0.5 truncate text-muted-foreground text-xs'>{topRole}</p>
-        <SocialLinks className='mt-1.5 [&_a]:h-6 [&_a]:w-6' socials={member.socials} />
+        </p>
+        <p className='mt-0.5 line-clamp-2 text-[9px] text-white/70 sm:text-[11px]'>{topRole}</p>
       </div>
     </div>
   );
@@ -286,7 +292,7 @@ const ManagementSection = async ({ locale }: { locale: string }) => {
                   <h3 className='font-mono text-muted-foreground text-xs uppercase tracking-[0.3em]'>{t("staff")}</h3>
                   <span className='h-px flex-1 bg-border' />
                 </div>
-                <div className='grid gap-2.5 sm:flex sm:flex-wrap sm:justify-center sm:gap-3.5'>
+                <div className='flex flex-wrap justify-center gap-2.5 sm:gap-4'>
                   {departmentHeads.map((member) => (
                     <StaffCard
                       key={member.id}

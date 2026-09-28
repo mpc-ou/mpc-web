@@ -44,7 +44,7 @@ export const BASE_KEYWORDS = [
   "Câu lạc bộ lập trình",
   "HCMOU",
   "OU",
-  "Đại học Mở TP.HCM",
+  "Trường Đại học Mở TP.HCM",
   "Trường Đại học Mở Thành phố Hồ Chí Minh",
   "Ho Chi Minh City Open University",
   "Khoa Công nghệ Thông tin",

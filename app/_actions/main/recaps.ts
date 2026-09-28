@@ -8,6 +8,8 @@ import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 export const getPublishedRecaps = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache: remote";
+      cacheTag(_CACHE_RECAPS);
       const recaps = await prisma.yearRecap.findMany({
         where: { isPublished: true },
         orderBy: { year: "desc" },
@@ -25,7 +27,7 @@ export const getPublishedRecaps = async () =>
 export const getRecapByYear = async (year: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_RECAPS);
 
       const recap = await prisma.yearRecap.findUnique({

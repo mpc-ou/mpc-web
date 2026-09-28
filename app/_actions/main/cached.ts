@@ -14,7 +14,7 @@ import {
 } from "@/constants/cache";
 
 export const getUpcomingEventsCountCached = async () => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_EVENTS);
   return {
     count: await prisma.post.count({
@@ -24,7 +24,7 @@ export const getUpcomingEventsCountCached = async () => {
 };
 
 export const getActiveAnnouncementCached = async () => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_ANNOUNCEMENTS);
 
   const now = new Date();
@@ -41,7 +41,7 @@ export const getActiveAnnouncementCached = async () => {
 };
 
 export const getFaqItemsCached = async (locale: string, target?: string) => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_FAQ);
 
   const items = await prisma.faqItem.findMany({
@@ -62,7 +62,7 @@ export const getFaqItemsCached = async (locale: string, target?: string) => {
 };
 
 export const getGalleryImagesCached = async (type: string) => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_GALLERY);
 
   const images = await prisma.galleryImage.findMany({
@@ -77,7 +77,7 @@ export const getGalleryImagesCached = async (type: string) => {
 };
 
 export const getFooterDataCached = async () => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_SETTINGS);
 
   const [settings, externalLinks] = await Promise.all([
@@ -103,7 +103,7 @@ export const getFooterDataCached = async () => {
 };
 
 export const getTerminalStatsCached = async () => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_MEMBERS);
   cacheTag(_CACHE_POSTS);
   cacheTag(_CACHE_EVENTS);
@@ -142,7 +142,7 @@ export const getTerminalStatsCached = async () => {
 };
 
 export const getSiteSettingsCached = async (keys: string[]) => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_SETTINGS);
 
   const settings = await prisma.siteSetting.findMany({
@@ -157,7 +157,7 @@ export const getSiteSettingsCached = async (keys: string[]) => {
 };
 
 export const getSitemapDataCached = async () => {
-  "use cache";
+  "use cache: remote";
   cacheTag(_CACHE_POSTS);
   cacheTag(_CACHE_PROJECTS);
   cacheTag(_CACHE_MEMBERS);

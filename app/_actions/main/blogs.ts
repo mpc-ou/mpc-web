@@ -2,17 +2,17 @@
 
 import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_POSTS } from "@/constants/cache";
 import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
 // Cache tag for blogs
-const _CACHE_BLOGS = "blogs-cache-tag";
 
 export const getBlogsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheTag(_CACHE_POSTS);
 
       const skip = (validPage - 1) * take;
 
@@ -78,8 +78,8 @@ export const getBlogsPageData = async (validPage: number, take: number, locale =
 export const getBlogBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheTag(_CACHE_POSTS);
 
       const post = await prisma.post.findUnique({
         where: { slug, status: { in: ["PUBLISHED", "UNLISTED"] } },
@@ -219,8 +219,8 @@ export const getBlogBySlugForUser = async (slug: string, locale = "vi") =>
 export const getRecentBlogs = async (take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheTag(_CACHE_POSTS);
 
       const blogs = await prisma.post.findMany({
         where: {
@@ -258,8 +258,8 @@ export const getRecentBlogs = async (take = 3, locale = "vi") =>
 export const getRelatedPosts = async (postId: string, tagIds: string[], type: string, take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheTag(_CACHE_POSTS);
 
       let posts: Array<{
         id: string;

@@ -2,10 +2,10 @@
 
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_ACTIVITIES } from "@/constants/cache";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 import { generateSlug, requireAdmin } from "./helpers";
 
-const _CACHE_ACTIVITIES = "activities";
 const LEADING_SLASH_RE = /^\//;
 const IMAGE_EXT_RE = /\.(jpg|jpeg|png|webp|gif)$/i;
 

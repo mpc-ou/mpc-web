@@ -2,7 +2,15 @@
 
 import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
-import { _CACHE_ACHIEVEMENTS, _CACHE_POSTS, _CACHE_PROJECTS, _CACHE_SPONSORS } from "@/constants/cache";
+import {
+  _CACHE_ACHIEVEMENTS,
+  _CACHE_ACTIVITIES,
+  _CACHE_DEPARTMENTS,
+  _CACHE_MEMBERS,
+  _CACHE_POSTS,
+  _CACHE_PROJECTS,
+  _CACHE_SPONSORS
+} from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 import { groupRolesByTerm, LEADERSHIP_POSITIONS, vnYear } from "@/utils/leadership-terms";
 
@@ -76,7 +84,9 @@ const rankHonorees = (counts: Map<string, number>) => {
 export const getAchievementsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_ACHIEVEMENTS);
+      cacheTag(_CACHE_MEMBERS);
       const isEn = locale === "en";
       const deptName = (d: { nameVi: string; nameEn: string | null } | null) => {
         if (!d) {
@@ -200,7 +210,7 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
 export const getAchievementBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_ACHIEVEMENTS);
       const post = await prisma.post.findUnique({
         where: {
@@ -235,7 +245,8 @@ export const getAchievementBySlug = async (slug: string, locale = "vi") =>
 export const getRecentAchievements = async (take = 4, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_ACHIEVEMENTS);
       const achievements = await prisma.post.findMany({
         where: { type: "ACHIEVEMENT", status: "PUBLISHED" },
         take,
@@ -269,7 +280,7 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
 export const getJourneyTimeline = async (locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_POSTS);
       cacheTag(_CACHE_PROJECTS);
 
@@ -340,7 +351,7 @@ export const getJourneyTimeline = async (locale = "vi") =>
 export const getSponsorLogos = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_SPONSORS);
       const sponsors = await prisma.sponsor.findMany({
         where: { isActive: true, logo: { not: null } },
@@ -354,7 +365,8 @@ export const getSponsorLogos = async () =>
 export const getSponsorsPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_SPONSORS);
       return {
         sponsors: await prisma.sponsor.findMany({
           where: { isActive: true },
@@ -368,7 +380,11 @@ export const getSponsorsPageData = async () =>
 export const getAboutPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_MEMBERS);
+      cacheTag(_CACHE_DEPARTMENTS);
+      cacheTag(_CACHE_ACTIVITIES);
+      cacheTag(_CACHE_PROJECTS);
       const topMembers = await prisma.member.findMany({
         where: { isActive: true },
         select: {
@@ -411,7 +427,8 @@ export const getAboutPageData = async () =>
 export const getActivitiesPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_ACTIVITIES);
       const activities = await prisma.activity.findMany({
         where: { isActive: true },
         orderBy: { order: "asc" }
@@ -423,7 +440,9 @@ export const getActivitiesPageData = async () =>
 export const getDepartmentsPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_DEPARTMENTS);
+      cacheTag(_CACHE_MEMBERS);
       const departments = await prisma.department.findMany({
         where: { isActive: true },
         orderBy: { order: "asc" }

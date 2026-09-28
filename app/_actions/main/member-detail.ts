@@ -12,7 +12,7 @@ const WORD_SPLIT_RE = /\s+/;
 export const getMemberBySlug = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_MEMBERS);
 
       const member = await prisma.member.findFirst({

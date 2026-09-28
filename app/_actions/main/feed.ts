@@ -40,7 +40,7 @@ const FEED_SELECT = {
 export const getLatestFeed = async (locale = "vi", perKind = 5) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_POSTS);
       cacheTag(_CACHE_EVENTS);
 

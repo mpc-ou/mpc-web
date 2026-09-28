@@ -8,6 +8,8 @@ import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 export const getEventsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache: remote";
+      cacheTag(_CACHE_EVENTS);
       const skip = (validPage - 1) * take;
 
       const where = {
@@ -66,7 +68,7 @@ export const getEventsPageData = async (validPage: number, take: number, locale 
 export const getEventBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_EVENTS);
       const post = await prisma.post.findUnique({
         where: {
@@ -146,7 +148,7 @@ export const getEventBySlug = async (slug: string, locale = "vi") =>
 export const getRecentEvents = async (take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_EVENTS);
       const events = await prisma.post.findMany({
         where: {

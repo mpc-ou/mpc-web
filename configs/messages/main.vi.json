@@ -20,7 +20,7 @@
     },
     "intro": {
       "title": "Giới thiệu",
-      "description": "Câu lạc bộ Lập trình trên thiết bị di động (Mobile Programming Club – MPC) là một trong những câu lạc bộ hoạt động năng động, sôi nổi và đầy sáng tạo của Khoa Công nghệ thông tin – Trường Đại học Mở Tp.HCM. MPC được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình.",
+      "description": "Câu lạc bộ Lập trình trên thiết bị di động (Mobile Programming Club – MPC) là một trong những câu lạc bộ hoạt động năng động, sôi nổi và đầy sáng tạo của Khoa Công nghệ thông tin - Trường Đại học Mở Tp.HCM. MPC được thành lập với mục tiêu tạo ra một môi trường học tập, nghiên cứu và phát triển công nghệ thông tin không chỉ trên thiết bị di động như web, mobile app... mà còn nhiều ngành phổ biến khác cho sinh viên Khoa CNTT, cũng như các bạn yêu thích lập trình.",
       "learnMore": "Tìm hiểu thêm",
       "viewMembers": "Xem thành viên"
     },
@@ -78,7 +78,7 @@
       "items": [
         {
           "q": "MPC là gì?",
-          "a": "MPC (Mobile Programming Club) là CLB Lập trình trên thiết bị di động thuộc Khoa Công nghệ thông tin – Trường Đại học Mở TP.HCM. CLB được thành lập nhằm tạo ra môi trường học tập và phát triển công nghệ cho sinh viên."
+          "a": "MPC (Mobile Programming Club) là CLB Lập trình trên thiết bị di động thuộc Khoa Công nghệ thông tin - Trường Đại học Mở TP.HCM. CLB được thành lập nhằm tạo ra môi trường học tập và phát triển công nghệ cho sinh viên."
         },
         {
           "q": "Tôi có cần kỹ năng lập trình để tham gia không?",
@@ -384,7 +384,7 @@
       "badge": "about_mpc",
       "title": "Câu Lạc Bộ Lập Trình Trên Thiết Bị Di Động",
       "subtitle": "OU Mobile Programming Club (MPC) trực thuộc",
-      "facultyName": "Khoa Công Nghệ Thông Tin - Đại Học Mở TP.HCM"
+      "facultyName": "Khoa Công Nghệ Thông Tin - Trường Đại Học Mở TP.HCM"
     },
     "mission": {
       "title": "Sứ mệnh & Mục đích",

@@ -2,13 +2,14 @@
 
 import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
-import { _CACHE_PROJECTS } from "@/constants/cache";
+import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS, _CACHE_PROJECTS, _CACHE_SETTINGS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 
 export const getProjectsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_PROJECTS);
       const skip = (validPage - 1) * take;
       const [total, projects] = await Promise.all([
         prisma.project.count({ where: { isActive: true } }),
@@ -55,7 +56,8 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
 export const getProjectDetail = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_PROJECTS);
 
       const project = await prisma.project.findUnique({
         where: { slug },
@@ -113,7 +115,8 @@ const PROJECT_CARD_SELECT = {
 export const getOtherProjects = async (excludeSlug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_PROJECTS);
 
       const projects = await prisma.project.findMany({
         where: { isActive: true, slug: { not: excludeSlug } },
@@ -128,7 +131,7 @@ export const getOtherProjects = async (excludeSlug: string) =>
 export const getFeaturedProjects = async (take = 4) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
       cacheTag(_CACHE_PROJECTS);
 
       const projects = await prisma.project.findMany({
@@ -147,7 +150,9 @@ export const getFeaturedProjects = async (take = 4) =>
 export const getGoldBoardMembers = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_ACHIEVEMENTS);
+      cacheTag(_CACHE_MEMBERS);
 
       const members = await prisma.member.findMany({
         where: { clubRoles: { some: {} } },
@@ -191,7 +196,9 @@ export const getGoldBoardMembers = async () =>
 export const getTrainingPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheTag(_CACHE_PROJECTS);
+      cacheTag(_CACHE_SETTINGS);
       const [latestProjects, trainingFormSetting] = await Promise.all([
         prisma.project.findMany({
           where: { isActive: true },

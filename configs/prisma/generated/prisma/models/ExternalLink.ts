@@ -455,7 +455,7 @@ export type $ExternalLinkPayload<ExtArgs extends runtime.Types.Extensions.Intern
 export type ExternalLinkGetPayload<S extends boolean | null | undefined | ExternalLinkDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ExternalLinkPayload, S>
 
 export type ExternalLinkCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ExternalLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ExternalLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ExternalLinkCountAggregateInputType | true
   }
 
@@ -898,6 +898,7 @@ export type ExternalLinkFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which ExternalLink to fetch.
    */
   where: Prisma.ExternalLinkWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -916,6 +917,7 @@ export type ExternalLinkFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter, which ExternalLink to fetch.
    */
   where: Prisma.ExternalLinkWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -964,6 +966,7 @@ export type ExternalLinkFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of ExternalLinks.
    */
   distinct?: Prisma.ExternalLinkScalarFieldEnum | Prisma.ExternalLinkScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1012,6 +1015,7 @@ export type ExternalLinkFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter by unique combinations of ExternalLinks.
    */
   distinct?: Prisma.ExternalLinkScalarFieldEnum | Prisma.ExternalLinkScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1055,6 +1059,7 @@ export type ExternalLinkFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   skip?: number
   distinct?: Prisma.ExternalLinkScalarFieldEnum | Prisma.ExternalLinkScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1073,6 +1078,7 @@ export type ExternalLinkCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data needed to create a ExternalLink.
    */
   data: Prisma.XOR<Prisma.ExternalLinkCreateInput, Prisma.ExternalLinkUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1125,6 +1131,7 @@ export type ExternalLinkUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which ExternalLink to update.
    */
   where: Prisma.ExternalLinkWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1195,6 +1202,7 @@ export type ExternalLinkUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * In case the ExternalLink was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ExternalLinkUpdateInput, Prisma.ExternalLinkUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1213,6 +1221,7 @@ export type ExternalLinkDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter which ExternalLink to delete.
    */
   where: Prisma.ExternalLinkWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

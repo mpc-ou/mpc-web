@@ -29,11 +29,10 @@ type LocalizedDepartment = {
 type AboutClientProps = {
   localizedDepartments: LocalizedDepartment[];
   localizedActivities: ActivityCard[];
-  statsSection: React.ReactNode;
   benefitsSection: React.ReactNode;
   faqSection: React.ReactNode;
-  recentEventsSection: React.ReactNode;
   managementSection: React.ReactNode;
+  journeySection: React.ReactNode;
   ctaSection: React.ReactNode;
   contactSection: React.ReactNode;
 };
@@ -93,11 +92,10 @@ function CapabilityCard({
 export function AboutClient({
   localizedDepartments,
   localizedActivities,
-  statsSection,
   benefitsSection,
   faqSection,
-  recentEventsSection,
   managementSection,
+  journeySection,
   ctaSection,
   contactSection
 }: AboutClientProps) {
@@ -166,7 +164,7 @@ export function AboutClient({
     <div className='flex flex-col bg-background'>
       {/* Cinematic Hero Section */}
       <section
-        className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-16 text-foreground lg:pt-32 lg:pb-32 dark:bg-[#0B1121] dark:text-white'
+        className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-16 text-foreground lg:pt-32 lg:pb-32'
         ref={sectionRef}
       >
         <style>{`
@@ -188,15 +186,15 @@ export function AboutClient({
               className='flex flex-col justify-center text-center transition-transform duration-200 ease-out will-change-transform lg:text-left'
               style={{ transform: contentTransform }}
             >
-              <div className='mb-6 flex justify-center lg:justify-start'>
+              <div className='mb-6 flex animate-fade-in-up justify-center opacity-0 lg:justify-start'>
                 <BadgeLabel>{t("hero.badge")}</BadgeLabel>
               </div>
-              <h1 className='text-balance font-black text-4xl tracking-tight sm:text-5xl lg:text-6xl'>
+              <h1 className='animate-fade-in-up text-balance font-black text-4xl tracking-tight opacity-0 [animation-delay:120ms] sm:text-5xl lg:text-6xl'>
                 {t("hero.title")}
               </h1>
-              <p className='mt-6 text-balance text-lg text-muted-foreground leading-relaxed sm:text-xl'>
+              <p className='mt-6 animate-fade-in-up text-balance text-lg text-muted-foreground leading-relaxed opacity-0 [animation-delay:240ms] sm:text-xl'>
                 {t("hero.subtitle")}{" "}
-                <strong className='ml-1.5 font-bold text-foreground dark:text-white'>{t("hero.facultyName")}</strong>
+                <strong className='ml-1.5 font-bold text-foreground'>{t("hero.facultyName")}</strong>
               </p>
             </div>
 
@@ -206,16 +204,18 @@ export function AboutClient({
               ref={mpcLogoRef}
               style={{ transform: logoTilt }}
             >
-              <div className='absolute -inset-6 rounded-full bg-linear-to-tr from-orange-500/20 to-amber-500/5 opacity-60 blur-3xl dark:opacity-80' />
-              <div className='relative aspect-square w-full animate-float-logo select-none transition-all duration-300 [filter:drop-shadow(0_10px_20px_rgba(249,115,22,0.15))] hover:[filter:drop-shadow(0_15px_35px_rgba(249,115,22,0.45))]'>
-                <Image
-                  alt='MPC Logo'
-                  className='object-contain'
-                  fill
-                  priority
-                  sizes='(max-width: 1024px) 100vw, 50vw'
-                  src='/images/logo.png'
-                />
+              <div className='fade-in zoom-in-75 relative animate-in fill-mode-both delay-200 duration-1000 ease-out'>
+                <div className='absolute -inset-6 rounded-full bg-linear-to-tr from-orange-500/20 to-amber-500/5 opacity-60 blur-3xl dark:opacity-80' />
+                <div className='relative aspect-square w-full animate-float-logo select-none transition-all duration-300 [filter:drop-shadow(0_10px_20px_rgba(249,115,22,0.15))] hover:[filter:drop-shadow(0_15px_35px_rgba(249,115,22,0.45))]'>
+                  <Image
+                    alt='MPC Logo'
+                    className='object-contain'
+                    fill
+                    priority
+                    sizes='(max-width: 1024px) 100vw, 50vw'
+                    src='/images/logo.png'
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -342,7 +342,7 @@ export function AboutClient({
         </div>
       </section>
 
-      <div className='w-full'>{statsSection}</div>
+      <div className='w-full'>{journeySection}</div>
 
       {/* Capability Cards Section */}
       <section className='border-border border-t py-20 lg:py-28'>
@@ -404,7 +404,6 @@ export function AboutClient({
 
       <ClubShirtModelClient />
 
-      <div className='w-full'>{recentEventsSection}</div>
       <div className='w-full'>{faqSection}</div>
       <div className='w-full'>{ctaSection}</div>
       <div className='w-full'>{contactSection}</div>

@@ -30,8 +30,7 @@ export function EventCard({ event }: { event: EventListItem }) {
         thumbnail: event.thumbnail,
         date: event.startAt,
         statusBadge: { label: statusLabel, variant: statusInfo.variant },
-        eventTypeBadge: eventTypeLabel,
-        readMoreLabel: t("viewDetails")
+        eventTypeBadge: eventTypeLabel
       }}
     />
   );

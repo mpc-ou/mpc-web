@@ -1,6 +1,8 @@
 "use server";
 
+import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_EVENTS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 
 export const getEventsPageData = async (validPage: number, take: number, locale = "vi") =>
@@ -64,6 +66,8 @@ export const getEventsPageData = async (validPage: number, take: number, locale 
 export const getEventBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_EVENTS);
       const post = await prisma.post.findUnique({
         where: {
           slug,
@@ -142,6 +146,8 @@ export const getEventBySlug = async (slug: string, locale = "vi") =>
 export const getRecentEvents = async (take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_EVENTS);
       const events = await prisma.post.findMany({
         where: {
           type: "EVENT",
@@ -149,7 +155,7 @@ export const getRecentEvents = async (take = 3, locale = "vi") =>
           eventStatus: { in: ["UPCOMING", "ONGOING", "COMPLETED"] }
         },
         take,
-        orderBy: { startAt: "desc" },
+        orderBy: [{ isPinned: "desc" }, { startAt: "desc" }],
         select: {
           id: true,
           titleVi: true,

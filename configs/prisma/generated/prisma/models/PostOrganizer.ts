@@ -629,7 +629,7 @@ export type $PostOrganizerPayload<ExtArgs extends runtime.Types.Extensions.Inter
 export type PostOrganizerGetPayload<S extends boolean | null | undefined | PostOrganizerDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostOrganizerPayload, S>
 
 export type PostOrganizerCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostOrganizerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostOrganizerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostOrganizerCountAggregateInputType | true
   }
 
@@ -1076,6 +1076,7 @@ export type PostOrganizerFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Filter, which PostOrganizer to fetch.
    */
   where: Prisma.PostOrganizerWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1098,6 +1099,7 @@ export type PostOrganizerFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    * Filter, which PostOrganizer to fetch.
    */
   where: Prisma.PostOrganizerWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1150,6 +1152,7 @@ export type PostOrganizerFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter by unique combinations of PostOrganizers.
    */
   distinct?: Prisma.PostOrganizerScalarFieldEnum | Prisma.PostOrganizerScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1202,6 +1205,7 @@ export type PostOrganizerFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter by unique combinations of PostOrganizers.
    */
   distinct?: Prisma.PostOrganizerScalarFieldEnum | Prisma.PostOrganizerScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1249,6 +1253,7 @@ export type PostOrganizerFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   skip?: number
   distinct?: Prisma.PostOrganizerScalarFieldEnum | Prisma.PostOrganizerScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1271,6 +1276,7 @@ export type PostOrganizerCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data needed to create a PostOrganizer.
    */
   data: Prisma.XOR<Prisma.PostOrganizerCreateInput, Prisma.PostOrganizerUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1331,6 +1337,7 @@ export type PostOrganizerUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Choose, which PostOrganizer to update.
    */
   where: Prisma.PostOrganizerWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1409,6 +1416,7 @@ export type PostOrganizerUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * In case the PostOrganizer was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostOrganizerUpdateInput, Prisma.PostOrganizerUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1431,6 +1439,7 @@ export type PostOrganizerDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter which PostOrganizer to delete.
    */
   where: Prisma.PostOrganizerWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

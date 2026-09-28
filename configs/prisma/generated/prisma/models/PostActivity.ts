@@ -510,7 +510,7 @@ export type $PostActivityPayload<ExtArgs extends runtime.Types.Extensions.Intern
 export type PostActivityGetPayload<S extends boolean | null | undefined | PostActivityDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostActivityPayload, S>
 
 export type PostActivityCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostActivityCountAggregateInputType | true
   }
 
@@ -954,6 +954,7 @@ export type PostActivityFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which PostActivity to fetch.
    */
   where: Prisma.PostActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -976,6 +977,7 @@ export type PostActivityFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter, which PostActivity to fetch.
    */
   where: Prisma.PostActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1028,6 +1030,7 @@ export type PostActivityFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of PostActivities.
    */
   distinct?: Prisma.PostActivityScalarFieldEnum | Prisma.PostActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1080,6 +1083,7 @@ export type PostActivityFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter by unique combinations of PostActivities.
    */
   distinct?: Prisma.PostActivityScalarFieldEnum | Prisma.PostActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1127,6 +1131,7 @@ export type PostActivityFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   skip?: number
   distinct?: Prisma.PostActivityScalarFieldEnum | Prisma.PostActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1149,6 +1154,7 @@ export type PostActivityCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data needed to create a PostActivity.
    */
   data: Prisma.XOR<Prisma.PostActivityCreateInput, Prisma.PostActivityUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1209,6 +1215,7 @@ export type PostActivityUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which PostActivity to update.
    */
   where: Prisma.PostActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1287,6 +1294,7 @@ export type PostActivityUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * In case the PostActivity was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostActivityUpdateInput, Prisma.PostActivityUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1309,6 +1317,7 @@ export type PostActivityDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter which PostActivity to delete.
    */
   where: Prisma.PostActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

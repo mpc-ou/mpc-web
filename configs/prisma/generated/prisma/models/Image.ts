@@ -718,7 +718,7 @@ export type $ImagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type ImageGetPayload<S extends boolean | null | undefined | ImageDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ImagePayload, S>
 
 export type ImageCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ImageCountAggregateInputType | true
   }
 
@@ -1169,6 +1169,7 @@ export type ImageFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Filter, which Image to fetch.
    */
   where: Prisma.ImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1191,6 +1192,7 @@ export type ImageFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which Image to fetch.
    */
   where: Prisma.ImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1243,6 +1245,7 @@ export type ImageFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Filter by unique combinations of Images.
    */
   distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1295,6 +1298,7 @@ export type ImageFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of Images.
    */
   distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1342,6 +1346,7 @@ export type ImageFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   skip?: number
   distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1364,6 +1369,7 @@ export type ImageCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * The data needed to create a Image.
    */
   data: Prisma.XOR<Prisma.ImageCreateInput, Prisma.ImageUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1424,6 +1430,7 @@ export type ImageUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Choose, which Image to update.
    */
   where: Prisma.ImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1502,6 +1509,7 @@ export type ImageUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * In case the Image was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ImageUpdateInput, Prisma.ImageUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1524,6 +1532,7 @@ export type ImageDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Filter which Image to delete.
    */
   where: Prisma.ImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

@@ -863,7 +863,7 @@ export type $PostRevisionPayload<ExtArgs extends runtime.Types.Extensions.Intern
 export type PostRevisionGetPayload<S extends boolean | null | undefined | PostRevisionDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostRevisionPayload, S>
 
 export type PostRevisionCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostRevisionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostRevisionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostRevisionCountAggregateInputType | true
   }
 
@@ -1316,6 +1316,7 @@ export type PostRevisionFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which PostRevision to fetch.
    */
   where: Prisma.PostRevisionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1338,6 +1339,7 @@ export type PostRevisionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter, which PostRevision to fetch.
    */
   where: Prisma.PostRevisionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1390,6 +1392,7 @@ export type PostRevisionFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of PostRevisions.
    */
   distinct?: Prisma.PostRevisionScalarFieldEnum | Prisma.PostRevisionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1442,6 +1445,7 @@ export type PostRevisionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter by unique combinations of PostRevisions.
    */
   distinct?: Prisma.PostRevisionScalarFieldEnum | Prisma.PostRevisionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1489,6 +1493,7 @@ export type PostRevisionFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   skip?: number
   distinct?: Prisma.PostRevisionScalarFieldEnum | Prisma.PostRevisionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1511,6 +1516,7 @@ export type PostRevisionCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data needed to create a PostRevision.
    */
   data: Prisma.XOR<Prisma.PostRevisionCreateInput, Prisma.PostRevisionUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1571,6 +1577,7 @@ export type PostRevisionUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which PostRevision to update.
    */
   where: Prisma.PostRevisionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1649,6 +1656,7 @@ export type PostRevisionUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * In case the PostRevision was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostRevisionUpdateInput, Prisma.PostRevisionUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1671,6 +1679,7 @@ export type PostRevisionDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter which PostRevision to delete.
    */
   where: Prisma.PostRevisionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

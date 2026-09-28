@@ -510,7 +510,7 @@ export type $PostTagPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type PostTagGetPayload<S extends boolean | null | undefined | PostTagDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostTagPayload, S>
 
 export type PostTagCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostTagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostTagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostTagCountAggregateInputType | true
   }
 
@@ -954,6 +954,7 @@ export type PostTagFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter, which PostTag to fetch.
    */
   where: Prisma.PostTagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -976,6 +977,7 @@ export type PostTagFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    * Filter, which PostTag to fetch.
    */
   where: Prisma.PostTagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1028,6 +1030,7 @@ export type PostTagFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Filter by unique combinations of PostTags.
    */
   distinct?: Prisma.PostTagScalarFieldEnum | Prisma.PostTagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1080,6 +1083,7 @@ export type PostTagFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    * Filter by unique combinations of PostTags.
    */
   distinct?: Prisma.PostTagScalarFieldEnum | Prisma.PostTagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1127,6 +1131,7 @@ export type PostTagFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   skip?: number
   distinct?: Prisma.PostTagScalarFieldEnum | Prisma.PostTagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1149,6 +1154,7 @@ export type PostTagCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data needed to create a PostTag.
    */
   data: Prisma.XOR<Prisma.PostTagCreateInput, Prisma.PostTagUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1209,6 +1215,7 @@ export type PostTagUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Choose, which PostTag to update.
    */
   where: Prisma.PostTagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1287,6 +1294,7 @@ export type PostTagUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * In case the PostTag was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostTagUpdateInput, Prisma.PostTagUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1309,6 +1317,7 @@ export type PostTagDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Filter which PostTag to delete.
    */
   where: Prisma.PostTagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

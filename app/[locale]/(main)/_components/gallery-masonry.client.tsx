@@ -26,9 +26,9 @@ const CARD_SIZES = [
 ];
 const BREAKPOINT_SM = 640;
 const BREAKPOINT_XL = 1280;
-const COLS_MOBILE = 2;
-const COLS_TABLET = 3;
-const COLS_DESKTOP = 4;
+const COLS_MOBILE = 3;
+const COLS_TABLET = 4;
+const COLS_DESKTOP = 5;
 const EAGER_COPIES = 2;
 
 // ── Tilt ────────────────────────────────────────────────────────────────────
@@ -654,7 +654,7 @@ const GalleryMasonry = ({ images, className, tiltXDeg = 0, tiltZDeg = 0 }: Galle
       <section
         aria-label='Gallery. Arrow up/down to scroll, Space to toggle auto-scroll, Enter to open.'
         className={cn(
-          "relative mx-auto h-125 w-full max-w-6xl cursor-grab touch-pan-y select-none overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-primary/60 data-[dragging=true]:cursor-grabbing",
+          "relative mx-auto h-150 w-full max-w-6xl cursor-grab touch-pan-y select-none overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-primary/60 data-[dragging=true]:cursor-grabbing",
           className
         )}
         ref={outerRef}

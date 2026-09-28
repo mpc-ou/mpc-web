@@ -305,7 +305,7 @@ export default async function ProjectDetailPage({
               </h2>
               <p className='mx-auto mt-3 max-w-2xl text-muted-foreground'>{t("otherProjects.subtitle")}</p>
             </div>
-            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {otherProjectCards.map((card) => (
                 <ScrollReveal key={card.id} variant='fade-up'>
                   <PostCard data={card} />

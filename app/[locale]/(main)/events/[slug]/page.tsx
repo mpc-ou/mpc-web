@@ -110,7 +110,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
 
   const [{ data }, { data: recentData }, t] = await Promise.all([
     getEventBySlug(slug, locale),
-    getRecentEvents(4, locale),
+    getRecentEvents(5, locale),
     getTranslations({ locale, namespace: "events" })
   ]);
 
@@ -123,7 +123,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
 
   const recentEvents = ((recentData?.payload as { events: EventListItem[] } | undefined)?.events ?? [])
     .filter((e) => e.slug !== slug)
-    .slice(0, 3);
+    .slice(0, 4);
 
   const dateLabel = fmtDate(event.startAt ?? null, locale);
   const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
@@ -245,12 +245,42 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
           {/* Byline */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
             <ClubByline />
-            {dateLabel && (
-              <span className='flex items-center gap-1.5'>
-                <Calendar className='h-4 w-4 shrink-0 text-primary/60' />
-                {dateLabel}
-              </span>
-            )}
+            <div className='flex flex-wrap items-center gap-x-5 gap-y-2'>
+              {event.startAt ? (
+                <span className='flex items-center gap-1.5'>
+                  <Clock className='h-4 w-4 shrink-0 text-primary/70' />
+                  <span className='font-medium text-foreground'>
+                    {fmtDateShort(event.startAt, locale)}
+                    {event.endAt ? ` – ${fmtDateShort(event.endAt, locale)}` : ""}
+                  </span>
+                </span>
+              ) : (
+                dateLabel && (
+                  <span className='flex items-center gap-1.5'>
+                    <Calendar className='h-4 w-4 shrink-0 text-primary/60' />
+                    {dateLabel}
+                  </span>
+                )
+              )}
+              {displayLocation && (
+                <span className='flex items-center gap-1.5'>
+                  <MapPin className='h-4 w-4 shrink-0 text-primary/70' />
+                  {event.latitude && event.longitude ? (
+                    <a
+                      className='font-medium text-foreground hover:text-primary hover:underline'
+                      href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}&zoom=17`}
+                      rel='noopener noreferrer'
+                      target='_blank'
+                      title={t("viewOnMap")}
+                    >
+                      {displayLocation}
+                    </a>
+                  ) : (
+                    <span className='font-medium text-foreground'>{displayLocation}</span>
+                  )}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Description / lead */}
@@ -266,73 +296,34 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
         {/* ── BODY + SIDEBAR ── */}
         <div className='flex flex-col gap-10 lg:flex-row lg:gap-12'>
           <div className='min-w-0 flex-1'>
-            {/* Event info card */}
-            <ScrollReveal className='mb-8'>
-              <div className='space-y-3 rounded-xl border bg-muted/30 p-5'>
-                <h2 className='font-bold text-muted-foreground text-sm uppercase tracking-wider'>{t("infoTitle")}</h2>
-                <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-                  {displayLocation && (
-                    <div className='flex items-start gap-2.5'>
-                      <MapPin className='mt-0.5 h-4 w-4 shrink-0 text-primary/70' />
-                      <div>
-                        <p className='font-medium text-muted-foreground text-xs'>{t("locationLabel")}</p>
-                        <p className='font-semibold text-foreground text-sm'>{displayLocation}</p>
-                        {event.latitude && event.longitude && (
-                          <a
-                            className='text-[10px] text-primary hover:underline'
-                            href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}&zoom=17`}
-                            rel='noopener noreferrer'
-                            target='_blank'
-                          >
-                            {t("viewOnMap")} ↗
-                          </a>
+            {event.sponsorships && event.sponsorships.length > 0 && (
+              <ScrollReveal className='mb-8'>
+                <div className='space-y-2 rounded-xl border bg-muted/30 p-5'>
+                  <div className='font-bold text-muted-foreground text-xs uppercase tracking-wider'>
+                    {t("sponsorsTitle")}
+                  </div>
+                  <div className='flex flex-wrap items-center gap-4'>
+                    {event.sponsorships.map((s) => (
+                      <div key={s.id}>
+                        {s.sponsor.logo ? (
+                          <div className='relative h-8 w-24'>
+                            <Image
+                              alt={s.sponsor.name}
+                              className='object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
+                              fill
+                              sizes='96px'
+                              src={s.sponsor.logo}
+                            />
+                          </div>
+                        ) : (
+                          <span className='font-semibold text-muted-foreground text-sm'>{s.sponsor.name}</span>
                         )}
                       </div>
-                    </div>
-                  )}
-                  {event.startAt && (
-                    <div className='flex items-start gap-2.5'>
-                      <Clock className='mt-0.5 h-4 w-4 shrink-0 text-primary/70' />
-                      <div>
-                        <p className='font-medium text-muted-foreground text-xs'>{t("timeLabel")}</p>
-                        <p className='font-semibold text-foreground text-sm'>
-                          {fmtDateShort(event.startAt, locale)}
-                          {event.endAt ? ` – ${fmtDateShort(event.endAt, locale)}` : ""}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Sponsors */}
-                {event.sponsorships && event.sponsorships.length > 0 && (
-                  <div className='space-y-2 border-t pt-4'>
-                    <div className='flex items-center gap-1.5 font-bold text-muted-foreground text-xs uppercase tracking-wider'>
-                      {t("sponsorsTitle")}
-                    </div>
-                    <div className='flex flex-wrap items-center gap-4'>
-                      {event.sponsorships.map((s) => (
-                        <div key={s.id}>
-                          {s.sponsor.logo ? (
-                            <div className='relative h-8 w-24'>
-                              <Image
-                                alt={s.sponsor.name}
-                                className='object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
-                                fill
-                                sizes='96px'
-                                src={s.sponsor.logo}
-                              />
-                            </div>
-                          ) : (
-                            <span className='font-semibold text-muted-foreground text-sm'>{s.sponsor.name}</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            </ScrollReveal>
+                </div>
+              </ScrollReveal>
+            )}
 
             {/* Markdown content */}
             {event.content && (
@@ -398,7 +389,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                 </Link>
               </Button>
             </div>
-            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+            <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {recentEvents.map((e) => (
                 <EventCard event={e} key={e.id} />
               ))}

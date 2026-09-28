@@ -1,6 +1,8 @@
 "use server";
 
+import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_PROJECTS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 
 export const getProjectsPageData = async (validPage: number, take: number) =>
@@ -78,6 +80,33 @@ export const getProjectDetail = async (slug: string) =>
     }
   });
 
+const PROJECT_CARD_SELECT = {
+  id: true,
+  title: true,
+  titleEn: true,
+  slug: true,
+  description: true,
+  descriptionEn: true,
+  thumbnail: true,
+  technologies: true,
+  startDate: true,
+  endDate: true,
+  members: {
+    include: {
+      member: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          middleName: true,
+          avatar: true,
+          slug: true
+        }
+      }
+    }
+  }
+} as const;
+
 /**
  * Other active projects (excluding current), up to 4.
  */
@@ -90,32 +119,23 @@ export const getOtherProjects = async (excludeSlug: string) =>
         where: { isActive: true, slug: { not: excludeSlug } },
         orderBy: { createdAt: "desc" },
         take: 4,
-        select: {
-          id: true,
-          title: true,
-          titleEn: true,
-          slug: true,
-          description: true,
-          descriptionEn: true,
-          thumbnail: true,
-          technologies: true,
-          startDate: true,
-          endDate: true,
-          members: {
-            include: {
-              member: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  middleName: true,
-                  avatar: true,
-                  slug: true
-                }
-              }
-            }
-          }
-        }
+        select: PROJECT_CARD_SELECT
+      });
+      return { projects };
+    }
+  });
+
+export const getFeaturedProjects = async (take = 4) =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_PROJECTS);
+
+      const projects = await prisma.project.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+        take,
+        select: PROJECT_CARD_SELECT
       });
       return { projects };
     }

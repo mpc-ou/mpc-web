@@ -132,7 +132,7 @@ export default async function ActivitiesPage({ params }: Props): Promise<React.R
             </Button>
           </ScrollReveal>
 
-          <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+          <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
             {featuredProjects.map((project, idx) => (
               <ScrollReveal delay={idx * 80} key={project.id} variant='fade-up'>
                 <PostCard data={project} />

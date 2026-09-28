@@ -1,8 +1,10 @@
 "use server";
 
+import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_ACHIEVEMENTS, _CACHE_POSTS, _CACHE_PROJECTS, _CACHE_SPONSORS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
-import { groupRolesByTerm, LEADERSHIP_POSITIONS } from "@/utils/leadership-terms";
+import { groupRolesByTerm, LEADERSHIP_POSITIONS, vnYear } from "@/utils/leadership-terms";
 
 const ACHIEVEMENT_SELECT = {
   id: true,
@@ -60,9 +62,6 @@ const HONOREE_SELECT = {
     orderBy: { startAt: "desc" }
   }
 } as const;
-
-const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
-const vnYear = (d: Date) => new Date(d.getTime() + VN_OFFSET_MS).getUTCFullYear();
 
 const rankHonorees = (counts: Map<string, number>) => {
   const sorted = [...counts.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b));
@@ -201,6 +200,8 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
 export const getAchievementBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_ACHIEVEMENTS);
       const post = await prisma.post.findUnique({
         where: {
           slug,
@@ -262,6 +263,91 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
           type: a.achievementType
         }))
       };
+    }
+  });
+
+export const getJourneyTimeline = async (locale = "vi") =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_POSTS);
+      cacheTag(_CACHE_PROJECTS);
+
+      const postSelect = {
+        id: true,
+        slug: true,
+        titleVi: true,
+        titleEn: true,
+        thumbnail: true,
+        startAt: true,
+        achievementDate: true,
+        publishedAt: true,
+        createdAt: true
+      } as const;
+
+      const [events, achievements, projects] = await Promise.all([
+        prisma.post.findMany({
+          where: { type: "EVENT", status: "PUBLISHED", eventStatus: { not: "CANCELLED" } },
+          select: postSelect
+        }),
+        prisma.post.findMany({ where: PUBLISHED_ACHIEVEMENT, select: postSelect }),
+        prisma.project.findMany({
+          where: { isActive: true },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            titleEn: true,
+            thumbnail: true,
+            startDate: true,
+            createdAt: true
+          }
+        })
+      ]);
+
+      const isEn = locale === "en";
+      const items = [
+        ...events.map((e) => ({
+          id: e.id,
+          kind: "event" as const,
+          href: `/events/${e.slug}`,
+          title: isEn && e.titleEn ? e.titleEn : e.titleVi,
+          thumbnail: e.thumbnail,
+          date: (e.startAt ?? e.publishedAt ?? e.createdAt).toISOString()
+        })),
+        ...achievements.map((a) => ({
+          id: a.id,
+          kind: "achievement" as const,
+          href: `/achievements/${a.slug}`,
+          title: isEn && a.titleEn ? a.titleEn : a.titleVi,
+          thumbnail: a.thumbnail,
+          date: (a.achievementDate ?? a.publishedAt ?? a.createdAt).toISOString()
+        })),
+        ...projects.map((p) => ({
+          id: p.id,
+          kind: "project" as const,
+          href: `/projects/${p.slug}`,
+          title: isEn && p.titleEn ? p.titleEn : p.title,
+          thumbnail: p.thumbnail,
+          date: (p.startDate ?? p.createdAt).toISOString()
+        }))
+      ].sort((x, y) => y.date.localeCompare(x.date));
+
+      return { items };
+    }
+  });
+
+export const getSponsorLogos = async () =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      "use cache";
+      cacheTag(_CACHE_SPONSORS);
+      const sponsors = await prisma.sponsor.findMany({
+        where: { isActive: true, logo: { not: null } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, name: true, nameEn: true, logo: true }
+      });
+      return { sponsors };
     }
   });
 

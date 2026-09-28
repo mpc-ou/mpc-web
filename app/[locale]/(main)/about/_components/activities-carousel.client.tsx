@@ -71,94 +71,182 @@ function ActivityCardView({ activity }: { activity: ActivityCard }) {
   return card;
 }
 
+const AUTO_ADVANCE_MS = 5000;
+const COPIES = 3;
+
 const navButtonClass =
-  "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition-all hover:border-primary hover:text-primary disabled:pointer-events-none disabled:opacity-35";
+  "absolute top-[calc(50%-1.5rem)] z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground opacity-0 shadow-md backdrop-blur transition-all duration-300 hover:border-primary hover:text-primary focus-visible:opacity-100 group-hover/carousel:opacity-100 [@media(hover:none)]:hidden";
 
 export function ActivitiesCarousel({ activities, prevLabel, nextLabel }: Props) {
   const trackRef = useRef<HTMLUListElement>(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(false);
+  const pausedRef = useRef(false);
+  const visibleRef = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [canLoop, setCanLoop] = useState(false);
 
-  const updateEdges = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) {
       return;
     }
-    setCanPrev(el.scrollLeft > 4);
-    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    const pause = () => {
+      pausedRef.current = true;
+    };
+    const resume = () => {
+      pausedRef.current = false;
+    };
+    const events: [string, () => void][] = [
+      ["mouseenter", pause],
+      ["mouseleave", resume],
+      ["focusin", pause],
+      ["focusout", resume],
+      ["touchstart", pause],
+      ["touchend", resume]
+    ];
+    for (const [name, handler] of events) {
+      root.addEventListener(name, handler, { passive: true });
+    }
+    return () => {
+      for (const [name, handler] of events) {
+        root.removeEventListener(name, handler);
+      }
+    };
   }, []);
+
+  const metrics = useCallback(() => {
+    const el = trackRef.current;
+    const first = el?.firstElementChild as HTMLElement | null;
+    if (!(el && first)) {
+      return null;
+    }
+    const gap = Number.parseFloat(getComputedStyle(el).columnGap) || 0;
+    const stepWidth = first.offsetWidth + gap;
+    return { el, stepWidth, copyWidth: stepWidth * activities.length };
+  }, [activities.length]);
 
   useEffect(() => {
     const el = trackRef.current;
     if (!el) {
       return;
     }
-    updateEdges();
-    let frame = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(updateEdges);
+    const measure = () => {
+      const m = metrics();
+      if (!m) {
+        return;
+      }
+      const loop = m.copyWidth > m.el.clientWidth + 1;
+      setCanLoop(loop);
+      if (loop && m.el.scrollLeft < m.copyWidth * 0.5) {
+        m.el.scrollLeft = m.copyWidth;
+      }
     };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    const observer = new ResizeObserver(updateEdges);
+    measure();
+    const observer = new ResizeObserver(measure);
     observer.observe(el);
-    return () => {
-      cancelAnimationFrame(frame);
-      el.removeEventListener("scroll", onScroll);
-      observer.disconnect();
-    };
-  }, [updateEdges]);
+    return () => observer.disconnect();
+  }, [metrics]);
 
-  const step = (direction: 1 | -1) => {
+  useEffect(() => {
     const el = trackRef.current;
-    const first = el?.firstElementChild as HTMLElement | null;
-    if (!(el && first)) {
+    if (!(el && canLoop)) {
       return;
     }
-    const gap = Number.parseFloat(getComputedStyle(el).columnGap) || 0;
-    el.scrollBy({ left: direction * (first.offsetWidth + gap), behavior: "smooth" });
-  };
+    let timer = 0;
+    const recenter = () => {
+      const m = metrics();
+      if (!m) {
+        return;
+      }
+      if (m.el.scrollLeft < m.copyWidth * 0.5) {
+        m.el.scrollLeft += m.copyWidth;
+      } else if (m.el.scrollLeft > m.copyWidth * 1.5) {
+        m.el.scrollLeft -= m.copyWidth;
+      }
+    };
+    const onScroll = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(recenter, 150);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(timer);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [canLoop, metrics]);
+
+  const step = useCallback(
+    (direction: 1 | -1) => {
+      const m = metrics();
+      m?.el.scrollBy({ left: direction * m.stepWidth, behavior: "smooth" });
+    },
+    [metrics]
+  );
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!(el && canLoop) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      visibleRef.current = entry?.isIntersecting ?? false;
+    });
+    observer.observe(el);
+    const interval = window.setInterval(() => {
+      if (visibleRef.current && !pausedRef.current && document.visibilityState === "visible") {
+        step(1);
+      }
+    }, AUTO_ADVANCE_MS);
+    return () => {
+      observer.disconnect();
+      window.clearInterval(interval);
+    };
+  }, [canLoop, step]);
 
   if (activities.length === 0) {
     return null;
   }
 
+  const copies = canLoop ? COPIES : 1;
+
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='group/carousel relative' ref={rootRef}>
       <ul
-        className='-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:scroll-px-0 sm:px-0 [&::-webkit-scrollbar]:hidden'
+        className='[&::-webkit-scrollbar]:hidden! -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]! sm:mx-0 sm:scroll-px-0 sm:px-0'
         ref={trackRef}
       >
-        {activities.map((activity) => (
-          <li
-            className='w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]'
-            key={activity.id}
-          >
-            <ActivityCardView activity={activity} />
-          </li>
-        ))}
+        {Array.from({ length: copies }, (_, copy) =>
+          activities.map((activity) => (
+            <li
+              aria-hidden={canLoop && copy !== 1 ? true : undefined}
+              className='w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]'
+              key={`${copy}-${activity.id}`}
+            >
+              <ActivityCardView activity={activity} />
+            </li>
+          ))
+        )}
       </ul>
 
-      <div className={cn("flex justify-end gap-3", !(canPrev || canNext) && "hidden")}>
-        <button
-          aria-label={prevLabel}
-          className={navButtonClass}
-          disabled={!canPrev}
-          onClick={() => step(-1)}
-          type='button'
-        >
-          <ChevronLeft className='h-5 w-5' />
-        </button>
-        <button
-          aria-label={nextLabel}
-          className={navButtonClass}
-          disabled={!canNext}
-          onClick={() => step(1)}
-          type='button'
-        >
-          <ChevronRight className='h-5 w-5' />
-        </button>
-      </div>
+      {canLoop && (
+        <>
+          <button
+            aria-label={prevLabel}
+            className={cn(navButtonClass, "-left-2 sm:-left-5")}
+            onClick={() => step(-1)}
+            type='button'
+          >
+            <ChevronLeft className='h-5 w-5' />
+          </button>
+          <button
+            aria-label={nextLabel}
+            className={cn(navButtonClass, "-right-2 sm:-right-5")}
+            onClick={() => step(1)}
+            type='button'
+          >
+            <ChevronRight className='h-5 w-5' />
+          </button>
+        </>
+      )}
     </div>
   );
 }

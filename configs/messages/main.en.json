@@ -110,6 +110,36 @@
       "eyebrow": "Recruitment - each term",
       "title": "Where there’s a bug, there’s MPC.",
       "button": "Follow the fanpage"
+    },
+    "projects": {
+      "title": "Featured projects",
+      "description": "Real products designed, built and run by MPC members together.",
+      "viewAll": "View all projects"
+    },
+    "sponsors": {
+      "title": "Supporting MPC",
+      "viewAll": "View our sponsors"
+    },
+    "feed": {
+      "title": "What's new at MPC",
+      "description": "The latest events, achievements and posts from the club — filter by what you care about.",
+      "filters": {
+        "all": "All",
+        "event": "Events",
+        "achievement": "Achievements",
+        "blog": "Blog"
+      },
+      "kinds": {
+        "event": "Event",
+        "achievement": "Achievement",
+        "blog": "Blog"
+      },
+      "viewAll": {
+        "event": "View all events",
+        "achievement": "View the hall of fame",
+        "blog": "View all posts"
+      },
+      "viewMore": "See more"
     }
   },
   "profile": {
@@ -407,19 +437,6 @@
       "viewDetail": "View Details",
       "member": "Member"
     },
-    "recentEvents": {
-      "badge": "recent_events",
-      "title": "Latest Events",
-      "description": "Stay updated with the club's featured activities.",
-      "viewAll": "View All Events",
-      "viewDetail": "View Details",
-      "noDescription": "No description available for this event.",
-      "status": {
-        "UPCOMING": "Upcoming",
-        "ONGOING": "Ongoing",
-        "COMPLETED": "Completed"
-      }
-    },
     "leadership": {
       "button": "Open Leadership Timeline",
       "dialogTitle": "Leadership History",
@@ -465,6 +482,26 @@
         "desc": "Message us directly and follow the latest events and recruitment rounds."
       },
       "mascotAlt": "Foxy — the MPC mascot waving hello"
+    },
+    "journey": {
+      "title": "The MPC journey",
+      "description": "The club's events, achievements and projects on one timeline — drag sideways to travel back in time.",
+      "founded": "Club founded",
+      "foundedDesc": "MPC was born at the Faculty of IT, Ho Chi Minh City Open University.",
+      "now": "Now",
+      "hint": "Drag or swipe to explore",
+      "continue": "Keep going",
+      "viewYear": "See {year}",
+      "empty": "Nothing recorded for this year yet.",
+      "olderYear": "Previous year",
+      "newerYear": "Next year",
+      "scrollBack": "Back",
+      "scrollForward": "Forward",
+      "kinds": {
+        "event": "Event",
+        "achievement": "Achievement",
+        "project": "Project"
+      }
     }
   },
   "membersPage": {

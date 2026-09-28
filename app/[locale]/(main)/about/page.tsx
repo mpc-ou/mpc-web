@@ -10,9 +10,8 @@ import { generatePageSeo } from "@/utils/seo";
 import { BenefitsSection } from "../_components/benefits-section";
 import { FaqSection } from "../_components/faq-section";
 import { ManagementSection } from "../_components/management-section";
-import { RecentEventsSection } from "../_components/recent-events";
-import { StatsSection } from "../_components/stats-section";
 import { ContactSection } from "./_components/contact-section";
+import { JourneySection } from "./_components/journey-section";
 import { RecruitCtaSection } from "./_components/recruit-cta-section";
 import { AboutClient } from "./client";
 
@@ -100,21 +99,16 @@ export default async function AboutPage({ params }: PageType): Promise<React.Rea
           <FaqSection locale={locale} target='ABOUT' />
         </div>
       }
+      journeySection={
+        <Suspense fallback={<LoadingComponent />}>
+          <JourneySection locale={locale} />
+        </Suspense>
+      }
       localizedActivities={localizedActivities}
       localizedDepartments={localizedDepartments}
       managementSection={
         <Suspense fallback={<LoadingComponent />}>
           <ManagementSection locale={locale} />
-        </Suspense>
-      }
-      recentEventsSection={
-        <Suspense fallback={<LoadingComponent />}>
-          <RecentEventsSection />
-        </Suspense>
-      }
-      statsSection={
-        <Suspense fallback={<LoadingComponent />}>
-          <StatsSection locale={locale} />
         </Suspense>
       }
     />

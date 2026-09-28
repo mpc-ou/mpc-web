@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { TerminalSession, useAutoTyping } from "@/components/custom/interactive-terminal.client";
 import type { StatsData } from "@/constants/terminal";
 import { cn } from "@/lib/utils";
+import { HeroWall } from "./hero-shirt";
 
 const FACE =
   "absolute rounded-[0.18em] border border-primary/90 bg-[#0b0b0c] shadow-[0_0_0.9em_hsl(var(--primary)/0.45),inset_0_0_0.7em_hsl(var(--primary)/0.12)]";
@@ -323,6 +324,7 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
             ref={sceneRef}
             style={{ transform: `rotateX(${BASE_TILT.x}deg) rotateY(${BASE_TILT.y}deg)` }}
           >
+            <HeroWall />
             <Box d={1.4} front={monitorFront} h={15.5} w={25} x={-7.5} y={-5} z={0} />
             <Box d={1.2} h={7} w={2.4} x={-7.5} y={6.2} z={-2.4} />
             <Box d={6} h={0.5} w={10} x={-7.5} y={9.95} z={-2.2} />
@@ -371,6 +373,14 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
       </div>
 
       <style>{`
+        @keyframes hero-shirt-sway {
+          0%, 100% { transform: rotateZ(-1.5deg) rotateY(-12deg); }
+          50%      { transform: rotateZ(1.5deg)  rotateY(12deg); }
+        }
+        @keyframes hero-shirt-shadow {
+          0%, 100% { transform: translateX(0.5em)  rotate(1.2deg)  scaleX(0.97); }
+          50%      { transform: translateX(-0.5em) rotate(-1.2deg) scaleX(0.97); }
+        }
         @keyframes hero-screen-on {
           0% { opacity: 0; transform: scaleY(0.02); filter: brightness(3); }
           25% { opacity: 1; transform: scaleY(0.02); filter: brightness(3); }

@@ -60,7 +60,7 @@ const LocaleSelect = () => {
       <DropdownMenuContent align='end'>
         {LOCALES.map((l) => (
           <DropdownMenuItem
-            className={locale === l.value ? "bg-accent" : ""}
+            className={locale === l.value ? "bg-primary text-primary-foreground" : ""}
             key={l.value}
             onClick={() => handleChangeLocale(l.value)}
           >

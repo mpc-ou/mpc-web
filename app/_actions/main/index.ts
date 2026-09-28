@@ -8,6 +8,7 @@ export {
   getRelatedPosts
 } from "./blogs";
 export { getEventBySlug, getEventsPageData, getRecentEvents } from "./events";
+export { getLatestFeed } from "./feed";
 export {
   getActiveAnnouncement,
   getFaqItems,
@@ -32,10 +33,13 @@ export {
   getAchievementsPageData,
   getActivitiesPageData,
   getDepartmentsPageData,
+  getJourneyTimeline,
   getRecentAchievements,
+  getSponsorLogos,
   getSponsorsPageData
 } from "./pages";
 export {
+  getFeaturedProjects,
   getGoldBoardMembers,
   getOtherProjects,
   getProjectDetail,

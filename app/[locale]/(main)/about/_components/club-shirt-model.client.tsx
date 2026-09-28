@@ -81,15 +81,15 @@ export function ClubShirtModelClient() {
             {isFullscreen && (
               <div className='pointer-events-none absolute top-6 left-6 z-20'>
                 <h3 className='font-bold font-mono text-white text-xl uppercase tracking-wider'>{t("title")}</h3>
-                <p className='mt-1 text-xs text-zinc-400'>Nhấn đúp chuột hoặc ESC để quay lại</p>
+                <p className='mt-1 text-xs text-zinc-400'>{t("description")}</p>
               </div>
             )}
 
             <div className='pointer-events-none absolute bottom-4 left-4 z-20 opacity-60 transition-opacity duration-300 group-hover:opacity-100'>
               <p className='rounded-lg bg-black/55 px-2.5 py-1 text-xs text-zinc-300 backdrop-blur-xs'>
                 {isFullscreen
-                  ? "💡 Nhấp đúp chuột để thu nhỏ • Kéo để xoay • Lăn chuột để zoom"
-                  : "💡 Nhấp đúp chuột để xem toàn màn hình • Lăn để zoom"}
+                  ? "Double click to minimize • Press ESC to exit fullscreen"
+                  : "Double click to enlarge • Drag to rotate • Scroll to zoom"}
               </p>
             </div>
 

@@ -110,6 +110,36 @@
       "eyebrow": "Tuyển thành viên - mỗi nhiệm kỳ",
       "title": "Ở đâu có bug, ở đó có MPC.",
       "button": "Theo dõi fanpage"
+    },
+    "projects": {
+      "title": "Dự án nổi bật",
+      "description": "Sản phẩm thật do thành viên MPC cùng nhau thiết kế, xây dựng và vận hành.",
+      "viewAll": "Xem tất cả dự án"
+    },
+    "sponsors": {
+      "title": "Đồng hành cùng MPC",
+      "viewAll": "Xem các nhà tài trợ"
+    },
+    "feed": {
+      "title": "Có gì mới ở MPC",
+      "description": "Sự kiện, thành tích và bài viết mới nhất của CLB — lọc nhanh theo loại bạn quan tâm.",
+      "filters": {
+        "all": "Tất cả",
+        "event": "Sự kiện",
+        "achievement": "Thành tích",
+        "blog": "Blog"
+      },
+      "kinds": {
+        "event": "Sự kiện",
+        "achievement": "Thành tích",
+        "blog": "Blog"
+      },
+      "viewAll": {
+        "event": "Xem tất cả sự kiện",
+        "achievement": "Xem bảng vàng",
+        "blog": "Xem tất cả bài viết"
+      },
+      "viewMore": "Xem thêm"
     }
   },
   "profile": {
@@ -407,19 +437,6 @@
       "viewDetail": "Xem chi tiết",
       "member": "Thành viên"
     },
-    "recentEvents": {
-      "badge": "recent_events",
-      "title": "Sự kiện mới nhất",
-      "description": "Cập nhật những hoạt động nổi bật của câu lạc bộ.",
-      "viewAll": "Xem tất cả sự kiện",
-      "viewDetail": "Xem chi tiết",
-      "noDescription": "Chưa có mô tả ngắn về sự kiện này.",
-      "status": {
-        "UPCOMING": "Sắp diễn ra",
-        "ONGOING": "Đang diễn ra",
-        "COMPLETED": "Đã diễn ra"
-      }
-    },
     "leadership": {
       "button": "Mở gia phả Ban Điều Hành",
       "dialogTitle": "Lịch sử Ban Điều Hành",
@@ -465,6 +482,26 @@
         "desc": "Nhắn tin trực tiếp, cập nhật sự kiện và đợt tuyển thành viên mới nhất."
       },
       "mascotAlt": "Foxy — linh vật của MPC đang vẫy chào"
+    },
+    "journey": {
+      "title": "Hành trình của MPC",
+      "description": "Sự kiện, thành tích và dự án của CLB theo dòng thời gian — kéo ngang để đi ngược về quá khứ.",
+      "founded": "Thành lập CLB",
+      "foundedDesc": "MPC ra đời tại Khoa CNTT, Trường Đại học Mở TP.HCM.",
+      "now": "Hiện tại",
+      "hint": "Kéo hoặc vuốt để khám phá",
+      "continue": "Tiếp tục hành trình",
+      "viewYear": "Xem năm {year}",
+      "empty": "Chưa có hoạt động nào được ghi lại trong năm này.",
+      "olderYear": "Năm trước",
+      "newerYear": "Năm sau",
+      "scrollBack": "Lùi lại",
+      "scrollForward": "Tiến tới",
+      "kinds": {
+        "event": "Sự kiện",
+        "achievement": "Thành tích",
+        "project": "Dự án"
+      }
     }
   },
   "membersPage": {

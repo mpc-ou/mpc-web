@@ -879,7 +879,7 @@ export type $ClubRolePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type ClubRoleGetPayload<S extends boolean | null | undefined | ClubRoleDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ClubRolePayload, S>
 
 export type ClubRoleCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ClubRoleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ClubRoleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ClubRoleCountAggregateInputType | true
   }
 
@@ -1331,6 +1331,7 @@ export type ClubRoleFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter, which ClubRole to fetch.
    */
   where: Prisma.ClubRoleWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1353,6 +1354,7 @@ export type ClubRoleFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which ClubRole to fetch.
    */
   where: Prisma.ClubRoleWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1405,6 +1407,7 @@ export type ClubRoleFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter by unique combinations of ClubRoles.
    */
   distinct?: Prisma.ClubRoleScalarFieldEnum | Prisma.ClubRoleScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1457,6 +1460,7 @@ export type ClubRoleFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of ClubRoles.
    */
   distinct?: Prisma.ClubRoleScalarFieldEnum | Prisma.ClubRoleScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1504,6 +1508,7 @@ export type ClubRoleFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   skip?: number
   distinct?: Prisma.ClubRoleScalarFieldEnum | Prisma.ClubRoleScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1526,6 +1531,7 @@ export type ClubRoleCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data needed to create a ClubRole.
    */
   data: Prisma.XOR<Prisma.ClubRoleCreateInput, Prisma.ClubRoleUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1586,6 +1592,7 @@ export type ClubRoleUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Choose, which ClubRole to update.
    */
   where: Prisma.ClubRoleWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1664,6 +1671,7 @@ export type ClubRoleUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * In case the ClubRole was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ClubRoleUpdateInput, Prisma.ClubRoleUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1686,6 +1694,7 @@ export type ClubRoleDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Filter which ClubRole to delete.
    */
   where: Prisma.ClubRoleWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

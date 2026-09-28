@@ -36,7 +36,7 @@ const ContactSection = async ({ locale, fanpageUrl, email }: Props) => {
   ];
 
   return (
-    <section className='w-full border-border border-t bg-background py-20 sm:py-24' id='contact'>
+    <section className='w-full overflow-x-clip border-border border-t bg-background py-20 sm:py-24' id='contact'>
       <div className='container mx-auto px-4'>
         <div className='grid items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16'>
           <ScrollReveal className='order-2 lg:order-1' variant='fade-right'>

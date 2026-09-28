@@ -166,7 +166,7 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose, title }: Props
 
       {count > 1 && (
         <div
-          className='relative z-10 flex gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:justify-center [&::-webkit-scrollbar]:hidden'
+          className='[&::-webkit-scrollbar]:hidden! relative z-10 flex gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none]! sm:justify-center'
           ref={stripRef}
         >
           {items.map((img, i) => (

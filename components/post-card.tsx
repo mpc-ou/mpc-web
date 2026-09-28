@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
+import { CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
@@ -71,8 +71,6 @@ export type PostCardData = {
   }[];
   // -- Link href override --
   href?: string;
-  // -- Read more label override --
-  readMoreLabel?: string;
 };
 
 // ── Helpers ──
@@ -118,7 +116,7 @@ function CardThumbnail({ data }: { data: PostCardData }) {
           alt={title}
           className='object-cover transition-transform duration-500 group-hover:scale-105'
           fill
-          sizes='(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw'
+          sizes='(min-width: 1280px) 300px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
           src={data.thumbnail}
         />
       ) : (
@@ -194,12 +192,12 @@ function CardContent({ data }: { data: PostCardData }) {
   const tProjects = useTranslations("projects");
 
   return (
-    <div className='flex grow flex-col p-5'>
+    <div className='flex grow flex-col p-4'>
       {renderMeta(data, locale, dateStr, tProjects("present"))}
-      <h3 className='mb-2 line-clamp-2 font-bold text-lg leading-snug transition-colors group-hover:text-primary'>
+      <h3 className='mb-1.5 line-clamp-2 font-bold text-base leading-snug transition-colors group-hover:text-primary'>
         {title}
       </h3>
-      {summary && <p className='mb-4 line-clamp-2 flex-1 text-muted-foreground text-sm leading-relaxed'>{summary}</p>}
+      {summary && <p className='mb-3 line-clamp-2 text-muted-foreground text-sm leading-relaxed'>{summary}</p>}
       {renderFooter(data, locale)}
     </div>
   );
@@ -389,18 +387,6 @@ function renderFooter(data: PostCardData, locale: string): React.ReactNode {
             )}
           </div>
         )}
-      </div>
-    );
-  }
-
-  // Blog / Event: read more link
-  if (data.variant === "blog" || data.variant === "event") {
-    return (
-      <div className='mt-auto flex items-center border-border/10 border-t pt-4 font-semibold text-primary text-sm'>
-        <span className='inline-flex items-center group-hover:underline'>
-          {data.readMoreLabel || "Xem thêm"}
-          <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
-        </span>
       </div>
     );
   }

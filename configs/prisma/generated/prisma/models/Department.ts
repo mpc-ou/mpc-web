@@ -888,7 +888,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
 export type DepartmentGetPayload<S extends boolean | null | undefined | DepartmentDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$DepartmentPayload, S>
 
 export type DepartmentCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<DepartmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<DepartmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: DepartmentCountAggregateInputType | true
   }
 
@@ -1346,6 +1346,7 @@ export type DepartmentFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.In
    * Filter, which Department to fetch.
    */
   where: Prisma.DepartmentWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1368,6 +1369,7 @@ export type DepartmentFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extens
    * Filter, which Department to fetch.
    */
   where: Prisma.DepartmentWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1420,6 +1422,7 @@ export type DepartmentFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter by unique combinations of Departments.
    */
   distinct?: Prisma.DepartmentScalarFieldEnum | Prisma.DepartmentScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1472,6 +1475,7 @@ export type DepartmentFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    * Filter by unique combinations of Departments.
    */
   distinct?: Prisma.DepartmentScalarFieldEnum | Prisma.DepartmentScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1519,6 +1523,7 @@ export type DepartmentFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   skip?: number
   distinct?: Prisma.DepartmentScalarFieldEnum | Prisma.DepartmentScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1541,6 +1546,7 @@ export type DepartmentCreateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data needed to create a Department.
    */
   data: Prisma.XOR<Prisma.DepartmentCreateInput, Prisma.DepartmentUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1597,6 +1603,7 @@ export type DepartmentUpdateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Choose, which Department to update.
    */
   where: Prisma.DepartmentWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1671,6 +1678,7 @@ export type DepartmentUpsertArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * In case the Department was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.DepartmentUpdateInput, Prisma.DepartmentUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1693,6 +1701,7 @@ export type DepartmentDeleteArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Filter which Department to delete.
    */
   where: Prisma.DepartmentWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

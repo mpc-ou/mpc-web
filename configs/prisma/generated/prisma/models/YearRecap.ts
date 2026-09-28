@@ -584,7 +584,7 @@ export type $YearRecapPayload<ExtArgs extends runtime.Types.Extensions.InternalA
 export type YearRecapGetPayload<S extends boolean | null | undefined | YearRecapDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$YearRecapPayload, S>
 
 export type YearRecapCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<YearRecapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<YearRecapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: YearRecapCountAggregateInputType | true
   }
 
@@ -1032,6 +1032,7 @@ export type YearRecapFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter, which YearRecap to fetch.
    */
   where: Prisma.YearRecapWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1050,6 +1051,7 @@ export type YearRecapFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    * Filter, which YearRecap to fetch.
    */
   where: Prisma.YearRecapWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1098,6 +1100,7 @@ export type YearRecapFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter by unique combinations of YearRecaps.
    */
   distinct?: Prisma.YearRecapScalarFieldEnum | Prisma.YearRecapScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1146,6 +1149,7 @@ export type YearRecapFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    * Filter by unique combinations of YearRecaps.
    */
   distinct?: Prisma.YearRecapScalarFieldEnum | Prisma.YearRecapScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1189,6 +1193,7 @@ export type YearRecapFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   skip?: number
   distinct?: Prisma.YearRecapScalarFieldEnum | Prisma.YearRecapScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1207,6 +1212,7 @@ export type YearRecapCreateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * The data needed to create a YearRecap.
    */
   data: Prisma.XOR<Prisma.YearRecapCreateInput, Prisma.YearRecapUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1259,6 +1265,7 @@ export type YearRecapUpdateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Choose, which YearRecap to update.
    */
   where: Prisma.YearRecapWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1329,6 +1336,7 @@ export type YearRecapUpsertArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * In case the YearRecap was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.YearRecapUpdateInput, Prisma.YearRecapUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1347,6 +1355,7 @@ export type YearRecapDeleteArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Filter which YearRecap to delete.
    */
   where: Prisma.YearRecapWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

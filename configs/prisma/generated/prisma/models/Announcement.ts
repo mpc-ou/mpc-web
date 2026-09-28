@@ -554,7 +554,7 @@ export type $AnnouncementPayload<ExtArgs extends runtime.Types.Extensions.Intern
 export type AnnouncementGetPayload<S extends boolean | null | undefined | AnnouncementDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$AnnouncementPayload, S>
 
 export type AnnouncementCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<AnnouncementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<AnnouncementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: AnnouncementCountAggregateInputType | true
   }
 
@@ -1002,6 +1002,7 @@ export type AnnouncementFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which Announcement to fetch.
    */
   where: Prisma.AnnouncementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1020,6 +1021,7 @@ export type AnnouncementFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter, which Announcement to fetch.
    */
   where: Prisma.AnnouncementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1068,6 +1070,7 @@ export type AnnouncementFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of Announcements.
    */
   distinct?: Prisma.AnnouncementScalarFieldEnum | Prisma.AnnouncementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1116,6 +1119,7 @@ export type AnnouncementFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter by unique combinations of Announcements.
    */
   distinct?: Prisma.AnnouncementScalarFieldEnum | Prisma.AnnouncementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1159,6 +1163,7 @@ export type AnnouncementFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   skip?: number
   distinct?: Prisma.AnnouncementScalarFieldEnum | Prisma.AnnouncementScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1177,6 +1182,7 @@ export type AnnouncementCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data needed to create a Announcement.
    */
   data: Prisma.XOR<Prisma.AnnouncementCreateInput, Prisma.AnnouncementUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1229,6 +1235,7 @@ export type AnnouncementUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which Announcement to update.
    */
   where: Prisma.AnnouncementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1299,6 +1306,7 @@ export type AnnouncementUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * In case the Announcement was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.AnnouncementUpdateInput, Prisma.AnnouncementUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1317,6 +1325,7 @@ export type AnnouncementDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter which Announcement to delete.
    */
   where: Prisma.AnnouncementWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

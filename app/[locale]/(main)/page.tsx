@@ -7,14 +7,14 @@ import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 import { getHeroSlides } from "@/services/hero-images";
 import type { locale } from "@/types/global";
 import { generatePageSeo } from "@/utils/seo";
-import { BenefitsSection } from "./_components/benefits-section";
 import { FaqSection } from "./_components/faq-section";
+import { FeaturedProjectsSection } from "./_components/featured-projects-section";
 import { GallerySection } from "./_components/gallery-section";
 import { HeroSection } from "./_components/hero-section";
 import { IntroSection } from "./_components/intro-section";
 import { JoinCtaSection } from "./_components/join-cta-section";
-import { ManagementSection } from "./_components/management-section";
-import { RecentEventsSection } from "./_components/recent-events";
+import { LatestFeedSection } from "./_components/latest-feed-section";
+import { SponsorsStripSection } from "./_components/sponsors-strip-section";
 import { StatsSection } from "./_components/stats-section";
 
 type PageType = {
@@ -61,16 +61,18 @@ export default async function Page({ params }: PageType): Promise<React.ReactNod
         <StatsSection locale={locale} />
       </Suspense>
 
-      <BenefitsSection locale={locale} />
+      <Suspense fallback={<LoadingComponent />}>
+        <LatestFeedSection locale={locale} />
+      </Suspense>
 
       <Suspense fallback={<LoadingComponent />}>
-        <ManagementSection locale={locale} />
+        <FeaturedProjectsSection locale={locale} />
       </Suspense>
 
       <GallerySection locale={locale} />
 
-      <Suspense fallback={<LoadingComponent />}>
-        <RecentEventsSection />
+      <Suspense fallback={null}>
+        <SponsorsStripSection locale={locale} />
       </Suspense>
 
       <FaqSection locale={locale} />

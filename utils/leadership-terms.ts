@@ -34,7 +34,7 @@ const positionRank = (position: string) => {
   return i === -1 ? LEADERSHIP_POSITIONS.length : i;
 };
 
-const vnYear = (d: Date) => new Date(d.getTime() + VN_OFFSET_MS).getUTCFullYear();
+export const vnYear = (d: Date) => new Date(d.getTime() + VN_OFFSET_MS).getUTCFullYear();
 
 const midYear = (year: number) => new Date(Date.UTC(year, 6, 1) - VN_OFFSET_MS);
 

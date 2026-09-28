@@ -589,7 +589,7 @@ export type $ProjectMemberPayload<ExtArgs extends runtime.Types.Extensions.Inter
 export type ProjectMemberGetPayload<S extends boolean | null | undefined | ProjectMemberDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ProjectMemberPayload, S>
 
 export type ProjectMemberCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ProjectMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ProjectMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ProjectMemberCountAggregateInputType | true
   }
 
@@ -1035,6 +1035,7 @@ export type ProjectMemberFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    * Filter, which ProjectMember to fetch.
    */
   where: Prisma.ProjectMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1057,6 +1058,7 @@ export type ProjectMemberFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    * Filter, which ProjectMember to fetch.
    */
   where: Prisma.ProjectMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1109,6 +1111,7 @@ export type ProjectMemberFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter by unique combinations of ProjectMembers.
    */
   distinct?: Prisma.ProjectMemberScalarFieldEnum | Prisma.ProjectMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1161,6 +1164,7 @@ export type ProjectMemberFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter by unique combinations of ProjectMembers.
    */
   distinct?: Prisma.ProjectMemberScalarFieldEnum | Prisma.ProjectMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1208,6 +1212,7 @@ export type ProjectMemberFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   skip?: number
   distinct?: Prisma.ProjectMemberScalarFieldEnum | Prisma.ProjectMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1230,6 +1235,7 @@ export type ProjectMemberCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data needed to create a ProjectMember.
    */
   data: Prisma.XOR<Prisma.ProjectMemberCreateInput, Prisma.ProjectMemberUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1290,6 +1296,7 @@ export type ProjectMemberUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Choose, which ProjectMember to update.
    */
   where: Prisma.ProjectMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1368,6 +1375,7 @@ export type ProjectMemberUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * In case the ProjectMember was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ProjectMemberUpdateInput, Prisma.ProjectMemberUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1390,6 +1398,7 @@ export type ProjectMemberDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter which ProjectMember to delete.
    */
   where: Prisma.ProjectMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

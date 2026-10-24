@@ -39,7 +39,8 @@ const STATIC_ROUTES = [
   { path: "/sponsors", priority: 0.6, changefreq: "monthly" },
   { path: "/training", priority: 0.7, changefreq: "monthly" },
   { path: "/activities", priority: 0.6, changefreq: "monthly" },
-  { path: "/web-design", priority: 0.6, changefreq: "monthly" },
+  { path: "/web-design", priority: 0.8, changefreq: "weekly" },
+  { path: "/recap", priority: 0.6, changefreq: "monthly" },
   { path: "/faq", priority: 0.5, changefreq: "monthly" }
 ] as const;
 
@@ -73,6 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         achievements: Array<{ slug: string; updatedAt: Date }>;
         projects: Array<{ slug: string; updatedAt: Date }>;
         members: Array<{ slug: string; updatedAt: Date }>;
+        recaps: Array<{ year: number; updatedAt: Date }>;
       }
     | undefined;
 
@@ -106,6 +108,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       prefix: "/members",
       priority: 0.5,
       changefreq: "monthly"
+    });
+    addDynamicSection(entries, {
+      rows: (payload.recaps ?? []).map((r) => ({ slug: String(r.year), updatedAt: r.updatedAt })),
+      prefix: "/recap",
+      priority: 0.6,
+      changefreq: "yearly"
     });
   }
 

@@ -14,6 +14,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
+import { SITE_URL } from "@/constants/seo";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -91,16 +92,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("event") };
+    return {
+      title: tSeo("event"),
+      robots: { index: false, follow: false }
+    };
   }
+  const tagNames = event.tags?.map((t) => t.tag.name).filter(Boolean) ?? [];
   return generatePageSeo({
     page: "eventDetail",
     title: event.title,
-    description: event.description?.slice(0, 160) || undefined,
+    description: event.description || undefined,
     locale: locale || "vi",
     pathname: `/events/${slug}`,
     image: event.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: event.startAt,
+    tags: tagNames
   });
 }
 
@@ -119,7 +126,7 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
     notFound();
   }
 
-  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
+  const eventUrl = `${SITE_URL}/${locale || "vi"}/events/${slug}`;
 
   const recentEvents = ((recentData?.payload as { events: EventListItem[] } | undefined)?.events ?? [])
     .filter((e) => e.slug !== slug)

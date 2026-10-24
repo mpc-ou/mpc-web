@@ -4,7 +4,8 @@ import { checkUserBlogCreationPermission } from "@/app/_actions/main";
 import { UserBlogCreateForm } from "./form.client";
 
 export const metadata: Metadata = {
-  title: "Tạo bài viết mới"
+  title: "Tạo bài viết mới",
+  robots: { index: false, follow: false }
 };
 
 export default async function CreateBlogPage() {

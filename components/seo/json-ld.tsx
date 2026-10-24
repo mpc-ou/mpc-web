@@ -140,3 +140,174 @@ export function FaqJsonLd({ items }: { items: { question: string; answer: string
     />
   );
 }
+
+type ArticleJsonLdProps = {
+  title: string;
+  description: string;
+  url: string;
+  image?: string | null;
+  datePublished?: string | null;
+  dateModified?: string | null;
+  authorName?: string | null;
+  authorUrl?: string | null;
+  keywords?: string[];
+};
+
+export function ArticleJsonLd({
+  title,
+  description,
+  url,
+  image,
+  datePublished,
+  dateModified,
+  authorName,
+  authorUrl,
+  keywords
+}: ArticleJsonLdProps) {
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: description.slice(0, 300),
+    url,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/images/logo.png`
+      }
+    }
+  };
+
+  if (image) {
+    jsonLd.image = [image];
+  }
+  if (datePublished) {
+    jsonLd.datePublished = datePublished;
+  }
+  if (dateModified || datePublished) {
+    jsonLd.dateModified = dateModified || datePublished;
+  }
+  if (authorName) {
+    jsonLd.author = {
+      "@type": "Person",
+      name: authorName,
+      ...(authorUrl ? { url: authorUrl } : {})
+    };
+  } else {
+    jsonLd.author = {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL
+    };
+  }
+  if (keywords && keywords.length > 0) {
+    jsonLd.keywords = keywords.join(", ");
+  }
+
+  return (
+    <script
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      type='application/ld+json'
+    />
+  );
+}
+
+type PersonJsonLdProps = {
+  name: string;
+  description: string;
+  url: string;
+  image?: string | null;
+  sameAs?: string[];
+};
+
+export function PersonJsonLd({ name, description, url, image, sameAs }: PersonJsonLdProps) {
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name,
+    description,
+    url,
+    memberOf: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL
+    }
+  };
+
+  if (image) {
+    jsonLd.image = image;
+  }
+  if (sameAs && sameAs.length > 0) {
+    jsonLd.sameAs = sameAs;
+  }
+
+  return (
+    <script
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      type='application/ld+json'
+    />
+  );
+}
+
+type SoftwareSourceCodeJsonLdProps = {
+  name: string;
+  description: string;
+  url: string;
+  image?: string | null;
+  codeRepository?: string | null;
+  programmingLanguages?: string[];
+  dateCreated?: string | null;
+};
+
+export function SoftwareSourceCodeJsonLd({
+  name,
+  description,
+  url,
+  image,
+  codeRepository,
+  programmingLanguages,
+  dateCreated
+}: SoftwareSourceCodeJsonLdProps) {
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name,
+    description: description.slice(0, 300),
+    url,
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL
+    }
+  };
+
+  if (image) {
+    jsonLd.image = image;
+  }
+  if (codeRepository) {
+    jsonLd.codeRepository = codeRepository;
+  }
+  if (programmingLanguages && programmingLanguages.length > 0) {
+    jsonLd.programmingLanguage = programmingLanguages;
+  }
+  if (dateCreated) {
+    jsonLd.dateCreated = dateCreated;
+  }
+
+  return (
+    <script
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be injected as raw HTML
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      type='application/ld+json'
+    />
+  );
+}

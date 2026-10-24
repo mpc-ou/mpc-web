@@ -719,8 +719,8 @@
     },
     "webdesign": {
       "title": "Web Design Contest {year}",
-      "description": "Web Design {year} - MPClub's annual academic contest in website design & front-end development, Faculty of IT, Ho Chi Minh City Open University. Teams of 2–3 students, free to join.",
-      "dateSentence": "Final round on {date}.",
+      "description": "Web Design {year} - MPClub's annual website design & front-end contest at Faculty of IT, HCMOU. Teams of 2–3 students, free to join.",
+      "dateSentence": "Final: {date}.",
       "ogAlt": "Web Design {year} - MPClub's website design & development contest"
     },
     "faq": {

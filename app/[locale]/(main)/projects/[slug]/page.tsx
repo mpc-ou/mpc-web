@@ -8,12 +8,14 @@ import { MarkdownContent } from "@/components/markdown-content";
 import type { PostCardData } from "@/components/post-card";
 import { PostCard } from "@/components/post-card";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
+import { SoftwareSourceCodeJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
+import { SITE_URL } from "@/constants/seo";
 import { getFullName, pickLang } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -48,22 +50,32 @@ export async function generateMetadata({
   params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug, locale } = await params;
+  const lang = locale as "en" | "vi";
   const { data } = await getProjectDetail(slug);
   const project = (data?.payload as { project: ProjectDetail | null } | undefined)?.project;
 
-  if (!project) {
+  if (!project?.isActive) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("project") };
+    return {
+      title: tSeo("project"),
+      robots: { index: false, follow: false }
+    };
   }
+
+  const localizedTitle = pickLang(lang, project.title, project.titleEn) || project.title;
+  const localizedDesc = pickLang(lang, project.description, project.descriptionEn) || project.description;
+  const techs = Array.isArray(project.technologies) ? (project.technologies as string[]) : [];
 
   return generatePageSeo({
     page: "projectDetail",
-    title: project.title,
-    description: project.description?.slice(0, 160) || undefined,
+    title: localizedTitle,
+    description: localizedDesc || undefined,
     locale: locale || "vi",
     pathname: `/projects/${slug}`,
     image: project.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: project.startDate ? new Date(project.startDate).toISOString() : undefined,
+    tags: techs
   });
 }
 
@@ -191,6 +203,15 @@ export default async function ProjectDetailPage({
 
   return (
     <div className='min-h-screen bg-background'>
+      <SoftwareSourceCodeJsonLd
+        codeRepository={project.githubUrl}
+        dateCreated={project.startDate ? new Date(project.startDate).toISOString() : null}
+        description={pickLang(lang, project.description, project.descriptionEn) || project.description || project.title}
+        image={project.thumbnail}
+        name={pickLang(lang, project.title, project.titleEn) || project.title}
+        programmingLanguages={techs}
+        url={`${SITE_URL}/${locale}/projects/${slug}`}
+      />
       {project.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
           <Image alt={project.title} className='object-cover' fill priority sizes='100vw' src={project.thumbnail} />

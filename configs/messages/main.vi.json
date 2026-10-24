@@ -719,8 +719,8 @@
     },
     "webdesign": {
       "title": "Cuộc thi Web Design {year}",
-      "description": "Web Design {year} - cuộc thi học thuật thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, Trường ĐH Mở TP.HCM. Thi theo đội 2–3 sinh viên, miễn phí tham gia.",
-      "dateSentence": "Chung kết ngày {date}.",
+      "description": "Web Design {year} - cuộc thi thiết kế & lập trình website thường niên của MPClub, Khoa CNTT, ĐH Mở TP.HCM. Đội 2–3 SV, miễn phí.",
+      "dateSentence": "Chung kết: {date}.",
       "ogAlt": "Web Design {year} - Cuộc thi thiết kế & lập trình website của MPClub"
     },
     "faq": {

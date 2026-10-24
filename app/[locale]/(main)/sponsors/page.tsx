@@ -21,7 +21,12 @@ const BENEFIT_ICONS = [GraduationCap, Megaphone, Handshake] as const;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return generatePageSeo({ page: "sponsors", locale, pathname: "/sponsors" });
+  return generatePageSeo({
+    page: "sponsors",
+    locale,
+    pathname: "/sponsors",
+    image: "/images/bg/toc2025.jpg"
+  });
 }
 
 export default async function SponsorsPage({ params }: Props): Promise<React.ReactNode> {

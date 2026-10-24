@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generatePageSeo({
     page: "events",
     locale,
-    pathname: "/events"
+    pathname: "/events",
+    image: "/images/bg/toc2025.jpg"
   });
 }
 

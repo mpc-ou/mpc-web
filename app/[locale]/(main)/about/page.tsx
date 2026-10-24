@@ -51,7 +51,8 @@ export async function generateMetadata({ params }: PageType): Promise<Metadata> 
   return generatePageSeo({
     page: "about",
     locale,
-    pathname: "/about"
+    pathname: "/about",
+    image: "/images/hero-section/about.jpg"
   });
 }
 

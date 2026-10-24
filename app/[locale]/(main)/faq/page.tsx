@@ -14,7 +14,12 @@ const TARGET_ORDER = ["GENERAL", "ABOUT", "ACTIVITIES", "TRAINING", "PROJECTS", 
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return generatePageSeo({ page: "faq", locale, pathname: "/faq" });
+  return generatePageSeo({
+    page: "faq",
+    locale,
+    pathname: "/faq",
+    image: "/images/bg/about.jpg"
+  });
 }
 
 export default async function FaqPage({ params }: Props): Promise<React.ReactNode> {

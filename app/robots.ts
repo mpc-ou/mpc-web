@@ -15,11 +15,14 @@ export default function robots(): MetadataRoute.Robots {
           "/member-card/",
           "/my-blogs/",
           "/api-docs/",
+          "/error/",
           "/*/auth/",
           "/*/admin/",
           "/*/profile/",
           "/*/member-card/",
-          "/*/my-blogs/"
+          "/*/my-blogs/",
+          "/*/blogs/create",
+          "/*/error"
         ]
       }
     ],

@@ -1,7 +1,16 @@
 import "@/app/globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { BASE_KEYWORDS, OG_IMAGE, OG_IMAGE_SIZE, SITE_DESCRIPTION_EN, SITE_NAME, SITE_URL } from "@/constants/seo";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f97316" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1324" }
+  ],
+  width: "device-width",
+  initialScale: 1
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,18 +58,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION_EN,
     images: [OG_IMAGE]
   },
-  alternates: {
-    canonical: SITE_URL,
-    languages: {
-      vi: `${SITE_URL}/vi`,
-      en: `${SITE_URL}/en`,
-      "x-default": `${SITE_URL}/en`
-    }
-  },
   verification: {
-    // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in the production env to the
-    // token from Google Search Console (URL-prefix property) to verify domain
-    // ownership and unlock indexing reports.
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {})

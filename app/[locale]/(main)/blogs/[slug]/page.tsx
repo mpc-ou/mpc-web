@@ -18,11 +18,13 @@ import { getTranslations } from "next-intl/server";
 import { checkUserIsAdmin, getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
+import { ArticleJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
+import { SITE_URL } from "@/constants/seo";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
@@ -92,7 +94,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!blog) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("blog") };
+    return {
+      title: tSeo("blog"),
+      robots: { index: false, follow: false }
+    };
   }
   if (blog.type === "EVENT") {
     permanentRedirect(`/${locale}/events/${slug}`);
@@ -101,14 +106,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     permanentRedirect(`/${locale}/achievements/${slug}`);
   }
 
+  const authorName = blog.creator
+    ? getFullName(blog.creator.firstName, blog.creator.middleName, blog.creator.lastName, locale)
+    : undefined;
+  const tagNames =
+    blog.tags?.map((tTag) => (locale === "en" ? tTag.tag.nameEn : tTag.tag.nameVi)).filter(Boolean) ?? [];
+
   return generatePageSeo({
     page: "blogDetail",
     title: blog.title,
-    description: blog.description?.slice(0, 160) || undefined,
+    description: blog.description || undefined,
     locale: locale || "vi",
     pathname: `/blogs/${slug}`,
     image: blog.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: blog.publishedAt,
+    authors: authorName ? [authorName] : undefined,
+    tags: tagNames
   });
 }
 
@@ -243,6 +257,20 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
 
   return (
     <div className='min-h-screen bg-background'>
+      <ArticleJsonLd
+        authorName={
+          blog.creator
+            ? getFullName(blog.creator.firstName, blog.creator.middleName, blog.creator.lastName, locale)
+            : null
+        }
+        authorUrl={blog.creator?.slug ? `${SITE_URL}/${locale}/members/${blog.creator.slug}` : null}
+        datePublished={blog.publishedAt}
+        description={blog.description || blog.title}
+        image={blog.thumbnail}
+        keywords={blog.tags?.map((tTag) => (locale === "en" ? tTag.tag.nameEn : tTag.tag.nameVi)).filter(Boolean)}
+        title={blog.title}
+        url={`${SITE_URL}/${locale}/blogs/${slug}`}
+      />
       {blog.thumbnail ? (
         <div className='relative h-[40vh] min-h-72 w-full overflow-hidden'>
           <Image alt={blog.title} className='object-cover' fill priority sizes='100vw' src={blog.thumbnail} />

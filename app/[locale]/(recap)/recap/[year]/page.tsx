@@ -29,14 +29,15 @@ type YearRecapPayload = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year, locale } = await params;
   const { data } = await getRecapByYear(Number(year));
-  const recap = data?.payload as YearRecapPayload | null | undefined;
+  const recap = (data?.payload as { recap?: YearRecapPayload | null } | undefined)?.recap;
   return generatePageSeo({
     page: "recap",
     locale,
     pathname: `/recap/${year}`,
     title: recap?.name || `MPC Recap ${year}`,
     description: recap?.description || undefined,
-    image: recap?.coverImage || undefined
+    image: recap?.coverImage || undefined,
+    noIndex: !recap
   });
 }
 

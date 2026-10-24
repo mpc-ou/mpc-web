@@ -7,11 +7,13 @@ import { getAchievementBySlug, getRecentAchievements } from "@/app/_actions/main
 import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
+import { ArticleJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
+import { SITE_URL } from "@/constants/seo";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { generatePageSeo } from "@/utils/seo";
 import { HonoredMembers } from "./_components/honored-members.client";
@@ -102,16 +104,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const achievement = (data?.payload as { achievement: AchievementDetail | null } | undefined)?.achievement;
   if (!achievement) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("achievement") };
+    return {
+      title: tSeo("achievement"),
+      robots: { index: false, follow: false }
+    };
   }
+  const tagNames = achievement.tags?.map((t) => t.tag.name).filter(Boolean) ?? [];
   return generatePageSeo({
     page: "achievements",
     title: achievement.title,
-    description: achievement.summary?.slice(0, 160) || undefined,
+    description: achievement.summary || undefined,
     locale: locale || "vi",
     pathname: `/achievements/${slug}`,
     image: achievement.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: achievement.date || undefined,
+    tags: tagNames
   });
 }
 
@@ -177,6 +185,14 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
 
   return (
     <div className='min-h-screen bg-background'>
+      <ArticleJsonLd
+        datePublished={achievement.date}
+        description={achievement.summary || achievement.title}
+        image={achievement.thumbnail}
+        keywords={achievement.tags?.map((tTag) => tTag.tag.name).filter(Boolean)}
+        title={achievement.title}
+        url={`${SITE_URL}/${locale}/achievements/${slug}`}
+      />
       {/* ── HERO ── */}
       {achievement.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>

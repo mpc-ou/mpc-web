@@ -31,7 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return generatePageSeo({
     page: "training",
     locale,
-    pathname: "/training"
+    pathname: "/training",
+    image: "/images/hero-section/training.jpg"
   });
 }
 

@@ -63,8 +63,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     image: WEB_DESIGN_OG_IMAGE,
     keywords: [...SEO_KEYWORDS[locale === "en" ? "en" : "vi"], `Web Design ${year}`.trim(), "MPClub", "HCMOU"]
   });
-  const ogImage = { url: WEB_DESIGN_OG_IMAGE, width: 1200, height: 630, alt: t("ogAlt", { year }) };
-  return { ...seo, openGraph: { ...seo.openGraph, images: [ogImage] } };
+  const ogAlt = t("ogAlt", { year });
+  const ogImage = { url: WEB_DESIGN_OG_IMAGE, width: 1200, height: 630, alt: ogAlt };
+  return {
+    ...seo,
+    openGraph: { ...seo.openGraph, images: [ogImage] },
+    twitter: { ...seo.twitter, images: [{ url: WEB_DESIGN_OG_IMAGE, alt: ogAlt }] }
+  };
 }
 
 type ProposalListItem = {

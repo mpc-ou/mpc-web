@@ -6,12 +6,13 @@ import { revalidateTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_FAQ, _CACHE_SETTINGS } from "@/constants/cache";
 import {
+  type BundledExhibitionTeam,
+  mapBundledExhibitionTeams,
   parseWebDesignConfig,
   parseWebDesignExhibitions,
   WEBDESIGN_CONFIG_KEY,
   WEBDESIGN_EXHIBITIONS_KEY,
   WEBDESIGN_FAQ_TARGET,
-  type WebDesignExhibitionItem,
   type WebDesignFaq
 } from "@/types/webdesign";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
@@ -87,18 +88,6 @@ export const adminSaveWebDesignExhibitions = async (input: unknown) =>
     }
   });
 
-type LegacyExhibitionTeam = {
-  teamName: string;
-  teamMembers: string[];
-  subjects: string;
-  projectName: string;
-  description: string;
-  github: string;
-  live: string;
-  thumbnail: string;
-  techStack: string[];
-};
-
 /** Reads the bundled exhibitions from configs/data/wd.json; the admin reviews them in the draft before saving. */
 export const adminGetDefaultWebDesignExhibitions = async () =>
   handleErrorServerWithAuth({
@@ -106,20 +95,8 @@ export const adminGetDefaultWebDesignExhibitions = async () =>
       await requireAdmin(user);
       const filePath = join(process.cwd(), "configs/data/wd.json");
       const raw = await readFile(filePath, "utf-8");
-      const json = JSON.parse(raw) as { teams: LegacyExhibitionTeam[] };
-      return json.teams.map(
-        (team): WebDesignExhibitionItem => ({
-          teamName: team.teamName,
-          teamMembers: team.teamMembers,
-          subjects: team.subjects,
-          projectName: { vi: team.projectName, en: team.projectName },
-          description: { vi: team.description, en: team.description },
-          github: team.github,
-          live: team.live,
-          thumbnail: team.thumbnail,
-          techStack: team.techStack
-        })
-      );
+      const json = JSON.parse(raw) as { teams: BundledExhibitionTeam[] };
+      return mapBundledExhibitionTeams(json.teams);
     }
   });
 

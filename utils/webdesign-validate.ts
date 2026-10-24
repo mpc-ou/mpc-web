@@ -1,12 +1,13 @@
-import type {
-  LocalizedText,
-  WebDesignBenefit,
-  WebDesignConfig,
-  WebDesignExhibitionItem,
-  WebDesignFaq,
-  WebDesignMilestone,
-  WebDesignPrize,
-  WebDesignRegulation
+import {
+  inferExhibitionYear,
+  type LocalizedText,
+  type WebDesignBenefit,
+  type WebDesignConfig,
+  type WebDesignExhibitionItem,
+  type WebDesignFaq,
+  type WebDesignMilestone,
+  type WebDesignPrize,
+  type WebDesignRegulation
 } from "@/types/webdesign";
 
 /**
@@ -213,15 +214,33 @@ export function validateWebDesignExhibitions(input: unknown): ValidationResult<W
     return [parseExhibition(item, path)];
   });
 
+  function parseYear(item: Obj, path: string, subjects: string, live: string, github: string): number {
+    const rawYear = item.year;
+    if (rawYear === undefined || rawYear === null || rawYear === "") {
+      return inferExhibitionYear({ subjects, live, github });
+    }
+    const num = typeof rawYear === "number" ? rawYear : Number.parseInt(String(rawYear), 10);
+    if (!Number.isInteger(num) || num < 2015 || num > 2100) {
+      ctx.fail(`${path}.year`, "phải là năm hợp lệ (2015–2100)");
+      return inferExhibitionYear({ subjects, live, github });
+    }
+    return num;
+  }
+
   function parseExhibition(item: Obj, path: string): WebDesignExhibitionItem {
+    const subjects = ctx.string(item, "subjects", path);
+    const github = ctx.url(item, "github", path);
+    const live = ctx.url(item, "live", path);
     return {
       teamName: ctx.string(item, "teamName", path, { required: true }),
       teamMembers: stringList(item, "teamMembers", path),
-      subjects: ctx.string(item, "subjects", path),
+      year: parseYear(item, path, subjects, live, github),
+      subjects,
       projectName: ctx.localized(item.projectName, `${path}.projectName`),
       description: ctx.localized(item.description, `${path}.description`, { required: false }),
-      github: ctx.url(item, "github", path),
-      live: ctx.url(item, "live", path),
+      testimonial: ctx.localized(item.testimonial, `${path}.testimonial`, { required: false }),
+      github,
+      live,
       thumbnail: ctx.string(item, "thumbnail", path),
       techStack: stringList(item, "techStack", path)
     };

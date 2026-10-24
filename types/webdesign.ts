@@ -48,14 +48,53 @@ export type WebDesignConfig = {
 export type WebDesignExhibitionItem = {
   teamName: string;
   teamMembers: string[];
+  year: number;
   subjects: string;
   projectName: LocalizedText;
   description: LocalizedText;
+  testimonial: LocalizedText;
   github: string;
   live: string;
   thumbnail: string;
   techStack: string[];
 };
+
+const YEAR_MATCH_RE = /\b(20\d{2})\b/;
+const DEFAULT_EXHIBITION_YEAR = 2025;
+
+export function inferExhibitionYear(item: {
+  year?: unknown;
+  subjects?: string;
+  live?: string;
+  github?: string;
+}): number {
+  const num = typeof item.year === "number" ? item.year : Number.parseInt(String(item.year ?? ""), 10);
+  if (Number.isInteger(num) && num >= 2015 && num <= 2100) {
+    return num;
+  }
+  const combined = `${item.subjects ?? ""} ${item.live ?? ""} ${item.github ?? ""}`;
+  const match = YEAR_MATCH_RE.exec(combined);
+  if (match?.[1]) {
+    const parsed = Number.parseInt(match[1], 10);
+    if (parsed >= 2015 && parsed <= 2100) {
+      return parsed;
+    }
+  }
+  return DEFAULT_EXHIBITION_YEAR;
+}
+
+export function normalizeLocalizedText(value: LocalizedText | string | undefined): LocalizedText {
+  if (!value) {
+    return { vi: "", en: "" };
+  }
+  if (typeof value === "string") {
+    return { vi: value, en: value };
+  }
+  return {
+    vi: value.vi ?? "",
+    en: value.en ?? ""
+  };
+}
 
 /** WebDesign FAQ entry — stored as `FaqItem` rows with `target = WEBDESIGN_FAQ_TARGET`, ordered by position. */
 export type WebDesignFaq = {
@@ -108,14 +147,65 @@ export function parseWebDesignConfig(raw: string | undefined): WebDesignConfig {
   }
 }
 
+export function normalizeExhibitionItem(rawItem: Partial<WebDesignExhibitionItem>): WebDesignExhibitionItem {
+  return {
+    teamName: rawItem.teamName ?? "",
+    teamMembers: Array.isArray(rawItem.teamMembers) ? rawItem.teamMembers : [],
+    year: inferExhibitionYear(rawItem),
+    subjects: rawItem.subjects ?? "",
+    projectName: normalizeLocalizedText(rawItem.projectName),
+    description: normalizeLocalizedText(rawItem.description),
+    testimonial: normalizeLocalizedText(rawItem.testimonial),
+    github: rawItem.github ?? "",
+    live: rawItem.live ?? "",
+    thumbnail: rawItem.thumbnail ?? "",
+    techStack: Array.isArray(rawItem.techStack) ? rawItem.techStack : []
+  };
+}
+
 export function parseWebDesignExhibitions(raw: string | undefined): WebDesignExhibitionItem[] {
   if (!raw) {
     return [];
   }
   try {
-    const parsed = JSON.parse(raw) as WebDesignExhibitionItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as Partial<WebDesignExhibitionItem>[];
+    return Array.isArray(parsed) ? parsed.map(normalizeExhibitionItem) : [];
   } catch {
     return [];
   }
+}
+
+export type BundledExhibitionTeam = {
+  teamName: string;
+  teamMembers: string[];
+  year?: number;
+  subjects: string;
+  projectName: LocalizedText | string;
+  description: LocalizedText | string;
+  testimonial?: LocalizedText | string;
+  github: string;
+  live: string;
+  thumbnail: string;
+  techStack: string[];
+};
+
+export function mapBundledExhibitionTeams(teams: BundledExhibitionTeam[] | undefined): WebDesignExhibitionItem[] {
+  if (!Array.isArray(teams)) {
+    return [];
+  }
+  return teams.map((team) =>
+    normalizeExhibitionItem({
+      teamName: team.teamName,
+      teamMembers: team.teamMembers,
+      year: team.year,
+      subjects: team.subjects,
+      projectName: normalizeLocalizedText(team.projectName),
+      description: normalizeLocalizedText(team.description),
+      testimonial: normalizeLocalizedText(team.testimonial),
+      github: team.github,
+      live: team.live,
+      thumbnail: team.thumbnail,
+      techStack: team.techStack
+    })
+  );
 }

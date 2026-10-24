@@ -40,6 +40,7 @@ const STATIC_ROUTES = [
   { path: "/training", priority: 0.7, changefreq: "monthly" },
   { path: "/activities", priority: 0.6, changefreq: "monthly" },
   { path: "/web-design", priority: 0.8, changefreq: "weekly" },
+  { path: "/web-design-exhibition", priority: 0.7, changefreq: "monthly" },
   { path: "/recap", priority: 0.6, changefreq: "monthly" },
   { path: "/faq", priority: 0.5, changefreq: "monthly" }
 ] as const;

@@ -5,6 +5,7 @@ import { EventJsonLd } from "@/components/seo/json-ld";
 import wdData from "@/configs/data/wd.json";
 import { SITE_URL } from "@/constants/seo";
 import {
+  mapBundledExhibitionTeams,
   parseWebDesignConfig,
   parseWebDesignExhibitions,
   WEBDESIGN_CONFIG_KEY,
@@ -134,7 +135,8 @@ export default async function WebDesignPage({ params }: Props) {
 
   const settingsMap = (settingsRes?.payload ?? {}) as Record<string, string>;
   const wdConfig = parseWebDesignConfig(settingsMap[WEBDESIGN_CONFIG_KEY]);
-  const wdExhibitions = parseWebDesignExhibitions(settingsMap[WEBDESIGN_EXHIBITIONS_KEY]);
+  const dbExhibitions = parseWebDesignExhibitions(settingsMap[WEBDESIGN_EXHIBITIONS_KEY]);
+  const wdExhibitions = dbExhibitions.length > 0 ? dbExhibitions : mapBundledExhibitionTeams(wdData.teams);
   const proposalUrl = wdConfig.proposalUrl || fallbackProposalUrl;
 
   const contestYear = new Date(wdConfig.contestDate).getFullYear();

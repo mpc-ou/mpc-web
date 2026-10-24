@@ -48,9 +48,11 @@ export const emptyFaq = (): WebDesignFaq => ({
 export const EMPTY_EXHIBITION: WebDesignExhibitionItem = {
   teamName: "",
   teamMembers: [],
+  year: new Date().getFullYear(),
   subjects: "",
   projectName: { ...EMPTY_TEXT },
   description: { ...EMPTY_TEXT },
+  testimonial: { ...EMPTY_TEXT },
   github: "",
   live: "",
   thumbnail: "",

@@ -45,9 +45,11 @@ const TEMPLATES: Record<DocKey, () => unknown> = {
     {
       teamName: "Team Alpha",
       teamMembers: ["Nguyễn Văn A", "Trần Thị B"],
+      year: 2025,
       subjects: "Kỷ niệm trường",
       projectName: { vi: "Website 35 năm OU", en: "OU 35th Anniversary Website" },
       description: { vi: "Mô tả ngắn…", en: "Short description…" },
+      testimonial: { vi: "Cảm nghĩ của đội…", en: "Team testimonial…" },
       github: "https://github.com/org/repo",
       live: "https://team-alpha.vercel.app",
       thumbnail: "",

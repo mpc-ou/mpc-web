@@ -4,9 +4,20 @@
     {
       "teamName": "Future",
       "teamMembers": [],
+      "year": 2025,
       "subjects": "35 Years Anniversary OU - WD2025",
-      "projectName": "Cổng thông tin 35 năm thành lập trường ĐH Mở TP.HCM",
-      "description": "Một giao diện cổng thông tin 35 năm thành lập trường ĐH Mở TP.HCM",
+      "projectName": {
+        "vi": "Cổng thông tin 35 năm thành lập trường ĐH Mở TP.HCM",
+        "en": "35th Anniversary Portal — Ho Chi Minh City Open University"
+      },
+      "description": {
+        "vi": "Cổng thông tin tương tác kỷ niệm 35 năm thành lập Trường Đại học Mở TP.HCM, tái hiện chặng đường phát triển và các dấu ấn học thuật tiêu biểu.",
+        "en": "Interactive commemorative portal celebrating 35 years of Ho Chi Minh City Open University, showcasing key historical milestones and academic achievements."
+      },
+      "testimonial": {
+        "vi": "Hành trình tại Web Design giúp tụi mình học cách biến ý tưởng lịch sử của trường thành trải nghiệm web sống động và chỉn chu trong từng chi tiết.",
+        "en": "Our journey at Web Design taught us how to transform the university's historical milestones into a vivid, finely crafted web experience."
+      },
       "github": "https://github.com/OUMPC/WebDesign2025-Future",
       "live": "https://wd2025-future.vercel.app/",
       "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://wd2025-future.vercel.app/",
@@ -15,9 +26,20 @@
     {
       "teamName": "NTK",
       "teamMembers": [],
+      "year": 2025,
       "subjects": "35 Years Anniversary OU - WD2025",
-      "projectName": "Website giới thiệu khoa CNTT",
-      "description": "Website giới thiệu khoa CNTT",
+      "projectName": {
+        "vi": "Website giới thiệu Khoa Công nghệ Thông tin",
+        "en": "Faculty of Information Technology Showcase Website"
+      },
+      "description": {
+        "vi": "Không gian số hiện đại giới thiệu chương trình đào tạo, đội ngũ giảng viên và hoạt động sinh viên của Khoa Công nghệ Thông tin ĐH Mở TP.HCM.",
+        "en": "Modern digital hub presenting academic programs, faculty members, and student life at the Faculty of Information Technology, HCMC Open University."
+      },
+      "testimonial": {
+        "vi": "Từ những đêm thức trắng tối ưu giao diện với React và Tailwind CSS, cả nhóm đã hiểu sâu hơn về tư duy thiết kế sản phẩm thực tế.",
+        "en": "Through late nights refining the UI with React and Tailwind CSS, our team gained a much deeper understanding of real-world product design."
+      },
       "github": "https://github.com/Hehe-Boiz/NTK",
       "live": "https://ntk-frontend.onrender.com/",
       "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://ntk-frontend.onrender.com/",
@@ -26,9 +48,20 @@
     {
       "teamName": "THETHREE",
       "teamMembers": [],
+      "year": 2025,
       "subjects": "35 Years Anniversary OU - WD2025",
-      "projectName": "Website giới thiệu trường ĐH Mở TP.HCM",
-      "description": "Là một trang web giới thiệu trường ĐH Mở TP.HCM",
+      "projectName": {
+        "vi": "Website giới thiệu Trường ĐH Mở TP.HCM",
+        "en": "Ho Chi Minh City Open University Overview Website"
+      },
+      "description": {
+        "vi": "Trang web giới thiệu toàn diện về Trường Đại học Mở TP.HCM với bố cục trực quan, hiệu ứng mượt mà và thông tin tuyển sinh rõ ràng.",
+        "en": "Comprehensive introduction website for Ho Chi Minh City Open University featuring intuitive layout, smooth transitions, and clear admissions info."
+      },
+      "testimonial": {
+        "vi": "Cuộc thi là cơ hội tuyệt vời để tụi mình rèn luyện kỹ năng làm việc nhóm và tự tay xây dựng một website hoàn chỉnh từ con số 0.",
+        "en": "The competition was an amazing opportunity to sharpen our teamwork skills and build a complete website from scratch."
+      },
       "github": "https://github.com/Teaching2504/WEBDESIGN_THETHREE",
       "live": "https://webdesignthethree.netlify.app/",
       "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://webdesignthethree.netlify.app/",
@@ -37,9 +70,20 @@
     {
       "teamName": "Stack Lifo",
       "teamMembers": [],
+      "year": 2025,
       "subjects": "35 Years Anniversary OU - WD2025",
-      "projectName": "Website giới thiệu trường ĐH Mở TP.HCM",
-      "description": "Là một trang web giới thiệu trường ĐH Mở TP.HCM",
+      "projectName": {
+        "vi": "Không gian 3D giới thiệu Trường ĐH Mở TP.HCM",
+        "en": "3D Interactive Showcase — HCMC Open University"
+      },
+      "description": {
+        "vi": "Website kết hợp đồ họa 3D tương tác bằng Three.js để mang lại góc nhìn mới mẻ, sáng tạo về khuôn viên và hành trình 35 năm ĐH Mở TP.HCM.",
+        "en": "Interactive 3D web experience powered by Three.js offering a fresh, creative perspective on the campus and 35-year journey of HCMC Open University."
+      },
+      "testimonial": {
+        "vi": "Thử thách đưa Three.js vào bài thi tuy áp lực nhưng cực kỳ xứng đáng khi thấy sản phẩm chạy mượt mà trên trình duyệt.",
+        "en": "Bringing Three.js into our competition entry was challenging but deeply rewarding when we saw the 3D scene run smoothly in the browser."
+      },
       "github": "https://github.com/Theanh130124/WEB_DESIGN",
       "live": "https://web-desgin-stacklifo.vercel.app/",
       "thumbnail": "https://image.thum.io/get/maxAge/12/width/700/https://web-desgin-stacklifo.vercel.app/",

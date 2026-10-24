@@ -723,6 +723,10 @@
       "dateSentence": "Chung kết: {date}.",
       "ogAlt": "Web Design {year} - Cuộc thi thiết kế & lập trình website của MPClub"
     },
+    "webdesignExhibition": {
+      "title": "Không gian Triển lãm Web Design",
+      "description": "Triển lãm toàn bộ các sản phẩm website sáng tạo từ các đội thi Web Design qua các mùa giải của MPClub – CLB Lập trình trên thiết bị di động."
+    },
     "faq": {
       "title": "Câu hỏi thường gặp về MPC",
       "description": "Giải đáp thắc mắc về MPClub – Câu lạc bộ Lập trình trên thiết bị di động: tuyển thành viên, hoạt động, dự án, đào tạo."

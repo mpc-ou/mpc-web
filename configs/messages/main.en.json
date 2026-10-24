@@ -723,6 +723,10 @@
       "dateSentence": "Final: {date}.",
       "ogAlt": "Web Design {year} - MPClub's website design & development contest"
     },
+    "webdesignExhibition": {
+      "title": "Web Design Exhibition Archive",
+      "description": "Explore the full timeline archive of websites built by competing teams across Web Design seasons by MPClub – Mobile Programming Club."
+    },
     "faq": {
       "title": "MPC FAQ",
       "description": "Frequently asked questions about MPClub – Mobile Programming Club: recruitment, activities, projects and training."

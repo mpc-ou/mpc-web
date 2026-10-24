@@ -392,12 +392,15 @@ export const SiteConfigManager = ({ webDesignConfig, webDesignExhibitions, webDe
             renderDialog={(props) => <ExhibitionDialog {...props} />}
             renderRow={(ex) => ({
               leading: (
-                <div className='relative h-10 w-16 overflow-hidden rounded-md border border-border bg-muted/40'>
-                  {ex.thumbnail && <Image alt='' className='object-cover' fill sizes='64px' src={ex.thumbnail} />}
+                <div className='flex items-center gap-2'>
+                  <MonoTag>{ex.year}</MonoTag>
+                  <div className='relative h-10 w-16 overflow-hidden rounded-md border border-border bg-muted/40'>
+                    {ex.thumbnail && <Image alt='' className='object-cover' fill sizes='64px' src={ex.thumbnail} />}
+                  </div>
                 </div>
               ),
               title: text(ex.projectName),
-              meta: [ex.teamName, ex.techStack.join(", ")].filter(Boolean).join(" · ")
+              meta: [ex.teamName, ex.subjects, ex.techStack.join(", ")].filter(Boolean).join(" · ")
             })}
             reorderable
           />

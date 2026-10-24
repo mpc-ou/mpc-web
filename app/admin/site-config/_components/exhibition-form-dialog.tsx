@@ -30,13 +30,29 @@ export function ExhibitionDialog({ item, onSubmit, onClose }: ItemDialogProps<We
       submitDisabled={!(draft.teamName.trim() && (draft.projectName.vi.trim() || draft.projectName.en.trim()))}
       title={item ? "Sửa dự án triển lãm" : "Thêm dự án triển lãm"}
     >
-      <div className='grid gap-4 sm:grid-cols-2'>
+      <div className='grid gap-4 sm:grid-cols-3'>
         <Field htmlFor='ex-team' label='Tên đội'>
           <Input id='ex-team' onChange={(e) => patch({ teamName: e.target.value })} value={draft.teamName} />
+        </Field>
+        <Field htmlFor='ex-year' label='Năm tham gia'>
+          <Input
+            id='ex-year'
+            max={2100}
+            min={2015}
+            onChange={(e) => {
+              const parsed = Number.parseInt(e.target.value, 10);
+              patch({ year: Number.isNaN(parsed) ? new Date().getFullYear() : parsed });
+            }}
+            type='number'
+            value={draft.year}
+          />
         </Field>
         <Field htmlFor='ex-subject' label='Chủ đề'>
           <Input id='ex-subject' onChange={(e) => patch({ subjects: e.target.value })} value={draft.subjects} />
         </Field>
+      </div>
+
+      <div className='grid gap-4 sm:grid-cols-2'>
         <Field htmlFor='ex-live' label='URL demo'>
           <Input
             id='ex-live'
@@ -88,6 +104,9 @@ export function ExhibitionDialog({ item, onSubmit, onClose }: ItemDialogProps<We
       </Field>
       <Field label='Mô tả'>
         <LocalizedTextarea onChange={(description) => patch({ description })} value={draft.description} />
+      </Field>
+      <Field hint='Cảm nghĩ hoặc chia sẻ của đội về sản phẩm / cuộc thi' label='Cảm nghĩ của đội (tùy chọn)'>
+        <LocalizedTextarea onChange={(testimonial) => patch({ testimonial })} value={draft.testimonial} />
       </Field>
     </EditDialog>
   );

@@ -1,10 +1,12 @@
-import { CalendarDays, ChevronLeft, Github, Globe2, Play, UserCircle, Users } from "lucide-react";
+import { CalendarDays, ChevronLeft, Github, Globe2, Pencil, Play, UserCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getOtherProjects, getProjectDetail } from "@/app/_actions/main";
+import { checkUserIsAdmin, getOtherProjects, getProjectDetail } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
+import { MarkdownInline } from "@/components/markdown-inline";
 import type { PostCardData } from "@/components/post-card";
 import { PostCard } from "@/components/post-card";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
@@ -13,11 +15,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link } from "@/configs/i18n/routing";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { SITE_URL } from "@/constants/seo";
 import { getFullName, pickLang } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import { resolvePostSummary, stripMarkdownToPlainText } from "@/utils/markdown-summary";
 import { generatePageSeo } from "@/utils/seo";
 import type { ProjectSummaryWithI18n } from "../client";
 
@@ -64,12 +68,14 @@ export async function generateMetadata({
 
   const localizedTitle = pickLang(lang, project.title, project.titleEn) || project.title;
   const localizedDesc = pickLang(lang, project.description, project.descriptionEn) || project.description;
+  const localizedContent = pickLang(lang, project.content, project.contentEn) || project.content;
+  const plainDesc = stripMarkdownToPlainText(resolvePostSummary(localizedDesc, localizedContent));
   const techs = Array.isArray(project.technologies) ? (project.technologies as string[]) : [];
 
   return generatePageSeo({
     page: "projectDetail",
     title: localizedTitle,
-    description: localizedDesc || undefined,
+    description: plainDesc || undefined,
     locale: locale || "vi",
     pathname: `/projects/${slug}`,
     image: project.thumbnail || undefined,
@@ -94,59 +100,57 @@ function extractProjectGalleryImages(project: ProjectDetail): string[] {
   return Array.from(new Set([...thumbnail, ...contentImages, ...projectImages])).filter(Boolean);
 }
 
-function ProjectSidebar({
-  hasGallery,
-  allImages,
+function ProjectTeamAvatars({
   members,
   locale,
-  t
+  teamLabel
 }: {
-  hasGallery: boolean;
-  allImages: string[];
   members?: ProjectDetail["members"];
   locale: string;
-  t: (key: string) => string;
+  teamLabel: string;
 }) {
-  return (
-    <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
-      {hasGallery && <PostGalleryPanel images={allImages} title={`${t("galleryTitle")} (${allImages.length})`} />}
+  if (!members || members.length === 0) {
+    return null;
+  }
 
-      {members && members.length > 0 && (
-        <section>
-          <h2 className='mb-5 flex items-center gap-2 border-border border-b pb-2 font-bold text-xl'>
-            <Users className='h-5 w-5 text-primary' /> {t("teamTitle")}
-          </h2>
-          <div className='flex flex-col gap-3'>
-            {members.map((m) => (
-              <div className='flex items-center gap-3' key={m.member.id}>
-                {m.member.avatar ? (
-                  <Image
-                    alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                    className='shrink-0 rounded-full object-cover ring-2 ring-border'
-                    height={40}
-                    src={m.member.avatar}
-                    width={40}
-                  />
-                ) : (
-                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
-                    <UserCircle className='h-6 w-6 text-muted-foreground' />
-                  </div>
-                )}
-                <div className='min-w-0'>
-                  <Link
-                    className='block truncate font-medium text-sm hover:text-primary hover:underline'
-                    href={`/members/${m.member.slug || m.member.id}`}
-                  >
-                    {getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                  </Link>
-                  {m.role && <p className='truncate text-muted-foreground text-xs'>{m.role}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-    </aside>
+  return (
+    <TooltipProvider delayDuration={80}>
+      <div className='flex flex-wrap items-center gap-3'>
+        <span className='font-mono text-muted-foreground text-xs uppercase tracking-wider'>{teamLabel}:</span>
+        <div className='flex flex-wrap items-center pl-2'>
+          {members.map((m, idx) => {
+            const fullName = getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale);
+            return (
+              <Tooltip key={m.member.id}>
+                <TooltipTrigger asChild>
+                  <span className={`inline-flex ${idx > 0 ? "-ml-2.5" : ""}`} style={{ zIndex: members.length - idx }}>
+                    <Link
+                      aria-label={m.role ? `${fullName} — ${m.role}` : fullName}
+                      className='group relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-background bg-muted ring-1 ring-border transition-all duration-200 hover:z-20 hover:-translate-y-0.5 hover:scale-110 hover:ring-2 hover:ring-primary'
+                      href={`/members/${m.member.slug || m.member.id}`}
+                    >
+                      {m.member.avatar ? (
+                        <Image alt={fullName} className='object-cover' fill sizes='40px' src={m.member.avatar} />
+                      ) : (
+                        <UserCircle className='h-6 w-6 text-muted-foreground transition-colors group-hover:text-primary' />
+                      )}
+                    </Link>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent
+                  className='rounded-xl border border-border/80 bg-popover px-3.5 py-2 text-popover-foreground shadow-xl'
+                  side='top'
+                  sideOffset={8}
+                >
+                  <p className='font-semibold text-xs leading-tight'>{fullName}</p>
+                  {m.role && <p className='mt-0.5 font-mono text-[11px] text-primary leading-tight'>{m.role}</p>}
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+      </div>
+    </TooltipProvider>
   );
 }
 
@@ -158,11 +162,13 @@ export default async function ProjectDetailPage({
 }): Promise<React.ReactNode> {
   const { slug, locale } = await params;
   const lang = locale as "en" | "vi";
-  const [{ data }, { data: otherData }, t] = await Promise.all([
+  const [{ data }, { data: otherData }, { data: isAdminData }, t] = await Promise.all([
     getProjectDetail(slug),
     getOtherProjects(slug),
+    checkUserIsAdmin(),
     getTranslations({ locale, namespace: "projects" })
   ]);
+  const canEdit = isAdminData?.payload ?? false;
   const project = (data?.payload as { project: ProjectDetail | null } | undefined)?.project;
 
   if (!project?.isActive) {
@@ -174,7 +180,6 @@ export default async function ProjectDetailPage({
 
   const allImages = extractProjectGalleryImages(project);
   const hasGallery = allImages.length > 0;
-  const hasSidebar = hasGallery || (project.members && project.members.length > 0);
 
   const startDateLabel = project.startDate ? formatLocalDate(project.startDate, locale, "MMMM yyyy") : null;
   const endDateLabel = project.endDate ? formatLocalDate(project.endDate, locale, "MMMM yyyy") : t("present");
@@ -222,22 +227,41 @@ export default async function ProjectDetailPage({
       )}
 
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        <div className='py-5'>
+        <div className='flex items-center justify-between gap-3 py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href='/projects'>
               <ChevronLeft className='mr-1 h-4 w-4' />
               {t("backToList")}
             </Link>
           </Button>
+          {canEdit && (
+            <Button
+              asChild
+              className='h-8 gap-1.5 border-primary/30 bg-primary/5 text-primary hover:bg-primary/15'
+              size='sm'
+              title='Chỉnh sửa dự án trong Admin'
+              variant='outline'
+            >
+              <NextLink href={`/admin/projects/${project.id}/edit`}>
+                <Pencil className='h-3.5 w-3.5' />
+                <span className='text-xs'>Chỉnh sửa</span>
+              </NextLink>
+            </Button>
+          )}
         </div>
 
         <ScrollReveal>
           {techs.length > 0 && (
             <div className='mb-4 flex flex-wrap items-center gap-2'>
               {techs.map((tech) => (
-                <Badge className='px-3 py-1' key={tech} variant='secondary'>
-                  {tech}
-                </Badge>
+                <Link href={`/search?q=${encodeURIComponent(tech)}` as "/"} key={tech}>
+                  <Badge
+                    className='cursor-pointer px-3 py-1 transition-colors hover:bg-secondary/80'
+                    variant='secondary'
+                  >
+                    {tech}
+                  </Badge>
+                </Link>
               ))}
             </div>
           )}
@@ -247,9 +271,11 @@ export default async function ProjectDetailPage({
           </h1>
 
           {(project.description || project.descriptionEn) && (
-            <p className='mb-6 text-lg text-muted-foreground md:text-xl'>
-              {pickLang(lang, project.description, project.descriptionEn) || project.description}
-            </p>
+            <div className='mb-6 text-lg text-muted-foreground md:text-xl'>
+              <MarkdownInline
+                content={pickLang(lang, project.description, project.descriptionEn) || project.description || ""}
+              />
+            </div>
           )}
 
           <div className='mb-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-foreground text-sm'>
@@ -261,54 +287,51 @@ export default async function ProjectDetailPage({
             )}
           </div>
 
-          <div className='mb-6 flex flex-wrap gap-3'>
-            {project.githubUrl && (
-              <Button asChild size='sm' variant='outline'>
-                <a href={project.githubUrl} rel='noopener noreferrer' target='_blank'>
-                  <Github className='mr-2 h-4 w-4' /> {t("sourceCode")}
-                </a>
-              </Button>
-            )}
-            {project.websiteUrl && (
-              <Button asChild size='sm'>
-                <a href={project.websiteUrl} rel='noopener noreferrer' target='_blank'>
-                  <Globe2 className='mr-2 h-4 w-4' /> {t("viewWebsite")}
-                </a>
-              </Button>
-            )}
-            {project.videoUrl && (
-              <Button asChild size='sm' variant='secondary'>
-                <a href={project.videoUrl} rel='noopener noreferrer' target='_blank'>
-                  <Play className='mr-2 h-4 w-4' /> {t("viewVideo")}
-                </a>
-              </Button>
-            )}
+          <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
+            <div className='flex flex-wrap items-center gap-3'>
+              {project.githubUrl && (
+                <Button asChild size='sm' variant='outline'>
+                  <a href={project.githubUrl} rel='noopener noreferrer' target='_blank'>
+                    <Github className='mr-2 h-4 w-4' /> {t("sourceCode")}
+                  </a>
+                </Button>
+              )}
+              {project.websiteUrl && (
+                <Button asChild size='sm'>
+                  <a href={project.websiteUrl} rel='noopener noreferrer' target='_blank'>
+                    <Globe2 className='mr-2 h-4 w-4' /> {t("viewWebsite")}
+                  </a>
+                </Button>
+              )}
+              {project.videoUrl && (
+                <Button asChild size='sm' variant='secondary'>
+                  <a href={project.videoUrl} rel='noopener noreferrer' target='_blank'>
+                    <Play className='mr-2 h-4 w-4' /> {t("viewVideo")}
+                  </a>
+                </Button>
+              )}
+            </div>
+
+            <ProjectTeamAvatars locale={locale} members={project.members} teamLabel={t("teamTitle")} />
           </div>
         </ScrollReveal>
 
         <Separator className='mb-10' />
 
-        <div className={`flex flex-col gap-10 ${hasSidebar ? "lg:flex-row lg:gap-12" : ""}`}>
-          <div className={`min-w-0 ${hasSidebar ? "flex-1" : "w-full"}`}>
-            {project.content || project.contentEn ? (
-              <ScrollReveal delay={100} variant='fade-up'>
-                <MarkdownContent
-                  content={pickLang(lang, project.content, project.contentEn) || project.content || ""}
-                />
-              </ScrollReveal>
-            ) : (
-              <p className='mb-14 text-muted-foreground italic'>{t("noDetail")}</p>
-            )}
-          </div>
+        {/* ── BODY: FULL WIDTH + BOTTOM COMPACT GALLERY ── */}
+        <div className='w-full'>
+          {project.content || project.contentEn ? (
+            <ScrollReveal delay={100} variant='fade-up'>
+              <MarkdownContent content={pickLang(lang, project.content, project.contentEn) || project.content || ""} />
+            </ScrollReveal>
+          ) : (
+            <p className='mb-14 text-muted-foreground italic'>{t("noDetail")}</p>
+          )}
 
-          {hasSidebar && (
-            <ProjectSidebar
-              allImages={allImages}
-              hasGallery={hasGallery}
-              locale={locale}
-              members={project.members}
-              t={t}
-            />
+          {hasGallery && (
+            <div className='mt-12 border-border/60 border-t pt-8'>
+              <PostGalleryPanel images={allImages} title={`${t("galleryTitle")} (${allImages.length})`} />
+            </div>
           )}
         </div>
       </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import type { FeedItem, FeedKind } from "@/app/_actions/main/feed";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -131,7 +132,9 @@ function FeedCard({ item, size }: { item: FeedItem; size: Size }) {
             {item.title}
           </h3>
           {isHero && item.summary && (
-            <p className='line-clamp-2 max-w-lg text-sm text-white/75 leading-relaxed'>{item.summary}</p>
+            <div className='line-clamp-2 max-w-lg text-sm text-white/75 leading-relaxed'>
+              <MarkdownInline className='prose-invert text-white/80' content={item.summary} disableLinks />
+            </div>
           )}
         </div>
         <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/90 text-zinc-900 transition-colors group-hover:bg-primary group-hover:text-primary-foreground'>

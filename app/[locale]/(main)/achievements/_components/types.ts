@@ -28,6 +28,7 @@ export type AchievementPost = {
   id: string;
   slug: string;
   title: string;
+  summary?: string | null;
   thumbnail: string | null;
   date: string | null;
   type: string;

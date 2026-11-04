@@ -91,6 +91,14 @@
       "OTHER": "Chi tiết - Khác"
     },
     "learnMore": "Tìm hiểu thêm",
+    "viewTimeline": "Dòng thời gian",
+    "viewGrid": "Dạng lưới",
+    "allYears": "Tất cả các năm",
+    "yearBadge": "Năm {year}",
+    "yearEventsCount": "{count} sự kiện",
+    "loadMore": "Tải thêm sự kiện",
+    "loadingMore": "Đang tải thêm...",
+    "showingCount": "Đang hiển thị {visible} / {total} sự kiện",
     "recap": {
       "title": "Year Recap",
       "subtitle": "Nhìn lại hành trình hoạt động của CLB qua từng năm",

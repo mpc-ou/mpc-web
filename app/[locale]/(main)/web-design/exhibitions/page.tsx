@@ -11,7 +11,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const PATHNAME = "/web-design-exhibition";
+const PATHNAME = "/web-design/exhibitions";
 const WEB_DESIGN_OG_IMAGE = `${SITE_URL}/images/og/web-design.jpg`;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function WebDesignExhibitionPage({ params }: Props) {
+export default async function WebDesignExhibitionsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 

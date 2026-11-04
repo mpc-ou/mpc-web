@@ -7,6 +7,145 @@ import { sanitizeHtml } from "@/utils/sanitize-html";
 import { ImageLightbox, type LightboxImage } from "./image-lightbox.client";
 
 const PROJECT_LINK_REGEX = /(?:^|\/)(?:[a-z]{2}\/)?projects\/([a-zA-Z0-9_-]+)(?:\?|#|$)/;
+const CODE_FENCE_RE = /^(`{3,}|~{3,})/;
+const SINGLE_IMAGE_LINE_RE = /^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/;
+
+type ParsedMarkdownImage = {
+  src: string;
+  alt: string;
+  title?: string;
+};
+
+function escapeAttr(val: string): string {
+  return val
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function parseMarkdownImageLine(trimmedLine: string): ParsedMarkdownImage | null {
+  const match = SINGLE_IMAGE_LINE_RE.exec(trimmedLine);
+  if (!match) {
+    return null;
+  }
+  return {
+    alt: match[1] ?? "",
+    src: match[2] ?? "",
+    title: match[3]
+  };
+}
+
+function renderImageTile(
+  img: ParsedMarkdownImage,
+  idx: number,
+  aspectClass: string,
+  extraWrapperClass = "",
+  overflowRemaining = 0
+): string {
+  const safeSrc = escapeAttr(img.src);
+  const safeAlt = escapeAttr(img.alt || `Image ${idx + 1}`);
+  const safeTitle = img.title ? ` title="${escapeAttr(img.title)}"` : "";
+  const overflowHtml =
+    overflowRemaining > 0
+      ? `<div class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px]"><span class="font-black text-2xl text-white sm:text-3xl">+${overflowRemaining}</span></div>`
+      : "";
+
+  return `<div class="group relative overflow-hidden rounded-xl border border-border/70 bg-muted/30 ${aspectClass} ${extraWrapperClass}">
+    <img src="${safeSrc}" alt="${safeAlt}"${safeTitle} data-gallery-idx="${idx}" class="fb-collage-img !m-0 !h-full !w-full !max-w-none cursor-zoom-in !rounded-none !border-0 object-cover !shadow-none transition-transform duration-500 group-hover:scale-105" />
+    ${overflowHtml}
+  </div>`;
+}
+
+function buildFacebookImageCollageHtml(images: ParsedMarkdownImage[]): string {
+  const total = images.length;
+  const visible = images.slice(0, 5);
+  const overflow = total > 5 ? total - 4 : 0; // shown on 5th tile as +N (including 5th)
+  const urlsJson = escapeAttr(JSON.stringify(images.map((i) => i.src)));
+  const altsJson = escapeAttr(JSON.stringify(images.map((i) => i.alt || i.title || "")));
+
+  let innerGrid = "";
+
+  if (visible.length === 2) {
+    innerGrid = `<div class="grid grid-cols-2 gap-2">
+      ${renderImageTile(visible[0], 0, "aspect-4/3")}
+      ${renderImageTile(visible[1], 1, "aspect-4/3")}
+    </div>`;
+  } else if (visible.length === 3) {
+    innerGrid = `<div class="grid grid-cols-1 gap-2 sm:grid-cols-12">
+      ${renderImageTile(visible[0], 0, "aspect-16/10 sm:aspect-auto sm:min-h-80", "sm:col-span-7 sm:row-span-2")}
+      ${renderImageTile(visible[1], 1, "aspect-16/10", "sm:col-span-5")}
+      ${renderImageTile(visible[2], 2, "aspect-16/10", "sm:col-span-5")}
+    </div>`;
+  } else if (visible.length === 4) {
+    innerGrid = `<div class="grid grid-cols-2 gap-2">
+      ${visible.map((img, i) => renderImageTile(img, i, "aspect-4/3")).join("")}
+    </div>`;
+  } else {
+    // 5 or more images: 2 on top row + 3 on bottom row
+    innerGrid = `<div class="space-y-2">
+      <div class="grid grid-cols-2 gap-2">
+        ${renderImageTile(visible[0], 0, "aspect-16/10")}
+        ${renderImageTile(visible[1], 1, "aspect-16/10")}
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        ${renderImageTile(visible[2], 2, "aspect-4/3")}
+        ${renderImageTile(visible[3], 3, "aspect-4/3")}
+        ${renderImageTile(visible[4], 4, "aspect-4/3", "", overflow)}
+      </div>
+    </div>`;
+  }
+
+  return `\n\n<div class="not-prose fb-image-collage my-8 mx-auto max-w-4xl" data-gallery-urls="${urlsJson}" data-gallery-alts="${altsJson}">${innerGrid}</div>\n\n`;
+}
+
+/**
+ * Groups 2+ consecutive markdown image lines (with NO blank line between them)
+ * into a Facebook-style collage block, while leaving blank-line-separated images untouched.
+ */
+function preprocessConsecutiveMarkdownImages(markdown: string): string {
+  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+  const out: string[] = [];
+  let inCodeFence = false;
+  let imageRun: ParsedMarkdownImage[] = [];
+  let rawRunLines: string[] = [];
+
+  const flushRun = () => {
+    if (imageRun.length >= 2) {
+      out.push(buildFacebookImageCollageHtml(imageRun));
+    } else if (rawRunLines.length > 0) {
+      out.push(...rawRunLines);
+    }
+    imageRun = [];
+    rawRunLines = [];
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (CODE_FENCE_RE.test(trimmed)) {
+      flushRun();
+      inCodeFence = !inCodeFence;
+      out.push(line);
+      continue;
+    }
+
+    if (!inCodeFence) {
+      const parsedImg = parseMarkdownImageLine(trimmed);
+      if (parsedImg) {
+        imageRun.push(parsedImg);
+        rawRunLines.push(line);
+        continue;
+      }
+    }
+
+    flushRun();
+    out.push(line);
+  }
+
+  flushRun();
+  return out.join("\n");
+}
 
 function highlightCode(code: string, lang = ""): string {
   const cleanLang = (lang || "").toLowerCase();
@@ -219,10 +358,246 @@ function renderProjectEmbedHtml(project: ProjectEmbedData, href: string): string
   `;
 }
 
+function collectCollageTargets(
+  node: HTMLElement,
+  items: LightboxImage[],
+  targets: Array<{ el: HTMLElement; index: number }>
+) {
+  const baseIndex = items.length;
+  let urls: string[] = [];
+  let alts: string[] = [];
+  try {
+    urls = JSON.parse(node.getAttribute("data-gallery-urls") || "[]") as string[];
+    alts = JSON.parse(node.getAttribute("data-gallery-alts") || "[]") as string[];
+  } catch {
+    urls = [];
+  }
+  const collageImgs = Array.from(node.querySelectorAll<HTMLImageElement>("img[data-gallery-idx]"));
+  if (urls.length === 0 && collageImgs.length > 0) {
+    urls = collageImgs.map((img) => img.getAttribute("src") || img.src).filter(Boolean);
+    alts = collageImgs.map((img) => img.getAttribute("alt") || img.getAttribute("title") || "");
+  }
+  urls.forEach((url, idx) => {
+    items.push({ url, title: alts[idx] || null });
+  });
+  for (const img of collageImgs) {
+    const idx = Number.parseInt(img.getAttribute("data-gallery-idx") || "0", 10);
+    targets.push({ el: img, index: baseIndex + idx });
+  }
+}
+
+function collectLightboxTargets(root: HTMLElement): {
+  items: LightboxImage[];
+  targets: Array<{ el: HTMLElement; index: number }>;
+} {
+  const items: LightboxImage[] = [];
+  const targets: Array<{ el: HTMLElement; index: number }> = [];
+
+  const nodes = Array.from(root.querySelectorAll<HTMLElement>(".fb-image-collage, img"));
+  for (const node of nodes) {
+    if (node.classList.contains("fb-image-collage")) {
+      collectCollageTargets(node, items, targets);
+    } else if (node.tagName === "IMG" && !node.closest("a") && !node.closest(".fb-image-collage")) {
+      const img = node as HTMLImageElement;
+      const url = img.getAttribute("src") || img.currentSrc || img.src;
+      if (!url) {
+        continue;
+      }
+      const idx = items.length;
+      items.push({
+        url,
+        title: img.getAttribute("title") || img.alt || null
+      });
+      targets.push({ el: img, index: idx });
+    }
+  }
+
+  return { items, targets };
+}
+
+function bindCodeBlockInteractions(root: HTMLElement): () => void {
+  const checkboxes = root.querySelectorAll('input[type="checkbox"]');
+  for (const cb of checkboxes) {
+    cb.setAttribute("disabled", "true");
+  }
+
+  const copyButtons = root.querySelectorAll(".copy-code-btn");
+  const copyHandlers = new Map<Element, () => void>();
+  for (const btn of copyButtons) {
+    const handler = () => {
+      const encodedCode = btn.getAttribute("data-code");
+      if (encodedCode) {
+        navigator.clipboard.writeText(decodeURIComponent(encodedCode)).then(() => {
+          btn.textContent = "Copied!";
+          setTimeout(() => {
+            btn.textContent = "Copy";
+          }, 2000);
+        });
+      }
+    };
+    btn.addEventListener("click", handler);
+    copyHandlers.set(btn, handler);
+  }
+
+  const expandButtons = root.querySelectorAll(".expand-code-btn");
+  const expandHandlers = new Map<Element, () => void>();
+  for (const btn of expandButtons) {
+    const container = btn.closest(".code-block-container");
+    const wrapper = container?.querySelector(".code-content-wrapper");
+    const fadeOverlay = container?.querySelector(".expand-fade-overlay");
+    if (container && wrapper && fadeOverlay) {
+      const handler = () => toggleCodeBlockExpand(container, wrapper, fadeOverlay, btn);
+      btn.addEventListener("click", handler);
+      expandHandlers.set(btn, handler);
+    }
+  }
+
+  return () => {
+    for (const [btn, handler] of copyHandlers.entries()) {
+      btn.removeEventListener("click", handler);
+    }
+    for (const [btn, handler] of expandHandlers.entries()) {
+      btn.removeEventListener("click", handler);
+    }
+  };
+}
+
+function toggleCodeBlockExpand(container: Element, wrapper: Element, fadeOverlay: Element, btn: Element) {
+  const isCollapsed = container.classList.contains("collapsed");
+  if (isCollapsed) {
+    container.classList.remove("collapsed");
+    container.classList.add("expanded");
+    wrapper.classList.remove("max-h-[350px]");
+    wrapper.classList.add("max-h-none");
+    fadeOverlay.classList.remove("bg-gradient-to-t", "from-zinc-950", "via-zinc-950/80", "to-transparent", "h-24");
+    fadeOverlay.classList.add("h-12", "bg-transparent");
+    btn.textContent = "Thu gọn";
+  } else {
+    container.classList.remove("expanded");
+    container.classList.add("collapsed");
+    wrapper.classList.remove("max-h-none");
+    wrapper.classList.add("max-h-[350px]");
+    fadeOverlay.classList.remove("h-12", "bg-transparent");
+    fadeOverlay.classList.add("bg-gradient-to-t", "from-zinc-950", "via-zinc-950/80", "to-transparent", "h-24");
+    const lineCount = btn.getAttribute("data-line-count") || "";
+    btn.textContent = `Xem thêm (${Number(lineCount) - 50} dòng)`;
+    container.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
+function normalizeEmbeddedIframes(root: HTMLElement) {
+  const iframes = Array.from(root.querySelectorAll<HTMLIFrameElement>("iframe"));
+  for (const iframe of iframes) {
+    const src = iframe.getAttribute("src") || "";
+    const isVideoEmbed =
+      src.includes("facebook.com/plugins/video.php") ||
+      src.includes("youtube.com/embed") ||
+      src.includes("youtube-nocookie.com/embed") ||
+      src.includes("player.vimeo.com") ||
+      src.includes("drive.google.com/file");
+
+    if (!isVideoEmbed) {
+      continue;
+    }
+
+    // For Facebook video embeds: strip hardcoded width/height and show_text=true
+    // so Facebook renders a clean 16:9 video player without the white bottom bar or cramped 560x314 crop.
+    if (src.includes("facebook.com/plugins/video.php")) {
+      try {
+        const url = new URL(src);
+        url.searchParams.set("show_text", "false");
+        url.searchParams.delete("width");
+        url.searchParams.delete("height");
+        iframe.setAttribute("src", url.toString());
+      } catch {
+        // Keep original src if URL parsing fails
+      }
+    }
+
+    iframe.removeAttribute("width");
+    iframe.removeAttribute("height");
+    iframe.style.width = "100%";
+    iframe.style.height = "auto";
+    iframe.style.aspectRatio = "16 / 9";
+    iframe.style.border = "0";
+    iframe.style.overflow = "hidden";
+  }
+}
+
+function hydrateProjectEmbeds(root: HTMLElement) {
+  const projectPlaceholders = root.querySelectorAll(".project-embed-placeholder");
+  for (const el of projectPlaceholders) {
+    const slug = el.getAttribute("data-slug");
+    const href = el.getAttribute("data-href") || "";
+    const text = el.textContent || "";
+    if (!slug) {
+      continue;
+    }
+    el.innerHTML = `
+      <div class="animate-pulse flex flex-col sm:flex-row items-stretch overflow-hidden rounded-2xl border border-border bg-card shadow-xs my-6 max-w-2xl mx-auto h-32 sm:h-40">
+        <div class="w-full sm:w-48 bg-muted shrink-0"></div>
+        <div class="flex-1 p-5 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="h-4 bg-muted rounded w-1/4"></div>
+            <div class="h-4 bg-muted rounded w-3/4"></div>
+            <div class="h-3 bg-muted rounded w-1/2"></div>
+          </div>
+          <div class="h-3 bg-muted rounded w-1/3"></div>
+        </div>
+      </div>
+    `;
+
+    getProjectDetail(slug)
+      .then((res) => {
+        const payload = res.data?.payload as { project?: ProjectEmbedData } | null;
+        const project = payload?.project;
+        el.innerHTML = project
+          ? renderProjectEmbedHtml(project, href)
+          : `<a href="${href}" class="font-bold text-primary underline underline-offset-4 hover:text-primary/80 transition-colors">${text}</a>`;
+      })
+      .catch(() => {
+        el.innerHTML = `<a href="${href}" class="font-bold text-primary underline underline-offset-4 hover:text-primary/80 transition-colors">${text}</a>`;
+      });
+  }
+}
+
 type MarkdownBlockProps = {
   content: string;
   className?: string;
 };
+
+function resolveClickedLightboxTarget(
+  target: HTMLElement | null,
+  root: HTMLElement
+): { items: LightboxImage[]; index: number } | null {
+  if (!target) {
+    return null;
+  }
+  const img = target.closest("img") as HTMLImageElement | null;
+  if (!(img && root.contains(img))) {
+    return null;
+  }
+  // Ignore images inside links (e.g., project embeds or markdown linked images) unless part of a collage
+  if (img.closest("a") && !img.closest(".fb-image-collage")) {
+    return null;
+  }
+
+  const { items, targets } = collectLightboxTargets(root);
+  const found = targets.find((t) => t.el === img);
+  if (found && items.length > 0) {
+    return { items, index: found.index };
+  }
+
+  // Fallback: single image direct open if not indexed
+  const fallbackUrl = img.getAttribute("src") || img.currentSrc || img.src;
+  if (!fallbackUrl) {
+    return null;
+  }
+  return {
+    items: [{ url: fallbackUrl, title: img.getAttribute("title") || img.alt || null }],
+    index: 0
+  };
+}
 
 /**
  * Full block-level markdown renderer for posts and articles.
@@ -240,7 +615,8 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
       return "";
     }
     try {
-      const rawHtml = marked.parse(content);
+      const processed = preprocessConsecutiveMarkdownImages(content);
+      const rawHtml = marked.parse(processed);
       const htmlString = typeof rawHtml === "string" ? rawHtml : "";
       return sanitizeHtml(htmlString);
     } catch {
@@ -248,147 +624,22 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
     }
   }, [content]);
 
-  // Image zoom + disable checkboxes + code copy + expand/collapse handlers
+  // Disable checkboxes + code copy + expand/collapse + iframe normalization + project embeds
   useEffect(() => {
-    if (!(htmlContent && containerRef.current)) {
+    const root = containerRef.current;
+    if (!(htmlContent && root)) {
       return;
     }
 
-    // Lightbox: every content image opens the shared viewer at its position
-    const images = Array.from(containerRef.current.querySelectorAll<HTMLImageElement>("img")).filter(
-      (img) => !img.closest("a")
-    );
-    setLightboxImages(
-      images.map((img) => ({ url: img.currentSrc || img.src, title: img.getAttribute("title") || img.alt || null }))
-    );
-    const openHandlers = images.map((img, i) => {
-      const handler = () => setLightboxIndex(i);
-      img.addEventListener("click", handler);
-      return () => img.removeEventListener("click", handler);
-    });
+    const { items } = collectLightboxTargets(root);
+    setLightboxImages(items);
 
-    // Disable task-list checkboxes (visual only)
-    const checkboxes = containerRef.current.querySelectorAll('input[type="checkbox"]');
-    for (const cb of checkboxes) {
-      cb.setAttribute("disabled", "true");
-    }
-
-    // Set up copy handlers
-    const copyButtons = containerRef.current.querySelectorAll(".copy-code-btn");
-    const copyHandlers = new Map<Element, () => void>();
-    for (const btn of copyButtons) {
-      const handler = () => {
-        const encodedCode = btn.getAttribute("data-code");
-        if (encodedCode) {
-          const codeText = decodeURIComponent(encodedCode);
-          navigator.clipboard.writeText(codeText).then(() => {
-            btn.textContent = "Copied!";
-            setTimeout(() => {
-              btn.textContent = "Copy";
-            }, 2000);
-          });
-        }
-      };
-      btn.addEventListener("click", handler);
-      copyHandlers.set(btn, handler);
-    }
-
-    // Set up expand/collapse handlers
-    const expandButtons = containerRef.current.querySelectorAll(".expand-code-btn");
-    const expandHandlers = new Map<Element, () => void>();
-    for (const btn of expandButtons) {
-      const container = btn.closest(".code-block-container");
-      const wrapper = container?.querySelector(".code-content-wrapper");
-      const fadeOverlay = container?.querySelector(".expand-fade-overlay");
-      if (container && wrapper && fadeOverlay) {
-        const handler = () => {
-          const isCollapsed = container.classList.contains("collapsed");
-          if (isCollapsed) {
-            container.classList.remove("collapsed");
-            container.classList.add("expanded");
-            wrapper.classList.remove("max-h-[350px]");
-            wrapper.classList.add("max-h-none");
-            fadeOverlay.classList.remove(
-              "bg-gradient-to-t",
-              "from-zinc-950",
-              "via-zinc-950/80",
-              "to-transparent",
-              "h-24"
-            );
-            fadeOverlay.classList.add("h-12", "bg-transparent");
-            btn.textContent = "Thu gọn";
-          } else {
-            container.classList.remove("expanded");
-            container.classList.add("collapsed");
-            wrapper.classList.remove("max-h-none");
-            wrapper.classList.add("max-h-[350px]");
-            fadeOverlay.classList.remove("h-12", "bg-transparent");
-            fadeOverlay.classList.add("bg-gradient-to-t", "from-zinc-950", "via-zinc-950/80", "to-transparent", "h-24");
-            const lineCount = btn.getAttribute("data-line-count") || "";
-            btn.textContent = `Xem thêm (${Number(lineCount) - 50} dòng)`;
-            container.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
-        };
-        btn.addEventListener("click", handler);
-        expandHandlers.set(btn, handler);
-      }
-    }
-
-    // Load project embeds
-    const projectPlaceholders = containerRef.current.querySelectorAll(".project-embed-placeholder");
-    for (const el of projectPlaceholders) {
-      const slug = el.getAttribute("data-slug");
-      const href = el.getAttribute("data-href") || "";
-      const text = el.textContent || "";
-      if (slug) {
-        // Render loading skeleton
-        el.innerHTML = `
-          <div class="animate-pulse flex flex-col sm:flex-row items-stretch overflow-hidden rounded-2xl border border-border bg-card shadow-xs my-6 max-w-2xl mx-auto h-32 sm:h-40">
-            <div class="w-full sm:w-48 bg-muted shrink-0"></div>
-            <div class="flex-1 p-5 flex flex-col justify-between">
-              <div class="space-y-2">
-                <div class="h-4 bg-muted rounded w-1/4"></div>
-                <div class="h-4 bg-muted rounded w-3/4"></div>
-                <div class="h-3 bg-muted rounded w-1/2"></div>
-              </div>
-              <div class="h-3 bg-muted rounded w-1/3"></div>
-            </div>
-          </div>
-        `;
-
-        getProjectDetail(slug)
-          .then((res) => {
-            const payload = res.data?.payload as {
-              project?: {
-                title: string;
-                description?: string;
-                thumbnail?: string;
-                technologies?: string[];
-              };
-            } | null;
-            const project = payload?.project;
-            if (project) {
-              el.innerHTML = renderProjectEmbedHtml(project, href);
-            } else {
-              el.innerHTML = `<a href="${href}" class="font-bold text-primary underline underline-offset-4 hover:text-primary/80 transition-colors">${text}</a>`;
-            }
-          })
-          .catch(() => {
-            el.innerHTML = `<a href="${href}" class="font-bold text-primary underline underline-offset-4 hover:text-primary/80 transition-colors">${text}</a>`;
-          });
-      }
-    }
+    const cleanupCodeBlocks = bindCodeBlockInteractions(root);
+    normalizeEmbeddedIframes(root);
+    hydrateProjectEmbeds(root);
 
     return () => {
-      for (const off of openHandlers) {
-        off();
-      }
-      for (const [btn, handler] of copyHandlers.entries()) {
-        btn.removeEventListener("click", handler);
-      }
-      for (const [btn, handler] of expandHandlers.entries()) {
-        btn.removeEventListener("click", handler);
-      }
+      cleanupCodeBlocks();
     };
   }, [htmlContent]);
 
@@ -398,11 +649,26 @@ export function MarkdownBlock({ content, className = "" }: MarkdownBlockProps) {
 
   return (
     <>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: container delegates click events for dynamically rendered markdown images */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: images inside markdown are opened via pointer click */}
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: container delegates click events for dynamically rendered markdown images */}
       <div
-        className={`prose prose-neutral dark:prose-invert prose-hr:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h1:mt-12 prose-h2:mt-10 prose-h3:mt-8 prose-h4:mt-6 prose-h1:mb-6 prose-h2:mb-4 prose-h3:mb-3 prose-h4:mb-2 prose-table:w-full max-w-none prose-table:border-collapse prose-ol:list-decimal prose-ul:list-disc prose-code:rounded prose-pre:rounded-xl prose-td:border prose-th:border prose-hr:border-border prose-td:border-border prose-th:border-border prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-th:bg-muted/50 prose-pre:p-0 prose-code:px-1.5 prose-td:px-3 prose-th:px-3 prose-code:py-0.5 prose-td:py-2 prose-th:py-2 prose-blockquote:pl-4 prose-th:text-left prose-a:font-bold prose-headings:font-bold prose-th:font-semibold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-base prose-td:text-sm prose-th:text-sm prose-blockquote:italic prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:underline-offset-4 prose-a:transition-colors prose-code:before:content-none prose-code:after:content-none hover:prose-a:text-primary/80 [&_.task-list-item]:list-none [&_.task-list-item]:pl-0 [&_iframe]:mx-auto [&_iframe]:my-8 [&_iframe]:block [&_iframe]:max-w-full [&_iframe]:rounded-2xl md:[&_iframe]:max-w-[80%] [&_img]:mx-auto [&_img]:mt-8 [&_img]:mb-12 [&_img]:block [&_img]:max-w-full [&_img]:cursor-zoom-in [&_img]:rounded-2xl [&_img]:border [&_img]:border-border [&_img]:shadow-[0_8px_30px_rgb(0,0,0,0.12)] md:[&_img]:max-w-[75%] lg:[&_img]:max-w-[65%] [&_input[type=checkbox]]:mr-2 [&_input[type=checkbox]]:align-middle [&_ol]:pl-6 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:pl-6 [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square] ${className}
+        className={`prose prose-neutral dark:prose-invert prose-hr:my-8 prose-li:my-1 prose-ol:my-4 prose-p:my-4 prose-ul:my-4 prose-h1:mt-12 prose-h2:mt-10 prose-h3:mt-8 prose-h4:mt-6 prose-h1:mb-6 prose-h2:mb-4 prose-h3:mb-3 prose-h4:mb-2 prose-table:w-full max-w-none prose-table:border-collapse prose-ol:list-decimal prose-ul:list-disc prose-code:rounded prose-pre:rounded-xl prose-td:border prose-th:border prose-hr:border-border prose-td:border-border prose-th:border-border prose-blockquote:border-l-primary/50 prose-code:bg-muted prose-th:bg-muted/50 prose-pre:p-0 prose-code:px-1.5 prose-td:px-3 prose-th:px-3 prose-code:py-0.5 prose-td:py-2 prose-th:py-2 prose-blockquote:pl-4 prose-th:text-left prose-a:font-bold prose-headings:font-bold prose-th:font-semibold prose-a:text-primary prose-blockquote:text-muted-foreground prose-code:text-sm prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-base prose-td:text-sm prose-th:text-sm prose-blockquote:italic prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:underline-offset-4 prose-a:transition-colors prose-code:before:content-none prose-code:after:content-none hover:prose-a:text-primary/80 [&_.task-list-item]:list-none [&_.task-list-item]:pl-0 [&_iframe]:mx-auto [&_iframe]:my-8 [&_iframe]:block [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-3xl [&_iframe]:rounded-2xl [&_iframe]:border [&_iframe]:border-border [&_iframe]:bg-black [&_iframe]:shadow-xl [&_img]:mx-auto [&_img]:mt-8 [&_img]:mb-12 [&_img]:block [&_img]:max-w-full [&_img]:cursor-zoom-in [&_img]:rounded-2xl [&_img]:border [&_img]:border-border [&_img]:shadow-[0_8px_30px_rgb(0,0,0,0.12)] md:[&_img]:max-w-[75%] lg:[&_img]:max-w-[65%] [&_input[type=checkbox]]:mr-2 [&_input[type=checkbox]]:align-middle [&_ol]:pl-6 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:pl-6 [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square] ${className}
       `}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify
         dangerouslySetInnerHTML={{ __html: htmlContent }}
+        onClick={(e) => {
+          const root = containerRef.current;
+          if (!root) {
+            return;
+          }
+          const resolved = resolveClickedLightboxTarget(e.target as HTMLElement | null, root);
+          if (resolved) {
+            e.stopPropagation();
+            setLightboxImages(resolved.items);
+            setLightboxIndex(resolved.index);
+          }
+        }}
         ref={containerRef}
       />
       <ImageLightbox

@@ -210,20 +210,26 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
   const hasTempLocation = tempPosition !== null;
 
   return (
-    <div className='space-y-2'>
+    <div className='w-full min-w-0 space-y-2 overflow-hidden'>
       {}
       {hasLocation ? (
-        <div className='flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2'>
-          <MapPin className='h-4 w-4 shrink-0 text-primary/60' />
-          <div className='min-w-0 flex-1'>
-            <p className='truncate font-medium text-xs'>{nameVi}</p>
-            {nameEn && nameEn !== nameVi && <p className='truncate text-[10px] text-muted-foreground'>{nameEn}</p>}
-            <p className='text-[10px] text-muted-foreground/60'>
+        <div className='flex w-full min-w-0 items-start gap-2 overflow-hidden rounded-lg border bg-muted/30 px-3 py-2'>
+          <MapPin className='mt-0.5 h-4 w-4 shrink-0 text-primary/60' />
+          <div className='min-w-0 flex-1 overflow-hidden'>
+            <p className='line-clamp-2 break-words font-medium text-xs leading-snug' title={nameVi}>
+              {nameVi}
+            </p>
+            {nameEn && nameEn !== nameVi && (
+              <p className='mt-0.5 line-clamp-1 break-all text-[10px] text-muted-foreground' title={nameEn}>
+                {nameEn}
+              </p>
+            )}
+            <p className='mt-0.5 truncate text-[10px] text-muted-foreground/60'>
               {lat?.toFixed(5)}, {lng?.toFixed(5)}
             </p>
           </div>
           <div className='flex shrink-0 items-center gap-1'>
-            <Button className='h-7 text-xs' onClick={handleOpen} size='sm' type='button' variant='outline'>
+            <Button className='h-7 px-2.5 text-xs' onClick={handleOpen} size='sm' type='button' variant='outline'>
               Đổi
             </Button>
             {clearable && (
@@ -234,8 +240,8 @@ export function LocationPicker({ initial, onChange, clearable = true, placeholde
           </div>
         </div>
       ) : (
-        <div className='flex items-start gap-2'>
-          <div className='relative flex-1'>
+        <div className='flex w-full min-w-0 items-start gap-2'>
+          <div className='relative min-w-0 flex-1'>
             <MapPin className='absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
             <Input
               className='h-9 pr-3 pl-8 text-xs'

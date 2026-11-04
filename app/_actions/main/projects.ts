@@ -4,6 +4,7 @@ import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS, _CACHE_PROJECTS, _CACHE_SETTINGS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 export const getProjectsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({
@@ -11,7 +12,7 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
       "use cache: remote";
       cacheTag(_CACHE_PROJECTS);
       const skip = (validPage - 1) * take;
-      const [total, projects] = await Promise.all([
+      const [total, rawProjects] = await Promise.all([
         prisma.project.count({ where: { isActive: true } }),
         prisma.project.findMany({
           where: { isActive: true },
@@ -25,6 +26,8 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
             slug: true,
             description: true,
             descriptionEn: true,
+            content: true,
+            contentEn: true,
             thumbnail: true,
             technologies: true,
             startDate: true,
@@ -46,6 +49,12 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
           }
         })
       ]);
+
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
 
       const totalPages = Math.ceil(total / take);
 
@@ -89,6 +98,8 @@ const PROJECT_CARD_SELECT = {
   slug: true,
   description: true,
   descriptionEn: true,
+  content: true,
+  contentEn: true,
   thumbnail: true,
   technologies: true,
   startDate: true,
@@ -118,12 +129,17 @@ export const getOtherProjects = async (excludeSlug: string) =>
       "use cache: remote";
       cacheTag(_CACHE_PROJECTS);
 
-      const projects = await prisma.project.findMany({
+      const rawProjects = await prisma.project.findMany({
         where: { isActive: true, slug: { not: excludeSlug } },
         orderBy: { createdAt: "desc" },
         take: 4,
         select: PROJECT_CARD_SELECT
       });
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
       return { projects };
     }
   });
@@ -134,12 +150,17 @@ export const getFeaturedProjects = async (take = 4) =>
       "use cache: remote";
       cacheTag(_CACHE_PROJECTS);
 
-      const projects = await prisma.project.findMany({
+      const rawProjects = await prisma.project.findMany({
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
         take,
         select: PROJECT_CARD_SELECT
       });
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
       return { projects };
     }
   });

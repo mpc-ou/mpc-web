@@ -1,9 +1,8 @@
 "use client";
 
-import { ArrowLeft, ImagePlus, Loader2, Save, X } from "lucide-react";
-import Image from "next/image";
+import { Calendar, Code2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   adminCreateProject,
   adminLinkProjectMember,
@@ -11,11 +10,13 @@ import {
   adminUpdateProject,
   adminUpdateProjectMembers
 } from "@/app/_actions/admin";
-import { LanguageToggle, type ViewLanguage } from "@/components/custom/language-toggle";
-import { TranslateButton } from "@/components/forms/translate-button";
+import type { ViewLanguage } from "@/components/custom/language-toggle";
+import type { EditorFormatActions } from "@/components/forms/editor-floating-menus";
+import { PreviewDrawer } from "@/components/forms/preview-drawer";
+import { UnifiedDocumentCanvas } from "@/components/forms/unified-document-canvas";
 import { useBilingualForm } from "@/components/forms/use-bilingual-form";
-import { MarkdownContent } from "@/components/markdown-content";
-import { MarkdownEditor } from "@/components/markdown-editor";
+import { useWorkspaceHistory } from "@/components/forms/use-workspace-history";
+import { type ActiveField, type EditorMode, WorkspaceTopToolbar } from "@/components/forms/workspace-top-toolbar";
 import { type LinkedMember, type MemberOption, MemberSelector } from "@/components/member-selector";
 import { type ImageItem, MultiImageUpload } from "@/components/multi-image-upload";
 import { Button } from "@/components/ui/button";
@@ -23,10 +24,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { STORAGE_BUCKET, STORAGE_PATHS } from "@/constants/storage";
-import { UPLOAD_MAX_BANNER_SIZE } from "@/constants/upload";
 import { useToast } from "@/hooks/use-toast";
-import { pickLang } from "@/lib/utils";
-import { uploadToStorage } from "@/services/supabase-upload";
+import { getFullName, pickLang } from "@/lib/utils";
 import type { ProjectRow } from "./columns";
 
 type Props = {
@@ -34,12 +33,25 @@ type Props = {
   allMembers?: MemberOption[];
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: ProjectForm manages complex state
+const NOOP_FORMAT_ACTIONS: EditorFormatActions = {
+  insertWrap: () => undefined,
+  insertAlignment: () => undefined,
+  insertColor: () => undefined,
+  insertTable: () => undefined,
+  triggerImageUpload: () => undefined
+};
+
+function fmtDate(d: string | null | undefined) {
+  return d ? new Date(d).toISOString().split("T")[0] : "";
+}
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: ProjectForm manages complex state, workspace undo/redo, and 7:3 layout
 export default function ProjectForm({ project, allMembers = [] }: Props) {
   const isEdit = !!project;
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const bi = useBilingualForm(
     project
@@ -56,6 +68,11 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
 
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
 
+  const [startDate, setStartDate] = useState(() => fmtDate(project?.startDate));
+  const [endDate, setEndDate] = useState(() => fmtDate(project?.endDate));
+  const [githubUrl, setGithubUrl] = useState(project?.githubUrl ?? "");
+  const [websiteUrl, setWebsiteUrl] = useState(project?.websiteUrl ?? "");
+  const [videoUrl, setVideoUrl] = useState(project?.videoUrl ?? "");
   const [techs, setTechs] = useState<string[]>(project?.technologies ?? []);
   const [techInput, setTechInput] = useState("");
   const [linked, setLinked] = useState<LinkedMember[]>(() =>
@@ -73,45 +90,83 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
     }))
   );
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(project?.thumbnail ?? null);
-  const [thumbnailUploading, setThumbnailUploading] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const [imagesItems, setImagesItems] = useState<ImageItem[]>(
     ((project as { images?: string[] } | null | undefined)?.images ?? []).map((url) => ({ url }))
   );
 
-  const processThumbnailFile = async (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast({ variant: "destructive", description: "Chỉ chấp nhận file ảnh" });
-      return;
-    }
-    if (file.size > UPLOAD_MAX_BANNER_SIZE) {
-      toast({ variant: "destructive", description: "Ảnh tối đa 8MB" });
-      return;
-    }
-    setThumbnailUploading(true);
-    try {
-      const url = await uploadToStorage(file, STORAGE_BUCKET, STORAGE_PATHS.projects);
-      setThumbnailUrl(url);
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: err instanceof Error ? err.message : "Upload thumbnail thất bại"
-      });
-    } finally {
-      setThumbnailUploading(false);
-      if (thumbnailInputRef.current) {
-        thumbnailInputRef.current.value = "";
-      }
-    }
-  };
+  const [activeField, setActiveField] = useState<ActiveField>("content");
+  const [editorMode, setEditorMode] = useState<EditorMode>("preview-edit");
+  const [formatActions, setFormatActions] = useState<EditorFormatActions>(NOOP_FORMAT_ACTIONS);
+  const [uploadingState, setUploadingState] = useState<{ uploading: boolean; percent: number | null }>({
+    uploading: false,
+    percent: null
+  });
 
-  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processThumbnailFile(file);
-    }
-  };
+  // Global Workspace Snapshot for Undo/Redo
+  const workspaceSnapshot = useMemo(
+    () => ({
+      titleVi: bi.titleVi,
+      titleEn: bi.titleEn,
+      summaryVi: bi.summaryVi,
+      summaryEn: bi.summaryEn,
+      contentVi: bi.contentVi,
+      contentEn: bi.contentEn,
+      startDate,
+      endDate,
+      githubUrl,
+      websiteUrl,
+      videoUrl,
+      techs,
+      thumbnailUrl,
+      imagesItems
+    }),
+    [
+      bi.titleVi,
+      bi.titleEn,
+      bi.summaryVi,
+      bi.summaryEn,
+      bi.contentVi,
+      bi.contentEn,
+      startDate,
+      endDate,
+      githubUrl,
+      websiteUrl,
+      videoUrl,
+      techs,
+      thumbnailUrl,
+      imagesItems
+    ]
+  );
+
+  const handleRestoreSnapshot = useCallback(
+    (snap: typeof workspaceSnapshot) => {
+      bi.setTitleVi(snap.titleVi);
+      bi.setTitleEn(snap.titleEn);
+      bi.setSummaryVi(snap.summaryVi);
+      bi.setSummaryEn(snap.summaryEn);
+      bi.setContentVi(snap.contentVi);
+      bi.setContentEn(snap.contentEn);
+      setStartDate(snap.startDate);
+      setEndDate(snap.endDate);
+      setGithubUrl(snap.githubUrl);
+      setWebsiteUrl(snap.websiteUrl);
+      setVideoUrl(snap.videoUrl);
+      setTechs(snap.techs);
+      setThumbnailUrl(snap.thumbnailUrl);
+      setImagesItems(snap.imagesItems);
+    },
+    [bi]
+  );
+
+  const history = useWorkspaceHistory(workspaceSnapshot, handleRestoreSnapshot);
+
+  const handleRegisterFormatActions = useCallback(
+    (actions: EditorFormatActions, upState: { uploading: boolean; percent: number | null }) => {
+      setFormatActions(actions);
+      setUploadingState(upState);
+    },
+    []
+  );
 
   const addTech = () => {
     const t = techInput.trim();
@@ -168,7 +223,7 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const fd = new FormData(e.currentTarget);
+
     const payload = {
       title: bi.titleVi,
       titleEn: bi.titleEn || undefined,
@@ -177,12 +232,12 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
       content: bi.contentVi ?? undefined,
       contentEn: bi.contentEn ?? undefined,
       thumbnail: thumbnailUrl ?? undefined,
-      githubUrl: (fd.get("githubUrl") as string) || undefined,
-      websiteUrl: (fd.get("websiteUrl") as string) || undefined,
-      videoUrl: (fd.get("videoUrl") as string) || undefined,
+      githubUrl: githubUrl || undefined,
+      websiteUrl: websiteUrl || undefined,
+      videoUrl: videoUrl || undefined,
       technologies: techs,
-      startDate: (fd.get("startDate") as string) || undefined,
-      endDate: (fd.get("endDate") as string) || undefined,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
       images: imagesItems.map((x) => x.url)
     };
 
@@ -232,13 +287,13 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
     }
   };
 
-  const fmtDate = (d: string | null) => (d ? new Date(d).toISOString().split("T")[0] : "");
-
   const getTitle = () => (bi.viewLang === "vi" ? bi.titleVi : bi.titleEn);
   const setTitleField = (v: string) => (bi.viewLang === "vi" ? bi.setTitleVi(v) : bi.setTitleEn(v));
   const getDescription = () => (bi.viewLang === "vi" ? (bi.summaryVi ?? "") : (bi.summaryEn ?? ""));
   const setDescriptionField = (v: string) =>
     bi.viewLang === "vi" ? bi.setSummaryVi(v || null) : bi.setSummaryEn(v || null);
+  const getContent = () => (bi.viewLang === "vi" ? bi.contentVi : bi.contentEn);
+  const setContentField = (v: string) => (bi.viewLang === "vi" ? bi.setContentVi(v) : bi.setContentEn(v));
 
   const translateSrcFields = {
     title: bi.viewLang === "vi" ? bi.titleVi : bi.titleEn,
@@ -246,221 +301,150 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
     content: bi.viewLang === "vi" ? bi.contentVi : bi.contentEn
   };
 
+  const displayTitle = pickLang(bi.viewLang, bi.titleVi, bi.titleEn);
+  const displayDescription = pickLang(bi.viewLang, bi.summaryVi, bi.summaryEn) ?? "";
+  const displayContent = pickLang(bi.viewLang, bi.contentVi, bi.contentEn);
+
+  const previewDateLabel = startDate
+    ? `${new Date(startDate).toLocaleDateString("vi-VN")} → ${endDate ? new Date(endDate).toLocaleDateString("vi-VN") : "Hiện tại"}`
+    : null;
+
   return (
     <div className='flex flex-col gap-6'>
-      <div className='flex items-center justify-between border-b pb-4'>
-        <div className='flex items-center gap-3'>
-          <Button className='h-9 w-9' onClick={() => router.push("/admin/projects")} size='icon' variant='outline'>
-            <ArrowLeft className='h-4 w-4' />
-          </Button>
-          <div>
-            <h1 className='font-bold text-foreground text-lg'>
-              {isEdit ? `Chỉnh sửa: ${project?.title}` : "Thêm dự án mới"}
-            </h1>
-            <p className='text-muted-foreground text-xs'>
-              {isEdit ? "Cập nhật thông tin chi tiết của dự án" : "Tạo một dự án nghiên cứu hoặc sản phẩm mới"}
-            </p>
-          </div>
-        </div>
-        <Button className='h-9' disabled={loading} form='project-form-main' type='submit'>
-          {loading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : <Save className='mr-2 h-4 w-4' />}
-          Lưu dự án
-        </Button>
-      </div>
+      <WorkspaceTopToolbar
+        activeField={activeField}
+        canRedo={history.canRedo}
+        canUndo={history.canUndo}
+        editorMode={editorMode}
+        formatActions={formatActions}
+        formId='project-form-main'
+        heading={isEdit ? `Chỉnh sửa: ${project?.title}` : "Thêm dự án mới"}
+        onBack={() => router.push("/admin/projects")}
+        onEditorModeChange={setEditorMode}
+        onOpenPreview={() => setPreviewOpen(true)}
+        onRedo={history.redo}
+        onTranslated={handleTranslate}
+        onUndo={history.undo}
+        onViewLangChange={bi.setViewLang}
+        saveLabel='Lưu dự án'
+        saving={loading}
+        subheading={isEdit ? "Cập nhật thông tin chi tiết của dự án" : "Tạo một dự án nghiên cứu hoặc sản phẩm mới"}
+        translateFields={translateSrcFields}
+        uploadingImage={uploadingState.uploading}
+        uploadPercent={uploadingState.percent}
+        viewLang={bi.viewLang}
+      />
 
-      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-        {/* Left: Editor */}
-        <form className='flex flex-col gap-6' id='project-form-main' onSubmit={handleSubmit}>
-          {/* Language & Translate bar */}
-          <Card>
-            <CardHeader className='py-3'>
-              <div className='flex flex-wrap items-center justify-between gap-3'>
-                <LanguageToggle onChange={bi.setViewLang} value={bi.viewLang} />
-                <TranslateButton
-                  disabled={!(translateSrcFields.title || translateSrcFields.content)}
-                  fields={translateSrcFields}
-                  from={bi.viewLang}
-                  label={bi.viewLang === "vi" ? "Dịch → 🇬🇧" : "Dịch → 🇻🇳"}
-                  onTranslated={handleTranslate}
-                  to={otherLang}
-                />
-              </div>
-            </CardHeader>
-          </Card>
-
-          {/* Thumbnail + Info */}
-          <Card>
-            <CardHeader className='py-4'>
-              <CardTitle className='font-semibold text-sm'>Thông tin cơ bản</CardTitle>
-            </CardHeader>
-            <CardContent className='grid gap-4'>
-              {/* Thumbnail */}
-              <div className='grid gap-1.5'>
-                <Label>Ảnh thumbnail</Label>
-                {thumbnailUrl ? (
-                  <div className='relative aspect-video max-h-50 overflow-hidden rounded-lg border bg-muted'>
-                    <Image alt='Thumbnail' className='object-cover' fill sizes='400px' src={thumbnailUrl} />
-                    <button
-                      className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black/80'
-                      onClick={() => setThumbnailUrl(null)}
-                      title='Xóa thumbnail'
-                      type='button'
-                    >
-                      <X className='h-4 w-4' />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    className={`flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors disabled:opacity-50 ${isDragOver ? "border-primary bg-primary/10" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}
-                    disabled={thumbnailUploading}
-                    onClick={() => thumbnailInputRef.current?.click()}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      setIsDragOver(false);
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setIsDragOver(true);
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setIsDragOver(false);
-                      if (e.dataTransfer.files?.[0]) {
-                        processThumbnailFile(e.dataTransfer.files[0]);
-                      }
-                    }}
-                    type='button'
-                  >
-                    {thumbnailUploading ? (
-                      <>
-                        <Loader2 className='h-5 w-5 animate-spin' />
-                        <span className='text-xs'>Đang upload...</span>
-                      </>
-                    ) : (
-                      <>
-                        <ImagePlus className='h-5 w-5' />
-                        <span className='text-xs'>Upload thumbnail (max 3MB)</span>
-                      </>
-                    )}
-                  </button>
+      <form
+        className='grid grid-cols-1 items-start gap-6 lg:grid-cols-12'
+        id='project-form-main'
+        onSubmit={handleSubmit}
+      >
+        {/* Left 70%: Unified Document Canvas */}
+        <div className='min-w-0 lg:col-span-8'>
+          <UnifiedDocumentCanvas
+            activeField={activeField}
+            bannerBucket={STORAGE_BUCKET}
+            bannerLabel='Ảnh thumbnail dự án (Kéo thả hoặc nhấp để tải lên)'
+            bannerStoragePath={STORAGE_PATHS.projects}
+            bannerUrl={thumbnailUrl}
+            content={getContent()}
+            contentPlaceholder='Chi tiết dự án (Markdown)...'
+            editorMode={editorMode}
+            inlineMetaBar={
+              <div className='flex min-w-0 flex-wrap items-center gap-4 text-muted-foreground text-xs'>
+                <span className='flex shrink-0 items-center gap-1.5 font-medium text-foreground'>
+                  <Calendar className='h-3.5 w-3.5 shrink-0 text-primary' />
+                  {previewDateLabel || "Chưa chọn ngày dự án (chỉnh ở cột phải)"}
+                </span>
+                {techs.length > 0 && (
+                  <span className='flex min-w-0 items-center gap-1.5 font-medium text-primary'>
+                    <Code2 className='h-3.5 w-3.5 shrink-0' />
+                    <span className='line-clamp-1 min-w-0 break-all'>{techs.join(" • ")}</span>
+                  </span>
                 )}
-                <input
-                  accept='image/*'
-                  className='hidden'
-                  onChange={handleThumbnailUpload}
-                  ref={thumbnailInputRef}
-                  title='Upload thumbnail'
-                  type='file'
-                />
               </div>
+            }
+            onActiveFieldChange={setActiveField}
+            onBannerChange={setThumbnailUrl}
+            onContentChange={setContentField}
+            onRegisterFormatActions={handleRegisterFormatActions}
+            onSummaryChange={setDescriptionField}
+            onTitleChange={setTitleField}
+            summary={getDescription()}
+            summaryPlaceholder='Tóm tắt ngắn gọn về dự án (Hỗ trợ Markdown, có thể để trống)...'
+            title={getTitle()}
+            titlePlaceholder='Nhập tên dự án...'
+          />
+        </div>
 
-              {/* Title */}
-              <div className='grid gap-1.5'>
-                <div className='flex items-center gap-2'>
-                  <Label htmlFor='title'>Tên dự án *</Label>
-                  {bi.viewLang === "vi" && !bi.titleVi && bi.titleEn && (
-                    <span className='rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-600'>fallback</span>
-                  )}
-                  {bi.viewLang === "en" && !bi.titleEn && bi.titleVi && (
-                    <span className='rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-600'>fallback</span>
-                  )}
-                </div>
-                <Input
-                  id='title'
-                  onChange={(e) => setTitleField(e.target.value)}
-                  placeholder='Nhập tên dự án...'
-                  required
-                  value={getTitle()}
-                />
-              </div>
-
-              {/* Description */}
-              <div className='grid gap-1.5'>
-                <Label htmlFor='description'>Mô tả ngắn</Label>
-                <Input
-                  id='description'
-                  onChange={(e) => setDescriptionField(e.target.value)}
-                  placeholder='Tóm tắt ngắn gọn về dự án...'
-                  value={getDescription()}
-                />
-              </div>
-
-              {/* Dates */}
+        {/* Right 30%: Project Info, Links, Techs, Members & Gallery Sidebar */}
+        <div className='flex min-w-0 flex-col gap-5 lg:sticky lg:top-28 lg:col-span-4'>
+          <Card className='min-w-0 overflow-hidden'>
+            <CardHeader className='py-4'>
+              <CardTitle className='font-semibold text-sm'>Thời gian, Liên kết & Công nghệ</CardTitle>
+            </CardHeader>
+            <CardContent className='grid min-w-0 gap-4'>
               <div className='grid grid-cols-2 gap-3'>
                 <div className='grid gap-1.5'>
                   <Label htmlFor='startDate'>Ngày bắt đầu</Label>
                   <Input
-                    defaultValue={fmtDate(project?.startDate ?? null)}
                     id='startDate'
                     name='startDate'
+                    onChange={(e) => setStartDate(e.target.value)}
                     type='date'
+                    value={startDate}
                   />
                 </div>
                 <div className='grid gap-1.5'>
                   <Label htmlFor='endDate'>Ngày kết thúc</Label>
-                  <Input defaultValue={fmtDate(project?.endDate ?? null)} id='endDate' name='endDate' type='date' />
+                  <Input
+                    id='endDate'
+                    name='endDate'
+                    onChange={(e) => setEndDate(e.target.value)}
+                    type='date'
+                    value={endDate}
+                  />
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Markdown content */}
-          <Card>
-            <CardHeader className='py-4'>
-              <CardTitle className='font-semibold text-sm'>Nội dung chi tiết (Markdown)</CardTitle>
-            </CardHeader>
-            <CardContent className='grid gap-4'>
-              <MarkdownEditor
-                defaultValue={bi.viewLang === "vi" ? bi.contentVi : bi.contentEn}
-                key={bi.viewLang}
-                minHeight='240px'
-                name='content'
-                onChange={(v) => (bi.viewLang === "vi" ? bi.setContentVi(v) : bi.setContentEn(v))}
-                placeholder='Chi tiết dự án (Markdown)...'
-              />
-            </CardContent>
-          </Card>
-
-          {/* Tech & Links */}
-          <Card>
-            <CardHeader className='py-4'>
-              <CardTitle className='font-semibold text-sm'>Liên kết & Công nghệ</CardTitle>
-            </CardHeader>
-            <CardContent className='grid gap-4'>
-              <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
+              <div className='grid gap-3'>
                 <div className='grid gap-1.5'>
                   <Label htmlFor='githubUrl'>GitHub Link</Label>
                   <Input
-                    defaultValue={project?.githubUrl ?? ""}
                     id='githubUrl'
                     name='githubUrl'
+                    onChange={(e) => setGithubUrl(e.target.value)}
                     placeholder='https://github.com/...'
                     type='url'
+                    value={githubUrl}
                   />
                 </div>
                 <div className='grid gap-1.5'>
                   <Label htmlFor='websiteUrl'>Website Link</Label>
                   <Input
-                    defaultValue={project?.websiteUrl ?? ""}
                     id='websiteUrl'
                     name='websiteUrl'
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
                     placeholder='https://...'
                     type='url'
+                    value={websiteUrl}
                   />
                 </div>
                 <div className='grid gap-1.5'>
-                  <Label htmlFor='videoUrl'>YouTube Link</Label>
+                  <Label htmlFor='videoUrl'>YouTube / Video Link</Label>
                   <Input
-                    defaultValue={project?.videoUrl ?? ""}
                     id='videoUrl'
                     name='videoUrl'
+                    onChange={(e) => setVideoUrl(e.target.value)}
                     placeholder='https://youtube.com/watch?...'
                     type='url'
+                    value={videoUrl}
                   />
                 </div>
               </div>
 
-              <div className='grid gap-1.5'>
+              <div className='grid gap-1.5 border-t pt-4'>
                 <Label>Công nghệ sử dụng</Label>
                 <div className='flex gap-2'>
                   <Input
@@ -480,7 +464,7 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
                   </Button>
                 </div>
                 {techs.length > 0 && (
-                  <div className='mt-1 flex flex-wrap gap-1'>
+                  <div className='mt-1.5 flex flex-wrap gap-1.5'>
                     {techs.map((t) => (
                       <span
                         className='inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 font-medium text-primary text-xs'
@@ -488,7 +472,7 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
                       >
                         {t}
                         <button
-                          className='ml-1 font-bold text-muted-foreground hover:text-destructive'
+                          className='ml-1 cursor-pointer font-bold text-muted-foreground hover:text-destructive'
                           onClick={() => setTechs(techs.filter((x) => x !== t))}
                           type='button'
                         >
@@ -502,23 +486,6 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
             </CardContent>
           </Card>
 
-          {/* Gallery */}
-          <Card>
-            <CardHeader className='py-4'>
-              <CardTitle className='font-semibold text-sm'>Thư viện ảnh bổ sung</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <MultiImageUpload
-                initialImages={imagesItems}
-                label='Ảnh bổ sung dự án'
-                maxImages={10}
-                onChange={setImagesItems}
-                storagePath='projects/gallery'
-              />
-            </CardContent>
-          </Card>
-
-          {/* Members */}
           <Card>
             <CardHeader className='py-4'>
               <CardTitle className='font-semibold text-sm'>Thành viên tham gia</CardTitle>
@@ -536,62 +503,43 @@ export default function ProjectForm({ project, allMembers = [] }: Props) {
               />
             </CardContent>
           </Card>
-        </form>
 
-        {/* Right: Preview */}
-        <div className='sticky top-6 hidden max-h-[calc(100vh-80px)] flex-col gap-4 overflow-y-auto rounded-xl border bg-background/50 p-6 backdrop-blur-md lg:flex'>
-          <div className='flex items-center justify-between border-b pb-2'>
-            <h2 className='font-bold text-muted-foreground text-sm uppercase tracking-wider'>Xem trước giao diện</h2>
-            <LanguageToggle onChange={bi.setViewLang} value={bi.viewLang} />
-          </div>
-
-          {thumbnailUrl && (
-            <div className='relative aspect-video w-full overflow-hidden rounded-lg border bg-muted'>
-              <Image
-                alt={getTitle() || "Project Thumbnail"}
-                className='object-cover'
-                fill
-                sizes='500px'
-                src={thumbnailUrl}
+          <Card>
+            <CardHeader className='py-4'>
+              <CardTitle className='font-semibold text-sm'>Thư viện ảnh bổ sung</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MultiImageUpload
+                initialImages={imagesItems}
+                label='Ảnh bổ sung dự án'
+                maxImages={10}
+                onChange={setImagesItems}
+                storagePath='projects/gallery'
               />
-            </div>
-          )}
-
-          <div>
-            <h1 className='font-bold text-2xl text-foreground'>
-              {getTitle() || (bi.viewLang === "vi" ? "Tên dự án hiển thị ở đây" : "Project name appears here")}
-            </h1>
-            {getDescription() && (
-              <p className='mt-2 text-muted-foreground text-sm leading-relaxed'>{getDescription()}</p>
-            )}
-          </div>
-
-          {techs.length > 0 && (
-            <div className='flex flex-wrap gap-1.5'>
-              {techs.map((tech) => (
-                <span
-                  className='rounded-full border bg-secondary px-2.5 py-0.5 font-medium text-secondary-foreground text-xs'
-                  key={tech}
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {pickLang(bi.viewLang, bi.contentVi, bi.contentEn) ? (
-            <div className='border-t pt-4'>
-              <MarkdownContent content={pickLang(bi.viewLang, bi.contentVi, bi.contentEn)} />
-            </div>
-          ) : (
-            <div className='border-t pt-4 text-center text-muted-foreground text-xs italic'>
-              {bi.viewLang === "vi"
-                ? "Nội dung chi tiết (Markdown) sẽ được hiển thị ở đây..."
-                : "Project details (Markdown) will appear here..."}
-            </div>
-          )}
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </form>
+
+      <PreviewDrawer
+        bannerUrl={thumbnailUrl}
+        content={displayContent}
+        dateLabel={previewDateLabel}
+        galleryUrls={imagesItems.map((i) => i.url)}
+        membersList={linked.map((l) => ({
+          id: l.member.id,
+          label: `${getFullName(l.member.firstName, l.member.middleName, l.member.lastName, "vi")}${l.role ? ` (${l.role})` : ""}`
+        }))}
+        onOpenChange={setPreviewOpen}
+        onViewLangChange={bi.setViewLang}
+        open={previewOpen}
+        summary={displayDescription}
+        tagPrefix=''
+        tags={techs}
+        title={displayTitle}
+        titlePlaceholder='Tên dự án hiển thị ở đây'
+        viewLang={bi.viewLang}
+      />
     </div>
   );
 }

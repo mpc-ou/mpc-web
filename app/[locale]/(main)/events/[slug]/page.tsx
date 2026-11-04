@@ -1,11 +1,13 @@
-import { ArrowRight, Calendar, ChevronLeft, Clock, MapPin, UserCircle, Users } from "lucide-react";
+import { ArrowRight, Calendar, ChevronLeft, Clock, MapPin, Pencil, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getEventBySlug, getRecentEvents } from "@/app/_actions/main";
+import { checkUserIsAdmin, getEventBySlug, getRecentEvents } from "@/app/_actions/main";
 import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { EventJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +19,7 @@ import type { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { SITE_URL } from "@/constants/seo";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import { resolvePostSummary, stripMarkdownToPlainText } from "@/utils/markdown-summary";
 import { generatePageSeo } from "@/utils/seo";
 import { EventCard } from "../_components/event-card.client";
 import type { EventListItem } from "../client";
@@ -98,10 +101,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   const tagNames = event.tags?.map((t) => t.tag.name).filter(Boolean) ?? [];
+  const plainDesc = stripMarkdownToPlainText(resolvePostSummary(event.description, event.content));
   return generatePageSeo({
     page: "eventDetail",
     title: event.title,
-    description: event.description || undefined,
+    description: plainDesc || undefined,
     locale: locale || "vi",
     pathname: `/events/${slug}`,
     image: event.thumbnail || undefined,
@@ -115,11 +119,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EventDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
-  const [{ data }, { data: recentData }, t] = await Promise.all([
+  const [{ data }, { data: recentData }, { data: isAdminData }, t] = await Promise.all([
     getEventBySlug(slug, locale),
     getRecentEvents(5, locale),
+    checkUserIsAdmin(),
     getTranslations({ locale, namespace: "events" })
   ]);
+
+  const canEdit = isAdminData?.payload ?? false;
 
   const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
@@ -205,14 +212,28 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
       )}
 
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        {/* Back */}
-        <div className='py-5'>
+        {/* Back + Admin Quick Edit */}
+        <div className='flex items-center justify-between gap-3 py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href='/events'>
               <ChevronLeft className='mr-1 h-4 w-4' />
               {t("backToList")}
             </Link>
           </Button>
+          {canEdit && (
+            <Button
+              asChild
+              className='h-8 gap-1.5 border-primary/30 bg-primary/5 text-primary hover:bg-primary/15'
+              size='sm'
+              title='Chỉnh sửa sự kiện trong Admin'
+              variant='outline'
+            >
+              <NextLink href={`/admin/posts/${event.id}/edit`}>
+                <Pencil className='h-3.5 w-3.5' />
+                <span className='text-xs'>Chỉnh sửa</span>
+              </NextLink>
+            </Button>
+          )}
         </div>
 
         <ScrollReveal>
@@ -234,13 +255,14 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
               </Badge>
             )}
             {event.tags?.map((tTag) => (
-              <Badge
-                className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
-                key={tTag.tag.id}
-                variant='outline'
-              >
-                #{tTag.tag.name}
-              </Badge>
+              <Link href={`/search?q=${encodeURIComponent(tTag.tag.name)}` as "/"} key={tTag.tag.id}>
+                <Badge
+                  className='cursor-pointer border-none bg-primary/10 px-3 py-1 text-primary transition-colors hover:bg-primary/20'
+                  variant='outline'
+                >
+                  #{tTag.tag.name}
+                </Badge>
+              </Link>
             ))}
           </div>
 
@@ -292,17 +314,17 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
 
           {/* Description / lead */}
           {event.description && (
-            <p className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
-              {event.description}
-            </p>
+            <div className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
+              <MarkdownInline content={event.description} />
+            </div>
           )}
         </ScrollReveal>
 
         <Separator className='mb-10' />
 
-        {/* ── BODY + SIDEBAR ── */}
-        <div className='flex flex-col gap-10 lg:flex-row lg:gap-12'>
-          <div className='min-w-0 flex-1'>
+        {/* ── FULL-WIDTH BODY ── */}
+        <div className='w-full space-y-10'>
+          <div className='w-full min-w-0'>
             {event.sponsorships && event.sponsorships.length > 0 && (
               <ScrollReveal className='mb-8'>
                 <div className='space-y-2 rounded-xl border bg-muted/30 p-5'>
@@ -340,15 +362,11 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             )}
           </div>
 
-          {/* Sidebar: Gallery + Organizers */}
+          {/* Bottom: Organizers & Compact Gallery Strip */}
           {(hasGallery || (event.organizers && event.organizers.length > 0)) && (
-            <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
-              {hasGallery && (
-                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
-              )}
-
+            <div className='space-y-6 border-border/60 border-t pt-8'>
               {event.organizers && event.organizers.length > 0 && (
-                <div className='rounded-xl border bg-muted/30 p-5'>
+                <div className='rounded-2xl border border-border/60 bg-muted/20 p-4 sm:p-5'>
                   <div className='mb-3 flex items-center gap-1.5 font-bold text-muted-foreground text-xs uppercase tracking-wider'>
                     <Users className='h-3.5 w-3.5' />
                     {t("organizersTitle")}
@@ -380,7 +398,11 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                   </div>
                 </div>
               )}
-            </aside>
+
+              {hasGallery && (
+                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
+              )}
+            </div>
           )}
         </div>
 

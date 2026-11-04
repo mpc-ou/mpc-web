@@ -10,7 +10,7 @@ import type { WebDesignExhibitionItem } from "@/types/webdesign";
 import { ExhibitionDetailModal, ExhibitionShowcaseCard } from "./exhibition-showcase-card";
 import { WD_SECTION_IDS, WdSection } from "./wd-primitives";
 
-const MAX_FEATURED_ITEMS = 6;
+const MAX_FEATURED_ITEMS = 4;
 
 export function WebDesignExhibitionClient({ teams }: { teams: WebDesignExhibitionItem[] }) {
   const t = useTranslations("webdesign");
@@ -38,7 +38,7 @@ export function WebDesignExhibitionClient({ teams }: { teams: WebDesignExhibitio
           />
           <Link
             className='mb-10 inline-flex items-center gap-2 rounded-xl border border-orange-500/35 bg-orange-500/10 px-4 py-2.5 font-bold font-mono text-orange-400 text-xs transition-all hover:-translate-y-0.5 hover:border-orange-500/60 hover:bg-orange-500/15'
-            href='/web-design-exhibition'
+            href='/web-design/exhibitions'
           >
             <Sparkles className='h-3.5 w-3.5' />
             {t("viewAllExhibitions")} ({sortedTeams.length})
@@ -79,7 +79,7 @@ export function WebDesignExhibitionClient({ teams }: { teams: WebDesignExhibitio
           </div>
           <Link
             className='inline-flex h-12 shrink-0 items-center gap-2.5 rounded-xl bg-[#ff5e00] px-6 font-extrabold text-sm text-white shadow-[0_12px_28px_-10px_rgba(255,94,0,0.65)] transition-colors hover:bg-[#ff7a2e]'
-            href='/web-design-exhibition'
+            href='/web-design/exhibitions'
           >
             {t("viewAllExhibitions")}
             <ArrowRight className='h-4 w-4' />

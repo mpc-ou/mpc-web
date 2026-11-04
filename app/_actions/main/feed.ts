@@ -4,6 +4,7 @@ import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_EVENTS, _CACHE_POSTS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 export type FeedKind = "event" | "achievement" | "blog";
 
@@ -27,6 +28,8 @@ const FEED_SELECT = {
   slug: true,
   summaryVi: true,
   summaryEn: true,
+  contentVi: true,
+  contentEn: true,
   thumbnail: true,
   isPinned: true,
   publishedAt: true,
@@ -67,18 +70,22 @@ export const getLatestFeed = async (locale = "vi", perKind = 5) =>
 
       const isEn = locale === "en";
       type Row = (typeof events)[number];
-      const toItem = (row: Row, kind: FeedKind, date: Date | null): FeedItem => ({
-        id: row.id,
-        kind,
-        slug: row.slug,
-        title: isEn && row.titleEn ? row.titleEn : row.titleVi,
-        summary: isEn && row.summaryEn ? row.summaryEn : row.summaryVi,
-        thumbnail: row.thumbnail,
-        date: (date ?? row.publishedAt ?? row.createdAt).toISOString(),
-        isPinned: row.isPinned,
-        eventStatus: row.eventStatus,
-        eventType: row.eventType
-      });
+      const toItem = (row: Row, kind: FeedKind, date: Date | null): FeedItem => {
+        const rawSummary = isEn && row.summaryEn ? row.summaryEn : row.summaryVi;
+        const rawContent = isEn && row.contentEn ? row.contentEn : row.contentVi;
+        return {
+          id: row.id,
+          kind,
+          slug: row.slug,
+          title: isEn && row.titleEn ? row.titleEn : row.titleVi,
+          summary: resolvePostSummary(rawSummary, rawContent) || null,
+          thumbnail: row.thumbnail,
+          date: (date ?? row.publishedAt ?? row.createdAt).toISOString(),
+          isPinned: row.isPinned,
+          eventStatus: row.eventStatus,
+          eventType: row.eventType
+        };
+      };
 
       return {
         items: [

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FtsRow } from "@/app/_actions/main";
 import { searchAll } from "@/app/_actions/main";
+import { MarkdownInline } from "@/components/markdown-inline";
 import type { SearchSection } from "@/types/search";
 import { getSearchItemUrl } from "@/utils/search-url";
 
@@ -248,9 +249,9 @@ function SearchResults({
                     </span>
                     <div className='min-w-0 flex-1'>
                       <h3 className='truncate font-medium'>{item.title}</h3>
-                      <p className='mt-0.5 line-clamp-2 text-muted-foreground text-sm'>
-                        {item.extra ?? item.summary ?? item.author_name ?? ""}
-                      </p>
+                      <div className='mt-0.5 line-clamp-2 text-muted-foreground text-sm'>
+                        <MarkdownInline content={item.extra ?? item.summary ?? item.author_name ?? ""} disableLinks />
+                      </div>
                     </div>
                   </a>
                 ))}

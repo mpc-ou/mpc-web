@@ -3,6 +3,7 @@
 import { Trophy } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { Link } from "@/configs/i18n/routing";
 import { formatLocalDate } from "@/utils/handle-datetime";
 import { HonoreeAvatar, initialsOf } from "./honoree-avatar";
@@ -56,6 +57,11 @@ export function AchievementCard({ post }: { post: AchievementPost }) {
         <h3 className='line-clamp-2 text-pretty font-extrabold text-[17px] leading-snug transition-colors group-hover:text-primary'>
           {post.title}
         </h3>
+        {post.summary && (
+          <div className='line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
+            <MarkdownInline content={post.summary} disableLinks />
+          </div>
+        )}
         {post.members.length > 0 && (
           <div className='mt-auto flex items-center justify-between border-border border-t pt-3'>
             <div className='flex -space-x-1.5'>

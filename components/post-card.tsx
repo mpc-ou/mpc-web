@@ -3,6 +3,7 @@
 import { CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
 import { formatLocalDate } from "@/utils/handle-datetime";
@@ -146,13 +147,19 @@ function ThumbnailOverlays({ data }: { data: PostCardData }) {
       {/* Blog tags */}
       {data.variant === "blog" &&
         data.tags?.slice(0, 2).map((t) => (
-          <Badge
-            className='bg-background/80 text-foreground shadow-xs backdrop-blur-md hover:bg-background/90'
+          <Link
+            className='relative z-10'
+            href={`/search?q=${encodeURIComponent(t.nameVi)}` as "/"}
             key={t.nameVi}
-            variant='secondary'
+            onClick={(e) => e.stopPropagation()}
           >
-            <TagLabel tag={t} />
-          </Badge>
+            <Badge
+              className='cursor-pointer bg-background/80 text-foreground shadow-xs backdrop-blur-md transition-colors hover:bg-primary hover:text-primary-foreground'
+              variant='secondary'
+            >
+              #<TagLabel tag={t} />
+            </Badge>
+          </Link>
         ))}
       {/* Event status */}
       {data.variant === "event" && data.statusBadge && (
@@ -197,7 +204,11 @@ function CardContent({ data }: { data: PostCardData }) {
       <h3 className='mb-1.5 line-clamp-2 font-bold text-base leading-snug transition-colors group-hover:text-primary'>
         {title}
       </h3>
-      {summary && <p className='mb-3 line-clamp-2 text-muted-foreground text-sm leading-relaxed'>{summary}</p>}
+      {summary && (
+        <div className='mb-3 line-clamp-2 text-muted-foreground text-sm leading-relaxed'>
+          <MarkdownInline content={summary} disableLinks />
+        </div>
+      )}
       {renderFooter(data, locale)}
     </div>
   );

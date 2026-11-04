@@ -91,6 +91,14 @@
       "OTHER": "Other"
     },
     "learnMore": "Learn more",
+    "viewTimeline": "Timeline",
+    "viewGrid": "Grid View",
+    "allYears": "All Years",
+    "yearBadge": "Year {year}",
+    "yearEventsCount": "{count} events",
+    "loadMore": "Load more events",
+    "loadingMore": "Loading more...",
+    "showingCount": "Showing {visible} of {total} events",
     "recap": {
       "title": "Year Recap",
       "subtitle": "Look back at the club's journey through the years",

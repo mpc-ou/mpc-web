@@ -46,6 +46,7 @@ export function MultiImageUpload({
 
   const [images, setImages] = useState<ImageItem[]>(normalizedInitial);
   const [uploading, setUploading] = useState(false);
+  const [uploadPercent, setUploadPercent] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -74,8 +75,10 @@ export function MultiImageUpload({
     }
 
     setUploading(true);
+    setUploadPercent(1);
     const newItems: ImageItem[] = [];
-    for (const file of allowed) {
+    for (let idx = 0; idx < allowed.length; idx++) {
+      const file = allowed[idx];
       if (!file.type.startsWith("image/")) {
         toast({
           variant: "destructive",
@@ -91,7 +94,10 @@ export function MultiImageUpload({
         continue;
       }
       try {
-        const url = await uploadToStorage(file, STORAGE_BUCKET, storagePath);
+        const url = await uploadToStorage(file, STORAGE_BUCKET, storagePath, (filePct) => {
+          const overall = Math.round(((idx + filePct / 100) / allowed.length) * 100);
+          setUploadPercent(overall);
+        });
         await adminRegisterTempImage(url);
         newItems.push({ url, title: "", caption: "" });
       } catch (err) {
@@ -102,6 +108,7 @@ export function MultiImageUpload({
       }
     }
     setUploading(false);
+    setUploadPercent(0);
     const updated = [...images, ...newItems];
     setImages(updated);
     onChange(updated);
@@ -207,10 +214,15 @@ export function MultiImageUpload({
           type='button'
         >
           {uploading ? (
-            <>
-              <Loader2 className='h-5 w-5 animate-spin' />
-              <span className='text-xs'>Đang upload...</span>
-            </>
+            <div className='flex w-full max-w-xs flex-col items-center gap-2 px-4'>
+              <div className='flex items-center gap-2 font-mono text-primary text-xs'>
+                <Loader2 className='h-4 w-4 animate-spin' />
+                <span>Đang tải lên... {uploadPercent}%</span>
+              </div>
+              <div className='h-1.5 w-full overflow-hidden rounded-full bg-muted'>
+                <div className='h-full bg-primary transition-all duration-150' style={{ width: `${uploadPercent}%` }} />
+              </div>
+            </div>
           ) : (
             <>
               <ImagePlus className='h-5 w-5' />

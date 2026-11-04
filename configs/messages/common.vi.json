@@ -38,7 +38,13 @@
         "unknownError": "Lỗi không xác định. Vui lòng liên hệ quản trị viên."
       }
     },
-    "clubFullName": "Câu lạc bộ Lập trình trên Thiết bị Di động"
+    "clubFullName": "Câu lạc bộ Lập trình trên Thiết bị Di động",
+    "gallery": {
+      "title": "Hình ảnh ({count})",
+      "viewAll": "Xem tất cả ({count})",
+      "viewAllAria": "Xem tất cả {count} ảnh",
+      "viewImageAria": "Xem ảnh {index}"
+    }
   },
   "header": {
     "logoName": "MPC",

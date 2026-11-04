@@ -11,13 +11,10 @@ const nextConfig: NextConfig = {
         hostname: "tsqyqazktzyicxccdpfy.supabase.co"
       },
       {
-        // Fallback avatar generator (see utils/dicebear-avatar.ts), serves SVG
         protocol: "https",
         hostname: "api.dicebear.com"
       },
       {
-        // Live website screenshot service used for webdesign contest thumbnails
-        // (see configs/data/wd.json)
         protocol: "https",
         hostname: "image.thum.io"
       },
@@ -47,6 +44,11 @@ const nextConfig: NextConfig = {
     {
       source: "/activities/webdesign",
       destination: "/en/web-design",
+      permanent: true
+    },
+    {
+      source: "/:locale(vi|en)/web-design-exhibition",
+      destination: "/:locale/web-design/exhibitions",
       permanent: true
     }
   ],

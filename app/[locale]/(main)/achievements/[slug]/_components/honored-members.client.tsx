@@ -50,45 +50,47 @@ export function HonoredMembers({ members, locale }: Props) {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-3'>
       <h3 className='font-bold text-muted-foreground text-xs uppercase tracking-wider'>
         {t("honoredMembers")} ({members.length})
       </h3>
 
-      <div className='flex flex-col gap-3'>
+      <div className='-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]'>
         {members.map((m) => {
           const avatarSrc = m.member.avatar || getDiceBearUrl(m.member.id);
           const honorImg = m.imageUrl;
+          const fullName = getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale);
 
           return (
             <div
-              className='group overflow-hidden rounded-lg border bg-card shadow-xs transition-all hover:border-amber-500/40 hover:shadow-md'
+              className='group w-48 shrink-0 snap-start overflow-hidden rounded-xl border bg-card shadow-xs transition-all hover:-translate-y-0.5 hover:border-amber-500/40 hover:shadow-md sm:w-52 md:w-56'
               key={m.id}
             >
-              {/* Honor Image - full width */}
+              {/* Honor Image - compact 4:3 card header */}
               <div className='relative w-full overflow-hidden bg-muted'>
                 {honorImg ? (
                   <>
                     <div className='relative aspect-4/3 w-full'>
                       <Image
-                        alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
+                        alt={fullName}
                         className='object-cover transition-transform duration-500 group-hover:scale-105'
                         fill
-                        sizes='(min-width: 768px) 33vw, 100vw'
+                        sizes='224px'
                         src={honorImg}
                       />
                     </div>
                     <button
-                      className='absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/20 group-hover:opacity-100'
+                      aria-label={`Phóng to ảnh của ${fullName}`}
+                      className='absolute inset-0 flex cursor-zoom-in items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/25 group-hover:opacity-100'
                       onClick={() => setActiveIndex(honorImages.findIndex((img) => img.url === honorImg))}
                       type='button'
                     >
-                      <ZoomIn className='h-8 w-8 rounded-full bg-white/90 p-1.5 text-slate-900 shadow-lg' />
+                      <ZoomIn className='h-7 w-7 rounded-full bg-white/90 p-1.5 text-slate-900 shadow-lg' />
                     </button>
                   </>
                 ) : (
                   <div className='flex aspect-4/3 w-full flex-col items-center justify-center bg-muted/40'>
-                    <Trophy className='mb-1 h-8 w-8 text-amber-500/20' />
+                    <Trophy className='mb-1 h-7 w-7 text-amber-500/25' />
                   </div>
                 )}
                 {/* Prize Badge */}
@@ -103,27 +105,26 @@ export function HonoredMembers({ members, locale }: Props) {
               </div>
 
               {/* Member info */}
-              <div className='flex items-center gap-3 p-3'>
+              <div className='flex items-center gap-2.5 p-2.5'>
                 <Link
-                  className='relative h-9 w-9 shrink-0 overflow-hidden rounded-full ring-2 ring-amber-500/20 transition-all group-hover:ring-amber-500/40'
+                  className='relative h-8 w-8 shrink-0 overflow-hidden rounded-full ring-2 ring-amber-500/20 transition-all group-hover:ring-amber-500/40'
                   href={`/members/${m.member.slug || m.member.id}` as "/"}
                 >
-                  <Image
-                    alt={getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
-                    className='object-cover'
-                    fill
-                    sizes='36px'
-                    src={avatarSrc}
-                  />
+                  <Image alt={fullName} className='object-cover' fill sizes='32px' src={avatarSrc} />
                 </Link>
                 <div className='min-w-0 flex-1'>
                   <Link
-                    className='block truncate font-semibold text-foreground text-sm transition-colors hover:text-amber-500'
+                    className='block truncate font-semibold text-foreground text-xs transition-colors hover:text-amber-500'
                     href={`/members/${m.member.slug || m.member.id}` as "/"}
+                    title={fullName}
                   >
-                    {getFullName(m.member.firstName, m.member.middleName, m.member.lastName, locale)}
+                    {fullName}
                   </Link>
-                  {m.role && <p className='truncate text-muted-foreground text-xs'>{m.role}</p>}
+                  {m.role && (
+                    <p className='truncate text-[11px] text-muted-foreground' title={m.role}>
+                      {m.role}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

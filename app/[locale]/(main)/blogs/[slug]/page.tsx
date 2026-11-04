@@ -3,9 +3,9 @@ import {
   Calendar,
   ChevronLeft,
   Clock,
-  Edit3,
   ExternalLink,
   MapPin,
+  Pencil,
   Star,
   Trophy,
   UserCircle,
@@ -13,10 +13,12 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import NextLink from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { checkUserIsAdmin, getBlogBySlug, getBlogBySlugForUser, getRelatedPosts } from "@/app/_actions/main";
 import { MarkdownContent } from "@/components/markdown-content";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { ArticleJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +29,7 @@ import { Link } from "@/configs/i18n/routing";
 import { SITE_URL } from "@/constants/seo";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import { resolvePostSummary, stripMarkdownToPlainText } from "@/utils/markdown-summary";
 import { generatePageSeo } from "@/utils/seo";
 
 type Props = {
@@ -111,11 +114,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : undefined;
   const tagNames =
     blog.tags?.map((tTag) => (locale === "en" ? tTag.tag.nameEn : tTag.tag.nameVi)).filter(Boolean) ?? [];
+  const plainDesc = stripMarkdownToPlainText(resolvePostSummary(blog.description, blog.content));
 
   return generatePageSeo({
     page: "blogDetail",
     title: blog.title,
-    description: blog.description || undefined,
+    description: plainDesc || undefined,
     locale: locale || "vi",
     pathname: `/blogs/${slug}`,
     image: blog.thumbnail || undefined,
@@ -281,13 +285,27 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
       )}
 
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        <div className='py-5'>
+        <div className='flex items-center justify-between gap-3 py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href={backHref as "/"}>
               <ChevronLeft className='mr-1 h-4 w-4' />
               {backLabel}
             </Link>
           </Button>
+          {canEdit && (
+            <Button
+              asChild
+              className='h-8 gap-1.5 border-primary/30 bg-primary/5 text-primary hover:bg-primary/15'
+              size='sm'
+              title='Chỉnh sửa bài viết trong Admin'
+              variant='outline'
+            >
+              <NextLink href={`/admin/posts/${blog.id}/edit`}>
+                <Pencil className='h-3.5 w-3.5' />
+                <span className='text-xs'>Chỉnh sửa</span>
+              </NextLink>
+            </Button>
+          )}
         </div>
 
         <ScrollReveal>
@@ -311,13 +329,14 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
             {blog.tags?.map((tTag) => {
               const name = locale === "en" ? tTag.tag.nameEn : tTag.tag.nameVi;
               return (
-                <Badge
-                  className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
-                  key={tTag.tag.id}
-                  variant='outline'
-                >
-                  #{name}
-                </Badge>
+                <Link href={`/search?q=${encodeURIComponent(name)}` as "/"} key={tTag.tag.id}>
+                  <Badge
+                    className='cursor-pointer border-none bg-primary/10 px-3 py-1 text-primary transition-colors hover:bg-primary/20'
+                    variant='outline'
+                  >
+                    #{name}
+                  </Badge>
+                </Link>
               );
             })}
           </div>
@@ -358,27 +377,19 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
                 {dateLabel}
               </span>
             )}
-            {canEdit && (
-              <Link href={`/admin/posts/${blog.id}/edit` as "/"}>
-                <Button className='h-8' size='sm' variant='outline'>
-                  <Edit3 className='mr-1.5 h-3.5 w-3.5' />
-                  Sửa bài
-                </Button>
-              </Link>
-            )}
           </div>
 
           {blog.description && (
-            <p className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
-              {blog.description}
-            </p>
+            <div className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
+              <MarkdownInline content={blog.description} />
+            </div>
           )}
         </ScrollReveal>
 
         <Separator className='mb-10' />
 
-        <div className={`flex flex-col gap-10 ${hasGallery ? "lg:flex-row lg:gap-12" : ""}`}>
-          <div className={`min-w-0 ${hasGallery ? "flex-1 lg:w-[70%]" : "w-full"}`}>
+        <div className='w-full space-y-10'>
+          <div className='w-full min-w-0'>
             {isEvent && (
               <ScrollReveal className='mb-8'>
                 <div className='space-y-3 rounded-xl border bg-muted/30 p-5'>
@@ -502,9 +513,9 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
           </div>
 
           {hasGallery && (
-            <aside className='w-full shrink-0 lg:w-[30%] xl:w-72'>
+            <div className='border-border/60 border-t pt-8'>
               <PostGalleryPanel images={galleryData} />
-            </aside>
+            </div>
           )}
         </div>
 
@@ -552,9 +563,9 @@ export default async function BlogDetailPage({ params }: Props): Promise<React.R
                         {post.title}
                       </h3>
                       {post.description && (
-                        <p className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
-                          {post.description}
-                        </p>
+                        <div className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
+                          <MarkdownInline content={post.description} disableLinks />
+                        </div>
                       )}
                     </div>
                   </Link>

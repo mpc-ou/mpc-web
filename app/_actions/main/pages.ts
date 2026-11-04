@@ -13,6 +13,7 @@ import {
 } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 import { groupRolesByTerm, LEADERSHIP_POSITIONS, vnYear } from "@/utils/leadership-terms";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 const ACHIEVEMENT_SELECT = {
   id: true,
@@ -182,21 +183,26 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
       );
 
       return {
-        achievements: achievements.map((a) => ({
-          id: a.id,
-          slug: a.slug,
-          title: isEn && a.titleEn ? a.titleEn : a.titleVi,
-          thumbnail: a.thumbnail,
-          date: a.achievementDate?.toISOString() ?? null,
-          type: a.achievementType,
-          isHighlight: a.isHighlight,
-          members: a.achievementMembers.map((am) => ({
-            id: am.member.id,
-            firstName: am.member.firstName,
-            lastName: am.member.lastName,
-            avatar: am.member.avatar
-          }))
-        })),
+        achievements: achievements.map((a) => {
+          const rawSummary = isEn && a.summaryEn ? a.summaryEn : a.summaryVi;
+          const rawContent = isEn && a.contentEn ? a.contentEn : a.contentVi;
+          return {
+            id: a.id,
+            slug: a.slug,
+            title: isEn && a.titleEn ? a.titleEn : a.titleVi,
+            summary: resolvePostSummary(rawSummary, rawContent) || null,
+            thumbnail: a.thumbnail,
+            date: a.achievementDate?.toISOString() ?? null,
+            type: a.achievementType,
+            isHighlight: a.isHighlight,
+            members: a.achievementMembers.map((am) => ({
+              id: am.member.id,
+              firstName: am.member.firstName,
+              lastName: am.member.lastName,
+              avatar: am.member.avatar
+            }))
+          };
+        }),
         total,
         totalPages: Math.ceil(total / take),
         people,
@@ -258,6 +264,8 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
           slug: true,
           summaryVi: true,
           summaryEn: true,
+          contentVi: true,
+          contentEn: true,
           thumbnail: true,
           achievementDate: true,
           achievementType: true,
@@ -266,13 +274,17 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
       });
       const isEn = locale === "en";
       return {
-        achievements: achievements.map((a) => ({
-          ...a,
-          title: isEn && a.titleEn ? a.titleEn : a.titleVi,
-          summary: isEn && a.summaryEn ? a.summaryEn : a.summaryVi,
-          date: a.achievementDate?.toISOString() ?? null,
-          type: a.achievementType
-        }))
+        achievements: achievements.map(({ contentVi, contentEn, ...a }) => {
+          const rawSummary = isEn && a.summaryEn ? a.summaryEn : a.summaryVi;
+          const rawContent = isEn && contentEn ? contentEn : contentVi;
+          return {
+            ...a,
+            title: isEn && a.titleEn ? a.titleEn : a.titleVi,
+            summary: resolvePostSummary(rawSummary, rawContent) || null,
+            date: a.achievementDate?.toISOString() ?? null,
+            type: a.achievementType
+          };
+        })
       };
     }
   });

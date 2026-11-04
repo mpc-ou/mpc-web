@@ -100,6 +100,7 @@ const ImageLightbox = ({ images, initialIndex = 0, open, onClose, title }: Props
       aria-label={title ?? current.title ?? "Image viewer"}
       aria-modal
       className='fade-in fixed inset-0 z-9999 flex animate-in select-none flex-col bg-black/95 text-white backdrop-blur-sm duration-200'
+      data-lightbox-portal='true'
       role='dialog'
     >
       <div className='relative z-10 flex items-center gap-3 px-4 py-3 sm:px-6'>

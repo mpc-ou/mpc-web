@@ -4,6 +4,7 @@ import { cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_EVENTS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 export const getEventsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
@@ -34,6 +35,8 @@ export const getEventsPageData = async (validPage: number, take: number, locale 
             slug: true,
             summaryVi: true,
             summaryEn: true,
+            contentVi: true,
+            contentEn: true,
             thumbnail: true,
             startAt: true,
             endAt: true,
@@ -50,17 +53,22 @@ export const getEventsPageData = async (validPage: number, take: number, locale 
       const isEn = locale === "en";
 
       return {
-        events: events.map((e) => ({
-          ...e,
-          title: isEn && e.titleEn ? e.titleEn : e.titleVi,
-          description: isEn && e.summaryEn ? e.summaryEn : (e.summaryVi ?? ""),
-          location: isEn && e.locationEn ? e.locationEn : (e.locationVi ?? ""),
-          status: e.eventStatus,
-          type: e.eventType,
-          startAt: e.startAt?.toISOString(),
-          endAt: e.endAt ? e.endAt.toISOString() : null
-        })),
-        totalPages
+        events: events.map(({ contentVi, contentEn, ...e }) => {
+          const rawSummary = isEn && e.summaryEn ? e.summaryEn : e.summaryVi;
+          const rawContent = isEn && contentEn ? contentEn : contentVi;
+          return {
+            ...e,
+            title: isEn && e.titleEn ? e.titleEn : e.titleVi,
+            description: resolvePostSummary(rawSummary, rawContent),
+            location: isEn && e.locationEn ? e.locationEn : (e.locationVi ?? ""),
+            status: e.eventStatus,
+            type: e.eventType,
+            startAt: e.startAt?.toISOString(),
+            endAt: e.endAt ? e.endAt.toISOString() : null
+          };
+        }),
+        totalPages,
+        total
       };
     }
   });
@@ -165,6 +173,8 @@ export const getRecentEvents = async (take = 3, locale = "vi") =>
           slug: true,
           summaryVi: true,
           summaryEn: true,
+          contentVi: true,
+          contentEn: true,
           thumbnail: true,
           startAt: true,
           eventStatus: true,
@@ -175,14 +185,18 @@ export const getRecentEvents = async (take = 3, locale = "vi") =>
       const isEn = locale === "en";
 
       return {
-        events: events.map((e) => ({
-          ...e,
-          title: isEn && e.titleEn ? e.titleEn : e.titleVi,
-          description: isEn && e.summaryEn ? e.summaryEn : (e.summaryVi ?? ""),
-          status: e.eventStatus,
-          type: e.eventType,
-          startAt: e.startAt?.toISOString()
-        }))
+        events: events.map(({ contentVi, contentEn, ...e }) => {
+          const rawSummary = isEn && e.summaryEn ? e.summaryEn : e.summaryVi;
+          const rawContent = isEn && contentEn ? contentEn : contentVi;
+          return {
+            ...e,
+            title: isEn && e.titleEn ? e.titleEn : e.titleVi,
+            description: resolvePostSummary(rawSummary, rawContent),
+            status: e.eventStatus,
+            type: e.eventType,
+            startAt: e.startAt?.toISOString()
+          };
+        })
       };
     }
   });

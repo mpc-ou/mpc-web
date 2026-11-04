@@ -8,10 +8,10 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Link } from "@/configs/i18n/routing";
 import { cn } from "@/lib/utils";
 import { localizedText, type WebDesignExhibitionItem } from "@/types/webdesign";
-import { ExhibitionDetailModal, ExhibitionShowcaseCard } from "../web-design/_components/exhibition-showcase-card";
+import { ExhibitionDetailModal, ExhibitionShowcaseCard } from "../_components/exhibition-showcase-card";
 
-const INITIAL_BATCH_SIZE = 8;
-const LOAD_MORE_STEP = 6;
+const INITIAL_BATCH_SIZE = 12;
+const LOAD_MORE_STEP = 9;
 
 type ViewMode = "timeline" | "grid";
 
@@ -335,14 +335,14 @@ function TimelineExhibitionList({
           </div>
 
           {/* Cards Grid inside Year */}
-          <div className='grid gap-6 md:grid-cols-2'>
+          <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
             {group.items.map((team, idx) => (
               <ScrollReveal
                 className='h-full'
-                delay={(idx % 4) * 80}
+                delay={(idx % 6) * 70}
                 key={`${team.teamName}-${team.live}-${team.year}`}
               >
-                <ExhibitionShowcaseCard featured={group.items.length === 1} onSelect={onSelect} team={team} />
+                <ExhibitionShowcaseCard onSelect={onSelect} team={team} />
               </ScrollReveal>
             ))}
           </div>
@@ -360,9 +360,9 @@ function GridExhibitionList({
   onSelect: (team: WebDesignExhibitionItem) => void;
 }) {
   return (
-    <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+    <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
       {items.map((team, idx) => (
-        <ScrollReveal className='h-full' delay={(idx % 6) * 70} key={`${team.teamName}-${team.live}-${team.year}`}>
+        <ScrollReveal className='h-full' delay={(idx % 8) * 60} key={`${team.teamName}-${team.live}-${team.year}`}>
           <ExhibitionShowcaseCard onSelect={onSelect} team={team} />
         </ScrollReveal>
       ))}

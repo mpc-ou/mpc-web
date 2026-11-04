@@ -34,7 +34,7 @@ export function UserBlogCreateForm({ post }: { post?: BlogFormData | null }) {
   };
 
   return (
-    <div className='mx-auto max-w-7xl px-4 py-8'>
+    <div className='mx-auto max-w-7xl px-4 pb-12'>
       <SharedBlogForm
         backUrl='/my-blogs'
         onCreate={handleCreate}
@@ -43,6 +43,7 @@ export function UserBlogCreateForm({ post }: { post?: BlogFormData | null }) {
         onUpdate={handleUpdate}
         post={post}
         showPublishedOption={false}
+        stickyTopClass='sticky top-16 -mx-4 px-4 py-3'
       />
     </div>
   );

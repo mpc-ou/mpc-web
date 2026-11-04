@@ -10,12 +10,6 @@ import {
   type WebDesignRegulation
 } from "@/types/webdesign";
 
-/**
- * Hand-rolled validation for the WebDesign JSON documents (admin form + raw JSON dev editor).
- * Collects every error with its JSON path instead of stopping at the first one, and returns a
- * normalized copy (trimmed strings, generated ids) that is safe to persist.
- */
-
 export type ValidationResult<T> = { ok: true; data: T } | { ok: false; errors: string[] };
 
 const PRIZE_TIERS: WebDesignPrize["tier"][] = ["gold", "silver", "bronze"];
@@ -81,7 +75,10 @@ class Ctx {
       this.fail(path, 'phải là { "vi": "...", "en": "..." }');
       return { vi: "", en: "" };
     }
-    const text = { vi: this.string(v, "vi", path), en: this.string(v, "en", path) };
+    const text = {
+      vi: this.string(v, "vi", path),
+      en: this.string(v, "en", path)
+    };
     if (required && !text.vi && !text.en) {
       this.fail(path, "cần ít nhất bản vi hoặc en");
     }
@@ -134,7 +131,9 @@ function parseMilestone(ctx: Ctx, item: Obj, path: string, seen: Set<string>): W
     start,
     end,
     title: ctx.localized(item.title, `${path}.title`),
-    description: ctx.localized(item.description, `${path}.description`, { required: false })
+    description: ctx.localized(item.description, `${path}.description`, {
+      required: false
+    })
   };
 }
 
@@ -143,7 +142,11 @@ function parseRegulation(ctx: Ctx, item: Obj, path: string, seen: Set<string>): 
   if (items.length === 0) {
     ctx.fail(`${path}.items`, "cần ít nhất 1 mục");
   }
-  return { id: ctx.id(item, path, seen), title: ctx.localized(item.title, `${path}.title`), items };
+  return {
+    id: ctx.id(item, path, seen),
+    title: ctx.localized(item.title, `${path}.title`),
+    items
+  };
 }
 
 function parsePrize(ctx: Ctx, item: Obj, path: string, seen: Set<string>): WebDesignPrize {
@@ -155,7 +158,9 @@ function parsePrize(ctx: Ctx, item: Obj, path: string, seen: Set<string>): WebDe
     id: ctx.id(item, path, seen),
     tier: PRIZE_TIERS.includes(tier) ? tier : "gold",
     title: ctx.localized(item.title, `${path}.title`),
-    description: ctx.localized(item.description, `${path}.description`, { required: false })
+    description: ctx.localized(item.description, `${path}.description`, {
+      required: false
+    })
   };
 }
 
@@ -163,7 +168,9 @@ function parseBenefit(ctx: Ctx, item: Obj, path: string, seen: Set<string>): Web
   return {
     id: ctx.id(item, path, seen),
     title: ctx.localized(item.title, `${path}.title`),
-    description: ctx.localized(item.description, `${path}.description`, { required: false })
+    description: ctx.localized(item.description, `${path}.description`, {
+      required: false
+    })
   };
 }
 
@@ -237,8 +244,12 @@ export function validateWebDesignExhibitions(input: unknown): ValidationResult<W
       year: parseYear(item, path, subjects, live, github),
       subjects,
       projectName: ctx.localized(item.projectName, `${path}.projectName`),
-      description: ctx.localized(item.description, `${path}.description`, { required: false }),
-      testimonial: ctx.localized(item.testimonial, `${path}.testimonial`, { required: false }),
+      description: ctx.localized(item.description, `${path}.description`, {
+        required: false
+      }),
+      testimonial: ctx.localized(item.testimonial, `${path}.testimonial`, {
+        required: false
+      }),
       github,
       live,
       thumbnail: ctx.string(item, "thumbnail", path),
@@ -273,7 +284,14 @@ export function validateWebDesignFaqs(input: unknown): ValidationResult<WebDesig
     if (!answer.vi) {
       ctx.fail(`${path}.answer.vi`, "bắt buộc (bản tiếng Việt)");
     }
-    return [{ id: ctx.id(item, path, seen), question, answer, isActive: item.isActive !== false }];
+    return [
+      {
+        id: ctx.id(item, path, seen),
+        question,
+        answer,
+        isActive: item.isActive !== false
+      }
+    ];
   });
 
   return ctx.errors.length > 0 ? { ok: false, errors: ctx.errors } : { ok: true, data };
@@ -284,6 +302,9 @@ export function parseJsonText(text: string): ValidationResult<unknown> {
   try {
     return { ok: true, data: JSON.parse(text) as unknown };
   } catch (err) {
-    return { ok: false, errors: [`JSON sai cú pháp: ${err instanceof Error ? err.message : String(err)}`] };
+    return {
+      ok: false,
+      errors: [`JSON sai cú pháp: ${err instanceof Error ? err.message : String(err)}`]
+    };
   }
 }

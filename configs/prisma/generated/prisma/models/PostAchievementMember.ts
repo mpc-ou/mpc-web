@@ -710,7 +710,7 @@ export type $PostAchievementMemberPayload<ExtArgs extends runtime.Types.Extensio
 export type PostAchievementMemberGetPayload<S extends boolean | null | undefined | PostAchievementMemberDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostAchievementMemberPayload, S>
 
 export type PostAchievementMemberCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostAchievementMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostAchievementMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostAchievementMemberCountAggregateInputType | true
   }
 
@@ -1159,6 +1159,7 @@ export type PostAchievementMemberFindUniqueArgs<ExtArgs extends runtime.Types.Ex
    * Filter, which PostAchievementMember to fetch.
    */
   where: Prisma.PostAchievementMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1181,6 +1182,7 @@ export type PostAchievementMemberFindUniqueOrThrowArgs<ExtArgs extends runtime.T
    * Filter, which PostAchievementMember to fetch.
    */
   where: Prisma.PostAchievementMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1233,6 +1235,7 @@ export type PostAchievementMemberFindFirstArgs<ExtArgs extends runtime.Types.Ext
    * Filter by unique combinations of PostAchievementMembers.
    */
   distinct?: Prisma.PostAchievementMemberScalarFieldEnum | Prisma.PostAchievementMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1285,6 +1288,7 @@ export type PostAchievementMemberFindFirstOrThrowArgs<ExtArgs extends runtime.Ty
    * Filter by unique combinations of PostAchievementMembers.
    */
   distinct?: Prisma.PostAchievementMemberScalarFieldEnum | Prisma.PostAchievementMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1332,6 +1336,7 @@ export type PostAchievementMemberFindManyArgs<ExtArgs extends runtime.Types.Exte
    */
   skip?: number
   distinct?: Prisma.PostAchievementMemberScalarFieldEnum | Prisma.PostAchievementMemberScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1354,6 +1359,7 @@ export type PostAchievementMemberCreateArgs<ExtArgs extends runtime.Types.Extens
    * The data needed to create a PostAchievementMember.
    */
   data: Prisma.XOR<Prisma.PostAchievementMemberCreateInput, Prisma.PostAchievementMemberUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1414,6 +1420,7 @@ export type PostAchievementMemberUpdateArgs<ExtArgs extends runtime.Types.Extens
    * Choose, which PostAchievementMember to update.
    */
   where: Prisma.PostAchievementMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1492,6 +1499,7 @@ export type PostAchievementMemberUpsertArgs<ExtArgs extends runtime.Types.Extens
    * In case the PostAchievementMember was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostAchievementMemberUpdateInput, Prisma.PostAchievementMemberUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1514,6 +1522,7 @@ export type PostAchievementMemberDeleteArgs<ExtArgs extends runtime.Types.Extens
    * Filter which PostAchievementMember to delete.
    */
   where: Prisma.PostAchievementMemberWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

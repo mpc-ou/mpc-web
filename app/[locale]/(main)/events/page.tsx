@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generatePageSeo({
     page: "events",
     locale,
-    pathname: "/events"
+    pathname: "/events",
+    image: "/images/bg/toc2025.jpg"
   });
 }
 
@@ -33,10 +34,11 @@ export default async function EventsPage({ params, searchParams }: Props): Promi
   const t = await getTranslations("events");
 
   const { data } = await getEventsPageData(validPage, take, locale);
-  const payload = data?.payload as { events: EventListItem[]; totalPages: number } | undefined;
+  const payload = data?.payload as { events: EventListItem[]; totalPages: number; total?: number } | undefined;
 
   const dbEvents = payload?.events ?? [];
   const totalPages = payload?.totalPages ?? 0;
+  const totalEvents = payload?.total ?? dbEvents.length;
 
   return (
     <div className='min-h-screen bg-background pb-20'>
@@ -47,9 +49,16 @@ export default async function EventsPage({ params, searchParams }: Props): Promi
         imageUrl='/images/bg/toc2025.jpg'
         title={t("title")}
       />
-      <div className='container mx-auto mt-16 max-w-6xl px-4'>
+      <div className='container mx-auto mt-12 max-w-6xl px-4'>
         {/* Content */}
-        <DynamicEventsClient currentPage={validPage} events={dbEvents} totalPages={totalPages} />
+        <DynamicEventsClient
+          currentPage={validPage}
+          events={dbEvents}
+          locale={locale}
+          take={take}
+          totalEvents={totalEvents}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

@@ -44,7 +44,7 @@ export const createColumns = (onEdit: (f: FaqRow) => void, onDelete: (id: string
     header: "Câu hỏi (EN)",
     cell: ({ row }) => (
       <p className='max-w-xs truncate text-muted-foreground text-xs'>
-        {row.original.questionEn || <span className='text-muted-foreground/50 text-xs italic'>—</span>}
+        {row.original.questionEn || <span className='text-muted-foreground/50 text-xs italic'>-</span>}
       </p>
     )
   },

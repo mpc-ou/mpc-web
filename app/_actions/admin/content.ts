@@ -12,7 +12,11 @@ export const adminGetFaqItems = async () =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
-      return prisma.faqItem.findMany({ orderBy: { order: "asc" } });
+      // WebDesign FAQ is managed in Site Config.
+      return prisma.faqItem.findMany({
+        where: { target: { not: "WEBDESIGN" } },
+        orderBy: { order: "asc" }
+      });
     }
   });
 
@@ -92,7 +96,7 @@ export const adminSeedDefaultFaqItems = async (target?: string) =>
       >;
 
       let seededCount = 0;
-      const targets = target ? [target] : Object.keys(faqJson).filter((k) => k !== "_README");
+      const targets = target ? [target] : Object.keys(faqJson).filter((k) => k !== "_README" && k !== "WEBDESIGN");
 
       for (const t of targets) {
         const items = faqJson[t];

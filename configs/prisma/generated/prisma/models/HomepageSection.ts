@@ -490,7 +490,7 @@ export type $HomepageSectionPayload<ExtArgs extends runtime.Types.Extensions.Int
 export type HomepageSectionGetPayload<S extends boolean | null | undefined | HomepageSectionDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$HomepageSectionPayload, S>
 
 export type HomepageSectionCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<HomepageSectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<HomepageSectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: HomepageSectionCountAggregateInputType | true
   }
 
@@ -934,6 +934,7 @@ export type HomepageSectionFindUniqueArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which HomepageSection to fetch.
    */
   where: Prisma.HomepageSectionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -952,6 +953,7 @@ export type HomepageSectionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.E
    * Filter, which HomepageSection to fetch.
    */
   where: Prisma.HomepageSectionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1000,6 +1002,7 @@ export type HomepageSectionFindFirstArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of HomepageSections.
    */
   distinct?: Prisma.HomepageSectionScalarFieldEnum | Prisma.HomepageSectionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1048,6 +1051,7 @@ export type HomepageSectionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ex
    * Filter by unique combinations of HomepageSections.
    */
   distinct?: Prisma.HomepageSectionScalarFieldEnum | Prisma.HomepageSectionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1091,6 +1095,7 @@ export type HomepageSectionFindManyArgs<ExtArgs extends runtime.Types.Extensions
    */
   skip?: number
   distinct?: Prisma.HomepageSectionScalarFieldEnum | Prisma.HomepageSectionScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1109,6 +1114,7 @@ export type HomepageSectionCreateArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data needed to create a HomepageSection.
    */
   data: Prisma.XOR<Prisma.HomepageSectionCreateInput, Prisma.HomepageSectionUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1161,6 +1167,7 @@ export type HomepageSectionUpdateArgs<ExtArgs extends runtime.Types.Extensions.I
    * Choose, which HomepageSection to update.
    */
   where: Prisma.HomepageSectionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1231,6 +1238,7 @@ export type HomepageSectionUpsertArgs<ExtArgs extends runtime.Types.Extensions.I
    * In case the HomepageSection was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.HomepageSectionUpdateInput, Prisma.HomepageSectionUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1249,6 +1257,7 @@ export type HomepageSectionDeleteArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter which HomepageSection to delete.
    */
   where: Prisma.HomepageSectionWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

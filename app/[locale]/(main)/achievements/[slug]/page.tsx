@@ -1,18 +1,23 @@
-import { Award, Calendar, ChevronLeft, ExternalLink, Star, Trophy, UserCircle, Users } from "lucide-react";
+import { Award, Calendar, ChevronLeft, ExternalLink, Pencil, Star, Trophy, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getAchievementBySlug, getRecentAchievements } from "@/app/_actions/main";
+import { checkUserIsAdmin, getAchievementBySlug, getRecentAchievements } from "@/app/_actions/main";
+import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
+import { ArticleJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
-import { getFullName } from "@/lib/utils";
+import { SITE_URL } from "@/constants/seo";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import { resolvePostSummary, stripMarkdownToPlainText } from "@/utils/markdown-summary";
 import { generatePageSeo } from "@/utils/seo";
 import { HonoredMembers } from "./_components/honored-members.client";
 
@@ -102,16 +107,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const achievement = (data?.payload as { achievement: AchievementDetail | null } | undefined)?.achievement;
   if (!achievement) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("achievement") };
+    return {
+      title: tSeo("achievement"),
+      robots: { index: false, follow: false }
+    };
   }
+  const tagNames = achievement.tags?.map((t) => t.tag.name).filter(Boolean) ?? [];
+  const plainDesc = stripMarkdownToPlainText(resolvePostSummary(achievement.summary, achievement.content));
   return generatePageSeo({
     page: "achievements",
     title: achievement.title,
-    description: achievement.summary?.slice(0, 160) || undefined,
+    description: plainDesc || undefined,
     locale: locale || "vi",
     pathname: `/achievements/${slug}`,
     image: achievement.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: achievement.date || undefined,
+    tags: tagNames
   });
 }
 
@@ -119,11 +131,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AchievementDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
-  const [{ data }, { data: recentData }, t] = await Promise.all([
+  const [{ data }, { data: recentData }, { data: isAdminData }, t] = await Promise.all([
     getAchievementBySlug(slug, locale),
     getRecentAchievements(4, locale),
+    checkUserIsAdmin(),
     getTranslations({ locale, namespace: "achievements" })
   ]);
+
+  const canEdit = isAdminData?.payload ?? false;
 
   const achievement = (data?.payload as { achievement: AchievementDetail | null } | undefined)?.achievement;
   if (!achievement) {
@@ -177,6 +192,14 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
 
   return (
     <div className='min-h-screen bg-background'>
+      <ArticleJsonLd
+        datePublished={achievement.date}
+        description={achievement.summary || achievement.title}
+        image={achievement.thumbnail}
+        keywords={achievement.tags?.map((tTag) => tTag.tag.name).filter(Boolean)}
+        title={achievement.title}
+        url={`${SITE_URL}/${locale}/achievements/${slug}`}
+      />
       {/* ── HERO ── */}
       {achievement.thumbnail ? (
         <div className='relative h-[30vh] min-h-56 w-full overflow-hidden'>
@@ -195,14 +218,28 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
       )}
 
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        {/* Back */}
-        <div className='py-5'>
+        {/* Back + Admin Quick Edit */}
+        <div className='flex items-center justify-between gap-3 py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href='/achievements'>
               <ChevronLeft className='mr-1 h-4 w-4' />
               {t("backToList")}
             </Link>
           </Button>
+          {canEdit && (
+            <Button
+              asChild
+              className='h-8 gap-1.5 border-primary/30 bg-primary/5 text-primary hover:bg-primary/15'
+              size='sm'
+              title='Chỉnh sửa thành tựu trong Admin'
+              variant='outline'
+            >
+              <NextLink href={`/admin/posts/${achievement.id}/edit`}>
+                <Pencil className='h-3.5 w-3.5' />
+                <span className='text-xs'>Chỉnh sửa</span>
+              </NextLink>
+            </Button>
+          )}
         </div>
 
         <ScrollReveal>
@@ -228,13 +265,14 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
               </Badge>
             )}
             {achievement.tags?.map((tTag) => (
-              <Badge
-                className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
-                key={tTag.tag.id}
-                variant='outline'
-              >
-                #{tTag.tag.name}
-              </Badge>
+              <Link href={`/search?q=${encodeURIComponent(tTag.tag.name)}` as "/"} key={tTag.tag.id}>
+                <Badge
+                  className='cursor-pointer border-none bg-primary/10 px-3 py-1 text-primary transition-colors hover:bg-primary/20'
+                  variant='outline'
+                >
+                  #{tTag.tag.name}
+                </Badge>
+              </Link>
             ))}
           </div>
 
@@ -243,44 +281,9 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
             {achievement.title}
           </h1>
 
-          {/* Byline: author + date */}
+          {/* Byline */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
-            <div className='flex items-center gap-3'>
-              {achievement.creator?.avatar ? (
-                <Image
-                  alt={getFullName(
-                    achievement.creator.firstName,
-                    achievement.creator.middleName,
-                    achievement.creator.lastName,
-                    locale
-                  )}
-                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
-                  height={40}
-                  src={achievement.creator.avatar}
-                  width={40}
-                />
-              ) : (
-                <UserCircle className='h-10 w-10 text-muted-foreground' />
-              )}
-              <div className='min-w-0'>
-                <span className='block font-semibold text-foreground text-sm leading-none'>
-                  {getFullName(
-                    achievement.creator?.firstName,
-                    achievement.creator?.middleName,
-                    achievement.creator?.lastName,
-                    locale
-                  )}
-                </span>
-                {achievement.creator?.slug && (
-                  <Link
-                    className='mt-1 block text-muted-foreground text-xs hover:text-primary hover:underline'
-                    href={`/members/${achievement.creator.slug}` as "/"}
-                  >
-                    @{achievement.creator.slug}
-                  </Link>
-                )}
-              </div>
-            </div>
+            <ClubByline />
             {dateLabel && (
               <span className='flex items-center gap-1.5'>
                 <Calendar className='h-4 w-4 shrink-0 text-primary/60' />
@@ -291,21 +294,17 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
 
           {/* Summary / lead */}
           {achievement.summary && (
-            <p className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
-              {achievement.summary}
-            </p>
+            <div className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
+              <MarkdownInline content={achievement.summary} />
+            </div>
           )}
         </ScrollReveal>
 
         <Separator className='mb-10' />
 
-        {/* ── BODY + SIDEBAR ── */}
-        <div
-          className={`flex flex-col gap-10 ${hasGallery || (achievement.members && achievement.members.length > 0) ? "lg:flex-row lg:gap-12" : ""}`}
-        >
-          <div
-            className={`min-w-0 ${hasGallery || (achievement.members && achievement.members.length > 0) ? "flex-1" : "w-full"}`}
-          >
+        {/* ── FULL-WIDTH BODY ── */}
+        <div className='w-full space-y-10'>
+          <div className='w-full min-w-0'>
             {/* Achievement info card */}
             <ScrollReveal className='mb-8'>
               <div className='space-y-4 rounded-xl border bg-muted/30 p-5'>
@@ -361,17 +360,17 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
             )}
           </div>
 
-          {/* Sidebar: Gallery + Honored Members */}
+          {/* Bottom: Honored Members & Compact Gallery Strip */}
           {(hasGallery || (achievement.members && achievement.members.length > 0)) && (
-            <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
-              {hasGallery && (
-                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
-              )}
-
+            <div className='space-y-6 border-border/60 border-t pt-8'>
               {achievement.members && achievement.members.length > 0 && (
                 <HonoredMembers locale={locale} members={achievement.members} />
               )}
-            </aside>
+
+              {hasGallery && (
+                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
+              )}
+            </div>
           )}
         </div>
 
@@ -410,7 +409,9 @@ export default async function AchievementDetailPage({ params }: Props): Promise<
                       {a.title}
                     </h3>
                     {a.summary && (
-                      <p className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>{a.summary}</p>
+                      <div className='mt-2 line-clamp-2 text-muted-foreground text-xs leading-relaxed'>
+                        <MarkdownInline content={a.summary} disableLinks />
+                      </div>
                     )}
                   </div>
                 </Link>

@@ -13,7 +13,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generatePageSeo({
     page: "search",
     locale,
-    pathname: "/search"
+    pathname: "/search",
+    noIndex: true
   });
 }
 

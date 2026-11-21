@@ -14,6 +14,7 @@ import { ABOUT_CLUB } from "@/configs/data/about";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
+import { SeoSettings } from "./seo-settings";
 
 type Setting = {
   id: string;
@@ -84,7 +85,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
     }
     try {
       setLoading(true);
-      const url = await uploadToStorage(file, "branding");
+      const url = await uploadToStorage(file, "media", "branding");
       setSiteLogo(url);
       toast({ description: "Đã tải lên logo thành công!" });
     } catch (err) {
@@ -104,7 +105,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
     }
     try {
       setLoading(true);
-      const url = await uploadToStorage(file, "branding");
+      const url = await uploadToStorage(file, "media", "branding");
       setSiteFavicon(url);
       toast({ description: "Đã tải lên favicon thành công!" });
     } catch (err) {
@@ -454,6 +455,8 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
         </form>
       </section>
 
+      <SeoSettings settingsMap={settingsMap} />
+
       {/* ─── Footer Social Links ─── */}
       <section className='rounded-xl border border-border bg-background p-5 shadow-sm'>
         <h2 className='mb-4 flex items-center gap-2 font-semibold text-foreground text-lg'>
@@ -575,7 +578,7 @@ export const SettingsManager = ({ settings, externalLinks }: Props) => {
                 <tr className='border-border border-b last:border-0 hover:bg-muted/30' key={s.id}>
                   <td className='px-4 py-3 font-medium font-mono text-foreground text-xs'>{s.key}</td>
                   <td className='max-w-xs truncate px-4 py-3 text-muted-foreground text-xs'>{s.value}</td>
-                  <td className='px-4 py-3 text-muted-foreground text-xs'>{s.description ?? "—"}</td>
+                  <td className='px-4 py-3 text-muted-foreground text-xs'>{s.description ?? "-"}</td>
                 </tr>
               ))}
               {settings.length === 0 && (

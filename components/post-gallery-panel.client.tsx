@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox.client";
+import { cn } from "@/lib/utils";
 
 type GalleryImage = {
   url: string;
@@ -13,11 +15,13 @@ type GalleryImage = {
 type Props = {
   images: (string | GalleryImage)[];
   title?: string;
+  className?: string;
 };
 
-const MAX_VISIBLE = 9;
+const MAX_VISIBLE = 8;
 
-export function PostGalleryPanel({ images, title }: Props) {
+export function PostGalleryPanel({ images, title, className }: Props) {
+  const t = useTranslations("common.gallery");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -54,18 +58,29 @@ export function PostGalleryPanel({ images, title }: Props) {
   };
 
   return (
-    <div>
-      <h3 className='mb-3 font-bold text-muted-foreground text-xs uppercase tracking-wider'>
-        {title ?? `Hình ảnh (${images.length})`}
-      </h3>
+    <div className={cn("rounded-2xl border border-border/60 bg-muted/20 p-4 sm:p-5", className)}>
+      <div className='mb-3 flex items-center justify-between gap-2'>
+        <h3 className='font-bold text-muted-foreground text-xs uppercase tracking-wider'>
+          {title ?? t("title", { count: images.length })}
+        </h3>
+        {images.length > 1 && (
+          <button
+            className='font-mono font-semibold text-primary text-xs hover:underline'
+            onClick={() => openAt(0)}
+            type='button'
+          >
+            {t("viewAll", { count: images.length })}
+          </button>
+        )}
+      </div>
 
-      <div className='grid grid-cols-3 gap-1.5 lg:grid-cols-2 xl:grid-cols-3'>
+      <div className='grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8'>
         {visibleImages.map((img, i) => {
           const isLast = i === MAX_VISIBLE - 1 && overflow > 0;
           return (
             <button
-              aria-label={isLast ? `Xem tất cả ${images.length} ảnh` : `Xem ảnh ${i + 1}`}
-              className='group relative aspect-square overflow-hidden rounded-lg border bg-muted transition-all hover:border-primary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+              aria-label={isLast ? t("viewAllAria", { count: images.length }) : t("viewImageAria", { index: i + 1 })}
+              className='group relative h-20 w-full overflow-hidden rounded-xl border border-border/70 bg-muted transition-all hover:border-primary/50 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:h-22'
               // biome-ignore lint/suspicious/noArrayIndexKey: gallery list
               key={img.url + i}
               onClick={() => openAt(i)}
@@ -75,21 +90,19 @@ export function PostGalleryPanel({ images, title }: Props) {
                 alt={img.title || img.caption || `Gallery ${i + 1}`}
                 className='object-cover transition-transform duration-300 group-hover:scale-105'
                 fill
-                sizes='(min-width: 1024px) 33vw, 200px'
+                sizes='(min-width: 1024px) 12vw, (min-width: 640px) 25vw, 33vw'
                 src={img.url}
               />
-              {/* Overlay for last item when overflow exists */}
               {isLast && (
-                <div className='absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[1px]'>
-                  <span className='font-black text-lg text-white drop-shadow'>+{overflow + 1}</span>
+                <div className='absolute inset-0 flex items-center justify-center bg-black/65 backdrop-blur-[1px]'>
+                  <span className='font-black text-base text-white drop-shadow sm:text-lg'>+{overflow + 1}</span>
                 </div>
               )}
-              {/* Hover overlay for normal items */}
               {!isLast && (
-                <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20'>
+                <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/25'>
                   <svg
                     aria-hidden='true'
-                    className='h-6 w-6 text-white opacity-0 drop-shadow transition-opacity group-hover:opacity-100'
+                    className='h-5 w-5 text-white opacity-0 drop-shadow transition-opacity group-hover:opacity-100'
                     fill='none'
                     stroke='currentColor'
                     viewBox='0 0 24 24'

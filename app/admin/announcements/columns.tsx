@@ -52,11 +52,11 @@ export const createColumns = (
     cell: ({ row }) => {
       const { linkUrl, linkLabelVi, linkLabelEn } = row.original;
       if (!linkUrl) {
-        return <span className='text-muted-foreground text-xs'>—</span>;
+        return <span className='text-muted-foreground text-xs'>-</span>;
       }
       return (
         <div className='flex flex-col gap-0.5 text-xs'>
-          <span className='font-medium'>{linkLabelVi || linkLabelEn || "—"}</span>
+          <span className='font-medium'>{linkLabelVi || linkLabelEn || "-"}</span>
           <a className='text-primary hover:underline' href={linkUrl} rel='noopener noreferrer' target='_blank'>
             {linkUrl}
           </a>
@@ -70,7 +70,7 @@ export const createColumns = (
     cell: ({ row }) => {
       const bg = row.original.bgColor;
       if (!bg) {
-        return <span className='text-muted-foreground text-xs'>—</span>;
+        return <span className='text-muted-foreground text-xs'>-</span>;
       }
       return (
         <div className='flex items-center gap-2 text-xs'>

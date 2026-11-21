@@ -396,7 +396,7 @@ export type $SiteSettingPayload<ExtArgs extends runtime.Types.Extensions.Interna
 export type SiteSettingGetPayload<S extends boolean | null | undefined | SiteSettingDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$SiteSettingPayload, S>
 
 export type SiteSettingCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<SiteSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<SiteSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: SiteSettingCountAggregateInputType | true
   }
 
@@ -838,6 +838,7 @@ export type SiteSettingFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter, which SiteSetting to fetch.
    */
   where: Prisma.SiteSettingWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -856,6 +857,7 @@ export type SiteSettingFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter, which SiteSetting to fetch.
    */
   where: Prisma.SiteSettingWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -904,6 +906,7 @@ export type SiteSettingFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Filter by unique combinations of SiteSettings.
    */
   distinct?: Prisma.SiteSettingScalarFieldEnum | Prisma.SiteSettingScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -952,6 +955,7 @@ export type SiteSettingFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    * Filter by unique combinations of SiteSettings.
    */
   distinct?: Prisma.SiteSettingScalarFieldEnum | Prisma.SiteSettingScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -995,6 +999,7 @@ export type SiteSettingFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   skip?: number
   distinct?: Prisma.SiteSettingScalarFieldEnum | Prisma.SiteSettingScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1013,6 +1018,7 @@ export type SiteSettingCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data needed to create a SiteSetting.
    */
   data: Prisma.XOR<Prisma.SiteSettingCreateInput, Prisma.SiteSettingUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1065,6 +1071,7 @@ export type SiteSettingUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Choose, which SiteSetting to update.
    */
   where: Prisma.SiteSettingWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1135,6 +1142,7 @@ export type SiteSettingUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * In case the SiteSetting was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.SiteSettingUpdateInput, Prisma.SiteSettingUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1153,6 +1161,7 @@ export type SiteSettingDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter which SiteSetting to delete.
    */
   where: Prisma.SiteSettingWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

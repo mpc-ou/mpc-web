@@ -23,13 +23,13 @@ const StatsSection = async ({ locale }: { locale: string }) => {
   const years = Math.max(1, currentYear - MPC_FOUNDED_YEAR);
 
   const stats = [
-    { label: t("members"), value: memberCount > 0 ? `${memberCount}+` : "50+" },
-    { label: t("events"), value: eventCount > 0 ? `${eventCount}+` : "30+" },
-    { label: t("years"), value: `${years}+` },
-    { label: t("projects"), value: projectCount > 0 ? `${projectCount}+` : "10+" }
+    { key: "members", label: t("members"), value: memberCount > 0 ? `${memberCount}+` : "50+" },
+    { key: "events", label: t("events"), value: eventCount > 0 ? `${eventCount}+` : "30+" },
+    { key: "years_active", label: t("years"), value: `${years}+` },
+    { key: "projects_done", label: t("projects"), value: projectCount > 0 ? `${projectCount}+` : "10+" }
   ];
 
-  return <StatsCounter stats={stats} title={t("title")} />;
+  return <StatsCounter stats={stats} subtitle={t("subtitle")} title={t("title")} />;
 };
 
 export { StatsSection };

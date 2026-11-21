@@ -1,4 +1,6 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS } from "@/constants/cache";
 import { syncFromSso } from "@/services/sso";
 
 export async function GET(request: Request) {
@@ -12,6 +14,8 @@ export async function GET(request: Request) {
 
   try {
     await syncFromSso();
+    revalidateTag(_CACHE_MEMBERS, "default");
+    revalidateTag(_CACHE_ACHIEVEMENTS, "default");
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error(err);

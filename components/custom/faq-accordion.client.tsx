@@ -1,96 +1,140 @@
 "use client";
 
-import { HelpCircle, Minus, Plus } from "lucide-react";
-import { useState } from "react";
-import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
+import { type ReactNode, useId, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export type FaqItem = {
   id: string;
-  question: string;
-  answer: string;
+  question: ReactNode;
+  answer: ReactNode;
+  /** Optional leading label, e.g. "Điều 01" in the `numbered` variant. */
+  label?: string;
 };
 
 type FaqAccordionProps = {
   items: FaqItem[];
-  title?: string;
-  subtitle?: string;
-  badge?: string;
+  /**
+   * `card`: each item is a rounded card (FAQ).
+   * `numbered`: flat rows separated by dividers, with a mono label column (rules/regulations).
+   */
+  variant?: "card" | "numbered";
+  /** Index of the item open on first render; `-1` starts fully collapsed. */
+  defaultOpenIndex?: number;
   className?: string;
 };
 
-export function FaqAccordion({ items, title, subtitle, badge = "faq", className }: FaqAccordionProps) {
-  const [openId, setOpenId] = useState<string | null>(null);
+export function FaqAccordion({ items, variant = "card", defaultOpenIndex = 0, className }: FaqAccordionProps) {
+  const baseId = useId();
+  const [openId, setOpenId] = useState<string | null>(items[defaultOpenIndex]?.id ?? null);
+  const isCard = variant === "card";
 
   return (
-    <div className={cn("w-full", className)}>
-      {(title || badge) && (
-        <ScrollReveal className='mb-12 text-center'>
-          {badge && (
-            <span className='rounded-full bg-orange-500/10 px-3 py-1 font-medium font-mono text-orange-500 text-sm uppercase'>
-              &gt; {badge}
-            </span>
-          )}
-          {title && (
-            <h2 className='mt-4 font-black text-3xl text-foreground uppercase tracking-tight sm:text-4xl'>{title}</h2>
-          )}
-          {subtitle && <p className='mx-auto mt-3 max-w-xl text-slate-600 text-sm dark:text-slate-400'>{subtitle}</p>}
-        </ScrollReveal>
-      )}
+    <div className={cn(isCard ? "flex flex-col gap-2.5" : "border-border/60 border-t dark:border-white/10", className)}>
+      {items.map((item) => {
+        const isOpen = openId === item.id;
+        const triggerId = `${baseId}-${item.id}-trigger`;
+        const panelId = `${baseId}-${item.id}-panel`;
 
-      <div className='mx-auto max-w-4xl space-y-4'>
-        {items.map((item, idx) => {
-          const isOpen = openId === item.id;
-
-          return (
-            <ScrollReveal delay={idx * 50} key={item.id} variant='fade-up'>
-              <div
+        return (
+          <div
+            className={cn(
+              "transition-colors duration-300",
+              isCard
+                ? cn(
+                    "rounded-2xl border bg-card/40 dark:bg-card/40",
+                    isOpen
+                      ? "border-orange-500/35 dark:border-orange-500/30"
+                      : "border-border/60 hover:border-orange-500/25 dark:border-white/10"
+                  )
+                : "border-border/60 border-b dark:border-white/10"
+            )}
+            key={item.id}
+          >
+            <button
+              aria-controls={panelId}
+              aria-expanded={isOpen}
+              className={cn(
+                "group flex w-full cursor-pointer items-center text-left text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50",
+                isCard ? "justify-between gap-4 rounded-2xl px-5 py-4.5" : "gap-5 px-1 py-5.5"
+              )}
+              id={triggerId}
+              onClick={() => setOpenId(isOpen ? null : item.id)}
+              type='button'
+            >
+              {!isCard && item.label && (
+                <span className='w-16 shrink-0 font-mono text-orange-400 text-xs'>{item.label}</span>
+              )}
+              <span
                 className={cn(
-                  "overflow-hidden rounded-xl border transition-all duration-300",
-                  isOpen
-                    ? "border-orange-500/40 bg-white/90 shadow-lg shadow-orange-500/10 dark:bg-slate-900/80"
-                    : "border-slate-200/80 bg-white/80 shadow-md shadow-slate-200/40 backdrop-blur-xl hover:border-orange-500/30 hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:shadow-none dark:hover:bg-slate-900/60"
+                  "flex-1 transition-colors group-hover:text-orange-500",
+                  isCard ? "font-bold text-base" : "font-extrabold text-lg"
                 )}
               >
-                <button
-                  className='flex w-full select-none items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground focus:outline-none'
-                  onClick={() => setOpenId(isOpen ? null : item.id)}
-                  type='button'
-                >
-                  <div className='flex items-center gap-3'>
-                    <HelpCircle
-                      className={cn(
-                        "h-5 w-5 shrink-0 transition-colors duration-300",
-                        isOpen ? "text-orange-500" : "text-slate-400 dark:text-slate-500"
-                      )}
-                    />
-                    <span className='text-sm sm:text-base'>{item.question}</span>
-                  </div>
-                  <div
-                    className={cn(
-                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-500 transition-transform duration-300 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-400",
-                      isOpen && "rotate-180 border-orange-500/20 text-orange-500 dark:text-orange-400"
-                    )}
-                  >
-                    {isOpen ? <Minus className='h-3.5 w-3.5' /> : <Plus className='h-3.5 w-3.5' />}
-                  </div>
-                </button>
+                {item.question}
+              </span>
+              <PlusMinus isCard={isCard} isOpen={isOpen} />
+            </button>
 
+            <section
+              aria-labelledby={triggerId}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
+                isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              )}
+              id={panelId}
+              inert={!isOpen}
+            >
+              <div className='overflow-hidden'>
                 <div
                   className={cn(
-                    "overflow-hidden transition-all duration-300 ease-in-out",
-                    isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                    "text-[15px] text-muted-foreground leading-relaxed",
+                    isCard ? "px-5 pb-5" : "pr-1 pb-6 pl-1 sm:pl-22"
                   )}
                 >
-                  <div className='border-slate-100 border-t bg-slate-50/50 px-6 pt-2 pb-6 pl-[44px] font-sans text-slate-700 text-sm leading-relaxed sm:text-base dark:border-white/5 dark:bg-slate-950/20 dark:text-slate-300'>
-                    {item.answer}
-                  </div>
+                  {item.answer}
                 </div>
               </div>
-            </ScrollReveal>
-          );
-        })}
-      </div>
+            </section>
+          </div>
+        );
+      })}
     </div>
+  );
+}
+
+function PlusMinus({ isOpen, isCard }: { isOpen: boolean; isCard: boolean }) {
+  return (
+    <span
+      aria-hidden='true'
+      className={cn(
+        "relative flex shrink-0 items-center justify-center",
+        isCard
+          ? "h-5 w-5 text-orange-500"
+          : "h-7 w-7 rounded-lg border border-border text-muted-foreground dark:border-white/15",
+        !isCard && isOpen && "border-orange-500/40 text-orange-500"
+      )}
+    >
+      <span className='absolute h-0.5 w-3 rounded-full bg-current' />
+      <span
+        className={cn(
+          "absolute h-3 w-0.5 rounded-full bg-current transition-transform duration-300",
+          isOpen && "rotate-90 scale-y-0"
+        )}
+      />
+    </span>
+  );
+}
+
+/** Bullet list styled for accordion answers (orange square markers). */
+export function FaqBulletList({ items }: { items: string[] }) {
+  return (
+    <ul className='flex flex-col gap-2.5'>
+      {items.map((text) => (
+        <li className='relative pl-4.5' key={text}>
+          <span className='absolute top-2.5 left-0 h-1.5 w-1.5 rounded-[2px] bg-orange-500' />
+          {text}
+        </li>
+      ))}
+    </ul>
   );
 }

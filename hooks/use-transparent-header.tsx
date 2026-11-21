@@ -51,7 +51,7 @@ const TransparentHeaderContext = createContext<TransparentHeaderCtx>({
 });
 
 /**
- * Provider — place once near the root (e.g. BaseLayout).
+ * Provider - place once near the root (e.g. BaseLayout).
  */
 function TransparentHeaderProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<TransparentHeaderState>({
@@ -84,10 +84,10 @@ function TransparentHeaderProvider({ children }: { children: ReactNode }) {
  * @example
  * ```tsx
  * "use client";
- * // Dark hero — default white/gray text, hide buttons
+ * // Dark hero - default white/gray text, hide buttons
  * useTransparentHeader();
  *
- * // Light hero — dark text, keep buttons visible, custom bg
+ * // Light hero - dark text, keep buttons visible, custom bg
  * useTransparentHeader({
  *   textColor: "rgba(0,0,0,0.7)",
  *   logoColor: "#111",

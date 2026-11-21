@@ -21,7 +21,10 @@ const PURIFY_CONFIG: Config = {
     "data-code",
     "data-line-count",
     "data-slug",
-    "data-href"
+    "data-href",
+    "data-gallery-idx",
+    "data-gallery-urls",
+    "data-gallery-alts"
   ]
 };
 

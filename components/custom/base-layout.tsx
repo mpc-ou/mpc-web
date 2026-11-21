@@ -84,6 +84,7 @@ export async function BaseLayout({ children, locale }: BaseLayoutType) {
       {/* biome-ignore lint/style/noHeadElement: Next.js App Router root layout */}
       <head>
         <link href={faviconUrl} rel='icon' />
+        <meta content={primaryColorHex} name='theme-color' />
         <style
           // biome-ignore lint/security/noDangerouslySetInnerHtml: Dynamic CSS theme variables
           dangerouslySetInnerHTML={{

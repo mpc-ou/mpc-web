@@ -1,10 +1,13 @@
-import { Calendar, ChevronLeft, Clock, MapPin, UserCircle, Users } from "lucide-react";
+import { ArrowRight, Calendar, ChevronLeft, Clock, MapPin, Pencil, UserCircle, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getEventBySlug, getRecentEvents } from "@/app/_actions/main";
+import { checkUserIsAdmin, getEventBySlug, getRecentEvents } from "@/app/_actions/main";
+import { ClubByline } from "@/components/custom/club-byline";
 import { MarkdownContent } from "@/components/markdown-content";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { PostGalleryPanel } from "@/components/post-gallery-panel.client";
 import { EventJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
@@ -13,9 +16,12 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/configs/i18n/routing";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
+import { SITE_URL } from "@/constants/seo";
 import { getFullName } from "@/lib/utils";
 import { formatLocalDate } from "@/utils/handle-datetime";
+import { resolvePostSummary, stripMarkdownToPlainText } from "@/utils/markdown-summary";
 import { generatePageSeo } from "@/utils/seo";
+import { EventCard } from "../_components/event-card.client";
 import type { EventListItem } from "../client";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -89,16 +95,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
     const tSeo = await getTranslations({ locale, namespace: "seo.notFound" });
-    return { title: tSeo("event") };
+    return {
+      title: tSeo("event"),
+      robots: { index: false, follow: false }
+    };
   }
+  const tagNames = event.tags?.map((t) => t.tag.name).filter(Boolean) ?? [];
+  const plainDesc = stripMarkdownToPlainText(resolvePostSummary(event.description, event.content));
   return generatePageSeo({
     page: "eventDetail",
     title: event.title,
-    description: event.description?.slice(0, 160) || undefined,
+    description: plainDesc || undefined,
     locale: locale || "vi",
     pathname: `/events/${slug}`,
     image: event.thumbnail || undefined,
-    type: "article"
+    type: "article",
+    publishedTime: event.startAt,
+    tags: tagNames
   });
 }
 
@@ -106,22 +119,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EventDetailPage({ params }: Props): Promise<React.ReactNode> {
   const { slug, locale } = await params;
 
-  const [{ data }, { data: recentData }, t] = await Promise.all([
+  const [{ data }, { data: recentData }, { data: isAdminData }, t] = await Promise.all([
     getEventBySlug(slug, locale),
-    getRecentEvents(4, locale),
+    getRecentEvents(5, locale),
+    checkUserIsAdmin(),
     getTranslations({ locale, namespace: "events" })
   ]);
+
+  const canEdit = isAdminData?.payload ?? false;
 
   const event = (data?.payload as { event: EventDetail | null } | undefined)?.event;
   if (!event) {
     notFound();
   }
 
-  const eventUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://mpc-club.vercel.app"}/${locale || "vi"}/events/${slug}`;
+  const eventUrl = `${SITE_URL}/${locale || "vi"}/events/${slug}`;
 
   const recentEvents = ((recentData?.payload as { events: EventListItem[] } | undefined)?.events ?? [])
     .filter((e) => e.slug !== slug)
-    .slice(0, 3);
+    .slice(0, 4);
 
   const dateLabel = fmtDate(event.startAt ?? null, locale);
   const displayType = (event.type === "EVENT" ? event.eventType : event.type) || event.eventType;
@@ -196,14 +212,28 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
       )}
 
       <div className='container mx-auto max-w-7xl px-4 pb-24'>
-        {/* Back */}
-        <div className='py-5'>
+        {/* Back + Admin Quick Edit */}
+        <div className='flex items-center justify-between gap-3 py-5'>
           <Button asChild className='-ml-3 text-muted-foreground' size='sm' variant='ghost'>
             <Link href='/events'>
               <ChevronLeft className='mr-1 h-4 w-4' />
               {t("backToList")}
             </Link>
           </Button>
+          {canEdit && (
+            <Button
+              asChild
+              className='h-8 gap-1.5 border-primary/30 bg-primary/5 text-primary hover:bg-primary/15'
+              size='sm'
+              title='Chỉnh sửa sự kiện trong Admin'
+              variant='outline'
+            >
+              <NextLink href={`/admin/posts/${event.id}/edit`}>
+                <Pencil className='h-3.5 w-3.5' />
+                <span className='text-xs'>Chỉnh sửa</span>
+              </NextLink>
+            </Button>
+          )}
         </div>
 
         <ScrollReveal>
@@ -225,13 +255,14 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
               </Badge>
             )}
             {event.tags?.map((tTag) => (
-              <Badge
-                className='border-none bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20'
-                key={tTag.tag.id}
-                variant='outline'
-              >
-                #{tTag.tag.name}
-              </Badge>
+              <Link href={`/search?q=${encodeURIComponent(tTag.tag.name)}` as "/"} key={tTag.tag.id}>
+                <Badge
+                  className='cursor-pointer border-none bg-primary/10 px-3 py-1 text-primary transition-colors hover:bg-primary/20'
+                  variant='outline'
+                >
+                  #{tTag.tag.name}
+                </Badge>
+              </Link>
             ))}
           </div>
 
@@ -240,122 +271,88 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             {event.title}
           </h1>
 
-          {/* Byline: author + date */}
+          {/* Byline */}
           <div className='mb-8 flex flex-wrap items-center justify-between gap-4 border-border/60 border-y py-4 text-muted-foreground text-sm'>
-            <div className='flex items-center gap-3'>
-              {event.creator?.avatar ? (
-                <Image
-                  alt={getFullName(event.creator.firstName, event.creator.middleName, event.creator.lastName, locale)}
-                  className='shrink-0 rounded-full object-cover ring-1 ring-border'
-                  height={40}
-                  src={event.creator.avatar}
-                  width={40}
-                />
-              ) : (
-                <UserCircle className='h-10 w-10 text-muted-foreground' />
-              )}
-              <div className='min-w-0'>
-                <span className='block font-semibold text-foreground text-sm leading-none'>
-                  {getFullName(event.creator?.firstName, event.creator?.middleName, event.creator?.lastName, locale)}
+            <ClubByline />
+            <div className='flex flex-wrap items-center gap-x-5 gap-y-2'>
+              {event.startAt ? (
+                <span className='flex items-center gap-1.5'>
+                  <Clock className='h-4 w-4 shrink-0 text-primary/70' />
+                  <span className='font-medium text-foreground'>
+                    {fmtDateShort(event.startAt, locale)}
+                    {event.endAt ? ` – ${fmtDateShort(event.endAt, locale)}` : ""}
+                  </span>
                 </span>
-                {event.creator?.slug && (
-                  <Link
-                    className='mt-1 block text-muted-foreground text-xs hover:text-primary hover:underline'
-                    href={`/members/${event.creator.slug}` as "/"}
-                  >
-                    @{event.creator.slug}
-                  </Link>
-                )}
-              </div>
+              ) : (
+                dateLabel && (
+                  <span className='flex items-center gap-1.5'>
+                    <Calendar className='h-4 w-4 shrink-0 text-primary/60' />
+                    {dateLabel}
+                  </span>
+                )
+              )}
+              {displayLocation && (
+                <span className='flex items-center gap-1.5'>
+                  <MapPin className='h-4 w-4 shrink-0 text-primary/70' />
+                  {event.latitude && event.longitude ? (
+                    <a
+                      className='font-medium text-foreground hover:text-primary hover:underline'
+                      href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}&zoom=17`}
+                      rel='noopener noreferrer'
+                      target='_blank'
+                      title={t("viewOnMap")}
+                    >
+                      {displayLocation}
+                    </a>
+                  ) : (
+                    <span className='font-medium text-foreground'>{displayLocation}</span>
+                  )}
+                </span>
+              )}
             </div>
-            {dateLabel && (
-              <span className='flex items-center gap-1.5'>
-                <Calendar className='h-4 w-4 shrink-0 text-primary/60' />
-                {dateLabel}
-              </span>
-            )}
           </div>
 
           {/* Description / lead */}
           {event.description && (
-            <p className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
-              {event.description}
-            </p>
+            <div className='mb-10 border-primary border-l-4 pl-4 font-medium text-foreground/80 text-xl leading-relaxed'>
+              <MarkdownInline content={event.description} />
+            </div>
           )}
         </ScrollReveal>
 
         <Separator className='mb-10' />
 
-        {/* ── BODY + SIDEBAR ── */}
-        <div className='flex flex-col gap-10 lg:flex-row lg:gap-12'>
-          <div className='min-w-0 flex-1'>
-            {/* Event info card */}
-            <ScrollReveal className='mb-8'>
-              <div className='space-y-3 rounded-xl border bg-muted/30 p-5'>
-                <h2 className='font-bold text-muted-foreground text-sm uppercase tracking-wider'>{t("infoTitle")}</h2>
-                <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-                  {displayLocation && (
-                    <div className='flex items-start gap-2.5'>
-                      <MapPin className='mt-0.5 h-4 w-4 shrink-0 text-primary/70' />
-                      <div>
-                        <p className='font-medium text-muted-foreground text-xs'>{t("locationLabel")}</p>
-                        <p className='font-semibold text-foreground text-sm'>{displayLocation}</p>
-                        {event.latitude && event.longitude && (
-                          <a
-                            className='text-[10px] text-primary hover:underline'
-                            href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}&zoom=17`}
-                            rel='noopener noreferrer'
-                            target='_blank'
-                          >
-                            {t("viewOnMap")} ↗
-                          </a>
+        {/* ── FULL-WIDTH BODY ── */}
+        <div className='w-full space-y-10'>
+          <div className='w-full min-w-0'>
+            {event.sponsorships && event.sponsorships.length > 0 && (
+              <ScrollReveal className='mb-8'>
+                <div className='space-y-2 rounded-xl border bg-muted/30 p-5'>
+                  <div className='font-bold text-muted-foreground text-xs uppercase tracking-wider'>
+                    {t("sponsorsTitle")}
+                  </div>
+                  <div className='flex flex-wrap items-center gap-4'>
+                    {event.sponsorships.map((s) => (
+                      <div key={s.id}>
+                        {s.sponsor.logo ? (
+                          <div className='relative h-8 w-24'>
+                            <Image
+                              alt={s.sponsor.name}
+                              className='object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
+                              fill
+                              sizes='96px'
+                              src={s.sponsor.logo}
+                            />
+                          </div>
+                        ) : (
+                          <span className='font-semibold text-muted-foreground text-sm'>{s.sponsor.name}</span>
                         )}
                       </div>
-                    </div>
-                  )}
-                  {event.startAt && (
-                    <div className='flex items-start gap-2.5'>
-                      <Clock className='mt-0.5 h-4 w-4 shrink-0 text-primary/70' />
-                      <div>
-                        <p className='font-medium text-muted-foreground text-xs'>{t("timeLabel")}</p>
-                        <p className='font-semibold text-foreground text-sm'>
-                          {fmtDateShort(event.startAt, locale)}
-                          {event.endAt ? ` – ${fmtDateShort(event.endAt, locale)}` : ""}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Sponsors */}
-                {event.sponsorships && event.sponsorships.length > 0 && (
-                  <div className='space-y-2 border-t pt-4'>
-                    <div className='flex items-center gap-1.5 font-bold text-muted-foreground text-xs uppercase tracking-wider'>
-                      {t("sponsorsTitle")}
-                    </div>
-                    <div className='flex flex-wrap items-center gap-4'>
-                      {event.sponsorships.map((s) => (
-                        <div key={s.id}>
-                          {s.sponsor.logo ? (
-                            <div className='relative h-8 w-24'>
-                              <Image
-                                alt={s.sponsor.name}
-                                className='object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0'
-                                fill
-                                sizes='96px'
-                                src={s.sponsor.logo}
-                              />
-                            </div>
-                          ) : (
-                            <span className='font-semibold text-muted-foreground text-sm'>{s.sponsor.name}</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            </ScrollReveal>
+                </div>
+              </ScrollReveal>
+            )}
 
             {/* Markdown content */}
             {event.content && (
@@ -365,15 +362,11 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
             )}
           </div>
 
-          {/* Sidebar: Gallery + Organizers */}
+          {/* Bottom: Organizers & Compact Gallery Strip */}
           {(hasGallery || (event.organizers && event.organizers.length > 0)) && (
-            <aside className='sticky top-6 w-full shrink-0 space-y-8 lg:w-[30%] xl:w-72'>
-              {hasGallery && (
-                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
-              )}
-
+            <div className='space-y-6 border-border/60 border-t pt-8'>
               {event.organizers && event.organizers.length > 0 && (
-                <div className='rounded-xl border bg-muted/30 p-5'>
+                <div className='rounded-2xl border border-border/60 bg-muted/20 p-4 sm:p-5'>
                   <div className='mb-3 flex items-center gap-1.5 font-bold text-muted-foreground text-xs uppercase tracking-wider'>
                     <Users className='h-3.5 w-3.5' />
                     {t("organizersTitle")}
@@ -405,46 +398,29 @@ export default async function EventDetailPage({ params }: Props): Promise<React.
                   </div>
                 </div>
               )}
-            </aside>
+
+              {hasGallery && (
+                <PostGalleryPanel images={galleryData} title={`${t("galleryTitle")} (${galleryData.length})`} />
+              )}
+            </div>
           )}
         </div>
 
         {/* Related events */}
         {recentEvents.length > 0 && (
           <div className='mt-20 border-t pt-10'>
-            <h2 className='mb-8 font-black text-2xl text-foreground'>{t("otherEventsTitle")}</h2>
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {recentEvents.map((e) => (
-                <Link
-                  className='group flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
-                  href={`/events/${e.slug}` as "/"}
-                  key={e.id}
-                >
-                  {e.thumbnail ? (
-                    <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-                      <Image
-                        alt={e.title}
-                        className='object-cover transition-transform duration-500 group-hover:scale-105'
-                        fill
-                        sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
-                        src={e.thumbnail}
-                      />
-                    </div>
-                  ) : (
-                    <div className='relative flex aspect-video w-full items-center justify-center bg-muted/40 text-muted-foreground'>
-                      <span>{t("noThumbnail")}</span>
-                    </div>
-                  )}
-                  <div className='flex flex-1 flex-col p-5'>
-                    <div className='mb-2 flex items-center justify-between text-muted-foreground text-xs'>
-                      <span className='rounded bg-muted px-2 py-0.5 font-medium'>{t("badgeLabel")}</span>
-                      <span>{fmtDateShort(e.startAt ?? null, locale)}</span>
-                    </div>
-                    <h3 className='line-clamp-2 font-bold text-foreground leading-snug transition-colors group-hover:text-primary'>
-                      {e.title}
-                    </h3>
-                  </div>
+            <div className='mb-8 flex flex-wrap items-end justify-between gap-4'>
+              <h2 className='font-black text-2xl text-foreground'>{t("otherEventsTitle")}</h2>
+              <Button asChild className='gap-1.5' variant='outline'>
+                <Link href='/events'>
+                  {t("viewAllEvents")}
+                  <ArrowRight className='h-4 w-4' />
                 </Link>
+              </Button>
+            </div>
+            <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+              {recentEvents.map((e) => (
+                <EventCard event={e} key={e.id} />
               ))}
             </div>
           </div>

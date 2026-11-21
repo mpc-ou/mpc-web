@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/configs/prisma/db";
+import { _DEFAULT_LOCALE, _LOCALES } from "@/constants/lang";
 import { exchangeOidcCode, verifyOidcIdToken } from "@/services/sso";
 import { setSession } from "@/utils/session";
 
@@ -99,13 +100,17 @@ const generateUniqueSlug = async (email: string) => {
   return `${base}${Date.now().toString().slice(-6)}`;
 };
 
+const resolveLocale = (value: string | undefined) =>
+  _LOCALES.includes(value as (typeof _LOCALES)[number]) ? (value as string) : _DEFAULT_LOCALE;
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const state = searchParams.get("state");
-  const next = searchParams.get("next") ?? "/";
-
   const cookieStore = await cookies();
+  const locale = resolveLocale(cookieStore.get("NEXT_LOCALE")?.value);
+  const next = searchParams.get("next") ?? `/${locale}`;
+
   const savedState = cookieStore.get("oidc_state")?.value;
   const codeVerifier = cookieStore.get("oidc_code_verifier")?.value;
 
@@ -115,7 +120,9 @@ export async function GET(request: Request) {
   cookieStore.delete("oidc_code_verifier");
 
   if (!(code && state && savedState && codeVerifier) || state !== savedState) {
-    return NextResponse.redirect(`${origin}/auth#error_description=Yeu%20cau%20xac%20thuc%20khong%20hop%20le.`);
+    return NextResponse.redirect(
+      `${origin}/${locale}/auth#error_description=Yeu%20cau%20xac%20thuc%20khong%20hop%20le.`
+    );
   }
 
   try {
@@ -206,6 +213,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}${next}`);
   } catch (err) {
     console.error(err);
-    return NextResponse.redirect(`${origin}/auth#error_description=Loi%20khi%20xac%20thuc%20voi%20SSO.`);
+    return NextResponse.redirect(`${origin}/${locale}/auth#error_description=Loi%20khi%20xac%20thuc%20voi%20SSO.`);
   }
 }

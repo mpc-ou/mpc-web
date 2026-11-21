@@ -53,7 +53,7 @@ export const createColumns = (
       row.original.descriptionVi ? (
         <p className='max-w-xs truncate text-muted-foreground text-xs'>{row.original.descriptionVi}</p>
       ) : (
-        <span className='text-muted-foreground text-xs'>—</span>
+        <span className='text-muted-foreground text-xs'>-</span>
       )
   },
   {

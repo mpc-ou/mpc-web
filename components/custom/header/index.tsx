@@ -108,7 +108,7 @@ const Header = ({ announcement, profile = null, logoUrl, siteTitle }: HeaderProp
             </div>
             <SearchModal />
             <UserProfile profile={profile} />
-            <MobileMenu />
+            <MobileMenu isLoggedIn={!!profile} />
           </div>
         </div>
       </header>

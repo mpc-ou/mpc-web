@@ -17,14 +17,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { uploadToStorage } from "@/services/supabase-upload";
+import { FREQ_OPTIONS, frequencyKey } from "@/utils/activity-frequency";
 import type { ActivityRow } from "./columns";
 
-const FREQ_OPTIONS = [
-  { value: "weekly", vi: "Hằng tuần", en: "Weekly" },
-  { value: "monthly", vi: "Hằng tháng", en: "Monthly" },
-  { value: "yearly", vi: "Hằng năm", en: "Annually" },
-  { value: "semester", vi: "Hằng kỳ", en: "Every Semester" },
-  { value: "none", vi: "Không cố định", en: "Irregular" }
+const SCOPE_OPTIONS = [
+  { internal: true, label: "Đối nội", hint: "Hoạt động dành cho thành viên CLB" },
+  { internal: false, label: "Đối ngoại", hint: "Sự kiện mở cho sinh viên bên ngoài" }
 ] as const;
 
 type Props = {
@@ -50,9 +48,11 @@ export default function ActivityForm({ activity }: Props) {
 
   const otherLang: ViewLanguage = bi.viewLang === "vi" ? "en" : "vi";
 
-  const [frequencyVi, setFrequencyVi] = useState(activity?.frequencyVi ?? "monthly");
-  const [frequencyEn, setFrequencyEn] = useState(activity?.frequencyEn ?? "monthly");
+  const [frequency, setFrequency] = useState<string>(
+    activity ? (frequencyKey(activity.frequencyVi, activity.frequencyEn) ?? "none") : "monthly"
+  );
   const [hyperlink, setHyperlink] = useState(activity?.hyperlink ?? "");
+  const [isInternal, setIsInternal] = useState(activity?.isInternal ?? false);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(activity?.thumbnail ?? null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -83,7 +83,6 @@ export default function ActivityForm({ activity }: Props) {
   const isVi = bi.viewLang === "vi";
   const currentTitle = isVi ? bi.titleVi : bi.titleEn;
   const currentDesc = isVi ? (bi.summaryVi ?? "") : (bi.summaryEn ?? "");
-  const currentFreq = isVi ? frequencyVi : frequencyEn;
 
   const setTitle = useCallback(
     (v: string) => (bi.viewLang === "vi" ? bi.setTitleVi(v) : bi.setTitleEn(v)),
@@ -93,14 +92,10 @@ export default function ActivityForm({ activity }: Props) {
     (v: string) => (bi.viewLang === "vi" ? bi.setSummaryVi(v) : bi.setSummaryEn(v)),
     [bi.viewLang, bi.setSummaryVi, bi.setSummaryEn]
   );
-  const setFreq = useCallback(
-    (v: string) => (bi.viewLang === "vi" ? setFrequencyVi(v) : setFrequencyEn(v)),
-    [bi.viewLang]
-  );
 
   const freqLabel = useMemo(() => {
-    return FREQ_OPTIONS.find((o) => o.value === currentFreq)?.[isVi ? "vi" : "en"] ?? "";
-  }, [currentFreq, isVi]);
+    return FREQ_OPTIONS.find((o) => o.value === frequency)?.[isVi ? "vi" : "en"] ?? "";
+  }, [frequency, isVi]);
 
   const translateSrcFields = useMemo(
     () => ({
@@ -130,9 +125,10 @@ export default function ActivityForm({ activity }: Props) {
       titleEn: bi.titleEn || undefined,
       descriptionVi: bi.summaryVi ?? undefined,
       descriptionEn: bi.summaryEn ?? undefined,
-      frequencyVi: frequencyVi || undefined,
-      frequencyEn: frequencyEn || undefined,
+      frequencyVi: frequency,
+      frequencyEn: frequency,
       hyperlink: hyperlink || undefined,
+      isInternal,
       thumbnail: thumbnailUrl ?? undefined,
       images: imagesItems.map((x) => x.url)
     };
@@ -140,7 +136,7 @@ export default function ActivityForm({ activity }: Props) {
     const res = isEdit ? await adminUpdateActivity(activity.id, payload) : await adminCreateActivity(payload);
 
     if (res.error) {
-      toast({ variant: "destructive", description: String(res.error) });
+      toast({ variant: "destructive", description: res.error.message });
       setLoading(false);
       return;
     }
@@ -219,8 +215,39 @@ export default function ActivityForm({ activity }: Props) {
             </div>
 
             <div className='grid gap-1.5'>
+              <Label id='activity-scope-label'>Phân loại</Label>
+              <fieldset aria-labelledby='activity-scope-label' className='grid grid-cols-2 gap-2'>
+                {SCOPE_OPTIONS.map((opt) => {
+                  const selected = isInternal === opt.internal;
+                  return (
+                    <label
+                      className={`flex cursor-pointer flex-col items-start gap-0.5 rounded-lg border px-3 py-2.5 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring ${
+                        selected
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/40 hover:bg-muted/50"
+                      }`}
+                      key={opt.label}
+                    >
+                      <input
+                        checked={selected}
+                        className='sr-only'
+                        name='activity-scope'
+                        onChange={() => setIsInternal(opt.internal)}
+                        type='radio'
+                      />
+                      <span className={`font-medium text-sm ${selected ? "text-primary" : "text-foreground"}`}>
+                        {opt.label}
+                      </span>
+                      <span className='text-muted-foreground text-xs'>{opt.hint}</span>
+                    </label>
+                  );
+                })}
+              </fieldset>
+            </div>
+
+            <div className='grid gap-1.5'>
               <Label>Tần suất</Label>
-              <Select onValueChange={setFreq} value={currentFreq}>
+              <Select onValueChange={setFrequency} value={frequency}>
                 <SelectTrigger className='h-9 text-sm'>
                   <SelectValue>{freqLabel}</SelectValue>
                 </SelectTrigger>
@@ -236,11 +263,7 @@ export default function ActivityForm({ activity }: Props) {
 
             <div className='grid gap-1.5'>
               <Label>Liên kết CTA (tùy chọn)</Label>
-              <Input
-                onChange={(e) => setHyperlink(e.target.value)}
-                placeholder='/activities/webdesign'
-                value={hyperlink}
-              />
+              <Input onChange={(e) => setHyperlink(e.target.value)} placeholder='/web-design' value={hyperlink} />
             </div>
 
             <div className='grid gap-1.5'>

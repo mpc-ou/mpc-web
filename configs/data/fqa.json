@@ -1,5 +1,5 @@
 {
-  "_README": "FAQ mẫu cho website MPC — dùng KEY viết hoa làm target. Các dev/AI agent có thể sửa trực tiếp file này rồi bấm 'Ghi đè FAQ' trong Admin.",
+  "_README": "FAQ mẫu cho website MPC - dùng KEY viết hoa làm target. Các dev/AI agent có thể sửa trực tiếp file này rồi bấm 'Ghi đè FAQ' trong Admin.",
 
   "GENERAL": [
     {
@@ -52,7 +52,7 @@
       },
       "en": {
         "q": "What is the history of MPC?",
-        "a": "The Mobile Programming Club (MPC) was established in 2015. Initially, the club was founded with the goal of creating an environment for learning, researching, and developing information technology — not only on mobile devices such as web, mobile apps, etc., but also in many other popular fields for IT students."
+        "a": "The Mobile Programming Club (MPC) was established in 2015. Initially, the club was founded with the goal of creating an environment for learning, researching, and developing information technology - not only on mobile devices such as web, mobile apps, etc., but also in many other popular fields for IT students."
       }
     },
     {

@@ -439,7 +439,7 @@ export type $TagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type TagGetPayload<S extends boolean | null | undefined | TagDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$TagPayload, S>
 
 export type TagCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<TagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<TagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: TagCountAggregateInputType | true
   }
 
@@ -884,6 +884,7 @@ export type TagFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Filter, which Tag to fetch.
    */
   where: Prisma.TagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -906,6 +907,7 @@ export type TagFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    * Filter, which Tag to fetch.
    */
   where: Prisma.TagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -958,6 +960,7 @@ export type TagFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Filter by unique combinations of Tags.
    */
   distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1010,6 +1013,7 @@ export type TagFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Filter by unique combinations of Tags.
    */
   distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1057,6 +1061,7 @@ export type TagFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    */
   skip?: number
   distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1079,6 +1084,7 @@ export type TagCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * The data needed to create a Tag.
    */
   data: Prisma.XOR<Prisma.TagCreateInput, Prisma.TagUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1135,6 +1141,7 @@ export type TagUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * Choose, which Tag to update.
    */
   where: Prisma.TagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1209,6 +1216,7 @@ export type TagUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * In case the Tag was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.TagUpdateInput, Prisma.TagUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1231,6 +1239,7 @@ export type TagDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * Filter which Tag to delete.
    */
   where: Prisma.TagWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

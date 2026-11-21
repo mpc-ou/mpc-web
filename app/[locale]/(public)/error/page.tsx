@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { useTranslations } from "next-intl";
 import { BaseLayout } from "@/components/custom/base-layout";
 import { ErrorContent } from "@/components/custom/error-content.client";
 import type { locale } from "@/types/global";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false }
+};
 
 type Params = Promise<{ locale: string }>;
 type SearchParams = Promise<{ code?: string }>;

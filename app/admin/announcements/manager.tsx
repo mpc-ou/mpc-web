@@ -165,6 +165,7 @@ export function AnnouncementsDataTable({ locale, data }: { locale: string; data:
 
       <AnnouncementFormDialog
         announcement={editAnnouncement}
+        key={editAnnouncement?.id ?? "new"}
         onOpenChange={(open) => {
           setDialogOpen(open);
           if (!open) {

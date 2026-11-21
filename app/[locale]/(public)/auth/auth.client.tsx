@@ -115,6 +115,7 @@ const LoginClient = () => {
             className='object-cover object-center brightness-[0.45] dark:brightness-[0.35]'
             fill
             priority
+            sizes='50vw'
             src='/images/bg/toc2025.jpg'
           />
           <div className='absolute inset-0 bg-[#070b13]/55 dark:bg-[#070b13]/75' />
@@ -126,7 +127,7 @@ const LoginClient = () => {
             className='relative h-10 w-10 select-none drop-shadow-[0_2px_8px_rgba(249,115,22,0.4)] filter transition-transform duration-500 ease-out'
             style={{ transform: leftLogoTransform }}
           >
-            <Image alt='MPClub Logo' className='object-contain' fill src='/images/logo.png' />
+            <Image alt='MPClub Logo' className='object-contain' fill sizes='80px' src='/images/logo.png' />
           </div>
           <span className='font-black text-white text-xl tracking-tight'>MPClub</span>
         </div>
@@ -191,6 +192,7 @@ const LoginClient = () => {
             alt='Background'
             className='scale-105 object-cover opacity-10 saturate-[1.2] filter'
             fill
+            sizes='100vw'
             src='/images/bg/toc2025.jpg'
           />
           <div className='absolute inset-0 bg-linear-to-b from-[#070b13]/80 via-[#070b13]/95 to-[#070b13]' />
@@ -199,7 +201,7 @@ const LoginClient = () => {
         <div className='relative z-10 flex w-full max-w-md flex-col items-center'>
           <div className='mb-8 flex flex-col items-center text-center lg:hidden'>
             <div className='relative mb-4 h-20 w-20 select-none drop-shadow-[0_4px_12px_rgba(249,115,22,0.3)] filter'>
-              <Image alt='MPClub Logo' className='object-contain' fill src='/images/logo.png' />
+              <Image alt='MPClub Logo' className='object-contain' fill sizes='80px' src='/images/logo.png' />
             </div>
             <h2 className='font-black text-2xl text-slate-900 dark:text-white'>MPClub</h2>
             <p className='mt-1 font-medium text-muted-foreground text-xs'>
@@ -224,7 +226,7 @@ const LoginClient = () => {
                 type='button'
               >
                 <div className='relative h-6.5 w-6.5 select-none drop-shadow-[0_2px_4px_rgba(255,255,255,0.25)] filter'>
-                  <Image alt='Logo' className='object-contain' fill src='/images/logo.png' />
+                  <Image alt='Logo' className='object-contain' fill sizes='80px' src='/images/logo.png' />
                 </div>
                 <span>{tAuth("ssoButton")}</span>
               </Button>

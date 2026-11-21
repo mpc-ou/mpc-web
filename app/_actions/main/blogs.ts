@@ -1,18 +1,20 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_POSTS } from "@/constants/cache";
 import { getBlogPermissionLevel, hasBlogCreationPermission } from "@/services/blog-permission";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 // Cache tag for blogs
-const _CACHE_BLOGS = "blogs-cache-tag";
 
 export const getBlogsPageData = async (validPage: number, take: number, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_POSTS);
 
       const skip = (validPage - 1) * take;
 
@@ -35,6 +37,8 @@ export const getBlogsPageData = async (validPage: number, take: number, locale =
             slug: true,
             summaryVi: true,
             summaryEn: true,
+            contentVi: true,
+            contentEn: true,
             thumbnail: true,
             publishedAt: true,
             createdAt: true,
@@ -60,16 +64,20 @@ export const getBlogsPageData = async (validPage: number, take: number, locale =
       const isEn = locale === "en";
 
       return {
-        blogs: blogs.map((b) => ({
-          ...b,
-          title: isEn && b.titleEn ? b.titleEn : b.titleVi,
-          description: isEn && b.summaryEn ? b.summaryEn : b.summaryVi,
-          publishedAt: (b.publishedAt || b.createdAt).toISOString(),
-          // normalise tag shape for client
-          tags: b.tags.map((t) => ({
-            tag: { nameVi: t.tag.name, nameEn: t.tag.name, id: t.tag.id }
-          }))
-        })),
+        blogs: blogs.map(({ contentVi, contentEn, ...b }) => {
+          const rawSummary = isEn && b.summaryEn ? b.summaryEn : b.summaryVi;
+          const rawContent = isEn && contentEn ? contentEn : contentVi;
+          return {
+            ...b,
+            title: isEn && b.titleEn ? b.titleEn : b.titleVi,
+            description: resolvePostSummary(rawSummary, rawContent),
+            publishedAt: (b.publishedAt || b.createdAt).toISOString(),
+            // normalise tag shape for client
+            tags: b.tags.map((t) => ({
+              tag: { nameVi: t.tag.name, nameEn: t.tag.name, id: t.tag.id }
+            }))
+          };
+        }),
         totalPages
       };
     }
@@ -78,8 +86,9 @@ export const getBlogsPageData = async (validPage: number, take: number, locale =
 export const getBlogBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_POSTS);
 
       const post = await prisma.post.findUnique({
         where: { slug, status: { in: ["PUBLISHED", "UNLISTED"] } },
@@ -219,8 +228,9 @@ export const getBlogBySlugForUser = async (slug: string, locale = "vi") =>
 export const getRecentBlogs = async (take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_POSTS);
 
       const blogs = await prisma.post.findMany({
         where: {
@@ -236,6 +246,8 @@ export const getRecentBlogs = async (take = 3, locale = "vi") =>
           slug: true,
           summaryVi: true,
           summaryEn: true,
+          contentVi: true,
+          contentEn: true,
           thumbnail: true,
           publishedAt: true,
           createdAt: true
@@ -245,12 +257,16 @@ export const getRecentBlogs = async (take = 3, locale = "vi") =>
       const isEn = locale === "en";
 
       return {
-        blogs: blogs.map((b) => ({
-          ...b,
-          title: isEn && b.titleEn ? b.titleEn : b.titleVi,
-          description: isEn && b.summaryEn ? b.summaryEn : b.summaryVi,
-          publishedAt: (b.publishedAt || b.createdAt).toISOString()
-        }))
+        blogs: blogs.map(({ contentVi, contentEn, ...b }) => {
+          const rawSummary = isEn && b.summaryEn ? b.summaryEn : b.summaryVi;
+          const rawContent = isEn && contentEn ? contentEn : contentVi;
+          return {
+            ...b,
+            title: isEn && b.titleEn ? b.titleEn : b.titleVi,
+            description: resolvePostSummary(rawSummary, rawContent),
+            publishedAt: (b.publishedAt || b.createdAt).toISOString()
+          };
+        })
       };
     }
   });
@@ -258,8 +274,9 @@ export const getRecentBlogs = async (take = 3, locale = "vi") =>
 export const getRelatedPosts = async (postId: string, tagIds: string[], type: string, take = 3, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
-      cacheTag(_CACHE_BLOGS);
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_POSTS);
 
       let posts: Array<{
         id: string;
@@ -268,6 +285,8 @@ export const getRelatedPosts = async (postId: string, tagIds: string[], type: st
         slug: string;
         summaryVi: string | null;
         summaryEn: string | null;
+        contentVi: string;
+        contentEn: string;
         thumbnail: string | null;
         publishedAt: Date | null;
         createdAt: Date;
@@ -291,6 +310,8 @@ export const getRelatedPosts = async (postId: string, tagIds: string[], type: st
             slug: true,
             summaryVi: true,
             summaryEn: true,
+            contentVi: true,
+            contentEn: true,
             thumbnail: true,
             publishedAt: true,
             createdAt: true,
@@ -317,6 +338,8 @@ export const getRelatedPosts = async (postId: string, tagIds: string[], type: st
             slug: true,
             summaryVi: true,
             summaryEn: true,
+            contentVi: true,
+            contentEn: true,
             thumbnail: true,
             publishedAt: true,
             createdAt: true,
@@ -328,12 +351,16 @@ export const getRelatedPosts = async (postId: string, tagIds: string[], type: st
 
       const isEn = locale === "en";
 
-      return posts.map((p) => ({
-        ...p,
-        title: isEn && p.titleEn ? p.titleEn : p.titleVi,
-        description: isEn && p.summaryEn ? p.summaryEn : p.summaryVi,
-        publishedAt: (p.publishedAt || p.createdAt).toISOString()
-      }));
+      return posts.map(({ contentVi, contentEn, ...p }) => {
+        const rawSummary = isEn && p.summaryEn ? p.summaryEn : p.summaryVi;
+        const rawContent = isEn && contentEn ? contentEn : contentVi;
+        return {
+          ...p,
+          title: isEn && p.titleEn ? p.titleEn : p.titleVi,
+          description: resolvePostSummary(rawSummary, rawContent),
+          publishedAt: (p.publishedAt || p.createdAt).toISOString()
+        };
+      });
     }
   });
 

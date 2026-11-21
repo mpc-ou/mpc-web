@@ -1,14 +1,19 @@
 "use server";
 
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
+import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS, _CACHE_PROJECTS, _CACHE_SETTINGS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
+import { resolvePostSummary } from "@/utils/markdown-summary";
 
 export const getProjectsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_PROJECTS);
       const skip = (validPage - 1) * take;
-      const [total, projects] = await Promise.all([
+      const [total, rawProjects] = await Promise.all([
         prisma.project.count({ where: { isActive: true } }),
         prisma.project.findMany({
           where: { isActive: true },
@@ -22,6 +27,8 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
             slug: true,
             description: true,
             descriptionEn: true,
+            content: true,
+            contentEn: true,
             thumbnail: true,
             technologies: true,
             startDate: true,
@@ -44,6 +51,12 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
         })
       ]);
 
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
+
       const totalPages = Math.ceil(total / take);
 
       return { total, projects, totalPages };
@@ -53,7 +66,9 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
 export const getProjectDetail = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_PROJECTS);
 
       const project = await prisma.project.findUnique({
         where: { slug },
@@ -78,56 +93,92 @@ export const getProjectDetail = async (slug: string) =>
     }
   });
 
+const PROJECT_CARD_SELECT = {
+  id: true,
+  title: true,
+  titleEn: true,
+  slug: true,
+  description: true,
+  descriptionEn: true,
+  content: true,
+  contentEn: true,
+  thumbnail: true,
+  technologies: true,
+  startDate: true,
+  endDate: true,
+  members: {
+    include: {
+      member: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          middleName: true,
+          avatar: true,
+          slug: true
+        }
+      }
+    }
+  }
+} as const;
+
 /**
  * Other active projects (excluding current), up to 4.
  */
 export const getOtherProjects = async (excludeSlug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_PROJECTS);
 
-      const projects = await prisma.project.findMany({
+      const rawProjects = await prisma.project.findMany({
         where: { isActive: true, slug: { not: excludeSlug } },
         orderBy: { createdAt: "desc" },
         take: 4,
-        select: {
-          id: true,
-          title: true,
-          titleEn: true,
-          slug: true,
-          description: true,
-          descriptionEn: true,
-          thumbnail: true,
-          technologies: true,
-          startDate: true,
-          endDate: true,
-          members: {
-            include: {
-              member: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  middleName: true,
-                  avatar: true,
-                  slug: true
-                }
-              }
-            }
-          }
-        }
+        select: PROJECT_CARD_SELECT
       });
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
+      return { projects };
+    }
+  });
+
+export const getFeaturedProjects = async (take = 4) =>
+  handleErrorServerNoAuth({
+    cb: async () => {
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_PROJECTS);
+
+      const rawProjects = await prisma.project.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+        take,
+        select: PROJECT_CARD_SELECT
+      });
+      const projects = rawProjects.map(({ content, contentEn, ...p }) => ({
+        ...p,
+        description: resolvePostSummary(p.description, content) || null,
+        descriptionEn: resolvePostSummary(p.descriptionEn, contentEn || content) || null
+      }));
       return { projects };
     }
   });
 
 /**
- * Gold board — top members sorted by achievement count.
+ * Gold board - top members sorted by achievement count.
  */
 export const getGoldBoardMembers = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_ACHIEVEMENTS);
+      cacheTag(_CACHE_MEMBERS);
 
       const members = await prisma.member.findMany({
         where: { clubRoles: { some: {} } },
@@ -171,7 +222,10 @@ export const getGoldBoardMembers = async () =>
 export const getTrainingPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_PROJECTS);
+      cacheTag(_CACHE_SETTINGS);
       const [latestProjects, trainingFormSetting] = await Promise.all([
         prisma.project.findMany({
           where: { isActive: true },

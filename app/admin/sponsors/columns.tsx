@@ -60,13 +60,13 @@ export const createColumns = (
           {row.original.website}
         </a>
       ) : (
-        <span className='text-muted-foreground text-xs'>—</span>
+        <span className='text-muted-foreground text-xs'>-</span>
       )
   },
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.email || "—"}</span>
+    cell: ({ row }) => <span className='text-muted-foreground text-xs'>{row.original.email || "-"}</span>
   },
   {
     accessorKey: "isActive",

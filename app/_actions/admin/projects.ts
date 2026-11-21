@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import type { Prisma } from "@/configs/prisma/generated/prisma/client";
-import { _CACHE_PROJECTS } from "@/constants/cache";
+import { _CACHE_MEMBERS, _CACHE_PROJECTS } from "@/constants/cache";
 import { handleErrorServerWithAuth } from "@/utils/handle-error-server";
 import { generateSlug, requireAdmin } from "./helpers";
 
@@ -23,6 +23,7 @@ export const adminGetProjects = async () =>
         endDate: p.endDate ? p.endDate.toISOString() : null,
         members: p.members.map((pm) => ({
           ...pm,
+          joinedAt: pm.joinedAt ? pm.joinedAt.toISOString() : null,
           member: {
             ...pm.member,
             createdAt: pm.member.createdAt.toISOString(),
@@ -84,6 +85,7 @@ export const adminGetProjectsPaginated = async (params: {
           endDate: p.endDate ? p.endDate.toISOString() : null,
           members: p.members.map((pm) => ({
             ...pm,
+            joinedAt: pm.joinedAt ? pm.joinedAt.toISOString() : null,
             member: {
               ...pm.member,
               createdAt: pm.member.createdAt.toISOString(),
@@ -209,15 +211,52 @@ export const adminDeleteProject = async (id: string) =>
     }
   });
 
-export const adminLinkProjectMember = async (projectId: string, memberId: string, role?: string) =>
+const VN_DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+const parseJoinedAt = (value?: string | null): Date | null => {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(VN_DATE_ONLY_RE.test(value) ? `${value}T00:00:00+07:00` : value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+export const adminLinkProjectMember = async (
+  projectId: string,
+  memberId: string,
+  role?: string,
+  joinedAt?: string | null
+) =>
   handleErrorServerWithAuth({
     cb: async ({ user }) => {
       await requireAdmin(user);
       const link = await prisma.projectMember.create({
-        data: { projectId, memberId, role: role || null }
+        data: { projectId, memberId, role: role || null, joinedAt: parseJoinedAt(joinedAt) }
       });
       revalidateTag(_CACHE_PROJECTS, "default");
-      return link;
+      revalidateTag(_CACHE_MEMBERS, "default");
+      return { ...link, joinedAt: link.joinedAt?.toISOString() ?? null };
+    }
+  });
+
+export const adminUpdateProjectMembers = async (
+  projectId: string,
+  items: { memberId: string; role: string | null; joinedAt: string | null }[]
+) =>
+  handleErrorServerWithAuth({
+    cb: async ({ user }) => {
+      await requireAdmin(user);
+      await prisma.$transaction(
+        items.map((item) =>
+          prisma.projectMember.update({
+            where: { projectId_memberId: { projectId, memberId: item.memberId } },
+            data: { role: item.role?.trim() || null, joinedAt: parseJoinedAt(item.joinedAt) }
+          })
+        )
+      );
+      revalidateTag(_CACHE_PROJECTS, "default");
+      revalidateTag(_CACHE_MEMBERS, "default");
+      return { success: true };
     }
   });
 
@@ -252,6 +291,7 @@ export const adminGetProjectById = async (id: string) =>
         endDate: project.endDate ? project.endDate.toISOString() : null,
         members: project.members.map((pm) => ({
           ...pm,
+          joinedAt: pm.joinedAt ? pm.joinedAt.toISOString() : null,
           member: {
             ...pm.member,
             createdAt: pm.member.createdAt.toISOString(),

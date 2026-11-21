@@ -1141,7 +1141,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type ActivityGetPayload<S extends boolean | null | undefined | ActivityDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ActivityPayload, S>
 
 export type ActivityCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<ActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<ActivityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: ActivityCountAggregateInputType | true
   }
 
@@ -1600,6 +1600,7 @@ export type ActivityFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter, which Activity to fetch.
    */
   where: Prisma.ActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1622,6 +1623,7 @@ export type ActivityFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which Activity to fetch.
    */
   where: Prisma.ActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1674,6 +1676,7 @@ export type ActivityFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter by unique combinations of Activities.
    */
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1726,6 +1729,7 @@ export type ActivityFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of Activities.
    */
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1773,6 +1777,7 @@ export type ActivityFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   skip?: number
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1795,6 +1800,7 @@ export type ActivityCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data needed to create a Activity.
    */
   data: Prisma.XOR<Prisma.ActivityCreateInput, Prisma.ActivityUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1851,6 +1857,7 @@ export type ActivityUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Choose, which Activity to update.
    */
   where: Prisma.ActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1925,6 +1932,7 @@ export type ActivityUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * In case the Activity was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.ActivityUpdateInput, Prisma.ActivityUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1947,6 +1955,7 @@ export type ActivityDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Filter which Activity to delete.
    */
   where: Prisma.ActivityWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

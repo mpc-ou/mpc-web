@@ -5,6 +5,7 @@ import { prisma } from "@/configs/prisma/db";
 import { Prisma } from "@/configs/prisma/generated/prisma/client";
 import { _CACHE_MEMBERS, _CACHE_POSTS, _CACHE_PROJECTS } from "@/constants/cache";
 import type { SearchIndexItem, SearchSection } from "@/types/search";
+import { getSearchItemUrl } from "@/utils/search-url";
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: building search index items
 export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]> {
@@ -23,7 +24,9 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
         titleVi: true,
         titleEn: true,
         thumbnail: true,
-        author: { select: { firstName: true, lastName: true, middleName: true } },
+        author: {
+          select: { firstName: true, lastName: true, middleName: true }
+        },
         tags: { select: { tag: { select: { name: true } } } }
       }
     }),
@@ -68,16 +71,18 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
 
   for (const p of posts) {
     const tagNames = p.tags.map((pt: { tag: { name: string } }) => pt.tag.name).join(" ");
+    const isClubPost = p.type === "EVENT" || p.type === "ACHIEVEMENT";
+    const section = p.type.toLowerCase() as SearchIndexItem["section"];
     items.push({
       id: p.id,
       title: isVi ? p.titleVi : p.titleEn || p.titleVi,
       slug: p.slug,
-      section: p.type.toLowerCase() as SearchIndexItem["section"],
+      section,
       thumbnail: p.thumbnail,
-      authorName: p.author ? `${p.author.firstName} ${p.author.lastName}` : null,
+      authorName: p.author && !isClubPost ? `${p.author.firstName} ${p.author.lastName}` : null,
       keywords: tagNames,
       extra: null,
-      url: `/posts/${p.slug}`
+      url: getSearchItemUrl(section, p.slug)
     });
   }
 
@@ -91,7 +96,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
       authorName: null,
       keywords: "",
       extra: null,
-      url: `/projects/${p.slug}`
+      url: getSearchItemUrl("project", p.slug)
     });
   }
 
@@ -120,7 +125,7 @@ export async function getSearchIndex(locale: string): Promise<SearchIndexItem[]>
       authorName: null,
       keywords: "",
       extra: extraParts.length > 0 ? extraParts.join(" · ") : null,
-      url: `/members/${m.slug ?? m.id}`
+      url: getSearchItemUrl("member", m.slug ?? m.id)
     });
   }
 
@@ -147,14 +152,21 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
   const titleCol = isVi ? `"titleVi"` : `coalesce(nullif("titleEn",''), "titleVi")`;
   const summaryCol = isVi ? `"summaryVi"` : `coalesce(nullif("summaryEn",''), "summaryVi")`;
 
-  // tsvector gồm: title (A) + summary (B) + author name + tags (C) — KHÔNG có content (markdown quá nặng)
-  const postVector = isVi
-    ? `setweight(to_tsvector('simple', coalesce("titleVi",'')), 'A')
+  // tsvector gồm: title (A) + summary (B) + author name + tags (C) - KHÔNG có content (markdown quá nặng)
+  const buildPostVector = (withAuthor: boolean) => {
+    const extra = withAuthor
+      ? `coalesce(au."firstName",'') || ' ' || coalesce(au."lastName",'') || ' ' || coalesce(tg.names,'')`
+      : "coalesce(tg.names,'')";
+    return isVi
+      ? `setweight(to_tsvector('simple', coalesce("titleVi",'')), 'A')
        || setweight(to_tsvector('simple', coalesce("summaryVi",'')), 'B')
-       || setweight(to_tsvector('simple', coalesce(au."firstName",'') || ' ' || coalesce(au."lastName",'') || ' ' || coalesce(tg.names,'')), 'C')`
-    : `setweight(to_tsvector('simple', coalesce("titleEn",'') || ' ' || coalesce("titleVi",'')), 'A')
+       || setweight(to_tsvector('simple', ${extra}), 'C')`
+      : `setweight(to_tsvector('simple', coalesce("titleEn",'') || ' ' || coalesce("titleVi",'')), 'A')
        || setweight(to_tsvector('simple', coalesce("summaryEn",'') || ' ' || coalesce("summaryVi",'')), 'B')
-       || setweight(to_tsvector('simple', coalesce(au."firstName",'') || ' ' || coalesce(au."lastName",'') || ' ' || coalesce(tg.names,'')), 'C')`;
+       || setweight(to_tsvector('simple', ${extra}), 'C')`;
+  };
+  const postVector = buildPostVector(true);
+  const clubPostVector = buildPostVector(false);
 
   const projVector = `setweight(to_tsvector('simple', coalesce(proj.title,'') || ' ' || coalesce(proj."titleEn",'')), 'A')
     || setweight(to_tsvector('simple', coalesce(proj.description,'') || ' ' || coalesce(proj."descriptionEn",'')), 'B')`;
@@ -191,12 +203,11 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
       SELECT 'event' AS section,
         p.id, ${Prisma.raw(titleCol)} AS title,
         p.slug, p.thumbnail,
-        concat(au."firstName", ' ', au."lastName") AS author_name,
+        NULL AS author_name,
         ${Prisma.raw(summaryCol)} AS summary,
         NULL AS extra,
-        ts_rank(${Prisma.raw(postVector)}, plainto_tsquery('simple', ${query})) AS rank
+        ts_rank(${Prisma.raw(clubPostVector)}, plainto_tsquery('simple', ${query})) AS rank
       FROM "Post" p
-      JOIN "Member" au ON au.id = p."authorId"
       LEFT JOIN LATERAL (
         SELECT string_agg(t.name, ' ') AS names
         FROM "PostTag" pt
@@ -204,19 +215,18 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
         WHERE pt."postId" = p.id
       ) tg ON TRUE
       WHERE p.status = 'PUBLISHED' AND p.type = 'EVENT'
-        AND ${Prisma.raw(postVector)} @@ plainto_tsquery('simple', ${query})
+        AND ${Prisma.raw(clubPostVector)} @@ plainto_tsquery('simple', ${query})
 
       UNION ALL
 
       SELECT 'achievement' AS section,
         p.id, ${Prisma.raw(titleCol)} AS title,
         p.slug, p.thumbnail,
-        concat(au."firstName", ' ', au."lastName") AS author_name,
+        NULL AS author_name,
         ${Prisma.raw(summaryCol)} AS summary,
         NULL AS extra,
-        ts_rank(${Prisma.raw(postVector)}, plainto_tsquery('simple', ${query})) AS rank
+        ts_rank(${Prisma.raw(clubPostVector)}, plainto_tsquery('simple', ${query})) AS rank
       FROM "Post" p
-      JOIN "Member" au ON au.id = p."authorId"
       LEFT JOIN LATERAL (
         SELECT string_agg(t.name, ' ') AS names
         FROM "PostTag" pt
@@ -224,7 +234,7 @@ export async function searchAll(query: string, locale: string): Promise<SearchAl
         WHERE pt."postId" = p.id
       ) tg ON TRUE
       WHERE p.status = 'PUBLISHED' AND p.type = 'ACHIEVEMENT'
-        AND ${Prisma.raw(postVector)} @@ plainto_tsquery('simple', ${query})
+        AND ${Prisma.raw(clubPostVector)} @@ plainto_tsquery('simple', ${query})
 
       UNION ALL
 

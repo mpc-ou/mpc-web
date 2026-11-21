@@ -127,7 +127,7 @@ const DesktopNav = () => {
         <NavDropdownItem href='/activities'>{nav("activities")}</NavDropdownItem>
         <NavDropdownItem href='/members'>{nav("members")}</NavDropdownItem>
         <DropdownDivider />
-        <NavDropdownItem href='/activities/webdesign'>{nav("webdesign")}</NavDropdownItem>
+        <NavDropdownItem href='/web-design'>{nav("webdesign")}</NavDropdownItem>
         {/* <DropdownDivider />
         <NavDropdownItem href="/recap">{nav("recap")}</NavDropdownItem> */}
       </NavDropdown>

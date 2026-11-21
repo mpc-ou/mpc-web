@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowRight, CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
+import { CalendarDays, Code2, Image as ImageIcon, Trophy, User, Users } from "lucide-react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { MarkdownInline } from "@/components/markdown-inline";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/configs/i18n/routing";
 import { formatLocalDate } from "@/utils/handle-datetime";
@@ -71,8 +72,6 @@ export type PostCardData = {
   }[];
   // -- Link href override --
   href?: string;
-  // -- Read more label override --
-  readMoreLabel?: string;
 };
 
 // ── Helpers ──
@@ -118,7 +117,7 @@ function CardThumbnail({ data }: { data: PostCardData }) {
           alt={title}
           className='object-cover transition-transform duration-500 group-hover:scale-105'
           fill
-          sizes='(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw'
+          sizes='(min-width: 1280px) 300px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
           src={data.thumbnail}
         />
       ) : (
@@ -148,13 +147,19 @@ function ThumbnailOverlays({ data }: { data: PostCardData }) {
       {/* Blog tags */}
       {data.variant === "blog" &&
         data.tags?.slice(0, 2).map((t) => (
-          <Badge
-            className='bg-background/80 text-foreground shadow-xs backdrop-blur-md hover:bg-background/90'
+          <Link
+            className='relative z-10'
+            href={`/search?q=${encodeURIComponent(t.nameVi)}` as "/"}
             key={t.nameVi}
-            variant='secondary'
+            onClick={(e) => e.stopPropagation()}
           >
-            <TagLabel tag={t} />
-          </Badge>
+            <Badge
+              className='cursor-pointer bg-background/80 text-foreground shadow-xs backdrop-blur-md transition-colors hover:bg-primary hover:text-primary-foreground'
+              variant='secondary'
+            >
+              #<TagLabel tag={t} />
+            </Badge>
+          </Link>
         ))}
       {/* Event status */}
       {data.variant === "event" && data.statusBadge && (
@@ -191,21 +196,26 @@ function CardContent({ data }: { data: PostCardData }) {
   const title = getTitle(data, locale);
   const summary = getSummary(data, locale);
   const dateStr = fmtDate(data, locale, data.dateLabel ?? undefined);
+  const tProjects = useTranslations("projects");
 
   return (
-    <div className='flex grow flex-col p-5'>
-      {renderMeta(data, locale, dateStr)}
-      <h3 className='mb-2 line-clamp-2 font-bold text-lg leading-snug transition-colors group-hover:text-primary'>
+    <div className='flex grow flex-col p-4'>
+      {renderMeta(data, locale, dateStr, tProjects("present"))}
+      <h3 className='mb-1.5 line-clamp-2 font-bold text-base leading-snug transition-colors group-hover:text-primary'>
         {title}
       </h3>
-      {summary && <p className='mb-4 line-clamp-2 flex-1 text-muted-foreground text-sm leading-relaxed'>{summary}</p>}
+      {summary && (
+        <div className='mb-3 line-clamp-2 text-muted-foreground text-sm leading-relaxed'>
+          <MarkdownInline content={summary} disableLinks />
+        </div>
+      )}
       {renderFooter(data, locale)}
     </div>
   );
 }
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: post metadata conditional rendering
-function renderMeta(data: PostCardData, locale: string, dateStr: string): React.ReactNode {
+function renderMeta(data: PostCardData, locale: string, dateStr: string, presentLabel: string): React.ReactNode {
   // Blog: author + date
   if (data.variant === "blog") {
     return (
@@ -276,16 +286,19 @@ function renderMeta(data: PostCardData, locale: string, dateStr: string): React.
   if (data.variant === "project") {
     const start = data.startDate ? formatLocalDate(data.startDate, locale, "MM/yyyy") : null;
     const end = data.endDate ? formatLocalDate(data.endDate, locale, "MM/yyyy") : null;
-    const hasDate = start || end;
+    let dateRange: string | null = null;
+    if (start) {
+      dateRange = `${start} - ${end ?? presentLabel}`;
+    } else if (end) {
+      dateRange = end;
+    }
 
     return (
       <div className='mb-3 flex items-center justify-between gap-2'>
-        {hasDate ? (
+        {dateRange ? (
           <div className='flex items-center gap-1.5 font-medium text-muted-foreground text-xs'>
             <CalendarDays className='h-3.5 w-3.5' />
-            <span>
-              {start || "..."} — {end || "..."}
-            </span>
+            <span>{dateRange}</span>
           </div>
         ) : (
           <div />
@@ -389,18 +402,6 @@ function renderFooter(data: PostCardData, locale: string): React.ReactNode {
     );
   }
 
-  // Blog / Event: read more link
-  if (data.variant === "blog" || data.variant === "event") {
-    return (
-      <div className='mt-auto flex items-center border-border/10 border-t pt-4 font-semibold text-primary text-sm'>
-        <span className='inline-flex items-center group-hover:underline'>
-          {data.readMoreLabel || "Xem thêm"}
-          <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
-        </span>
-      </div>
-    );
-  }
-
   // Profile posts: date at bottom
   if (data.date && (data.variant as string) === "blog" && !data.author) {
     const dateStr = fmtDate(data, locale);
@@ -419,7 +420,7 @@ export function PostCard({ data }: { data: PostCardData }) {
     "group relative flex overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg";
 
   // The card links out to `href` via a "stretched link" that covers the whole
-  // card (z-0), so it can never itself contain other <a> tags — any nested
+  // card (z-0), so it can never itself contain other <a> tags - any nested
   // links (author, read-more, ...) sit above it at z-10 and stay clickable.
   const stretchedLink = <Link aria-label={getTitle(data, "vi")} className='absolute inset-0 z-0' href={href} />;
 
@@ -427,7 +428,7 @@ export function PostCard({ data }: { data: PostCardData }) {
     return (
       <div className={`${baseClass} flex-row`}>
         {stretchedLink}
-        {/* Thumbnail — fixed width */}
+        {/* Thumbnail - fixed width */}
         <div className='relative w-48 shrink-0 overflow-hidden bg-muted/30 sm:w-64'>
           {data.thumbnail ? (
             <Image

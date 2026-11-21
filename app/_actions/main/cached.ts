@@ -1,4 +1,4 @@
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { ABOUT_CLUB } from "@/configs/data/about";
 import { prisma } from "@/configs/prisma/db";
 import {
@@ -10,11 +10,13 @@ import {
   _CACHE_MEMBERS,
   _CACHE_POSTS,
   _CACHE_PROJECTS,
+  _CACHE_RECAPS,
   _CACHE_SETTINGS
 } from "@/constants/cache";
 
 export const getUpcomingEventsCountCached = async () => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_EVENTS);
   return {
     count: await prisma.post.count({
@@ -24,7 +26,8 @@ export const getUpcomingEventsCountCached = async () => {
 };
 
 export const getActiveAnnouncementCached = async () => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_ANNOUNCEMENTS);
 
   const now = new Date();
@@ -41,7 +44,8 @@ export const getActiveAnnouncementCached = async () => {
 };
 
 export const getFaqItemsCached = async (locale: string, target?: string) => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_FAQ);
 
   const items = await prisma.faqItem.findMany({
@@ -62,7 +66,8 @@ export const getFaqItemsCached = async (locale: string, target?: string) => {
 };
 
 export const getGalleryImagesCached = async (type: string) => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_GALLERY);
 
   const images = await prisma.galleryImage.findMany({
@@ -77,7 +82,8 @@ export const getGalleryImagesCached = async (type: string) => {
 };
 
 export const getFooterDataCached = async () => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_SETTINGS);
 
   const [settings, externalLinks] = await Promise.all([
@@ -103,7 +109,8 @@ export const getFooterDataCached = async () => {
 };
 
 export const getTerminalStatsCached = async () => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_MEMBERS);
   cacheTag(_CACHE_POSTS);
   cacheTag(_CACHE_EVENTS);
@@ -142,7 +149,8 @@ export const getTerminalStatsCached = async () => {
 };
 
 export const getSiteSettingsCached = async (keys: string[]) => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_SETTINGS);
 
   const settings = await prisma.siteSetting.findMany({
@@ -157,12 +165,16 @@ export const getSiteSettingsCached = async (keys: string[]) => {
 };
 
 export const getSitemapDataCached = async () => {
-  "use cache";
+  "use cache: remote";
+  cacheLife("days");
   cacheTag(_CACHE_POSTS);
+  cacheTag(_CACHE_EVENTS);
+  cacheTag(_CACHE_ACHIEVEMENTS);
   cacheTag(_CACHE_PROJECTS);
   cacheTag(_CACHE_MEMBERS);
+  cacheTag(_CACHE_RECAPS);
 
-  const [events, blogs, achievements, projects, members] = await Promise.all([
+  const [events, blogs, achievements, projects, members, recaps] = await Promise.all([
     prisma.post.findMany({
       where: { type: "EVENT", status: "PUBLISHED" },
       select: { slug: true, updatedAt: true },
@@ -184,10 +196,20 @@ export const getSitemapDataCached = async () => {
       orderBy: { createdAt: "desc" }
     }),
     prisma.member.findMany({
-      where: { isActive: true, webRole: { not: "GUEST" }, slug: { not: null } },
+      where: {
+        isActive: true,
+        webRole: { not: "GUEST" },
+        slug: { not: null },
+        clubRoles: { some: {} }
+      },
       select: { slug: true, updatedAt: true }
+    }),
+    prisma.yearRecap.findMany({
+      where: { isPublished: true },
+      select: { year: true, updatedAt: true },
+      orderBy: { year: "desc" }
     })
   ]);
 
-  return { events, blogs, achievements, projects, members };
+  return { events, blogs, achievements, projects, members, recaps };
 };

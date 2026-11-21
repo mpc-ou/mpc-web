@@ -58,7 +58,7 @@ export function SlideThankYou({ endImage, year }: { endImage: string | null; yea
 
       {endImage && (
         <div className='absolute inset-0'>
-          <Image alt='' className='object-cover opacity-10' fill src={endImage} />
+          <Image alt='' className='object-cover opacity-10' fill sizes='100vw' src={endImage} />
           <div className='absolute inset-0 bg-orange-500/5 mix-blend-overlay' />
         </div>
       )}

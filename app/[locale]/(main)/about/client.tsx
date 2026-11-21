@@ -1,21 +1,19 @@
 "use client";
 
-import { Code, Cpu, Facebook, Github, Mail, Monitor, Smartphone, Target } from "lucide-react";
+import { Code, Cpu, Monitor, Smartphone, Target } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EditorWindow } from "@/components/custom/editor-window.client";
 import { HeroBackground } from "@/components/custom/hero-background.client";
+import { SectionHeading } from "@/components/custom/section-heading";
 import { ScrollReveal } from "@/components/ui/scroll-reveal.client";
-import { ABOUT_CLUB } from "@/configs/data/about";
 import { useTransparentHeader } from "@/hooks/use-transparent-header";
 import { cn } from "@/lib/utils";
-import type { ActivityCard } from "./_components/activities-marquee.client";
-import { ActivitiesMarquee } from "./_components/activities-marquee.client";
+import type { ActivityCard } from "./_components/activities-carousel.client";
+import { ActivitiesCarousel } from "./_components/activities-carousel.client";
 import { ClubShirtModelClient } from "./_components/club-shirt-model.client";
 import { DepartmentsCarouselClient } from "./_components/departments-carousel.client";
-import type { TopMember } from "./_components/top-members.client";
-import { TopMembersCarouselClient } from "./_components/top-members.client";
 
 type LocalizedDepartment = {
   id: string;
@@ -29,15 +27,14 @@ type LocalizedDepartment = {
 };
 
 type AboutClientProps = {
-  locale: string;
-  serializedTopMembers: TopMember[];
   localizedDepartments: LocalizedDepartment[];
   localizedActivities: ActivityCard[];
-  statsSection: React.ReactNode;
   benefitsSection: React.ReactNode;
   faqSection: React.ReactNode;
-  recentEventsSection: React.ReactNode;
   managementSection: React.ReactNode;
+  journeySection: React.ReactNode;
+  ctaSection: React.ReactNode;
+  contactSection: React.ReactNode;
 };
 
 function BadgeLabel({ children }: { children: React.ReactNode }) {
@@ -93,15 +90,14 @@ function CapabilityCard({
 }
 
 export function AboutClient({
-  locale,
-  serializedTopMembers,
   localizedDepartments,
   localizedActivities,
-  statsSection,
   benefitsSection,
   faqSection,
-  recentEventsSection,
-  managementSection
+  managementSection,
+  journeySection,
+  ctaSection,
+  contactSection
 }: AboutClientProps) {
   const t = useTranslations("aboutPage");
   useTransparentHeader();
@@ -168,7 +164,7 @@ export function AboutClient({
     <div className='flex flex-col bg-background'>
       {/* Cinematic Hero Section */}
       <section
-        className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-16 text-foreground lg:pt-32 lg:pb-32 dark:bg-[#0B1121] dark:text-white'
+        className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-16 text-foreground lg:pt-32 lg:pb-32'
         ref={sectionRef}
       >
         <style>{`
@@ -190,15 +186,15 @@ export function AboutClient({
               className='flex flex-col justify-center text-center transition-transform duration-200 ease-out will-change-transform lg:text-left'
               style={{ transform: contentTransform }}
             >
-              <div className='mb-6 flex justify-center lg:justify-start'>
+              <div className='mb-6 flex animate-fade-in-up justify-center opacity-0 lg:justify-start'>
                 <BadgeLabel>{t("hero.badge")}</BadgeLabel>
               </div>
-              <h1 className='text-balance font-black text-4xl tracking-tight sm:text-5xl lg:text-6xl'>
+              <h1 className='animate-fade-in-up text-balance font-black text-4xl tracking-tight opacity-0 [animation-delay:120ms] sm:text-5xl lg:text-6xl'>
                 {t("hero.title")}
               </h1>
-              <p className='mt-6 text-balance text-lg text-muted-foreground leading-relaxed sm:text-xl'>
+              <p className='mt-6 animate-fade-in-up text-balance text-lg text-muted-foreground leading-relaxed opacity-0 [animation-delay:240ms] sm:text-xl'>
                 {t("hero.subtitle")}{" "}
-                <strong className='ml-1.5 font-bold text-foreground dark:text-white'>{t("hero.facultyName")}</strong>
+                <strong className='ml-1.5 font-bold text-foreground'>{t("hero.facultyName")}</strong>
               </p>
             </div>
 
@@ -208,16 +204,18 @@ export function AboutClient({
               ref={mpcLogoRef}
               style={{ transform: logoTilt }}
             >
-              <div className='absolute -inset-6 rounded-full bg-linear-to-tr from-orange-500/20 to-amber-500/5 opacity-60 blur-3xl dark:opacity-80' />
-              <div className='relative aspect-square w-full animate-float-logo select-none transition-all duration-300 [filter:drop-shadow(0_10px_20px_rgba(249,115,22,0.15))] hover:[filter:drop-shadow(0_15px_35px_rgba(249,115,22,0.45))]'>
-                <Image
-                  alt='MPC Logo'
-                  className='object-contain'
-                  fill
-                  priority
-                  sizes='(max-width: 1024px) 100vw, 50vw'
-                  src='/images/logo.png'
-                />
+              <div className='fade-in zoom-in-75 relative animate-in fill-mode-both delay-200 duration-1000 ease-out'>
+                <div className='absolute -inset-6 rounded-full bg-linear-to-tr from-orange-500/20 to-amber-500/5 opacity-60 blur-3xl dark:opacity-80' />
+                <div className='relative aspect-square w-full animate-float-logo select-none transition-all duration-300 [filter:drop-shadow(0_10px_20px_rgba(249,115,22,0.15))] hover:[filter:drop-shadow(0_15px_35px_rgba(249,115,22,0.45))]'>
+                  <Image
+                    alt='MPC Logo'
+                    className='object-contain'
+                    fill
+                    priority
+                    sizes='(max-width: 1024px) 100vw, 50vw'
+                    src='/images/logo.png'
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -339,69 +337,26 @@ export function AboutClient({
                   </div>
                 ))}
               </div>
-
-              {/* Social and Contact Links */}
-              <div className='mt-8 flex flex-wrap items-center justify-start gap-3 border-border/40 border-t pt-6'>
-                <a
-                  className='flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 font-medium text-blue-400 text-xs transition-all hover:scale-105 hover:bg-blue-500/20 active:scale-95'
-                  href={ABOUT_CLUB.contact.facebook}
-                  rel='noopener noreferrer'
-                  target='_blank'
-                >
-                  <Facebook className='h-3.5 w-3.5' />
-                  {t("mission.fanpage")}
-                </a>
-                <a
-                  className='flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 font-medium text-orange-400 text-xs transition-all hover:scale-105 hover:bg-orange-500/20 active:scale-95'
-                  href={`mailto:${ABOUT_CLUB.contact.email}`}
-                >
-                  <Mail className='h-3.5 w-3.5' />
-                  {t("mission.email")}
-                </a>
-                <a
-                  className='flex items-center gap-2 rounded-full border border-zinc-500/30 bg-zinc-500/10 px-4 py-2 font-medium text-xs text-zinc-400 transition-all hover:scale-105 hover:bg-zinc-500/20 active:scale-95'
-                  href={ABOUT_CLUB.contact.github}
-                  rel='noopener noreferrer'
-                  target='_blank'
-                >
-                  <Github className='h-3.5 w-3.5' />
-                  {t("mission.github")}
-                </a>
-              </div>
             </ScrollReveal>
           </div>
         </div>
       </section>
 
-      <div className='w-full'>{statsSection}</div>
-      <div className='w-full'>{benefitsSection}</div>
-
-      <DepartmentsCarouselClient
-        departments={localizedDepartments.map((dept) => ({
-          ...dept,
-          icon: dept.icon ?? "",
-          bgImage: dept.bgImage ?? "",
-          description: dept.description ?? "",
-          link: dept.link ?? undefined,
-          linkLabel: dept.linkLabel ?? undefined
-        }))}
-      />
-
-      <ClubShirtModelClient />
+      <div className='w-full'>{journeySection}</div>
 
       {/* Capability Cards Section */}
-      <section className='bg-muted/5 py-20 lg:py-32'>
+      <section className='border-border border-t py-20 lg:py-28'>
         <div className='container mx-auto px-4'>
-          <ScrollReveal className='mb-16 text-center'>
-            <BadgeLabel>{t("fields.badge")}</BadgeLabel>
-            <h2 className='mt-4 font-bold text-3xl text-foreground sm:text-4xl'>{t("fields.title")}</h2>
-            <p className='mx-auto mt-4 max-w-2xl text-muted-foreground text-sm leading-relaxed'>
-              {t("fields.description")}
-            </p>
+          <ScrollReveal>
+            <SectionHeading description={t("fields.description")} tag={t("fields.badge")} title={t("fields.title")} />
           </ScrollReveal>
 
           {localizedActivities.length > 0 ? (
-            <ActivitiesMarquee activities={localizedActivities} />
+            <ActivitiesCarousel
+              activities={localizedActivities}
+              nextLabel={t("fields.next")}
+              prevLabel={t("fields.prev")}
+            />
           ) : (
             <div className='mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4'>
               <CapabilityCard
@@ -433,19 +388,25 @@ export function AboutClient({
         </div>
       </section>
 
-      <section className='overflow-hidden border-border border-t bg-muted/10 py-20 lg:py-32'>
-        <div className='container mx-auto px-4'>
-          <ScrollReveal className='mb-12 text-center md:text-left'>
-            <BadgeLabel>{t("topMembers.badge")}</BadgeLabel>
-            <h2 className='mt-4 font-bold text-3xl sm:text-4xl'>{t("topMembers.title")}</h2>
-          </ScrollReveal>
-          <TopMembersCarouselClient locale={locale} members={serializedTopMembers} />
-        </div>
-      </section>
+      <DepartmentsCarouselClient
+        departments={localizedDepartments.map((dept) => ({
+          ...dept,
+          icon: dept.icon ?? "",
+          bgImage: dept.bgImage ?? "",
+          description: dept.description ?? "",
+          link: dept.link ?? undefined,
+          linkLabel: dept.linkLabel ?? undefined
+        }))}
+      />
 
       <div className='w-full'>{managementSection}</div>
-      <div className='w-full'>{recentEventsSection}</div>
+      <div className='w-full'>{benefitsSection}</div>
+
+      <ClubShirtModelClient />
+
       <div className='w-full'>{faqSection}</div>
+      <div className='w-full'>{ctaSection}</div>
+      <div className='w-full'>{contactSection}</div>
     </div>
   );
 }

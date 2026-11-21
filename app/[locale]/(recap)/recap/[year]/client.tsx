@@ -209,7 +209,7 @@ export function RecapSlideViewer({
           </button>
         </div>
 
-        {/* Center — slide counter */}
+        {/* Center - slide counter */}
         <span className='rounded-full bg-white/10 px-3 py-1 text-white/60 text-xs tabular-nums backdrop-blur-md'>
           {current + 1} / {totalSlides}
         </span>

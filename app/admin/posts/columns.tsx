@@ -208,7 +208,7 @@ export const createColumns = (
       return a ? (
         <span className='text-xs'>{getFullName(a.firstName, a.middleName, a.lastName, "vi")}</span>
       ) : (
-        <span className='text-muted-foreground'>—</span>
+        <span className='text-muted-foreground'>-</span>
       );
     }
   },

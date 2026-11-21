@@ -1075,7 +1075,7 @@ export type $SponsorPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type SponsorGetPayload<S extends boolean | null | undefined | SponsorDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$SponsorPayload, S>
 
 export type SponsorCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<SponsorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<SponsorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: SponsorCountAggregateInputType | true
   }
 
@@ -1534,6 +1534,7 @@ export type SponsorFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter, which Sponsor to fetch.
    */
   where: Prisma.SponsorWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1556,6 +1557,7 @@ export type SponsorFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    * Filter, which Sponsor to fetch.
    */
   where: Prisma.SponsorWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1608,6 +1610,7 @@ export type SponsorFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Filter by unique combinations of Sponsors.
    */
   distinct?: Prisma.SponsorScalarFieldEnum | Prisma.SponsorScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1660,6 +1663,7 @@ export type SponsorFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    * Filter by unique combinations of Sponsors.
    */
   distinct?: Prisma.SponsorScalarFieldEnum | Prisma.SponsorScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1707,6 +1711,7 @@ export type SponsorFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   skip?: number
   distinct?: Prisma.SponsorScalarFieldEnum | Prisma.SponsorScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1729,6 +1734,7 @@ export type SponsorCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data needed to create a Sponsor.
    */
   data: Prisma.XOR<Prisma.SponsorCreateInput, Prisma.SponsorUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1789,6 +1795,7 @@ export type SponsorUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Choose, which Sponsor to update.
    */
   where: Prisma.SponsorWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1867,6 +1874,7 @@ export type SponsorUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * In case the Sponsor was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.SponsorUpdateInput, Prisma.SponsorUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1889,6 +1897,7 @@ export type SponsorDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Filter which Sponsor to delete.
    */
   where: Prisma.SponsorWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

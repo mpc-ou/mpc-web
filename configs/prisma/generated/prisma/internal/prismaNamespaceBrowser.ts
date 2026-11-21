@@ -106,6 +106,14 @@ export const SiteSettingScalarFieldEnum = {
 export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
 
 
+export const RelationLoadStrategy = {
+  query: 'query',
+  join: 'join'
+} as const
+
+export type RelationLoadStrategy = (typeof RelationLoadStrategy)[keyof typeof RelationLoadStrategy]
+
+
 export const AnnouncementScalarFieldEnum = {
   id: 'id',
   contentVi: 'contentVi',
@@ -476,7 +484,8 @@ export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeo
 export const ProjectMemberScalarFieldEnum = {
   projectId: 'projectId',
   memberId: 'memberId',
-  role: 'role'
+  role: 'role',
+  joinedAt: 'joinedAt'
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]

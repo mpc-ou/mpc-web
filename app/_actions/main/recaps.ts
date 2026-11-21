@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_RECAPS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
@@ -8,6 +8,9 @@ import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
 export const getPublishedRecaps = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_RECAPS);
       const recaps = await prisma.yearRecap.findMany({
         where: { isPublished: true },
         orderBy: { year: "desc" },
@@ -25,7 +28,8 @@ export const getPublishedRecaps = async () =>
 export const getRecapByYear = async (year: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_RECAPS);
 
       const recap = await prisma.yearRecap.findUnique({

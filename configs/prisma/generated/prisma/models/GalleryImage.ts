@@ -455,7 +455,7 @@ export type $GalleryImagePayload<ExtArgs extends runtime.Types.Extensions.Intern
 export type GalleryImageGetPayload<S extends boolean | null | undefined | GalleryImageDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$GalleryImagePayload, S>
 
 export type GalleryImageCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<GalleryImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<GalleryImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: GalleryImageCountAggregateInputType | true
   }
 
@@ -898,6 +898,7 @@ export type GalleryImageFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    * Filter, which GalleryImage to fetch.
    */
   where: Prisma.GalleryImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -916,6 +917,7 @@ export type GalleryImageFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    * Filter, which GalleryImage to fetch.
    */
   where: Prisma.GalleryImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -964,6 +966,7 @@ export type GalleryImageFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter by unique combinations of GalleryImages.
    */
   distinct?: Prisma.GalleryImageScalarFieldEnum | Prisma.GalleryImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1012,6 +1015,7 @@ export type GalleryImageFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    * Filter by unique combinations of GalleryImages.
    */
   distinct?: Prisma.GalleryImageScalarFieldEnum | Prisma.GalleryImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1055,6 +1059,7 @@ export type GalleryImageFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   skip?: number
   distinct?: Prisma.GalleryImageScalarFieldEnum | Prisma.GalleryImageScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1073,6 +1078,7 @@ export type GalleryImageCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data needed to create a GalleryImage.
    */
   data: Prisma.XOR<Prisma.GalleryImageCreateInput, Prisma.GalleryImageUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1125,6 +1131,7 @@ export type GalleryImageUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which GalleryImage to update.
    */
   where: Prisma.GalleryImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1195,6 +1202,7 @@ export type GalleryImageUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * In case the GalleryImage was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.GalleryImageUpdateInput, Prisma.GalleryImageUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1213,6 +1221,7 @@ export type GalleryImageDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Filter which GalleryImage to delete.
    */
   where: Prisma.GalleryImageWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

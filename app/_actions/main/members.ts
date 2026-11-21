@@ -1,16 +1,17 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { prisma } from "@/configs/prisma/db";
-import { _CACHE_MEMBERS } from "@/constants/cache";
+import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS } from "@/constants/cache";
 import { getFullName } from "@/lib/utils";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
 
 export const getLeadership = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
 
       const leaders = await prisma.member.findMany({
@@ -32,6 +33,7 @@ export const getLeadership = async () =>
           lastName: true,
           middleName: true,
           avatar: true,
+          email: true,
           bio: true,
           socials: true,
           clubRoles: {
@@ -55,7 +57,8 @@ export const getLeadership = async () =>
 export const getMemberCount = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
       return {
         count: await prisma.member.count({
@@ -68,7 +71,8 @@ export const getMemberCount = async () =>
 export const getMembersGroupedByYear = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
-      "use cache";
+      "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
 
       const members = await prisma.member.findMany({
@@ -91,6 +95,7 @@ export const getMembersGroupedByYear = async () =>
         lastName: string;
         avatar: string | null;
         slug: string | null;
+        studentId: string | null;
         socials: (typeof members)[number]["socials"];
         currentRole: (typeof members)[number]["clubRoles"][number];
       };
@@ -121,6 +126,7 @@ export const getMembersGroupedByYear = async () =>
             lastName: member.lastName,
             avatar: member.avatar,
             slug: member.slug,
+            studentId: member.showStudentId ? member.studentId : null,
             socials: member.socials,
             currentRole: member.clubRoles[0]
           });
@@ -168,9 +174,13 @@ export const getHeaderProfile = async () =>
 export const getMemberAchievements = async (memberId: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
+      "use cache: remote";
+      cacheLife("days");
+      cacheTag(_CACHE_ACHIEVEMENTS);
       const posts = await prisma.post.findMany({
         where: {
           type: "ACHIEVEMENT",
+          status: "PUBLISHED",
           achievementMembers: { some: { memberId } }
         },
         orderBy: { achievementDate: "desc" },
@@ -184,9 +194,15 @@ export const getMemberAchievements = async (memberId: string) =>
           thumbnail: true,
           achievementDate: true,
           achievementType: true,
-          isHighlight: true
+          isHighlight: true,
+          achievementMembers: { where: { memberId }, select: { role: true, prize: true } }
         }
       });
-      return posts;
+      return posts.map(({ achievementMembers, ...p }) => ({
+        ...p,
+        achievementDate: p.achievementDate?.toISOString() ?? null,
+        role: achievementMembers[0]?.role ?? null,
+        prize: achievementMembers[0]?.prize ?? null
+      }));
     }
   });

@@ -5,28 +5,59 @@ const withNextIntl = createNextIntlPlugin("./configs/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   images: {
+    loaderFile: "./configs/image-loader.ts",
+    formats: ["image/webp"],
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [32, 64, 128, 256, 384],
+    qualities: [75],
+    minimumCacheTTL: 2_592_000,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "tsqyqazktzyicxccdpfy.supabase.co"
       },
       {
-        // Fallback avatar generator (see utils/dicebear-avatar.ts), serves SVG
         protocol: "https",
         hostname: "api.dicebear.com"
       },
       {
-        // Live website screenshot service used for webdesign contest thumbnails
-        // (see configs/data/wd.json)
         protocol: "https",
         hostname: "image.thum.io"
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com"
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com"
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co"
       }
     ],
-    // DiceBear avatars are served as SVG; sandboxed per Next.js docs since
-    // remote SVGs can otherwise carry inline scripts.
     dangerouslyAllowSVG: true,
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+  redirects: async () => [
+    {
+      source: "/:locale(vi|en)/activities/webdesign",
+      destination: "/:locale/web-design",
+      permanent: true
+    },
+    {
+      source: "/activities/webdesign",
+      destination: "/en/web-design",
+      permanent: true
+    },
+    {
+      source: "/:locale(vi|en)/web-design-exhibition",
+      destination: "/:locale/web-design/exhibitions",
+      permanent: true
+    }
+  ],
   cacheComponents: true,
   reactCompiler: true,
   output: "standalone",

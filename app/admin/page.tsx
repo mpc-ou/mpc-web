@@ -135,12 +135,12 @@ export default async function AdminDashboard(): Promise<React.ReactNode> {
           <AlertCircle className='h-5 w-5 shrink-0 text-warning' />
           <span className='text-sm'>
             <strong className='font-semibold'>{stats.pendingReview}</strong> blog post
-            {stats.pendingReview === 1 ? "" : "s"} pending review — click to review now.
+            {stats.pendingReview === 1 ? "" : "s"} pending review - click to review now.
           </span>
         </Link>
       )}
 
-      {/* Stat cards — wraps as more metrics are added */}
+      {/* Stat cards - wraps as more metrics are added */}
       <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'>
         {cards.map(({ label, value, suffix, icon: Icon, href, color }) => (
           <Link

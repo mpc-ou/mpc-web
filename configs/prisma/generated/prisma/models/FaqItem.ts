@@ -536,7 +536,7 @@ export type $FaqItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type FaqItemGetPayload<S extends boolean | null | undefined | FaqItemDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$FaqItemPayload, S>
 
 export type FaqItemCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<FaqItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<FaqItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: FaqItemCountAggregateInputType | true
   }
 
@@ -982,6 +982,7 @@ export type FaqItemFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Filter, which FaqItem to fetch.
    */
   where: Prisma.FaqItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1000,6 +1001,7 @@ export type FaqItemFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    * Filter, which FaqItem to fetch.
    */
   where: Prisma.FaqItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1048,6 +1050,7 @@ export type FaqItemFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Filter by unique combinations of FaqItems.
    */
   distinct?: Prisma.FaqItemScalarFieldEnum | Prisma.FaqItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1096,6 +1099,7 @@ export type FaqItemFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    * Filter by unique combinations of FaqItems.
    */
   distinct?: Prisma.FaqItemScalarFieldEnum | Prisma.FaqItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1139,6 +1143,7 @@ export type FaqItemFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   skip?: number
   distinct?: Prisma.FaqItemScalarFieldEnum | Prisma.FaqItemScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1157,6 +1162,7 @@ export type FaqItemCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data needed to create a FaqItem.
    */
   data: Prisma.XOR<Prisma.FaqItemCreateInput, Prisma.FaqItemUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1209,6 +1215,7 @@ export type FaqItemUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Choose, which FaqItem to update.
    */
   where: Prisma.FaqItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1279,6 +1286,7 @@ export type FaqItemUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * In case the FaqItem was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.FaqItemUpdateInput, Prisma.FaqItemUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1297,6 +1305,7 @@ export type FaqItemDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Filter which FaqItem to delete.
    */
   where: Prisma.FaqItemWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

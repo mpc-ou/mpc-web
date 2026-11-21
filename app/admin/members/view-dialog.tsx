@@ -82,21 +82,21 @@ export function MemberViewDialog({ locale = "vi", open, onOpenChange, member, on
             <div className='space-y-3 text-sm'>
               <div className='grid grid-cols-3 text-muted-foreground'>
                 <span className='col-span-1'>MSSV:</span>{" "}
-                <span className='col-span-2 font-medium text-foreground'>{member.studentId || "—"}</span>
+                <span className='col-span-2 font-medium text-foreground'>{member.studentId || "-"}</span>
               </div>
               <div className='grid grid-cols-3 text-muted-foreground'>
                 <span className='col-span-1'>Ngày sinh:</span>{" "}
                 <span className='col-span-2 font-medium text-foreground'>
-                  {member.dob ? formatLocalDate(member.dob, locale) : "—"}
+                  {member.dob ? formatLocalDate(member.dob, locale) : "-"}
                 </span>
               </div>
               <div className='grid grid-cols-3 text-muted-foreground'>
                 <span className='col-span-1'>Điện thoại:</span>{" "}
-                <span className='col-span-2 font-medium text-foreground'>{member.phone || "—"}</span>
+                <span className='col-span-2 font-medium text-foreground'>{member.phone || "-"}</span>
               </div>
               <div className='grid grid-cols-3 text-muted-foreground'>
                 <span className='col-span-1'>URL cá nhân:</span>{" "}
-                <span className='col-span-2 font-medium text-foreground'>{member.slug || "—"}</span>
+                <span className='col-span-2 font-medium text-foreground'>{member.slug || "-"}</span>
               </div>
               <div className='grid grid-cols-3 text-muted-foreground'>
                 <span className='col-span-1'>Ngày tham gia:</span>{" "}

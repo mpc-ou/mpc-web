@@ -915,7 +915,7 @@ export type $PostSponsorshipPayload<ExtArgs extends runtime.Types.Extensions.Int
 export type PostSponsorshipGetPayload<S extends boolean | null | undefined | PostSponsorshipDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostSponsorshipPayload, S>
 
 export type PostSponsorshipCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostSponsorshipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  Omit<PostSponsorshipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit' | 'relationLoadStrategy'> & {
     select?: PostSponsorshipCountAggregateInputType | true
   }
 
@@ -1368,6 +1368,7 @@ export type PostSponsorshipFindUniqueArgs<ExtArgs extends runtime.Types.Extensio
    * Filter, which PostSponsorship to fetch.
    */
   where: Prisma.PostSponsorshipWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1390,6 +1391,7 @@ export type PostSponsorshipFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.E
    * Filter, which PostSponsorship to fetch.
    */
   where: Prisma.PostSponsorshipWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1442,6 +1444,7 @@ export type PostSponsorshipFindFirstArgs<ExtArgs extends runtime.Types.Extension
    * Filter by unique combinations of PostSponsorships.
    */
   distinct?: Prisma.PostSponsorshipScalarFieldEnum | Prisma.PostSponsorshipScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1494,6 +1497,7 @@ export type PostSponsorshipFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ex
    * Filter by unique combinations of PostSponsorships.
    */
   distinct?: Prisma.PostSponsorshipScalarFieldEnum | Prisma.PostSponsorshipScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1541,6 +1545,7 @@ export type PostSponsorshipFindManyArgs<ExtArgs extends runtime.Types.Extensions
    */
   skip?: number
   distinct?: Prisma.PostSponsorshipScalarFieldEnum | Prisma.PostSponsorshipScalarFieldEnum[]
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1563,6 +1568,7 @@ export type PostSponsorshipCreateArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data needed to create a PostSponsorship.
    */
   data: Prisma.XOR<Prisma.PostSponsorshipCreateInput, Prisma.PostSponsorshipUncheckedCreateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1623,6 +1629,7 @@ export type PostSponsorshipUpdateArgs<ExtArgs extends runtime.Types.Extensions.I
    * Choose, which PostSponsorship to update.
    */
   where: Prisma.PostSponsorshipWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1701,6 +1708,7 @@ export type PostSponsorshipUpsertArgs<ExtArgs extends runtime.Types.Extensions.I
    * In case the PostSponsorship was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<Prisma.PostSponsorshipUpdateInput, Prisma.PostSponsorshipUncheckedUpdateInput>
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**
@@ -1723,6 +1731,7 @@ export type PostSponsorshipDeleteArgs<ExtArgs extends runtime.Types.Extensions.I
    * Filter which PostSponsorship to delete.
    */
   where: Prisma.PostSponsorshipWhereUniqueInput
+  relationLoadStrategy?: Prisma.RelationLoadStrategy
 }
 
 /**

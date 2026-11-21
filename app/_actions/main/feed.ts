@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_EVENTS, _CACHE_POSTS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
@@ -44,6 +44,7 @@ export const getLatestFeed = async (locale = "vi", perKind = 5) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_POSTS);
       cacheTag(_CACHE_EVENTS);
 

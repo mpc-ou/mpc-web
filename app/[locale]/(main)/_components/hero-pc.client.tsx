@@ -311,7 +311,7 @@ export function HeroPc({ stats, slides }: { stats: StatsData | null; slides: str
     <div className='relative mx-auto aspect-[44/30] w-[44em] text-[7px] sm:text-[10px] md:text-[11px] lg:text-[12px] xl:text-[13.5px]'>
       <div
         aria-hidden
-        className='pointer-events-none absolute inset-x-[4em] bottom-[2em] h-[6em] rounded-[50%] bg-primary/25 blur-[3em] dark:bg-primary/30'
+        className='hero-fx pointer-events-none absolute inset-x-[4em] bottom-[2em] h-[6em] rounded-[50%] bg-primary/25 blur-[3em] dark:bg-primary/30'
       />
       <div className='pointer-events-none absolute inset-0 [perspective-origin:50%_40%] [perspective:110em]'>
         <motion.div

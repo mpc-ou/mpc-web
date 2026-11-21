@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS, _CACHE_PROJECTS, _CACHE_SETTINGS } from "@/constants/cache";
 import { handleErrorServerNoAuth } from "@/utils/handle-error-server";
@@ -10,6 +10,7 @@ export const getProjectsPageData = async (validPage: number, take: number) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_PROJECTS);
       const skip = (validPage - 1) * take;
       const [total, rawProjects] = await Promise.all([
@@ -66,6 +67,7 @@ export const getProjectDetail = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_PROJECTS);
 
       const project = await prisma.project.findUnique({
@@ -127,6 +129,7 @@ export const getOtherProjects = async (excludeSlug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_PROJECTS);
 
       const rawProjects = await prisma.project.findMany({
@@ -148,6 +151,7 @@ export const getFeaturedProjects = async (take = 4) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_PROJECTS);
 
       const rawProjects = await prisma.project.findMany({
@@ -172,6 +176,7 @@ export const getGoldBoardMembers = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACHIEVEMENTS);
       cacheTag(_CACHE_MEMBERS);
 
@@ -218,6 +223,7 @@ export const getTrainingPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_PROJECTS);
       cacheTag(_CACHE_SETTINGS);
       const [latestProjects, trainingFormSetting] = await Promise.all([

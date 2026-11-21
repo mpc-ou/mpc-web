@@ -50,7 +50,7 @@ export function SlideCover({ coverImage, name, year }: { coverImage: string | nu
 
       {coverImage && (
         <div className='absolute inset-0'>
-          <Image alt='' className='object-cover opacity-10' fill priority src={coverImage} />
+          <Image alt='' className='object-cover opacity-10' fill priority sizes='100vw' src={coverImage} />
           <div className='absolute inset-0 bg-orange-600/5 mix-blend-overlay' />
         </div>
       )}

@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_MEMBERS } from "@/constants/cache";
 import { handleErrorServerNoAuth, handleErrorServerWithAuth } from "@/utils/handle-error-server";
@@ -13,6 +13,7 @@ export const getMemberBySlug = async (slug: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
 
       const member = await prisma.member.findFirst({

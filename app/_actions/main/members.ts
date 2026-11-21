@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { prisma } from "@/configs/prisma/db";
 import { _CACHE_ACHIEVEMENTS, _CACHE_MEMBERS } from "@/constants/cache";
@@ -11,6 +11,7 @@ export const getLeadership = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
 
       const leaders = await prisma.member.findMany({
@@ -57,6 +58,7 @@ export const getMemberCount = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
       return {
         count: await prisma.member.count({
@@ -70,6 +72,7 @@ export const getMembersGroupedByYear = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
 
       const members = await prisma.member.findMany({
@@ -172,6 +175,7 @@ export const getMemberAchievements = async (memberId: string) =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACHIEVEMENTS);
       const posts = await prisma.post.findMany({
         where: {

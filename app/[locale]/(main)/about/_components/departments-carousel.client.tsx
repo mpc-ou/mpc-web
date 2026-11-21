@@ -84,6 +84,7 @@ export function DepartmentsCarouselClient({ departments }: { departments: Depart
               )}
               fill
               priority={index === 0}
+              sizes='100vw'
               src={dept.bgImage}
             />
             <div className='absolute inset-0 bg-black/40' />

@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/configs/prisma/db";
 import {
   _CACHE_ACHIEVEMENTS,
@@ -86,6 +86,7 @@ export const getAchievementsPageData = async (validPage: number, take: number, l
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACHIEVEMENTS);
       cacheTag(_CACHE_MEMBERS);
       const isEn = locale === "en";
@@ -217,6 +218,7 @@ export const getAchievementBySlug = async (slug: string, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACHIEVEMENTS);
       const post = await prisma.post.findUnique({
         where: {
@@ -252,6 +254,7 @@ export const getRecentAchievements = async (take = 4, locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACHIEVEMENTS);
       const achievements = await prisma.post.findMany({
         where: { type: "ACHIEVEMENT", status: "PUBLISHED" },
@@ -293,6 +296,7 @@ export const getJourneyTimeline = async (locale = "vi") =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_POSTS);
       cacheTag(_CACHE_PROJECTS);
 
@@ -364,6 +368,7 @@ export const getSponsorLogos = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_SPONSORS);
       const sponsors = await prisma.sponsor.findMany({
         where: { isActive: true, logo: { not: null } },
@@ -378,6 +383,7 @@ export const getSponsorsPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_SPONSORS);
       return {
         sponsors: await prisma.sponsor.findMany({
@@ -393,6 +399,7 @@ export const getAboutPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_MEMBERS);
       cacheTag(_CACHE_DEPARTMENTS);
       cacheTag(_CACHE_ACTIVITIES);
@@ -440,6 +447,7 @@ export const getActivitiesPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_ACTIVITIES);
       const activities = await prisma.activity.findMany({
         where: { isActive: true },
@@ -453,6 +461,7 @@ export const getDepartmentsPageData = async () =>
   handleErrorServerNoAuth({
     cb: async () => {
       "use cache: remote";
+      cacheLife("days");
       cacheTag(_CACHE_DEPARTMENTS);
       cacheTag(_CACHE_MEMBERS);
       const departments = await prisma.department.findMany({

@@ -119,7 +119,7 @@ export function SlideTimeline({ item }: { item: RecapTimelineItem }) {
       <FloatingShapes />
       {item.thumbnail && (
         <div className='absolute inset-0'>
-          <Image alt='' className='scale-105 object-cover opacity-12' fill src={item.thumbnail} />
+          <Image alt='' className='scale-105 object-cover opacity-12' fill sizes='100vw' src={item.thumbnail} />
           <div className='absolute inset-0 bg-orange-600/3 mix-blend-overlay' />
         </div>
       )}

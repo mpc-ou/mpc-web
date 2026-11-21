@@ -242,7 +242,7 @@ export function SlideNewMembers({
       <GlowingOrbs />
       {coverImage3 && (
         <div className='absolute inset-0'>
-          <Image alt='' className='object-cover opacity-10' fill src={coverImage3} />
+          <Image alt='' className='object-cover opacity-10' fill sizes='100vw' src={coverImage3} />
           <div className='absolute inset-0 bg-orange-500/5 mix-blend-overlay' />
         </div>
       )}

@@ -62,7 +62,7 @@ export function SlideStats({
       <GlowingOrbs />
       {coverImage2 && (
         <div className='absolute inset-0'>
-          <Image alt='' className='object-cover opacity-10' fill src={coverImage2} />
+          <Image alt='' className='object-cover opacity-10' fill sizes='100vw' src={coverImage2} />
           <div className='absolute inset-0 bg-orange-600/5 mix-blend-overlay' />
         </div>
       )}

@@ -272,14 +272,14 @@ export function HeroWall() {
       {/* Wall */}
       <div className='mask-[radial-gradient(ellipse_at_60%_42%,black_40%,transparent_78%)] absolute inset-0 rounded-[1.2em] bg-[#f4f1ec] dark:bg-[#141417]'>
         <div className='absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-size-[3em_3em] dark:bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)]' />
-        <div className='absolute top-[8%] left-[62%] h-[70%] w-[30%] -translate-x-1/2 rounded-full bg-primary/12 blur-[4em] dark:bg-primary/20' />
+        <div className='hero-fx absolute top-[8%] left-[62%] h-[70%] w-[30%] -translate-x-1/2 rounded-full bg-primary/12 blur-[4em] dark:bg-primary/20' />
       </div>
 
       {/* Cast shadow: a sharp contact shadow and a wide soft one */}
       <div className='absolute top-[11.5%] left-[67%] h-[21em] w-[17em] -translate-x-1/2 opacity-35 blur-[0.3em] motion-safe:animate-[hero-shirt-shadow_7s_ease-in-out_infinite] dark:opacity-90'>
         <ShirtSilhouette fill='#000' />
       </div>
-      <div className='absolute top-[14%] left-[68.5%] h-[21em] w-[17em] -translate-x-1/2 opacity-25 blur-[1.4em] motion-safe:animate-[hero-shirt-shadow_7s_ease-in-out_infinite] dark:opacity-60'>
+      <div className='hero-fx absolute top-[14%] left-[68.5%] h-[21em] w-[17em] -translate-x-1/2 opacity-25 blur-[1.4em] motion-safe:animate-[hero-shirt-shadow_7s_ease-in-out_infinite] dark:opacity-60'>
         <ShirtSilhouette fill='#000' />
       </div>
 

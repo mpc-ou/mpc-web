@@ -3,7 +3,7 @@
 import { ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeroBackground } from "@/components/custom/hero-background.client";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/configs/i18n/routing";
@@ -61,7 +61,32 @@ const TypedTitle = ({ text }: { text: string }) => {
   );
 };
 
+const LITE_CSS = `
+  [data-hero-visible="false"] *, [data-hero-visible="false"] { animation-play-state: paused !important; }
+  [data-hero-lite="true"] [class*="hero-shirt"], [data-hero-lite="true"] [class*="hero-lid"] { animation: none !important; }
+  [data-hero-lite="true"] .hero-fx { display: none; }
+`;
+
+const useHeroPerformance = (ref: React.RefObject<HTMLElement | null>) => {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const lite = (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
+    el.dataset.heroLite = String(lite);
+    const observer = new IntersectionObserver(([entry]) => {
+      el.dataset.heroVisible = String(entry?.isIntersecting ?? true);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+};
+
 const HeroSection = ({ stats, slides }: Props) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useHeroPerformance(sectionRef);
   useTransparentHeader({
     hideActions: false,
     textColor: "var(--color-foreground)",
@@ -71,11 +96,15 @@ const HeroSection = ({ stats, slides }: Props) => {
   const t = useTranslations("home.hero");
 
   return (
-    <section className='relative flex min-h-svh w-full flex-col items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-20 text-foreground lg:pt-16'>
+    <section
+      className='relative flex min-h-svh w-full flex-col items-center justify-center overflow-hidden bg-background px-4 pt-24 pb-20 text-foreground lg:pt-16'
+      ref={sectionRef}
+    >
+      <style>{LITE_CSS}</style>
       <HeroBackground />
       <div
         aria-hidden
-        className='pointer-events-none absolute top-1/2 right-[-10%] h-160 w-160 -translate-y-1/2 rounded-full bg-primary/10 blur-[140px] dark:bg-primary/15'
+        className='hero-fx pointer-events-none absolute top-1/2 right-[-10%] h-160 w-160 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,hsl(var(--primary)/0.14),transparent)] dark:bg-[radial-gradient(closest-side,hsl(var(--primary)/0.2),transparent)]'
       />
 
       <div className='relative z-10 grid w-full max-w-7xl items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-6'>
